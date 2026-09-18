@@ -10,6 +10,10 @@
     "wallGain": 0.34,
     "slingshotGain": 0.55,
     "bumperGain": 0.46,
-    "drainGain": 0.42
+    "drainGain": 0.42,
+    "targetGain": 0.48,
+    "launcherGain": 0.52,
+    "nudgeGain": 0.3,
+    "tiltGain": 0.5
   }
 }

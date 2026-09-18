@@ -12,7 +12,13 @@ const resetViewButton = document.querySelector('#resetView');
 const ballStateElement = document.querySelector('#ballState');
 const scoreElement = document.querySelector('#scoreValue');
 const popupLayer = document.querySelector('#scorePopups');
+const tiltStateElement = document.querySelector('#tiltState');
+const launcherStateElement = document.querySelector('#launcherState');
+const launchMeterFill = document.querySelector('#launchMeterFill');
 const leftFlipperButton = document.querySelector('[data-flipper="left"]');
+const launchButton = document.querySelector('#launchButton');
+const nudgeLeftButton = document.querySelector('#nudgeLeft');
+const nudgeRightButton = document.querySelector('#nudgeRight');
 const rightFlipperButton = document.querySelector('[data-flipper="right"]');
 
 const renderer = new THREE.WebGLRenderer({
@@ -192,7 +198,7 @@ async function applyParisGraphics(root) {
   ballMaskRing.name = 'Paris_PrintBall_Mask_Ring';
   root.add(ballMaskRing);
 
-  createParisTargetBank(root);
+  createParisTargetBank(root, tableConfig.targets);
 
   // Actual generated Paris skyline artwork behind the jackpot area.
   const backdrop = makePlane(
@@ -283,43 +289,54 @@ async function applyParisGraphics(root) {
 }
 
 
-function createParisTargetBank(root) {
+function createParisTargetBank(root, targets) {
   const existing = ['Target_1','Target_2','Target_3','Target_4','Target_5','Target_6'];
   existing.forEach((name) => {
     const object = root.getObjectByName(name);
     if (object) object.visible = false;
   });
 
-  const letters = ['P','A','R','I','S','★'];
-  const xs = [-0.98,-0.73,-0.48,0.48,0.73,0.98];
+  const labels = new Map([
+    ['p','P'],
+    ['a','A'],
+    ['r','R'],
+    ['i','I'],
+    ['s','S'],
+    ['star','★']
+  ]);
 
-  for (let i = 0; i < letters.length; i += 1) {
+  targets.forEach((cfg, index) => {
+    const group = new THREE.Group();
+    group.name = 'Target_' + cfg.id;
+    group.position.set(cfg.position[0], 0, cfg.position[1]);
+
     const frame = new THREE.Mesh(
-      new THREE.BoxGeometry(0.19, 0.30, 0.10),
+      new THREE.BoxGeometry(cfg.width, 0.30, 0.10),
       new THREE.MeshStandardMaterial({
         color: 0x111827,
         metalness: 0.75,
         roughness: 0.24
       })
     );
-    frame.position.set(xs[i], 0.82, -2.16);
+    frame.position.set(0, 0.82, -0.08);
     frame.castShadow = true;
 
     const faceTexture = makeTargetTexture(
-      letters[i],
-      i < 3 ? '#dcecff' : '#f7d49a',
-      i < 3 ? '#143252' : '#4d2f10'
+      labels.get(cfg.id) || cfg.id.slice(0, 1).toUpperCase(),
+      index < 3 ? '#dcecff' : '#f7d49a',
+      index < 3 ? '#143252' : '#4d2f10'
     );
 
     const face = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.145, 0.235),
+      new THREE.PlaneGeometry(Math.max(0.12, cfg.width - 0.045), 0.235),
       new THREE.MeshBasicMaterial({ map: faceTexture, toneMapped: false })
     );
-    face.position.set(xs[i], 0.82, -2.104);
+    face.position.set(0, 0.82, -0.024);
     face.renderOrder = 9;
 
-    root.add(frame, face);
-  }
+    group.add(frame, face);
+    root.add(group);
+  });
 }
 
 function makeTargetTexture(letter, fill, bg) {
@@ -421,8 +438,14 @@ loader.load(
         ballStateElement,
         scoreElement,
         popupLayer,
+        tiltStateElement,
+        launcherStateElement,
+        launchMeterFill,
         leftButton: leftFlipperButton,
-        rightButton: rightFlipperButton
+        rightButton: rightFlipperButton,
+        launchButton,
+        nudgeLeftButton,
+        nudgeRightButton
       });
 
       scene.add(modelRoot);
@@ -434,7 +457,7 @@ loader.load(
         gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
       }
 
-      status.textContent = 'PLAYABLE V1 · LIVE';
+      status.textContent = 'PHYSICS V2 · LIVE';
       status.classList.add('ready');
       resetViewButton.disabled = false;
     } catch (error) {

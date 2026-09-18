@@ -38,6 +38,36 @@ export class BrowserSfx {
     this.tone(880, 0.05, this.config.bumperGain * 0.75, 'triangle', -300);
   }
 
+  target() {
+    this.tone(760, 0.055, this.config.targetGain, 'square', -250);
+    this.tone(380, 0.045, this.config.targetGain * 0.6, 'triangle', -90);
+  }
+
+  bank() {
+    this.tone(440, 0.11, this.config.targetGain, 'triangle', 260);
+    window.setTimeout(() => this.tone(660, 0.12, this.config.targetGain * 0.9, 'triangle', 260), 70);
+    window.setTimeout(() => this.tone(880, 0.14, this.config.targetGain * 0.85, 'triangle', 220), 140);
+  }
+
+  launchCharge() {
+    this.tone(95, 0.035, this.config.launcherGain * 0.45, 'triangle', 45);
+  }
+
+  launch(charge = 0.5) {
+    const gain = this.config.launcherGain * (0.65 + clamp(charge, 0, 1) * 0.35);
+    this.tone(135, 0.10, gain, 'sawtooth', 240);
+    this.tone(54, 0.08, gain * 0.55, 'sine', 40);
+  }
+
+  nudge() {
+    this.tone(82, 0.045, this.config.nudgeGain, 'triangle', -14);
+  }
+
+  tilt() {
+    this.tone(185, 0.18, this.config.tiltGain, 'square', -95);
+    window.setTimeout(() => this.tone(118, 0.24, this.config.tiltGain * 0.85, 'square', -48), 80);
+  }
+
   drain() {
     this.tone(92, 0.18, this.config.drainGain, 'sine', -46);
     window.setTimeout(() => this.tone(58, 0.2, this.config.drainGain * 0.75, 'triangle', -18), 50);

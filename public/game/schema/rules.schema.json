@@ -39,7 +39,11 @@
         "wallGain",
         "slingshotGain",
         "bumperGain",
-        "drainGain"
+        "drainGain",
+        "targetGain",
+        "launcherGain",
+        "nudgeGain",
+        "tiltGain"
       ],
       "properties": {
         "enabled": {
@@ -71,6 +75,26 @@
           "maximum": 1
         },
         "bumperGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "targetGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "launcherGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "nudgeGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "tiltGain": {
           "type": "number",
           "minimum": 0,
           "maximum": 1

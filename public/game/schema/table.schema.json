@@ -10,7 +10,11 @@
     "walls",
     "flippers",
     "slingshots",
-    "bumpers"
+    "bumpers",
+    "launcher",
+    "nudge",
+    "targets",
+    "targetBank"
   ],
   "properties": {
     "version": {
@@ -24,7 +28,9 @@
         "fixedStep",
         "maxFrameDelta",
         "gravity",
-        "linearDamping"
+        "linearDamping",
+        "collisionSubsteps",
+        "rollingFriction"
       ],
       "properties": {
         "fixedStep": {
@@ -51,6 +57,16 @@
           "type": "number",
           "minimum": 0,
           "maximum": 3
+        },
+        "collisionSubsteps": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "rollingFriction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         }
       }
     },
@@ -427,6 +443,205 @@
             "minimum": 0,
             "maximum": 100000
           }
+        }
+      }
+    },
+    "launcher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "spawn",
+        "direction",
+        "minPower",
+        "maxPower",
+        "chargeTimeMs",
+        "lane",
+        "laneRestitution",
+        "exitKick"
+      ],
+      "properties": {
+        "spawn": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number",
+            "minimum": -5,
+            "maximum": 5
+          }
+        },
+        "direction": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number",
+            "minimum": -1,
+            "maximum": 1
+          }
+        },
+        "minPower": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 15
+        },
+        "maxPower": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "chargeTimeMs": {
+          "type": "integer",
+          "minimum": 200,
+          "maximum": 3000
+        },
+        "lane": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "minX",
+            "maxX",
+            "exitZ"
+          ],
+          "properties": {
+            "minX": {
+              "type": "number",
+              "minimum": -3,
+              "maximum": 3
+            },
+            "maxX": {
+              "type": "number",
+              "minimum": -3,
+              "maximum": 3
+            },
+            "exitZ": {
+              "type": "number",
+              "minimum": -4,
+              "maximum": 1
+            }
+          }
+        },
+        "laneRestitution": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.2
+        },
+        "exitKick": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number",
+            "minimum": -6,
+            "maximum": 6
+          }
+        }
+      }
+    },
+    "nudge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "impulse",
+        "maxWarnings",
+        "windowMs"
+      ],
+      "properties": {
+        "impulse": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 3
+        },
+        "maxWarnings": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 6
+        },
+        "windowMs": {
+          "type": "integer",
+          "minimum": 500,
+          "maximum": 10000
+        }
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "position",
+          "width",
+          "restitution",
+          "minImpact",
+          "score"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24,
+            "pattern": "^[a-z0-9_-]+$"
+          },
+          "position": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number",
+              "minimum": -5,
+              "maximum": 5
+            }
+          },
+          "width": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 1
+          },
+          "restitution": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1.5
+          },
+          "minImpact": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000
+          }
+        }
+      }
+    },
+    "targetBank": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "completionScore",
+        "resetMs",
+        "popupZ"
+      ],
+      "properties": {
+        "completionScore": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "resetMs": {
+          "type": "integer",
+          "minimum": 250,
+          "maximum": 10000
+        },
+        "popupZ": {
+          "type": "number",
+          "minimum": -5,
+          "maximum": 5
         }
       }
     }

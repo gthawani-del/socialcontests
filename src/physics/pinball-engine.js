@@ -11,6 +11,7 @@ export class PinballEngine {
     this.wallHitAt = new Map();
     this.slingshotHitAt = new Map();
     this.bumperHitAt = new Map();
+    this.targetResetAt = null;
 
     this.ball = {
       position: { x: 0, z: 0 },
@@ -30,6 +31,23 @@ export class PinballEngine {
       ])
     );
 
+    this.targets = new Map(
+      config.targets.map((item) => [
+        item.id,
+        { config: item, active: true }
+      ])
+    );
+
+    this.launcher = {
+      awaitingLaunch: true,
+      charging: false,
+      chargeSeconds: 0,
+      inLane: true
+    };
+
+    this.nudgeTimes = [];
+    this.tilted = false;
+
     this.resetBall();
   }
 
@@ -48,22 +66,114 @@ export class PinballEngine {
 
   setFlipper(id, pressed) {
     const flipper = this.flippers.get(id);
-    if (flipper) flipper.pressed = Boolean(pressed);
+    if (!flipper) return;
+    flipper.pressed = this.tilted ? false : Boolean(pressed);
   }
 
   getFlipper(id) {
     return this.flippers.get(id);
   }
 
+  getTarget(id) {
+    return this.targets.get(id);
+  }
+
+  isTilted() {
+    return this.tilted;
+  }
+
+  isAwaitingLaunch() {
+    return this.launcher.awaitingLaunch;
+  }
+
+  getLauncherCharge() {
+    const maxSeconds = this.config.launcher.chargeTimeMs / 1000;
+    return maxSeconds > 0 ? clamp(this.launcher.chargeSeconds / maxSeconds, 0, 1) : 0;
+  }
+
+  beginLaunch() {
+    if (this.tilted || !this.ball.active || !this.launcher.awaitingLaunch) return false;
+    this.launcher.charging = true;
+    return true;
+  }
+
+  releaseLaunch() {
+    if (this.tilted || !this.ball.active || !this.launcher.awaitingLaunch) return false;
+
+    const cfg = this.config.launcher;
+    const charge = this.getLauncherCharge();
+    const power = cfg.minPower + (cfg.maxPower - cfg.minPower) * charge;
+    const direction = normalize2(cfg.direction[0], cfg.direction[1]);
+
+    this.ball.velocity.x = direction.x * power;
+    this.ball.velocity.z = direction.z * power;
+    this.launcher.awaitingLaunch = false;
+    this.launcher.charging = false;
+    this.launcher.inLane = true;
+    this.launcher.chargeSeconds = 0;
+
+    this.emit('launch', { power, charge });
+    return true;
+  }
+
+  nudge(direction) {
+    if (this.tilted || !this.ball.active || this.launcher.awaitingLaunch) return false;
+
+    const cfg = this.config.nudge;
+    const dir = direction < 0 ? -1 : 1;
+
+    this.ball.velocity.x += dir * cfg.impulse;
+    this.limitBallSpeed();
+
+    const windowSeconds = cfg.windowMs / 1000;
+    this.nudgeTimes = this.nudgeTimes.filter((time) => this.simTime - time <= windowSeconds);
+    this.nudgeTimes.push(this.simTime);
+
+    const warnings = this.nudgeTimes.length;
+
+    if (warnings >= cfg.maxWarnings) {
+      this.tilted = true;
+      for (const flipper of this.flippers.values()) flipper.pressed = false;
+      this.emit('tilt', { warnings });
+    } else {
+      this.emit('tilt-warning', { warnings, remaining: cfg.maxWarnings - warnings });
+    }
+
+    this.emit('nudge', { direction: dir, warnings });
+    return true;
+  }
+
   resetBall() {
-    const { start, initialVelocity } = this.config.ball;
-    this.ball.position.x = start[0];
-    this.ball.position.z = start[1];
-    this.ball.velocity.x = initialVelocity[0];
-    this.ball.velocity.z = initialVelocity[1];
+    const cfg = this.config.launcher;
+    this.ball.position.x = cfg.spawn[0];
+    this.ball.position.z = cfg.spawn[1];
+    this.ball.velocity.x = 0;
+    this.ball.velocity.z = 0;
     this.ball.active = true;
+
+    this.launcher.awaitingLaunch = true;
+    this.launcher.charging = false;
+    this.launcher.chargeSeconds = 0;
+    this.launcher.inLane = true;
+
+    this.nudgeTimes = [];
+    this.tilted = false;
     this.accumulator = 0;
+
+    for (const flipper of this.flippers.values()) flipper.pressed = false;
+
     this.emit('reset', { position: { ...this.ball.position } });
+  }
+
+  resetGame() {
+    this.resetTargets();
+    this.resetBall();
+  }
+
+  resetTargets() {
+    this.targetResetAt = null;
+    for (const target of this.targets.values()) target.active = true;
+    this.emit('targets-reset');
   }
 
   step(frameDelta) {
@@ -83,8 +193,31 @@ export class PinballEngine {
   integrate(dt) {
     this.simTime += dt;
     this.updateFlippers(dt);
+    this.updateTargetBank();
+
     if (!this.ball.active) return;
 
+    if (this.launcher.awaitingLaunch) {
+      if (this.launcher.charging) {
+        const maxSeconds = this.config.launcher.chargeTimeMs / 1000;
+        this.launcher.chargeSeconds = Math.min(
+          maxSeconds,
+          this.launcher.chargeSeconds + dt
+        );
+      }
+      return;
+    }
+
+    const substeps = this.config.physics.collisionSubsteps;
+    const subDt = dt / substeps;
+
+    for (let i = 0; i < substeps; i += 1) {
+      this.integrateSubstep(subDt);
+      if (!this.ball.active) break;
+    }
+  }
+
+  integrateSubstep(dt) {
     const gravity = this.config.physics.gravity;
     const damping = Math.exp(-this.config.physics.linearDamping * dt);
 
@@ -92,10 +225,14 @@ export class PinballEngine {
     this.ball.velocity.z += gravity[1] * dt;
     this.ball.velocity.x *= damping;
     this.ball.velocity.z *= damping;
+
+    this.applyRollingFriction(dt);
     this.limitBallSpeed();
 
     this.ball.position.x += this.ball.velocity.x * dt;
     this.ball.position.z += this.ball.velocity.z * dt;
+
+    this.resolveLauncherLane();
 
     for (const wall of this.config.walls) {
       const hit = this.resolveSegmentCollision(
@@ -126,7 +263,7 @@ export class PinballEngine {
         this.emit('slingshot-hit', {
           id: slingshot.id,
           impact: hit.impact,
-          score: slingshot.score,
+          score: this.tilted ? 0 : slingshot.score,
           x: this.ball.position.x,
           z: this.ball.position.z
         });
@@ -148,10 +285,42 @@ export class PinballEngine {
         this.limitBallSpeed();
         this.emit('bumper-hit', {
           id: bumper.id,
-          score: bumper.score,
+          score: this.tilted ? 0 : bumper.score,
           impact: hit.impact,
           x: this.ball.position.x,
           z: this.ball.position.z
+        });
+      }
+    }
+
+    for (const target of this.targets.values()) {
+      if (!target.active) continue;
+      const cfg = target.config;
+      const half = cfg.width * 0.5;
+      const hit = this.resolveSegmentCollision(
+        [cfg.position[0] - half, cfg.position[1]],
+        [cfg.position[0] + half, cfg.position[1]],
+        this.config.ball.radius,
+        cfg.restitution
+      );
+
+      if (!hit || hit.impact < cfg.minImpact) continue;
+
+      target.active = false;
+      this.emit('target-hit', {
+        id: cfg.id,
+        score: this.tilted ? 0 : cfg.score,
+        impact: hit.impact,
+        x: cfg.position[0],
+        z: cfg.position[1]
+      });
+
+      if ([...this.targets.values()].every((item) => !item.active)) {
+        this.targetResetAt = this.simTime + this.config.targetBank.resetMs / 1000;
+        this.emit('target-bank-complete', {
+          score: this.tilted ? 0 : this.config.targetBank.completionScore,
+          x: 0,
+          z: this.config.targetBank.popupZ
         });
       }
     }
@@ -164,6 +333,49 @@ export class PinballEngine {
     this.checkSafetyBounds();
   }
 
+  updateTargetBank() {
+    if (this.targetResetAt !== null && this.simTime >= this.targetResetAt) {
+      this.resetTargets();
+    }
+  }
+
+  resolveLauncherLane() {
+    if (!this.launcher.inLane) return;
+
+    const cfg = this.config.launcher;
+    const radius = this.config.ball.radius;
+    const minCenterX = cfg.lane.minX + radius;
+    const maxCenterX = cfg.lane.maxX - radius;
+
+    if (this.ball.position.x < minCenterX) {
+      this.ball.position.x = minCenterX;
+      this.ball.velocity.x = Math.abs(this.ball.velocity.x) * cfg.laneRestitution;
+    }
+
+    if (this.ball.position.x > maxCenterX) {
+      this.ball.position.x = maxCenterX;
+      this.ball.velocity.x = -Math.abs(this.ball.velocity.x) * cfg.laneRestitution;
+    }
+
+    if (this.ball.position.z <= cfg.lane.exitZ) {
+      this.launcher.inLane = false;
+      this.ball.velocity.x += cfg.exitKick[0];
+      this.ball.velocity.z += cfg.exitKick[1];
+      this.emit('launcher-exit');
+    }
+  }
+
+  applyRollingFriction(dt) {
+    const friction = this.config.physics.rollingFriction;
+    const speed = Math.hypot(this.ball.velocity.x, this.ball.velocity.z);
+    if (speed < EPS || friction <= 0) return;
+
+    const nextSpeed = Math.max(0, speed - friction * dt);
+    const scale = nextSpeed / speed;
+    this.ball.velocity.x *= scale;
+    this.ball.velocity.z *= scale;
+  }
+
   canEmit(map, id, cooldownSeconds) {
     const previous = map.get(id) ?? -Infinity;
     if (this.simTime - previous < cooldownSeconds) return false;
@@ -174,7 +386,13 @@ export class PinballEngine {
   updateFlippers(dt) {
     for (const flipper of this.flippers.values()) {
       const cfg = flipper.config;
-      const target = (flipper.pressed ? cfg.activeAngleDeg : cfg.restAngleDeg) * DEG;
+      const target = (
+        this.tilted
+          ? cfg.restAngleDeg
+          : flipper.pressed
+            ? cfg.activeAngleDeg
+            : cfg.restAngleDeg
+      ) * DEG;
       const speed = (flipper.pressed ? cfg.speedDegPerSec : cfg.returnSpeedDegPerSec) * DEG;
       const previous = flipper.angle;
 
@@ -316,7 +534,7 @@ export class PinballEngine {
       this.ball.velocity.x += nx * impulse;
       this.ball.velocity.z += nz * impulse;
 
-      if (flipper.pressed && Math.abs(flipper.angularVelocity) > 0.2) {
+      if (!this.tilted && flipper.pressed && Math.abs(flipper.angularVelocity) > 0.2) {
         this.ball.velocity.x += nx * cfg.kick;
         this.ball.velocity.z += nz * cfg.kick;
       }
@@ -327,6 +545,8 @@ export class PinballEngine {
   }
 
   checkDrain() {
+    if (this.launcher.awaitingLaunch) return;
+
     const drain = this.config.playfield.drain;
     if (
       this.ball.position.z > drain.z &&
@@ -379,6 +599,11 @@ function closestPointOnSegment(px, pz, ax, az, bx, bz) {
 
   const t = clamp(((px - ax) * abx + (pz - az) * abz) / lengthSq, 0, 1);
   return { x: ax + abx * t, z: az + abz * t };
+}
+
+function normalize2(x, z) {
+  const length = Math.hypot(x, z) || 1;
+  return { x: x / length, z: z / length };
 }
 
 function clamp(value, min, max) {
