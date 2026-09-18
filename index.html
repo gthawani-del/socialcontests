@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#04070d" />
     <meta name="description" content="Infinite Pinball — Paris Nights production theme." />
-    <title>Infinite Pinball · Paris Nights · Interaction V3</title>
+    <title>Infinite Pinball · Paris Nights · Session V5</title>
   </head>
   <body>
     <div id="app">
@@ -15,7 +15,7 @@
         <div class="brand">
           <div class="eyebrow">SOCIAL CONTESTS</div>
           <h1>INFINITE PINBALL</h1>
-          <p>Paris Nights · Interaction V3</p>
+          <p>Paris Nights · Session V5</p>
         </div>
 
         <div class="status" id="status">Starting…</div>
@@ -43,6 +43,16 @@
       <div class="flipper-controls" aria-label="Pinball controls">
         <button class="flipper-button left" type="button" data-flipper="left" aria-label="Left flipper">LEFT</button>
         <button class="flipper-button right" type="button" data-flipper="right" aria-label="Right flipper">RIGHT</button>
+      </div>
+
+      <div class="game-over" id="gameOver" aria-hidden="true">
+        <div class="game-over-card" role="dialog" aria-modal="true" aria-labelledby="gameOverTitle">
+          <div class="game-over-kicker">PARIS NIGHTS</div>
+          <h2 id="gameOverTitle">GAME OVER</h2>
+          <div class="final-score-label">FINAL SCORE</div>
+          <strong class="final-score" id="finalScore">0</strong>
+          <button id="playAgain" type="button">PLAY AGAIN</button>
+        </div>
       </div>
 
       <div class="score-popups" id="scorePopups" aria-hidden="true"></div>
