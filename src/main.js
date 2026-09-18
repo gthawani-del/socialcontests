@@ -17,6 +17,9 @@ const launcherStateElement = document.querySelector('#launcherState');
 const launchMeterFill = document.querySelector('#launchMeterFill');
 const fxBadge = document.querySelector('#fxBadge');
 const soundButton = document.querySelector('#soundButton');
+const gameOverElement = document.querySelector('#gameOver');
+const finalScoreElement = document.querySelector('#finalScore');
+const playAgainButton = document.querySelector('#playAgain');
 const leftFlipperButton = document.querySelector('[data-flipper="left"]');
 const launchButton = document.querySelector('#launchButton');
 const nudgeLeftButton = document.querySelector('#nudgeLeft');
@@ -446,6 +449,9 @@ loader.load(
         launchMeterFill,
         fxBadge,
         soundButton,
+        gameOverElement,
+        finalScoreElement,
+        playAgainButton,
         leftButton: leftFlipperButton,
         rightButton: rightFlipperButton,
         launchButton,
@@ -462,7 +468,7 @@ loader.load(
         gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
       }
 
-      status.textContent = 'INTERACTION V3 · LIVE';
+      status.textContent = 'SESSION V5 · LIVE';
       status.classList.add('ready');
       resetViewButton.disabled = false;
     } catch (error) {
