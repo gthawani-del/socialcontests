@@ -19,6 +19,7 @@ export function createGameplayController({
   camera,
   tableConfig,
   rulesConfig,
+  themeConfig = null,
   ballStateElement,
   scoreElement,
   popupLayer,
@@ -39,7 +40,11 @@ export function createGameplayController({
   nudgeRightButton
 }) {
   const engine = new PinballEngine(tableConfig);
-  const sfx = new BrowserSfx(rulesConfig.audio, soundButton);
+  const sfx = new BrowserSfx(
+    rulesConfig.audio,
+    soundButton,
+    themeConfig?.audioProfile || 'paris'
+  );
   const vfx = new VfxEngine({
     root,
     renderer,
@@ -102,14 +107,16 @@ export function createGameplayController({
     });
   }
 
-  const bumperNames = {
+  const legacyBumperNames = {
     metro: 'Paris_AI_Bumper_Metro',
     cafe: 'Paris_AI_Bumper_Cafe',
     paris: 'Paris_AI_Bumper_Landmark'
   };
 
   for (const cfg of tableConfig.bumpers) {
-    const object = root.getObjectByName(bumperNames[cfg.id]);
+    const object =
+      root.getObjectByName('Theme_Bumper_' + cfg.id) ||
+      root.getObjectByName(legacyBumperNames[cfg.id]);
     if (!object) continue;
     bumperVisuals.set(cfg.id, {
       object,
@@ -119,10 +126,12 @@ export function createGameplayController({
   }
 
   for (const cfg of tableConfig.scoringZones || []) {
-    if (cfg.id !== 'city-light') continue;
-
-    const ring = root.getObjectByName('Paris_CityLight_ScoreRing');
-    const face = root.getObjectByName('Paris_CityLight_ScoreFace');
+    const ring =
+      root.getObjectByName('Theme_ScoringZone_' + cfg.id + '_Ring') ||
+      root.getObjectByName('Paris_CityLight_ScoreRing');
+    const face =
+      root.getObjectByName('Theme_ScoringZone_' + cfg.id + '_Face') ||
+      root.getObjectByName('Paris_CityLight_ScoreFace');
     if (!ring && !face) continue;
 
     scoringZoneVisuals.set(cfg.id, {
@@ -158,7 +167,7 @@ export function createGameplayController({
 
   engine.on('bumper-hit', ({ id, score: value, x, z, impact }) => {
     const pan = panFromX(x);
-    sfx.bumper(pan);
+    sfx.bumper(id, pan);
     addScore(value, x, z, '+');
     vfx.hit('bumper', x, z, 0.85 + impact * 0.15);
     lighting.pulseAt(x, z, 0.9 + impact * 0.12);
@@ -185,8 +194,13 @@ export function createGameplayController({
   });
 
   engine.on('scoring-zone-hit', ({ id, score: value, x, z }) => {
-    sfx.target(panFromX(x));
-    addScore(value, x, z, 'CITY LIGHT +');
+    sfx.scoringZone(id, panFromX(x));
+    addScore(
+      value,
+      x,
+      z,
+      (themeConfig?.scoringZoneLabel || 'SCORE ZONE') + ' +'
+    );
     vfx.hit('target', x, z, 1.05);
     lighting.pulseAt(x, z, 1.15);
 
