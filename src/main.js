@@ -4,6 +4,13 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { loadValidatedJson } from './config/validate.js';
 import { createGameplayController } from './gameplay/controller.js';
+import {
+  createDifficultyTableConfig,
+  DEFAULT_DIFFICULTY,
+  getDifficultyLabel,
+  getDifficultyMetrics,
+  resolveDifficulty
+} from './gameplay/difficulty.js';
 import './style.css';
 
 const canvas = document.querySelector('#game');
@@ -16,6 +23,7 @@ const tiltStateElement = document.querySelector('#tiltState');
 const launcherStateElement = document.querySelector('#launcherState');
 const launchMeterFill = document.querySelector('#launchMeterFill');
 const fxBadge = document.querySelector('#fxBadge');
+const difficultySelect = document.querySelector('#difficultySelect');
 const soundButton = document.querySelector('#soundButton');
 const gameOverElement = document.querySelector('#gameOver');
 const finalScoreElement = document.querySelector('#finalScore');
@@ -98,7 +106,25 @@ let modelRoot = null;
 let gameplay = null;
 let tableConfig = null;
 let rulesConfig = null;
+const requestedDifficulty = new URLSearchParams(window.location.search).get('difficulty');
+const difficultyLevel = resolveDifficulty(requestedDifficulty);
 const modelSize = new THREE.Vector3();
+
+if (difficultySelect) {
+  difficultySelect.value = difficultyLevel;
+  difficultySelect.addEventListener('change', () => {
+    const nextDifficulty = resolveDifficulty(difficultySelect.value);
+    const url = new URL(window.location.href);
+
+    if (nextDifficulty === DEFAULT_DIFFICULTY) {
+      url.searchParams.delete('difficulty');
+    } else {
+      url.searchParams.set('difficulty', nextDifficulty);
+    }
+
+    window.location.assign(url.toString());
+  });
+}
 
 const PARIS_ASSETS = {
   playfield: '/themes/paris/assets/playfield.webp',
@@ -432,6 +458,18 @@ loader.load(
         loadValidatedJson('/game/rules.json', '/game/schema/rules.schema.json')
       ]);
 
+      tableConfig = createDifficultyTableConfig(tableConfig, difficultyLevel);
+      const difficultyLabel = getDifficultyLabel(difficultyLevel);
+      const difficultyMetrics = getDifficultyMetrics(tableConfig);
+
+      if (difficultySelect) difficultySelect.value = difficultyLevel;
+      console.info('Pinball difficulty', {
+        level: difficultyLabel,
+        restGap: difficultyMetrics.restGap,
+        launchTapPower: difficultyMetrics.launchTapPower,
+        maxBallSpeed: tableConfig.ball.maxSpeed
+      });
+
       status.textContent = 'Loading Paris theme…';
       await applyParisGraphics(modelRoot);
 
@@ -468,7 +506,7 @@ loader.load(
         gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
       }
 
-      status.textContent = 'SESSION V5 · LIVE';
+      status.textContent = 'BALANCE V6 · ' + getDifficultyLabel(difficultyLevel);
       status.classList.add('ready');
       resetViewButton.disabled = false;
     } catch (error) {
