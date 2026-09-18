@@ -6,6 +6,7 @@ import { loadValidatedJson } from './config/validate.js';
 import { createGameplayController } from './gameplay/controller.js';
 import {
   createDifficultyTableConfig,
+  DEFAULT_DIFFICULTY,
   getDifficultyLabel,
   getDifficultyMetrics,
   resolveDifficulty
@@ -22,7 +23,7 @@ const tiltStateElement = document.querySelector('#tiltState');
 const launcherStateElement = document.querySelector('#launcherState');
 const launchMeterFill = document.querySelector('#launchMeterFill');
 const fxBadge = document.querySelector('#fxBadge');
-const difficultyBadge = document.querySelector('#difficultyBadge');
+const difficultySelect = document.querySelector('#difficultySelect');
 const soundButton = document.querySelector('#soundButton');
 const gameOverElement = document.querySelector('#gameOver');
 const finalScoreElement = document.querySelector('#finalScore');
@@ -108,6 +109,22 @@ let rulesConfig = null;
 const requestedDifficulty = new URLSearchParams(window.location.search).get('difficulty');
 const difficultyLevel = resolveDifficulty(requestedDifficulty);
 const modelSize = new THREE.Vector3();
+
+if (difficultySelect) {
+  difficultySelect.value = difficultyLevel;
+  difficultySelect.addEventListener('change', () => {
+    const nextDifficulty = resolveDifficulty(difficultySelect.value);
+    const url = new URL(window.location.href);
+
+    if (nextDifficulty === DEFAULT_DIFFICULTY) {
+      url.searchParams.delete('difficulty');
+    } else {
+      url.searchParams.set('difficulty', nextDifficulty);
+    }
+
+    window.location.assign(url.toString());
+  });
+}
 
 const PARIS_ASSETS = {
   playfield: '/themes/paris/assets/playfield.webp',
@@ -445,7 +462,7 @@ loader.load(
       const difficultyLabel = getDifficultyLabel(difficultyLevel);
       const difficultyMetrics = getDifficultyMetrics(tableConfig);
 
-      if (difficultyBadge) difficultyBadge.textContent = 'DIFFICULTY ' + difficultyLabel;
+      if (difficultySelect) difficultySelect.value = difficultyLevel;
       console.info('Pinball difficulty', {
         level: difficultyLabel,
         restGap: difficultyMetrics.restGap,
