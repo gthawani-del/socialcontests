@@ -5,6 +5,7 @@ import { VfxEngine } from '../vfx/effects.js';
 import { GameplayFocusLighting } from './focus-lighting.js';
 
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
+const PROGRESS_STORAGE_KEY = 'infinite-pinball-progress-v1';
 const MODEL_FLIPPER_REST_DEG = Object.freeze({ left: 18, right: 162 });
 const GAME_STATES = Object.freeze({
   READY: 'READY',
@@ -471,6 +472,7 @@ export function createGameplayController({
     hideGameOver();
     currentBall = 1;
     score = 0;
+    persistProgress(false);
     engine.resetGame();
     resetTransientEffects();
     setGameState(GAME_STATES.PLAYING);
@@ -490,11 +492,47 @@ export function createGameplayController({
     setBallState('GAME OVER');
     setLauncherState('FINAL SCORE');
     updateScore();
+    persistProgress(true);
 
     if (finalScoreElement) finalScoreElement.textContent = String(score);
     if (gameOverElement) {
       gameOverElement.classList.add('visible');
       gameOverElement.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function persistProgress(finalScore = false) {
+    if (!themeConfig?.id) return;
+
+    try {
+      const raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
+      const stored = raw ? JSON.parse(raw) : {};
+      const themes = stored?.themes && typeof stored.themes === 'object'
+        ? { ...stored.themes }
+        : {};
+      const previous = themes[themeConfig.id] || {};
+      const difficulty = tableConfig.difficulty || 'standard';
+      const previousHigh = Number(previous.highScore || 0);
+
+      themes[themeConfig.id] = {
+        ...previous,
+        difficulty,
+        lastScore: finalScore ? score : Number(previous.lastScore || 0),
+        highScore: finalScore ? Math.max(previousHigh, score) : previousHigh,
+        lastPlayedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem(
+        PROGRESS_STORAGE_KEY,
+        JSON.stringify({
+          ...stored,
+          lastPlayedTheme: themeConfig.id,
+          lastDifficulty: difficulty,
+          themes
+        })
+      );
+    } catch (error) {
+      console.warn('Unable to persist local lobby progress:', error);
     }
   }
 
