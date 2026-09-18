@@ -53,11 +53,57 @@ export class BrowserSfx {
       this.createRollingVoice();
     }
 
-    if (this.context.state === 'suspended') {
-      await this.context.resume();
+    // iOS Safari can leave Web Audio in a non-running state after navigation,
+    // tab switches or an interrupted audio route. Prime the output while this
+    // method is still executing from the user's gesture, then resume any
+    // non-running context state that can be resumed.
+    this.primeOutput();
+
+    if (this.context.state !== 'running' && this.context.state !== 'closed') {
+      try {
+        await this.context.resume();
+      } catch (error) {
+        console.warn('Audio resume was blocked:', error);
+      }
     }
 
-    this.setStatus(this.context.state === 'running' ? 'SOUND ON' : 'SOUND BLOCKED');
+    if (this.context.state === 'running') this.primeOutput();
+
+    this.setStatus(this.context.state === 'running' ? 'SOUND ON' : 'TAP SOUND');
+  }
+
+  isRunning() {
+    return Boolean(this.context && this.context.state === 'running');
+  }
+
+  async preview() {
+    await this.unlock();
+    if (!this.isRunning() || this.muted) return false;
+
+    this.tone(620, 0.055, Math.min(0.32, this.config.masterVolume), 'triangle', 90, 0);
+    window.setTimeout(
+      () => this.tone(880, 0.07, Math.min(0.28, this.config.masterVolume), 'triangle', -80, 0),
+      55
+    );
+    return true;
+  }
+
+  primeOutput() {
+    if (!this.context || !this.master || this.context.state === 'closed') return;
+
+    try {
+      const source = this.context.createBufferSource();
+      source.buffer = this.context.createBuffer(1, 1, this.context.sampleRate);
+
+      const gain = this.context.createGain();
+      gain.gain.value = 0.00001;
+
+      source.connect(gain);
+      gain.connect(this.master);
+      source.start(0);
+    } catch (error) {
+      console.warn('Audio output prime failed:', error);
+    }
   }
 
   setMuted(muted) {
