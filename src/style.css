@@ -476,3 +476,43 @@ canvas{position:absolute;inset:0;display:block;width:100%;height:100%;touch-acti
 }
 
 .sound-gate[hidden]{display:none!important}
+
+
+.theme-switch-link{
+  display:flex;align-items:center;min-height:34px;padding:0 10px;border:1px solid rgba(255,255,255,.10);
+  border-radius:10px;background:rgba(255,255,255,.025);color:#8f9cad;text-decoration:none;
+  font:800 8px/1 Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.10em
+}
+.theme-switch-link:hover{color:#f0d078;border-color:rgba(229,173,67,.28)}
+
+html[data-theme="bombay-1945"] .brand .eyebrow,
+html[data-theme="bombay-1945"] .brand p{color:#bda66f}
+html[data-theme="bombay-1945"] .ball-state,
+html[data-theme="bombay-1945"] .score-state,
+html[data-theme="bombay-1945"] .launcher-state{
+  border-color:rgba(214,168,75,.34);
+  background:rgba(12,17,15,.82)
+}
+html[data-theme="bombay-1945"] .score-state strong,
+html[data-theme="bombay-1945"] .launcher-state span{color:#e5c77e}
+html[data-theme="bombay-1945"] .mobile-menu-button[aria-expanded="true"],
+html[data-theme="bombay-1945"] .runtime-state select{color:#e5c77e;border-color:rgba(214,168,75,.42)}
+html[data-theme="bombay-1945"] .sound-gate-card,
+html[data-theme="bombay-1945"] .game-over-card{
+  border-color:rgba(214,168,75,.46);
+  background:linear-gradient(180deg,rgba(18,27,23,.98),rgba(8,12,11,.98))
+}
+html[data-theme="bombay-1945"] .sound-gate button,
+html[data-theme="bombay-1945"] #playAgain{
+  border-color:rgba(214,168,75,.68);
+  background:rgba(214,168,75,.13);
+  color:#eed79f
+}
+html[data-theme="bombay-1945"] .flipper-button,
+html[data-theme="bombay-1945"] .nudge-button,
+html[data-theme="bombay-1945"] .launch-button{
+  border-color:rgba(214,168,75,.48);
+  color:#e7ca85;
+  background:rgba(10,15,13,.86)
+}
+html[data-theme="bombay-1945"] .launch-meter i{background:linear-gradient(90deg,#315b4b,#d6a84b)}
