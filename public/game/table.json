@@ -211,9 +211,9 @@
       0,
       -1
     ],
-    "minPower": 5.2,
-    "maxPower": 10.4,
-    "chargeTimeMs": 1100,
+    "minPower": 6.8,
+    "maxPower": 11.8,
+    "chargeTimeMs": 1050,
     "lane": {
       "minX": 1.18,
       "maxX": 1.49,
@@ -223,7 +223,8 @@
     "exitKick": [
       -1.75,
       0.22
-    ]
+    ],
+    "tapCharge": 0.34
   },
   "nudge": {
     "impulse": 0.72,

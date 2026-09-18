@@ -97,11 +97,19 @@ export class PinballEngine {
     return true;
   }
 
+  setLaunchCharge(normalized) {
+    if (this.tilted || !this.ball.active || !this.launcher.awaitingLaunch) return false;
+    const maxSeconds = this.config.launcher.chargeTimeMs / 1000;
+    this.launcher.charging = true;
+    this.launcher.chargeSeconds = clamp(normalized, 0, 1) * maxSeconds;
+    return true;
+  }
+
   releaseLaunch() {
     if (this.tilted || !this.ball.active || !this.launcher.awaitingLaunch) return false;
 
     const cfg = this.config.launcher;
-    const charge = this.getLauncherCharge();
+    const charge = Math.max(this.getLauncherCharge(), cfg.tapCharge);
     const power = cfg.minPower + (cfg.maxPower - cfg.minPower) * charge;
     const direction = normalize2(cfg.direction[0], cfg.direction[1]);
 
@@ -242,7 +250,12 @@ export class PinballEngine {
         wall.restitution
       );
       if (hit && hit.impact > 0.35 && this.canEmit(this.wallHitAt, wall.id, 0.045)) {
-        this.emit('wall-hit', { id: wall.id, impact: hit.impact });
+        this.emit('wall-hit', {
+          id: wall.id,
+          impact: hit.impact,
+          x: this.ball.position.x,
+          z: this.ball.position.z
+        });
       }
     }
 

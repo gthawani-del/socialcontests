@@ -7,7 +7,8 @@
     "ballsPerGame",
     "drainResetDelayMs",
     "gameResetDelayMs",
-    "audio"
+    "audio",
+    "vfx"
   ],
   "properties": {
     "version": {
@@ -43,7 +44,8 @@
         "targetGain",
         "launcherGain",
         "nudgeGain",
-        "tiltGain"
+        "tiltGain",
+        "rollGain"
       ],
       "properties": {
         "enabled": {
@@ -98,6 +100,48 @@
           "type": "number",
           "minimum": 0,
           "maximum": 1
+        },
+        "rollGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "vfx": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "quality",
+        "particles",
+        "pulses",
+        "trail",
+        "cameraShake"
+      ],
+      "properties": {
+        "quality": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "low",
+            "medium",
+            "high",
+            "ultra"
+          ]
+        },
+        "particles": {
+          "type": "boolean"
+        },
+        "pulses": {
+          "type": "boolean"
+        },
+        "trail": {
+          "type": "boolean"
+        },
+        "cameraShake": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2
         }
       }
     }

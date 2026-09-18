@@ -457,7 +457,8 @@
         "chargeTimeMs",
         "lane",
         "laneRestitution",
-        "exitKick"
+        "exitKick",
+        "tapCharge"
       ],
       "properties": {
         "spawn": {
@@ -535,6 +536,11 @@
             "minimum": -6,
             "maximum": 6
           }
+        },
+        "tapCharge": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 0.8
         }
       }
     },

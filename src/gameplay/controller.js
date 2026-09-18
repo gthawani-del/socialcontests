@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { PinballEngine } from '../physics/pinball-engine.js';
 import { BrowserSfx } from '../audio/browser-sfx.js';
+import { VfxEngine } from '../vfx/effects.js';
 
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
 
 export function createGameplayController({
   root,
+  renderer,
   camera,
   tableConfig,
   rulesConfig,
@@ -15,6 +17,8 @@ export function createGameplayController({
   tiltStateElement,
   launcherStateElement,
   launchMeterFill,
+  fxBadge,
+  soundButton,
   leftButton,
   rightButton,
   launchButton,
@@ -22,9 +26,19 @@ export function createGameplayController({
   nudgeRightButton
 }) {
   const engine = new PinballEngine(tableConfig);
-  const sfx = new BrowserSfx(rulesConfig.audio);
+  const sfx = new BrowserSfx(rulesConfig.audio, soundButton);
+  const vfx = new VfxEngine({
+    root,
+    renderer,
+    config: rulesConfig.vfx,
+    fxBadge
+  });
+
   const flipperVisuals = new Map();
   const targetVisuals = new Map();
+  const bumperVisuals = new Map();
+  const slingshotVisuals = createSlingshotVisuals(root, tableConfig);
+  const launcherVisual = createLauncherVisuals(root, tableConfig);
   const tempQuat = new THREE.Quaternion();
 
   let currentBall = 1;
@@ -38,17 +52,15 @@ export function createGameplayController({
   const ballVisual = new THREE.Mesh(
     new THREE.SphereGeometry(tableConfig.ball.radius, 32, 20),
     new THREE.MeshStandardMaterial({
-      color: 0xc8d0da,
-      metalness: 0.92,
-      roughness: 0.12
+      color: 0xd7dee8,
+      metalness: 0.94,
+      roughness: 0.10,
+      envMapIntensity: 1.4
     })
   );
   ballVisual.name = 'GameplayBall';
   ballVisual.castShadow = true;
   root.add(ballVisual);
-
-  createSlingshotVisuals(root, tableConfig);
-  const launcherVisual = createLauncherVisuals(root, tableConfig);
 
   for (const cfg of tableConfig.flippers) {
     const objectName = cfg.id === 'left' ? 'Flipper_Left' : 'Flipper_Right';
@@ -65,41 +77,87 @@ export function createGameplayController({
   for (const cfg of tableConfig.targets) {
     const object = root.getObjectByName('Target_' + cfg.id);
     if (!object) continue;
-
     targetVisuals.set(cfg.id, {
       object,
-      baseY: object.position.y
+      baseY: object.position.y,
+      pulse: 0
     });
   }
 
-  engine.on('wall-hit', ({ impact }) => sfx.wall(impact));
+  const bumperNames = {
+    metro: 'Paris_AI_Bumper_Metro',
+    cafe: 'Paris_AI_Bumper_Cafe',
+    paris: 'Paris_AI_Bumper_Landmark'
+  };
 
-  engine.on('slingshot-hit', ({ score: value, x, z }) => {
-    sfx.slingshot();
-    addScore(value, x, z, '+');
+  for (const cfg of tableConfig.bumpers) {
+    const object = root.getObjectByName(bumperNames[cfg.id]);
+    if (!object) continue;
+    bumperVisuals.set(cfg.id, {
+      object,
+      baseScale: object.scale.clone(),
+      pulse: 0
+    });
+  }
+
+  bindGlobalAudioUnlock();
+
+  engine.on('wall-hit', ({ impact, x }) => {
+    const pan = panFromX(x);
+    sfx.wall(impact, pan);
+    if (impact > 2.1) vfx.kick(0.007 * Math.min(impact, 4), 40);
   });
 
-  engine.on('bumper-hit', ({ score: value, x, z }) => {
-    sfx.bumper();
+  engine.on('slingshot-hit', ({ id, score: value, x, z, impact }) => {
+    const pan = panFromX(x);
+    sfx.slingshot(pan);
     addScore(value, x, z, '+');
+    vfx.hit('slingshot', x, z, 0.75 + impact * 0.16);
+
+    const visual = slingshotVisuals.get(id);
+    if (visual) visual.pulse = 1;
   });
 
-  engine.on('target-hit', ({ score: value, x, z }) => {
-    sfx.target();
+  engine.on('bumper-hit', ({ id, score: value, x, z, impact }) => {
+    const pan = panFromX(x);
+    sfx.bumper(pan);
     addScore(value, x, z, '+');
+    vfx.hit('bumper', x, z, 0.85 + impact * 0.15);
+
+    const visual = bumperVisuals.get(id);
+    if (visual) visual.pulse = 1;
+  });
+
+  engine.on('target-hit', ({ id, score: value, x, z, impact }) => {
+    sfx.target(panFromX(x));
+    addScore(value, x, z, '+');
+    vfx.hit('target', x, z, 0.85 + impact * 0.10);
+
+    const visual = targetVisuals.get(id);
+    if (visual) visual.pulse = 1;
   });
 
   engine.on('target-bank-complete', ({ score: value, x, z }) => {
     sfx.bank();
     addScore(value, x, z, 'BANK +');
+    vfx.hit('bank', x, z, 1.3);
   });
 
   engine.on('launch', ({ charge }) => {
     sfx.launch(charge);
     setLauncherState('IN PLAY');
+    vfx.hit(
+      'launch',
+      tableConfig.launcher.spawn[0],
+      tableConfig.launcher.spawn[1] - 0.10,
+      0.9 + charge * 0.5
+    );
   });
 
-  engine.on('nudge', () => sfx.nudge());
+  engine.on('nudge', ({ direction }) => {
+    sfx.nudge(direction < 0 ? -0.65 : 0.65);
+    vfx.kick(0.014, 32);
+  });
 
   engine.on('tilt-warning', ({ warnings }) => {
     if (tiltStateElement) {
@@ -111,6 +169,8 @@ export function createGameplayController({
 
   engine.on('tilt', () => {
     sfx.tilt();
+    vfx.hit('tilt', engine.ball.position.x, engine.ball.position.z, 1.2);
+
     if (tiltStateElement) {
       tiltStateElement.textContent = 'TILT';
       tiltStateElement.classList.remove('warning');
@@ -127,6 +187,8 @@ export function createGameplayController({
     if (resetTimer) return;
 
     sfx.drain();
+    sfx.updateRolling(0, 0, false);
+
     const finalBall = currentBall >= rulesConfig.ballsPerGame;
     setBallState(finalBall ? 'GAME OVER' : 'BALL ' + currentBall + ' DRAINED');
 
@@ -150,6 +212,8 @@ export function createGameplayController({
 
   function step(delta) {
     engine.step(delta);
+    animateMechanics(delta);
+    vfx.step(delta);
   }
 
   function sync() {
@@ -172,19 +236,89 @@ export function createGameplayController({
     for (const [id, visual] of targetVisuals) {
       const state = engine.getTarget(id);
       if (!state) continue;
-      visual.object.position.y = state.active ? visual.baseY : visual.baseY - 0.20;
+
+      visual.object.position.y = state.active
+        ? visual.baseY
+        : visual.baseY - 0.20;
       visual.object.visible = true;
     }
 
     const charge = engine.getLauncherCharge();
-    if (launchMeterFill) launchMeterFill.style.width = Math.round(charge * 100) + '%';
+
+    if (launchMeterFill) {
+      launchMeterFill.style.width = Math.round(charge * 100) + '%';
+    }
+
     if (launcherVisual) {
-      launcherVisual.plunger.position.z =
-        launcherVisual.baseZ + charge * launcherVisual.pullDistance;
+      const pull = charge * launcherVisual.pullDistance;
+      launcherVisual.knob.position.z = launcherVisual.baseKnobZ + pull;
+      launcherVisual.rod.position.z = launcherVisual.baseRodZ + pull * 0.55;
+      launcherVisual.spring.scale.z = 1 + charge * 0.85;
     }
 
     if (engine.isAwaitingLaunch()) {
-      setLauncherState(charge > 0 ? 'POWER ' + Math.round(charge * 100) + '%' : 'HOLD LAUNCH');
+      setLauncherState(
+        charge > 0.01
+          ? 'POWER ' + Math.round(charge * 100) + '%'
+          : 'HOLD / PULL LAUNCH'
+      );
+    }
+
+    const speed = Math.hypot(engine.ball.velocity.x, engine.ball.velocity.z);
+    const pan = panFromX(engine.ball.position.x);
+
+    sfx.updateRolling(
+      speed,
+      pan,
+      engine.ball.active && !engine.isAwaitingLaunch()
+    );
+
+    vfx.updateBallTrail(
+      engine.ball,
+      tableConfig.playfield.surfaceY + tableConfig.ball.radius,
+      engine.ball.active && !engine.isAwaitingLaunch() && speed > 1.0
+    );
+  }
+
+  function animateMechanics(dt) {
+    for (const visual of bumperVisuals.values()) {
+      if (visual.pulse <= 0.001) {
+        visual.object.scale.copy(visual.baseScale);
+        visual.pulse = 0;
+        continue;
+      }
+
+      visual.pulse *= Math.exp(-9 * dt);
+      const bump = 1 + Math.sin((1 - visual.pulse) * Math.PI) * 0.14 * visual.pulse;
+      visual.object.scale.set(
+        visual.baseScale.x * bump,
+        visual.baseScale.y * bump,
+        visual.baseScale.z
+      );
+    }
+
+    for (const visual of slingshotVisuals.values()) {
+      if (visual.pulse <= 0.001) {
+        visual.group.scale.set(1, 1, 1);
+        visual.pulse = 0;
+        continue;
+      }
+
+      visual.pulse *= Math.exp(-10 * dt);
+      const flex = 1 + 0.08 * visual.pulse;
+      visual.group.scale.set(flex, 1, 1 + 0.05 * visual.pulse);
+    }
+
+    for (const visual of targetVisuals.values()) {
+      if (visual.pulse <= 0.001) {
+        visual.object.scale.set(1, 1, 1);
+        visual.pulse = 0;
+        continue;
+      }
+
+      visual.pulse *= Math.exp(-11 * dt);
+      const scale = 1 + 0.06 * visual.pulse;
+      visual.object.scale.set(scale, scale, scale);
     }
   }
 
@@ -236,7 +370,7 @@ export function createGameplayController({
     setBallState('BALL ' + currentBall + ' / ' + rulesConfig.ballsPerGame);
     updateScore();
     clearTiltHud();
-    setLauncherState(engine.isAwaitingLaunch() ? 'HOLD LAUNCH' : 'IN PLAY');
+    setLauncherState(engine.isAwaitingLaunch() ? 'HOLD / PULL LAUNCH' : 'IN PLAY');
   }
 
   function updateScore() {
@@ -257,12 +391,16 @@ export function createGameplayController({
     tiltStateElement.classList.remove('warning', 'tilted');
   }
 
+  function panFromX(x = 0) {
+    return clamp(x / 1.5, -1, 1);
+  }
+
   function pressFlipper(id) {
     if (engine.isTilted()) return;
     const state = engine.getFlipper(id);
     if (!state || state.pressed) return;
     engine.setFlipper(id, true);
-    sfx.flipper();
+    sfx.flipper(id === 'left' ? -0.65 : 0.65);
   }
 
   function releaseFlipper(id) {
@@ -281,6 +419,30 @@ export function createGameplayController({
     engine.nudge(direction);
   }
 
+  function bindGlobalAudioUnlock() {
+    const unlock = () => {
+      void sfx.unlock();
+    };
+
+    window.addEventListener('pointerdown', unlock, { capture: true, passive: true });
+    window.addEventListener('touchstart', unlock, { capture: true, passive: true });
+    window.addEventListener('keydown', unlock, { capture: true });
+
+    if (soundButton) {
+      soundButton.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!sfx.context || sfx.context.state !== 'running') {
+          void sfx.unlock();
+        } else {
+          const muted = sfx.toggleMuted();
+          soundButton.classList.toggle('muted', muted);
+        }
+      });
+    }
+  }
+
   function bindInputs() {
     const flipperKeyMap = new Map([
       ['ArrowLeft', 'left'],
@@ -296,10 +458,9 @@ export function createGameplayController({
       ['KeyX', 1]
     ]);
 
-    window.addEventListener('keydown', async (event) => {
-      await sfx.unlock();
-
+    window.addEventListener('keydown', (event) => {
       const flipper = flipperKeyMap.get(event.code);
+
       if (flipper) {
         event.preventDefault();
         if (!event.repeat) pressFlipper(flipper);
@@ -327,6 +488,7 @@ export function createGameplayController({
 
     window.addEventListener('keyup', (event) => {
       const flipper = flipperKeyMap.get(event.code);
+
       if (flipper) {
         event.preventDefault();
         releaseFlipper(flipper);
@@ -339,9 +501,19 @@ export function createGameplayController({
       }
     });
 
-    bindPointerControl(leftButton, () => pressFlipper('left'), () => releaseFlipper('left'));
-    bindPointerControl(rightButton, () => pressFlipper('right'), () => releaseFlipper('right'));
-    bindPointerControl(launchButton, beginLaunch, releaseLaunch);
+    bindPointerControl(
+      leftButton,
+      () => pressFlipper('left'),
+      () => releaseFlipper('left')
+    );
+
+    bindPointerControl(
+      rightButton,
+      () => pressFlipper('right'),
+      () => releaseFlipper('right')
+    );
+
+    bindLaunchControl(launchButton);
     bindTapControl(nudgeLeftButton, () => nudge(-1));
     bindTapControl(nudgeRightButton, () => nudge(1));
   }
@@ -355,9 +527,9 @@ export function createGameplayController({
       button.classList.remove('pressed');
     };
 
-    button.addEventListener('pointerdown', async (event) => {
+    button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
-      await sfx.unlock();
+      void sfx.unlock();
       button.setPointerCapture?.(event.pointerId);
       onPress();
       button.classList.add('pressed');
@@ -368,12 +540,48 @@ export function createGameplayController({
     button.addEventListener('lostpointercapture', release);
   }
 
+  function bindLaunchControl(button) {
+    if (!button) return;
+
+    let pointerId = null;
+    let startY = 0;
+
+    button.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      void sfx.unlock();
+
+      pointerId = event.pointerId;
+      startY = event.clientY;
+      button.setPointerCapture?.(event.pointerId);
+      beginLaunch();
+      button.classList.add('pressed');
+    });
+
+    button.addEventListener('pointermove', (event) => {
+      if (pointerId !== event.pointerId) return;
+      const drag = clamp((event.clientY - startY) / 120, 0, 1);
+      if (drag > 0.02) engine.setLaunchCharge(drag);
+    });
+
+    const release = (event) => {
+      if (pointerId !== null && event.pointerId !== pointerId) return;
+      event.preventDefault();
+      releaseLaunch();
+      button.classList.remove('pressed');
+      pointerId = null;
+    };
+
+    button.addEventListener('pointerup', release);
+    button.addEventListener('pointercancel', release);
+    button.addEventListener('lostpointercapture', release);
+  }
+
   function bindTapControl(button, handler) {
     if (!button) return;
 
-    button.addEventListener('pointerdown', async (event) => {
+    button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
-      await sfx.unlock();
+      void sfx.unlock();
       handler();
       button.classList.add('pressed');
       window.setTimeout(() => button.classList.remove('pressed'), 90);
@@ -389,6 +597,8 @@ export function createGameplayController({
 }
 
 function createSlingshotVisuals(root, tableConfig) {
+  const visuals = new Map();
+
   const gold = new THREE.MeshStandardMaterial({
     color: 0xe3ad45,
     metalness: 0.45,
@@ -398,47 +608,73 @@ function createSlingshotVisuals(root, tableConfig) {
   });
 
   const rubber = new THREE.MeshStandardMaterial({
-    color: 0x9f2d25,
+    color: 0xb8332a,
     metalness: 0.05,
-    roughness: 0.38,
-    emissive: 0x3a0704,
-    emissiveIntensity: 0.28
+    roughness: 0.34,
+    emissive: 0x4a0805,
+    emissiveIntensity: 0.34
   });
 
   for (const cfg of tableConfig.slingshots) {
     const group = new THREE.Group();
     group.name = 'Slingshot_' + cfg.id;
 
-    group.add(makeBar(cfg.a, cfg.b, tableConfig.playfield.surfaceY + 0.055, 0.035, rubber));
+    group.add(
+      makeBar(
+        cfg.a,
+        cfg.b,
+        tableConfig.playfield.surfaceY + 0.055,
+        0.038,
+        rubber
+      )
+    );
 
     const offset = cfg.id === 'left' ? -0.16 : 0.16;
     const outerA = [cfg.a[0] + offset, cfg.a[1] + 0.05];
     const outerB = [cfg.b[0] + offset * 0.35, cfg.b[1] - 0.05];
-    group.add(makeBar(outerA, outerB, tableConfig.playfield.surfaceY + 0.035, 0.022, gold));
+
+    group.add(
+      makeBar(
+        outerA,
+        outerB,
+        tableConfig.playfield.surfaceY + 0.035,
+        0.024,
+        gold
+      )
+    );
 
     root.add(group);
+    visuals.set(cfg.id, { group, pulse: 0 });
   }
+
+  return visuals;
 }
 
 function createLauncherVisuals(root, tableConfig) {
   const cfg = tableConfig.launcher;
-  const y = tableConfig.playfield.surfaceY + 0.05;
+  const y = tableConfig.playfield.surfaceY + 0.055;
 
   const railMaterial = new THREE.MeshStandardMaterial({
     color: 0xd6b66b,
-    metalness: 0.85,
-    roughness: 0.18
+    metalness: 0.88,
+    roughness: 0.16
   });
 
-  const plungerMaterial = new THREE.MeshStandardMaterial({
+  const metal = new THREE.MeshStandardMaterial({
+    color: 0xc3cad4,
+    metalness: 0.92,
+    roughness: 0.15
+  });
+
+  const wood = new THREE.MeshStandardMaterial({
     color: 0x8b4a22,
-    metalness: 0.45,
-    roughness: 0.30
+    metalness: 0.24,
+    roughness: 0.32
   });
 
   const innerRail = makeBar(
     [cfg.lane.minX, cfg.lane.exitZ],
-    [cfg.lane.minX, cfg.spawn[1] + 0.40],
+    [cfg.lane.minX, cfg.spawn[1] + 0.46],
     y,
     0.026,
     railMaterial
@@ -446,20 +682,62 @@ function createLauncherVisuals(root, tableConfig) {
   innerRail.name = 'LauncherLane_InnerRail';
   root.add(innerRail);
 
-  const plunger = makeBar(
-    [cfg.spawn[0], cfg.spawn[1] + 0.18],
-    [cfg.spawn[0], cfg.spawn[1] + 0.56],
-    y + 0.015,
-    0.045,
-    plungerMaterial
+  const rod = makeBar(
+    [cfg.spawn[0], cfg.spawn[1] + 0.20],
+    [cfg.spawn[0], cfg.spawn[1] + 0.52],
+    y + 0.018,
+    0.032,
+    metal
   );
-  plunger.name = 'Launcher_Plunger';
-  root.add(plunger);
+  rod.name = 'Launcher_Rod';
+  root.add(rod);
+
+  const knob = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.11, 0.11, 0.14, 24),
+    wood
+  );
+  knob.rotation.x = Math.PI / 2;
+  knob.position.set(cfg.spawn[0], y + 0.02, cfg.spawn[1] + 0.60);
+  knob.castShadow = true;
+  knob.name = 'Launcher_Knob';
+  root.add(knob);
+
+  const springPoints = [];
+  const turns = 11;
+  const segments = 96;
+  const springLength = 0.38;
+
+  for (let i = 0; i <= segments; i += 1) {
+    const t = i / segments;
+    const angle = t * turns * Math.PI * 2;
+    springPoints.push(
+      new THREE.Vector3(
+        Math.cos(angle) * 0.055,
+        Math.sin(angle) * 0.055,
+        t * springLength
+      )
+    );
+  }
+
+  const spring = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(springPoints),
+    new THREE.LineBasicMaterial({
+      color: 0xe7edf5,
+      transparent: true,
+      opacity: 0.88
+    })
+  );
+  spring.position.set(cfg.spawn[0], y + 0.018, cfg.spawn[1] + 0.18);
+  spring.name = 'Launcher_Spring';
+  root.add(spring);
 
   return {
-    plunger,
-    baseZ: plunger.position.z,
-    pullDistance: 0.18
+    rod,
+    knob,
+    spring,
+    baseRodZ: rod.position.z,
+    baseKnobZ: knob.position.z,
+    pullDistance: 0.26
   };
 }
 
@@ -479,4 +757,8 @@ function makeBar(a, b, y, radius, material) {
   mesh.quaternion.setFromUnitVectors(Y_AXIS, direction.normalize());
   mesh.castShadow = true;
   return mesh;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
 }

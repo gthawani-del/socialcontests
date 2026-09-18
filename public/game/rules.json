@@ -5,15 +5,23 @@
   "gameResetDelayMs": 1200,
   "audio": {
     "enabled": true,
-    "masterVolume": 0.55,
-    "flipperGain": 0.5,
-    "wallGain": 0.34,
-    "slingshotGain": 0.55,
-    "bumperGain": 0.46,
-    "drainGain": 0.42,
-    "targetGain": 0.48,
-    "launcherGain": 0.52,
-    "nudgeGain": 0.3,
-    "tiltGain": 0.5
+    "masterVolume": 0.72,
+    "flipperGain": 0.56,
+    "wallGain": 0.4,
+    "slingshotGain": 0.62,
+    "bumperGain": 0.54,
+    "drainGain": 0.48,
+    "targetGain": 0.52,
+    "launcherGain": 0.62,
+    "nudgeGain": 0.34,
+    "tiltGain": 0.58,
+    "rollGain": 0.2
+  },
+  "vfx": {
+    "quality": "auto",
+    "particles": true,
+    "pulses": true,
+    "trail": true,
+    "cameraShake": 1
   }
 }

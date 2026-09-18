@@ -15,6 +15,8 @@ const popupLayer = document.querySelector('#scorePopups');
 const tiltStateElement = document.querySelector('#tiltState');
 const launcherStateElement = document.querySelector('#launcherState');
 const launchMeterFill = document.querySelector('#launchMeterFill');
+const fxBadge = document.querySelector('#fxBadge');
+const soundButton = document.querySelector('#soundButton');
 const leftFlipperButton = document.querySelector('[data-flipper="left"]');
 const launchButton = document.querySelector('#launchButton');
 const nudgeLeftButton = document.querySelector('#nudgeLeft');
@@ -432,6 +434,7 @@ loader.load(
 
       gameplay = createGameplayController({
         root: modelRoot,
+        renderer,
         camera,
         tableConfig,
         rulesConfig,
@@ -441,6 +444,8 @@ loader.load(
         tiltStateElement,
         launcherStateElement,
         launchMeterFill,
+        fxBadge,
+        soundButton,
         leftButton: leftFlipperButton,
         rightButton: rightFlipperButton,
         launchButton,
@@ -457,7 +462,7 @@ loader.load(
         gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
       }
 
-      status.textContent = 'PHYSICS V2 · LIVE';
+      status.textContent = 'INTERACTION V3 · LIVE';
       status.classList.add('ready');
       resetViewButton.disabled = false;
     } catch (error) {
