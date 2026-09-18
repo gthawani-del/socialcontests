@@ -4,6 +4,20 @@ Browser game experiments and social contest experiences.
 
 ## Infinite Pinball prototype
 
-The first reusable 3D pinball base table is stored at `public/models/infinite-pinball-base-v1.glb`.
+This repository now contains a deployable Vite + Three.js viewer for the first reusable 3D pinball table.
 
-Theme-slot metadata is stored at `public/models/infinite-pinball-base-v1.json`.
+### Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+### Production build
+
+```bash
+npm run build
+```
+
+The base Jutsu model lives at `public/models/infinite-pinball-base-v1.glb`.
+Theme-slot metadata lives at `public/models/infinite-pinball-base-v1.json`.
