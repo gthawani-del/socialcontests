@@ -542,17 +542,31 @@ export function createGameplayController({
       void sfx.unlock();
     };
 
+    // iOS Safari may require a fresh user gesture after page restore or an
+    // interrupted audio session, so listen to both pointer and touch phases.
     window.addEventListener('pointerdown', unlock, { capture: true, passive: true });
     window.addEventListener('touchstart', unlock, { capture: true, passive: true });
+    window.addEventListener('touchend', unlock, { capture: true, passive: true });
     window.addEventListener('keydown', unlock, { capture: true });
+
+    window.addEventListener('pageshow', () => {
+      if (sfx.context && sfx.context.state !== 'running') void sfx.unlock();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && sfx.context && sfx.context.state !== 'running') {
+        void sfx.unlock();
+      }
+    });
 
     if (soundButton) {
       soundButton.addEventListener('pointerdown', (event) => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (!sfx.context || sfx.context.state !== 'running') {
-          void sfx.unlock();
+        if (!sfx.isRunning()) {
+          soundButton.classList.remove('muted');
+          void sfx.preview();
         } else {
           const muted = sfx.toggleMuted();
           soundButton.classList.toggle('muted', muted);
@@ -656,6 +670,7 @@ export function createGameplayController({
 
     button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
+      event.stopPropagation();
       void sfx.unlock();
       button.setPointerCapture?.(event.pointerId);
       onPress();
@@ -672,35 +687,102 @@ export function createGameplayController({
 
     let pointerId = null;
     let startY = 0;
+    let active = false;
+
+    const chargeFromClientY = (clientY) => {
+      const dragDistance = Math.max(72, Math.min(120, window.innerHeight * 0.09));
+      const drag = clamp((clientY - startY) / dragDistance, 0, 1);
+      if (drag > 0.015) engine.setLaunchCharge(drag);
+    };
+
+    const move = (event) => {
+      if (!active || pointerId !== event.pointerId) return;
+      event.preventDefault();
+      event.stopPropagation();
+      chargeFromClientY(event.clientY);
+    };
+
+    const release = (event) => {
+      if (!active || pointerId !== event.pointerId) return;
+      event.preventDefault();
+      event.stopPropagation();
+
+      releaseLaunch();
+      button.classList.remove('pressed');
+      active = false;
+      pointerId = null;
+    };
 
     button.addEventListener('pointerdown', (event) => {
+      if (active) return;
+
       event.preventDefault();
+      event.stopPropagation();
       void sfx.unlock();
 
       pointerId = event.pointerId;
       startY = event.clientY;
-      button.setPointerCapture?.(event.pointerId);
+      active = true;
+
       beginLaunch();
       button.classList.add('pressed');
+
+      // Capture is helpful on most browsers, but the global listeners below
+      // are the reliability path for iOS Safari when capture is lost.
+      try {
+        button.setPointerCapture?.(event.pointerId);
+      } catch {
+        // Global pointer listeners still keep the drag alive.
+      }
     });
 
-    button.addEventListener('pointermove', (event) => {
-      if (pointerId !== event.pointerId) return;
-      const drag = clamp((event.clientY - startY) / 120, 0, 1);
-      if (drag > 0.02) engine.setLaunchCharge(drag);
-    });
+    window.addEventListener('pointermove', move, { passive: false });
+    window.addEventListener('pointerup', release, { passive: false });
+    window.addEventListener('pointercancel', release, { passive: false });
 
-    const release = (event) => {
-      if (pointerId !== null && event.pointerId !== pointerId) return;
-      event.preventDefault();
-      releaseLaunch();
-      button.classList.remove('pressed');
-      pointerId = null;
-    };
+    // Older iOS fallback for browsers that do not expose PointerEvent.
+    if (!window.PointerEvent) {
+      let touchId = null;
 
-    button.addEventListener('pointerup', release);
-    button.addEventListener('pointercancel', release);
-    button.addEventListener('lostpointercapture', release);
+      button.addEventListener('touchstart', (event) => {
+        const touch = event.changedTouches[0];
+        if (!touch || active) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        void sfx.unlock();
+
+        touchId = touch.identifier;
+        startY = touch.clientY;
+        active = true;
+        beginLaunch();
+        button.classList.add('pressed');
+      }, { passive: false });
+
+      window.addEventListener('touchmove', (event) => {
+        if (!active || touchId === null) return;
+        const touch = [...event.changedTouches].find((item) => item.identifier === touchId);
+        if (!touch) return;
+
+        event.preventDefault();
+        chargeFromClientY(touch.clientY);
+      }, { passive: false });
+
+      const finishTouch = (event) => {
+        if (!active || touchId === null) return;
+        const touch = [...event.changedTouches].find((item) => item.identifier === touchId);
+        if (!touch) return;
+
+        event.preventDefault();
+        releaseLaunch();
+        button.classList.remove('pressed');
+        active = false;
+        touchId = null;
+      };
+
+      window.addEventListener('touchend', finishTouch, { passive: false });
+      window.addEventListener('touchcancel', finishTouch, { passive: false });
+    }
   }
 
   function bindTapControl(button, handler) {
@@ -708,6 +790,7 @@ export function createGameplayController({
 
     button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
+      event.stopPropagation();
       void sfx.unlock();
       handler();
       button.classList.add('pressed');
