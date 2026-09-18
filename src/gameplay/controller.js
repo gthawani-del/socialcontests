@@ -6,9 +6,12 @@ const Y_AXIS = new THREE.Vector3(0, 1, 0);
 
 export function createGameplayController({
   root,
+  camera,
   tableConfig,
   rulesConfig,
   ballStateElement,
+  scoreElement,
+  popupLayer,
   leftButton,
   rightButton
 }) {
@@ -17,12 +20,11 @@ export function createGameplayController({
   const flipperVisuals = new Map();
   const tempQuat = new THREE.Quaternion();
   let currentBall = 1;
+  let score = 0;
   let resetTimer = null;
 
   root.traverse((object) => {
-    if (object.isMesh && /^ball($|[_-])/i.test(object.name)) {
-      object.visible = false;
-    }
+    if (object.isMesh && /^ball($|[_-])/i.test(object.name)) object.visible = false;
   });
 
   const ballVisual = new THREE.Mesh(
@@ -42,10 +44,7 @@ export function createGameplayController({
   for (const cfg of tableConfig.flippers) {
     const objectName = cfg.id === 'left' ? 'Flipper_Left' : 'Flipper_Right';
     const object = root.getObjectByName(objectName);
-    if (!object) {
-      console.warn('Missing visual flipper:', objectName);
-      continue;
-    }
+    if (!object) continue;
 
     flipperVisuals.set(cfg.id, {
       object,
@@ -55,7 +54,16 @@ export function createGameplayController({
   }
 
   engine.on('wall-hit', ({ impact }) => sfx.wall(impact));
-  engine.on('slingshot-hit', () => sfx.slingshot());
+
+  engine.on('slingshot-hit', ({ score: value, x, z }) => {
+    sfx.slingshot();
+    addScore(value, x, z, '+');
+  });
+
+  engine.on('bumper-hit', ({ score: value, x, z }) => {
+    sfx.bumper();
+    addScore(value, x, z, '+');
+  });
 
   engine.on('drain', () => {
     if (resetTimer) return;
@@ -65,15 +73,16 @@ export function createGameplayController({
     setBallState(finalBall ? 'GAME OVER' : 'BALL ' + currentBall + ' DRAINED');
 
     resetTimer = window.setTimeout(() => {
+      if (finalBall) score = 0;
       currentBall = finalBall ? 1 : currentBall + 1;
       engine.resetBall();
-      updateBallState();
+      updateHud();
       resetTimer = null;
     }, finalBall ? rulesConfig.gameResetDelayMs : rulesConfig.drainResetDelayMs);
   });
 
   bindInputs();
-  updateBallState();
+  updateHud();
 
   function step(delta) {
     engine.step(delta);
@@ -97,18 +106,56 @@ export function createGameplayController({
     }
   }
 
+  function addScore(value, x, z, prefix = '') {
+    if (!Number.isFinite(value) || value <= 0) return;
+    score += value;
+    updateScore();
+    showScorePopup(prefix + value, x, z);
+  }
+
+  function showScorePopup(text, x, z) {
+    if (!popupLayer || !camera) return;
+
+    const point = new THREE.Vector3(
+      x,
+      tableConfig.playfield.surfaceY + 0.36,
+      z
+    );
+    root.localToWorld(point);
+    point.project(camera);
+
+    const rect = popupLayer.getBoundingClientRect();
+    const left = (point.x * 0.5 + 0.5) * rect.width;
+    const top = (-point.y * 0.5 + 0.5) * rect.height;
+
+    const node = document.createElement('div');
+    node.className = 'score-popup';
+    node.textContent = text;
+    node.style.left = left + 'px';
+    node.style.top = top + 'px';
+    popupLayer.appendChild(node);
+
+    window.setTimeout(() => node.remove(), 750);
+  }
+
   function resetGame() {
     if (resetTimer) {
       clearTimeout(resetTimer);
       resetTimer = null;
     }
     currentBall = 1;
+    score = 0;
     engine.resetBall();
-    updateBallState();
+    updateHud();
   }
 
-  function updateBallState() {
+  function updateHud() {
     setBallState('BALL ' + currentBall + ' / ' + rulesConfig.ballsPerGame);
+    updateScore();
+  }
+
+  function updateScore() {
+    if (scoreElement) scoreElement.textContent = String(score);
   }
 
   function setBallState(text) {
@@ -211,14 +258,12 @@ function createSlingshotVisuals(root, tableConfig) {
     const group = new THREE.Group();
     group.name = 'Slingshot_' + cfg.id;
 
-    const active = makeBar(cfg.a, cfg.b, tableConfig.playfield.surfaceY + 0.055, 0.035, rubber);
-    group.add(active);
+    group.add(makeBar(cfg.a, cfg.b, tableConfig.playfield.surfaceY + 0.055, 0.035, rubber));
 
     const offset = cfg.id === 'left' ? -0.16 : 0.16;
     const outerA = [cfg.a[0] + offset, cfg.a[1] + 0.05];
     const outerB = [cfg.b[0] + offset * 0.35, cfg.b[1] - 0.05];
-    const support = makeBar(outerA, outerB, tableConfig.playfield.surfaceY + 0.035, 0.022, gold);
-    group.add(support);
+    group.add(makeBar(outerA, outerB, tableConfig.playfield.surfaceY + 0.035, 0.022, gold));
 
     root.add(group);
   }

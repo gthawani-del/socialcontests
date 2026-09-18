@@ -143,7 +143,8 @@
       ],
       "restitution": 0.92,
       "impulse": 3.6,
-      "cooldownMs": 90
+      "cooldownMs": 90,
+      "score": 50
     },
     {
       "id": "right",
@@ -157,7 +158,46 @@
       ],
       "restitution": 0.92,
       "impulse": 3.6,
-      "cooldownMs": 90
+      "cooldownMs": 90,
+      "score": 50
+    }
+  ],
+  "bumpers": [
+    {
+      "id": "metro",
+      "position": [
+        -0.72,
+        -0.35
+      ],
+      "radius": 0.31,
+      "restitution": 1.05,
+      "impulse": 3.8,
+      "cooldownMs": 80,
+      "score": 500
+    },
+    {
+      "id": "cafe",
+      "position": [
+        0.7,
+        -0.4
+      ],
+      "radius": 0.31,
+      "restitution": 1.05,
+      "impulse": 3.8,
+      "cooldownMs": 80,
+      "score": 500
+    },
+    {
+      "id": "paris",
+      "position": [
+        0,
+        -1.18
+      ],
+      "radius": 0.31,
+      "restitution": 1.05,
+      "impulse": 4.1,
+      "cooldownMs": 80,
+      "score": 750
     }
   ]
 }

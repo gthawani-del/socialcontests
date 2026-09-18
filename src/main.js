@@ -10,6 +10,8 @@ const canvas = document.querySelector('#game');
 const status = document.querySelector('#status');
 const resetViewButton = document.querySelector('#resetView');
 const ballStateElement = document.querySelector('#ballState');
+const scoreElement = document.querySelector('#scoreValue');
+const popupLayer = document.querySelector('#scorePopups');
 const leftFlipperButton = document.querySelector('[data-flipper="left"]');
 const rightFlipperButton = document.querySelector('[data-flipper="right"]');
 
@@ -165,29 +167,32 @@ async function applyParisGraphics(root) {
     { depthWrite: false, renderOrder: 2 }
   );
   playfield.name = 'Paris_AI_Playfield_Artwork';
+  playfield.material.color.set(0x9aa6b6);
   root.add(playfield);
 
   // Cover the printed placeholder ball baked into the approved playfield art.
   // This is a flat decorative insert, not a gameplay collider.
   const ballMask = new THREE.Mesh(
-    new THREE.CircleGeometry(0.255, 48),
+    new THREE.CircleGeometry(0.285, 48),
     new THREE.MeshBasicMaterial({ color: 0x071a36, toneMapped: false, side: THREE.DoubleSide })
   );
-  ballMask.position.set(0, 0.589, 0.34);
+  ballMask.position.set(0, 0.589, 1.02);
   ballMask.rotation.x = -Math.PI / 2;
   ballMask.renderOrder = 3;
   ballMask.name = 'Paris_PrintBall_Mask';
   root.add(ballMask);
 
   const ballMaskRing = new THREE.Mesh(
-    new THREE.RingGeometry(0.225, 0.255, 48),
+    new THREE.RingGeometry(0.255, 0.285, 48),
     new THREE.MeshBasicMaterial({ color: 0xd5a847, toneMapped: false, side: THREE.DoubleSide })
   );
-  ballMaskRing.position.set(0, 0.590, 0.34);
+  ballMaskRing.position.set(0, 0.590, 1.02);
   ballMaskRing.rotation.x = -Math.PI / 2;
   ballMaskRing.renderOrder = 4;
   ballMaskRing.name = 'Paris_PrintBall_Mask_Ring';
   root.add(ballMaskRing);
+
+  createParisTargetBank(root);
 
   // Actual generated Paris skyline artwork behind the jackpot area.
   const backdrop = makePlane(
@@ -277,6 +282,71 @@ async function applyParisGraphics(root) {
   root.add(parisBlue);
 }
 
+
+function createParisTargetBank(root) {
+  const existing = ['Target_1','Target_2','Target_3','Target_4','Target_5','Target_6'];
+  existing.forEach((name) => {
+    const object = root.getObjectByName(name);
+    if (object) object.visible = false;
+  });
+
+  const letters = ['P','A','R','I','S','★'];
+  const xs = [-0.98,-0.73,-0.48,0.48,0.73,0.98];
+
+  for (let i = 0; i < letters.length; i += 1) {
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(0.19, 0.30, 0.10),
+      new THREE.MeshStandardMaterial({
+        color: 0x111827,
+        metalness: 0.75,
+        roughness: 0.24
+      })
+    );
+    frame.position.set(xs[i], 0.82, -2.16);
+    frame.castShadow = true;
+
+    const faceTexture = makeTargetTexture(
+      letters[i],
+      i < 3 ? '#dcecff' : '#f7d49a',
+      i < 3 ? '#143252' : '#4d2f10'
+    );
+
+    const face = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.145, 0.235),
+      new THREE.MeshBasicMaterial({ map: faceTexture, toneMapped: false })
+    );
+    face.position.set(xs[i], 0.82, -2.104);
+    face.renderOrder = 9;
+
+    root.add(frame, face);
+  }
+}
+
+function makeTargetTexture(letter, fill, bg) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 128;
+  canvas.height = 192;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = '#d7ae55';
+  ctx.lineWidth = 8;
+  ctx.strokeRect(7, 7, canvas.width - 14, canvas.height - 14);
+
+  ctx.fillStyle = fill;
+  ctx.font = '700 88px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(letter, canvas.width / 2, canvas.height / 2 + 4);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  return texture;
+}
+
 function applyHeroView() {
   if (!modelRoot) return;
 
@@ -345,9 +415,12 @@ loader.load(
 
       gameplay = createGameplayController({
         root: modelRoot,
+        camera,
         tableConfig,
         rulesConfig,
         ballStateElement,
+        scoreElement,
+        popupLayer,
         leftButton: leftFlipperButton,
         rightButton: rightFlipperButton
       });

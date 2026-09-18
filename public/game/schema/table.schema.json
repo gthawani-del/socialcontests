@@ -9,7 +9,8 @@
     "playfield",
     "walls",
     "flippers",
-    "slingshots"
+    "slingshots",
+    "bumpers"
   ],
   "properties": {
     "version": {
@@ -315,7 +316,8 @@
           "b",
           "restitution",
           "impulse",
-          "cooldownMs"
+          "cooldownMs",
+          "score"
         ],
         "properties": {
           "id": {
@@ -358,6 +360,72 @@
             "type": "integer",
             "minimum": 20,
             "maximum": 1000
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000
+          }
+        }
+      }
+    },
+    "bumpers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "position",
+          "radius",
+          "restitution",
+          "impulse",
+          "cooldownMs",
+          "score"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24,
+            "pattern": "^[a-z0-9_-]+$"
+          },
+          "position": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number",
+              "minimum": -5,
+              "maximum": 5
+            }
+          },
+          "radius": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 0.8
+          },
+          "restitution": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1.5
+          },
+          "impulse": {
+            "type": "number",
+            "minimum": 0.2,
+            "maximum": 10
+          },
+          "cooldownMs": {
+            "type": "integer",
+            "minimum": 20,
+            "maximum": 1000
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000
           }
         }
       }

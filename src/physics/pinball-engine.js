@@ -10,6 +10,7 @@ export class PinballEngine {
     this.listeners = new Map();
     this.wallHitAt = new Map();
     this.slingshotHitAt = new Map();
+    this.bumperHitAt = new Map();
 
     this.ball = {
       position: { x: 0, z: 0 },
@@ -115,7 +116,6 @@ export class PinballEngine {
         this.config.ball.radius,
         slingshot.restitution
       );
-
       if (!hit) continue;
 
       const cooldown = slingshot.cooldownMs / 1000;
@@ -123,7 +123,36 @@ export class PinballEngine {
         this.ball.velocity.x += hit.nx * slingshot.impulse;
         this.ball.velocity.z += hit.nz * slingshot.impulse;
         this.limitBallSpeed();
-        this.emit('slingshot-hit', { id: slingshot.id, impact: hit.impact });
+        this.emit('slingshot-hit', {
+          id: slingshot.id,
+          impact: hit.impact,
+          score: slingshot.score,
+          x: this.ball.position.x,
+          z: this.ball.position.z
+        });
+      }
+    }
+
+    for (const bumper of this.config.bumpers) {
+      const hit = this.resolveCircleCollision(
+        bumper.position,
+        bumper.radius,
+        bumper.restitution
+      );
+      if (!hit) continue;
+
+      const cooldown = bumper.cooldownMs / 1000;
+      if (this.canEmit(this.bumperHitAt, bumper.id, cooldown)) {
+        this.ball.velocity.x += hit.nx * bumper.impulse;
+        this.ball.velocity.z += hit.nz * bumper.impulse;
+        this.limitBallSpeed();
+        this.emit('bumper-hit', {
+          id: bumper.id,
+          score: bumper.score,
+          impact: hit.impact,
+          x: this.ball.position.x,
+          z: this.ball.position.z
+        });
       }
     }
 
@@ -189,6 +218,39 @@ export class PinballEngine {
     nz /= dist;
 
     const penetration = radius - dist;
+    this.ball.position.x += nx * penetration;
+    this.ball.position.z += nz * penetration;
+
+    const vn = this.ball.velocity.x * nx + this.ball.velocity.z * nz;
+    const impact = Math.max(0, -vn);
+
+    if (vn < 0) {
+      const impulse = -(1 + restitution) * vn;
+      this.ball.velocity.x += nx * impulse;
+      this.ball.velocity.z += nz * impulse;
+    }
+
+    return { nx, nz, impact };
+  }
+
+  resolveCircleCollision(position, radius, restitution) {
+    let nx = this.ball.position.x - position[0];
+    let nz = this.ball.position.z - position[1];
+    let dist = Math.hypot(nx, nz);
+    const combined = radius + this.config.ball.radius;
+
+    if (dist >= combined) return null;
+
+    if (dist < EPS) {
+      nx = 0;
+      nz = 1;
+      dist = 1;
+    } else {
+      nx /= dist;
+      nz /= dist;
+    }
+
+    const penetration = combined - dist;
     this.ball.position.x += nx * penetration;
     this.ball.position.z += nz * penetration;
 

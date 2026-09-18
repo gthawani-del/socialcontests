@@ -38,6 +38,7 @@
         "flipperGain",
         "wallGain",
         "slingshotGain",
+        "bumperGain",
         "drainGain"
       ],
       "properties": {
@@ -47,27 +48,32 @@
         "masterVolume": {
           "type": "number",
           "minimum": 0,
-          "maximum": 0.6
+          "maximum": 1
         },
         "flipperGain": {
           "type": "number",
           "minimum": 0,
-          "maximum": 0.8
+          "maximum": 1
         },
         "wallGain": {
           "type": "number",
           "minimum": 0,
-          "maximum": 0.8
+          "maximum": 1
         },
         "slingshotGain": {
           "type": "number",
           "minimum": 0,
-          "maximum": 0.8
+          "maximum": 1
         },
         "drainGain": {
           "type": "number",
           "minimum": 0,
-          "maximum": 0.8
+          "maximum": 1
+        },
+        "bumperGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         }
       }
     }
