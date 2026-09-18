@@ -1,0 +1,47 @@
+{
+  "id": "bombay-1945",
+  "name": "Bombay 1945",
+  "baseTable": "v4",
+  "strategy": "historically-grounded-procedural-theme",
+  "era": "1945",
+  "districts": [
+    "Fort",
+    "Victoria Terminus",
+    "Ballard Estate"
+  ],
+  "gameplayLanguage": {
+    "targetBank": "BOMBAY",
+    "scoringZone": "TRAM BELL",
+    "bumpers": {
+      "metro": "TRAM",
+      "cafe": "V.T.",
+      "paris": "DOCK"
+    }
+  },
+  "palette": {
+    "brass": "#d6a84b",
+    "bottleGreen": "#315b4b",
+    "agedCream": "#ead8ad",
+    "portMaroon": "#7a342e",
+    "night": "#111713"
+  },
+  "audioProfile": "bombay-1945",
+  "historicalReferences": [
+    {
+      "title": "Victoria Terminus in 1940",
+      "author": "Homai Vyarawalla",
+      "year": 1940,
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Victoria_Terminus_in_1940_by_Homai_Vyarawalla.jpg"
+    },
+    {
+      "title": "Flora Fountain, Bombay postcard",
+      "author": "Unknown",
+      "period": "pre-WWI",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Flora_fountain_Bombay.jpg"
+    }
+  ],
+  "historicalNote": "A cinematic game-world interpretation grounded in archival Bombay references; not presented as a literal documentary reconstruction.",
+  "status": "production-theme-v1"
+}
