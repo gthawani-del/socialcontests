@@ -54,8 +54,8 @@ scene.fog = new THREE.FogExp2(0x04070d, 0.015);
 const camera = new THREE.PerspectiveCamera(
   41,
   window.innerWidth / window.innerHeight,
-  0.01,
-  100
+  0.05,
+  50
 );
 
 // Gameplay uses a fixed hero camera. Free orbit/zoom exposes decorative
