@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { loadValidatedJson } from './config/validate.js';
 import { createGameplayController } from './gameplay/controller.js';
@@ -59,14 +58,10 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.06;
-controls.enablePan = false;
-controls.minPolarAngle = THREE.MathUtils.degToRad(34);
-controls.maxPolarAngle = THREE.MathUtils.degToRad(72);
-controls.minAzimuthAngle = THREE.MathUtils.degToRad(-24);
-controls.maxAzimuthAngle = THREE.MathUtils.degToRad(24);
+// Gameplay uses a fixed hero camera. Free orbit/zoom exposes decorative
+// layers that are deliberately composed for this angle and can also compete
+// with touch controls on mobile.
+resetViewButton.hidden = true;
 
 const hemi = new THREE.HemisphereLight(0xc7dcff, 0x17100b, 1.9);
 scene.add(hemi);
@@ -162,7 +157,10 @@ function makePlane(texture, width, height, position, rotation = [0, 0, 0], optio
     opacity: options.opacity ?? 1,
     depthWrite: options.depthWrite ?? true,
     side: THREE.DoubleSide,
-    toneMapped: options.toneMapped ?? false
+    toneMapped: options.toneMapped ?? false,
+    polygonOffset: options.polygonOffset ?? false,
+    polygonOffsetFactor: options.polygonOffsetFactor ?? 0,
+    polygonOffsetUnits: options.polygonOffsetUnits ?? 0
   });
 
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), mat);
@@ -201,7 +199,13 @@ async function applyParisGraphics(root) {
     5.82,
     [0, 0.584, 0.02],
     [-Math.PI / 2, 0, 0],
-    { depthWrite: false, renderOrder: 2 }
+    {
+      depthWrite: false,
+      renderOrder: 2,
+      polygonOffset: true,
+      polygonOffsetFactor: -3,
+      polygonOffsetUnits: -3
+    }
   );
   playfield.name = 'Paris_AI_Playfield_Artwork';
   playfield.material.color.set(0x9aa6b6);
@@ -425,10 +429,8 @@ function applyHeroView() {
     camera.position.set(0, tableLength * 0.64, tableLength * 0.94);
   }
 
-  controls.target.copy(target);
-  controls.minDistance = tableLength * (isPortrait ? 0.78 : 0.70);
-  controls.maxDistance = tableLength * 1.75;
-  controls.update();
+  camera.lookAt(target);
+  camera.updateMatrixWorld();
 }
 
 loader.load(
@@ -506,9 +508,9 @@ loader.load(
         gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
       }
 
-      status.textContent = 'BALANCE V6 · ' + getDifficultyLabel(difficultyLevel);
+      status.textContent = 'V6.1 MOBILE FIX · ' + getDifficultyLabel(difficultyLevel);
       status.classList.add('ready');
-      resetViewButton.disabled = false;
+      resetViewButton.disabled = true;
     } catch (error) {
       console.error('Game boot failed:', error);
       status.textContent = 'Game boot failed';
@@ -527,8 +529,6 @@ loader.load(
     status.classList.add('error');
   }
 );
-
-resetViewButton.addEventListener('click', applyHeroView);
 
 let resizeFrame = null;
 
@@ -562,7 +562,6 @@ function animate() {
     gameplay.sync();
   }
 
-  controls.update();
   renderer.render(scene, camera);
 }
 
