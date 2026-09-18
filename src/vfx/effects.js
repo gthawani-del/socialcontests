@@ -149,6 +149,40 @@ export class VfxEngine {
     this.updateShake(dt);
   }
 
+  reset() {
+    for (const pulse of this.pulses) {
+      this.root.remove(pulse.mesh);
+      pulse.mesh.geometry.dispose();
+      pulse.mesh.material.dispose();
+    }
+    this.pulses.length = 0;
+
+    this.life.fill(0);
+    this.maxLife.fill(0);
+    this.velocities.fill(0);
+    for (let i = 0; i < this.maxParticles; i += 1) {
+      const idx = i * 3;
+      this.positions[idx] = 0;
+      this.positions[idx + 1] = -999;
+      this.positions[idx + 2] = 0;
+    }
+    this.particlePoints.geometry.attributes.position.needsUpdate = true;
+    this.particlePoints.geometry.attributes.aLife.needsUpdate = true;
+
+    for (let i = 0; i < this.trailLength; i += 1) {
+      const idx = i * 3;
+      this.trailPositions[idx] = 0;
+      this.trailPositions[idx + 1] = -999;
+      this.trailPositions[idx + 2] = 0;
+    }
+    this.trail.geometry.attributes.position.needsUpdate = true;
+    this.trail.visible = false;
+
+    this.shake = 0;
+    this.shakeFrequency = 0;
+    this.root.position.copy(this.baseRootPosition);
+  }
+
   burst(x, y, z, color = GOLD, count = 14, force = 1) {
     if (!this.config.particles) return;
 
