@@ -1,0 +1,30 @@
+{
+  "name": "Infinite Pinball Base V3",
+  "source": "Higgsfield 3D Jutsu",
+  "jutsuProjectId": "218ae5d8-09b8-44f3-932f-18ded9026133",
+  "jutsuRevision": 4,
+  "glb": "/models/infinite-pinball-base-v3.glb",
+  "compression": "EXT_meshopt_compression",
+  "themeSlots": [
+    "ThemeSlot_Hero",
+    "ThemeSlot_LeftWorld",
+    "ThemeSlot_RightWorld",
+    "ThemeSlot_RampGate",
+    "ThemeSlot_Jackpot",
+    "ThemeSlot_AnimatedProp",
+    "ThemeSlot_Backdrop"
+  ],
+  "refinements": [
+    "perimeter-hugging main ramp",
+    "proper tapered flippers with corrected pivots",
+    "domed premium bumpers",
+    "rebuilt jackpot hero zone",
+    "intentional target banks",
+    "rebuilt inlane/outlane and drain area",
+    "neutral playfield guidance",
+    "lighter side rails",
+    "lower perspective camera",
+    "brighter lower playfield"
+  ],
+  "status": "v3-final-geometry-pass"
+}

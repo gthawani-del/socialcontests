@@ -4,7 +4,13 @@ Browser game experiments and social contest experiences.
 
 ## Infinite Pinball prototype
 
-This repository now contains a deployable Vite + Three.js viewer for the first reusable 3D pinball table.
+Current production viewer: **V3**
+
+- `public/models/infinite-pinball-base-v3.glb` — compressed Jutsu table
+- `public/models/infinite-pinball-base-v3.json` — model/theme-slot metadata
+- `src/main.js` — Three.js production viewer
+
+V3 is the final neutral geometry pass before gameplay physics. It moves the ramp to the perimeter, introduces tapered flippers, domed bumpers, a stronger jackpot zone, clearer inlane/outlane geometry and a lower browser camera.
 
 ### Run locally
 
@@ -18,6 +24,3 @@ npm run dev
 ```bash
 npm run build
 ```
-
-The base Jutsu model lives at `public/models/infinite-pinball-base-v1.glb`.
-Theme-slot metadata lives at `public/models/infinite-pinball-base-v1.json`.
