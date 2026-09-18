@@ -56,6 +56,7 @@ let draft = null;
 let active = 'overview';
 let query = '';
 let dirty = false;
+let savedBaseline = null;
 
 boot();
 
@@ -76,7 +77,8 @@ async function boot() {
 
     const saved = safeParse(localStorage.getItem(DRAFT_KEY));
     draft = saved?.table && saved?.rules && saved?.difficulty ? saved : clone(live);
-    dirty = JSON.stringify(draft) !== JSON.stringify(live);
+    savedBaseline = clone(draft);
+    dirty = false;
 
     renderShell();
     renderActive();
@@ -382,7 +384,7 @@ function renderCategory(id) {
     ]);
     case 'vfx': return sectionGrid([
       card('Quality', 'Performance and visual feature switches.', [
-        select('FX quality', 'rules.vfx.quality', [['auto','Auto'],['low','Low'],['medium','Medium'],['high','High']]),
+        select('FX quality', 'rules.vfx.quality', [['auto','Auto'],['low','Low'],['medium','Medium'],['high','High'],['ultra','Ultra']]),
         toggle('Particles', 'rules.vfx.particles'),
         toggle('Pulse rings', 'rules.vfx.pulses'),
         toggle('Ball trail', 'rules.vfx.trail'),
@@ -621,7 +623,7 @@ function bindEditors(container) {
 }
 
 function markDirty() {
-  dirty = JSON.stringify(draft) !== JSON.stringify(live);
+  dirty = JSON.stringify(draft) !== JSON.stringify(savedBaseline);
   updateDirtyUi();
 }
 
@@ -639,6 +641,7 @@ function updateDirtyUi() {
 
 function saveDraft() {
   localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  savedBaseline = clone(draft);
   dirty = false;
   updateDirtyUi();
   toast('Draft saved in this browser');
@@ -648,6 +651,7 @@ function resetLive() {
   if (!confirm('Reset every admin setting back to the current live configuration?')) return;
   draft = clone(live);
   localStorage.removeItem(DRAFT_KEY);
+  savedBaseline = clone(draft);
   dirty = false;
   renderActive();
   updateDirtyUi();
