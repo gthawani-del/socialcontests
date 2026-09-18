@@ -2,8 +2,15 @@ import * as THREE from 'three';
 import { PinballEngine } from '../physics/pinball-engine.js';
 import { BrowserSfx } from '../audio/browser-sfx.js';
 import { VfxEngine } from '../vfx/effects.js';
+import { GameplayFocusLighting } from './focus-lighting.js';
 
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
+const GAME_STATES = Object.freeze({
+  READY: 'READY',
+  PLAYING: 'PLAYING',
+  BALL_LOST: 'BALL_LOST',
+  GAME_OVER: 'GAME_OVER'
+});
 
 export function createGameplayController({
   root,
@@ -19,6 +26,9 @@ export function createGameplayController({
   launchMeterFill,
   fxBadge,
   soundButton,
+  gameOverElement,
+  finalScoreElement,
+  playAgainButton,
   leftButton,
   rightButton,
   launchButton,
@@ -41,6 +51,7 @@ export function createGameplayController({
   const launcherVisual = createLauncherVisuals(root, tableConfig);
   const tempQuat = new THREE.Quaternion();
 
+  let gameState = GAME_STATES.READY;
   let currentBall = 1;
   let score = 0;
   let resetTimer = null;
@@ -100,6 +111,9 @@ export function createGameplayController({
     });
   }
 
+  const lighting = new GameplayFocusLighting({ root, tableConfig });
+  lighting.setState(GAME_STATES.READY);
+
   bindGlobalAudioUnlock();
 
   engine.on('wall-hit', ({ impact, x }) => {
@@ -113,6 +127,7 @@ export function createGameplayController({
     sfx.slingshot(pan);
     addScore(value, x, z, '+');
     vfx.hit('slingshot', x, z, 0.75 + impact * 0.16);
+    lighting.pulseAt(x, z, 0.75 + impact * 0.12);
 
     const visual = slingshotVisuals.get(id);
     if (visual) visual.pulse = 1;
@@ -123,6 +138,7 @@ export function createGameplayController({
     sfx.bumper(pan);
     addScore(value, x, z, '+');
     vfx.hit('bumper', x, z, 0.85 + impact * 0.15);
+    lighting.pulseAt(x, z, 0.9 + impact * 0.12);
 
     const visual = bumperVisuals.get(id);
     if (visual) visual.pulse = 1;
@@ -132,6 +148,7 @@ export function createGameplayController({
     sfx.target(panFromX(x));
     addScore(value, x, z, '+');
     vfx.hit('target', x, z, 0.85 + impact * 0.10);
+    lighting.pulseAt(x, z, 0.8 + impact * 0.08);
 
     const visual = targetVisuals.get(id);
     if (visual) visual.pulse = 1;
@@ -141,6 +158,7 @@ export function createGameplayController({
     sfx.bank();
     addScore(value, x, z, 'BANK +');
     vfx.hit('bank', x, z, 1.3);
+    lighting.pulseAt(x, z, 1.45);
   });
 
   engine.on('launch', ({ charge }) => {
@@ -151,6 +169,11 @@ export function createGameplayController({
       tableConfig.launcher.spawn[0],
       tableConfig.launcher.spawn[1] - 0.10,
       0.9 + charge * 0.5
+    );
+    lighting.pulseAt(
+      tableConfig.launcher.spawn[0],
+      tableConfig.launcher.spawn[1] - 0.10,
+      0.75 + charge * 0.45
     );
   });
 
@@ -184,36 +207,40 @@ export function createGameplayController({
   });
 
   engine.on('drain', () => {
-    if (resetTimer) return;
+    if (gameState !== GAME_STATES.PLAYING || resetTimer) return;
 
+    setGameState(GAME_STATES.BALL_LOST);
+    freezeControls();
     sfx.drain();
     sfx.updateRolling(0, 0, false);
 
     const finalBall = currentBall >= rulesConfig.ballsPerGame;
-    setBallState(finalBall ? 'GAME OVER' : 'BALL ' + currentBall + ' DRAINED');
+    if (finalBall) {
+      enterGameOver();
+      return;
+    }
+
+    setBallState('BALL ' + currentBall + ' DRAINED');
+    setLauncherState('NEXT BALL');
 
     resetTimer = window.setTimeout(() => {
-      if (finalBall) {
-        score = 0;
-        currentBall = 1;
-        engine.resetGame();
-      } else {
-        currentBall += 1;
-        engine.resetBall();
-      }
-
+      currentBall += 1;
+      engine.resetBall();
+      setGameState(GAME_STATES.PLAYING);
       updateHud();
       resetTimer = null;
-    }, finalBall ? rulesConfig.gameResetDelayMs : rulesConfig.drainResetDelayMs);
+    }, rulesConfig.drainResetDelayMs);
   });
 
   bindInputs();
-  updateHud();
+  bindGameOverControls();
+  startNewGame();
 
   function step(delta) {
-    engine.step(delta);
+    if (gameState === GAME_STATES.PLAYING) engine.step(delta);
     animateMechanics(delta);
     vfx.step(delta);
+    lighting.update(delta, engine.ball);
   }
 
   function sync() {
@@ -267,16 +294,18 @@ export function createGameplayController({
     const speed = Math.hypot(engine.ball.velocity.x, engine.ball.velocity.z);
     const pan = panFromX(engine.ball.position.x);
 
+    const gameplayActive = gameState === GAME_STATES.PLAYING;
+
     sfx.updateRolling(
       speed,
       pan,
-      engine.ball.active && !engine.isAwaitingLaunch()
+      gameplayActive && engine.ball.active && !engine.isAwaitingLaunch()
     );
 
     vfx.updateBallTrail(
       engine.ball,
       tableConfig.playfield.surfaceY + tableConfig.ball.radius,
-      engine.ball.active && !engine.isAwaitingLaunch() && speed > 1.0
+      gameplayActive && engine.ball.active && !engine.isAwaitingLaunch() && speed > 1.0
     );
   }
 
@@ -323,7 +352,12 @@ export function createGameplayController({
   }
 
   function addScore(value, x, z, prefix = '') {
-    if (!Number.isFinite(value) || value <= 0 || engine.isTilted()) return;
+    if (
+      gameState !== GAME_STATES.PLAYING ||
+      !Number.isFinite(value) ||
+      value <= 0 ||
+      engine.isTilted()
+    ) return;
     score += value;
     updateScore();
     showScorePopup(prefix + value, x, z);
@@ -354,16 +388,93 @@ export function createGameplayController({
     window.setTimeout(() => node.remove(), 850);
   }
 
-  function resetGame() {
+  function startNewGame() {
     if (resetTimer) {
       clearTimeout(resetTimer);
       resetTimer = null;
     }
 
+    setGameState(GAME_STATES.READY);
+    hideGameOver();
     currentBall = 1;
     score = 0;
     engine.resetGame();
+    resetTransientEffects();
+    setGameState(GAME_STATES.PLAYING);
     updateHud();
+  }
+
+  function enterGameOver() {
+    setGameState(GAME_STATES.GAME_OVER);
+    freezeControls();
+    sfx.updateRolling(0, 0, false);
+    vfx.updateBallTrail(
+      engine.ball,
+      tableConfig.playfield.surfaceY + tableConfig.ball.radius,
+      false
+    );
+
+    setBallState('GAME OVER');
+    setLauncherState('FINAL SCORE');
+    updateScore();
+
+    if (finalScoreElement) finalScoreElement.textContent = String(score);
+    if (gameOverElement) {
+      gameOverElement.classList.add('visible');
+      gameOverElement.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function hideGameOver() {
+    if (!gameOverElement) return;
+    gameOverElement.classList.remove('visible');
+    gameOverElement.setAttribute('aria-hidden', 'true');
+  }
+
+  function setGameState(nextState) {
+    gameState = nextState;
+    root.userData.gameState = nextState;
+    lighting.setState(nextState);
+  }
+
+  function resetTransientEffects() {
+    popupLayer?.replaceChildren();
+    vfx.reset();
+    lighting.reset();
+
+    for (const visual of bumperVisuals.values()) {
+      visual.pulse = 0;
+      visual.object.scale.copy(visual.baseScale);
+    }
+
+    for (const visual of slingshotVisuals.values()) {
+      visual.pulse = 0;
+      visual.group.scale.set(1, 1, 1);
+    }
+
+    for (const visual of targetVisuals.values()) {
+      visual.pulse = 0;
+      visual.object.scale.set(1, 1, 1);
+    }
+
+    clearPressedControls();
+  }
+
+  function freezeControls() {
+    for (const [id, visual] of flipperVisuals) {
+      const state = engine.getFlipper(id);
+      if (!state) continue;
+      state.pressed = false;
+      state.angle = visual.restAngle;
+      state.angularVelocity = 0;
+    }
+    clearPressedControls();
+  }
+
+  function clearPressedControls() {
+    [leftButton, rightButton, launchButton, nudgeLeftButton, nudgeRightButton]
+      .filter(Boolean)
+      .forEach((button) => button.classList.remove('pressed'));
   }
 
   function updateHud() {
@@ -396,7 +507,7 @@ export function createGameplayController({
   }
 
   function pressFlipper(id) {
-    if (engine.isTilted()) return;
+    if (gameState !== GAME_STATES.PLAYING || engine.isTilted()) return;
     const state = engine.getFlipper(id);
     if (!state || state.pressed) return;
     engine.setFlipper(id, true);
@@ -408,14 +519,17 @@ export function createGameplayController({
   }
 
   function beginLaunch() {
+    if (gameState !== GAME_STATES.PLAYING) return;
     if (engine.beginLaunch()) sfx.launchCharge();
   }
 
   function releaseLaunch() {
+    if (gameState !== GAME_STATES.PLAYING) return;
     engine.releaseLaunch();
   }
 
   function nudge(direction) {
+    if (gameState !== GAME_STATES.PLAYING) return;
     engine.nudge(direction);
   }
 
@@ -441,6 +555,15 @@ export function createGameplayController({
         }
       });
     }
+  }
+
+  function bindGameOverControls() {
+    if (!playAgainButton) return;
+    playAgainButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      void sfx.unlock();
+      startNewGame();
+    });
   }
 
   function bindInputs() {
@@ -482,7 +605,7 @@ export function createGameplayController({
 
       if (event.code === 'KeyR') {
         event.preventDefault();
-        resetGame();
+        startNewGame();
       }
     });
 
@@ -592,7 +715,9 @@ export function createGameplayController({
     engine,
     step,
     sync,
-    resetGame
+    resetGame: startNewGame,
+    getGameState: () => gameState,
+    getScore: () => score
   };
 }
 
