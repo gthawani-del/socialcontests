@@ -28,7 +28,11 @@ export class BrowserSfx {
       // Optional iOS audio-session hint; Web Audio remains the fallback.
     }
 
-    this.context = new AudioCtor({ latencyHint: 'interactive' });
+    try {
+      this.context = new AudioCtor({ latencyHint: 'interactive' });
+    } catch {
+      this.context = new AudioCtor();
+    }
 
     this.compressor = this.context.createDynamicsCompressor();
     this.compressor.threshold.value = -18;
