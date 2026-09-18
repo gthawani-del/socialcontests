@@ -50,6 +50,7 @@ export function createGameplayController({
   const flipperVisuals = new Map();
   const targetVisuals = new Map();
   const bumperVisuals = new Map();
+  const scoringZoneVisuals = new Map();
   const slingshotVisuals = createSlingshotVisuals(root, tableConfig);
   const launcherVisual = createLauncherVisuals(root, tableConfig);
   const tempQuat = new THREE.Quaternion();
@@ -117,6 +118,22 @@ export function createGameplayController({
     });
   }
 
+  for (const cfg of tableConfig.scoringZones || []) {
+    if (cfg.id !== 'city-light') continue;
+
+    const ring = root.getObjectByName('Paris_CityLight_ScoreRing');
+    const face = root.getObjectByName('Paris_CityLight_ScoreFace');
+    if (!ring && !face) continue;
+
+    scoringZoneVisuals.set(cfg.id, {
+      ring,
+      face,
+      ringBaseScale: ring?.scale.clone() || null,
+      faceBaseScale: face?.scale.clone() || null,
+      pulse: 0
+    });
+  }
+
   const lighting = new GameplayFocusLighting({ root, tableConfig });
   lighting.setState(GAME_STATES.READY);
 
@@ -165,6 +182,16 @@ export function createGameplayController({
     addScore(value, x, z, 'BANK +');
     vfx.hit('bank', x, z, 1.3);
     lighting.pulseAt(x, z, 1.45);
+  });
+
+  engine.on('scoring-zone-hit', ({ id, score: value, x, z }) => {
+    sfx.target(panFromX(x));
+    addScore(value, x, z, 'CITY LIGHT +');
+    vfx.hit('target', x, z, 1.05);
+    lighting.pulseAt(x, z, 1.15);
+
+    const visual = scoringZoneVisuals.get(id);
+    if (visual) visual.pulse = 1;
   });
 
   engine.on('launch', ({ charge }) => {
@@ -355,6 +382,32 @@ export function createGameplayController({
       const scale = 1 + 0.06 * visual.pulse;
       visual.object.scale.set(scale, scale, scale);
     }
+
+    for (const visual of scoringZoneVisuals.values()) {
+      if (visual.pulse <= 0.001) {
+        if (visual.ring && visual.ringBaseScale) visual.ring.scale.copy(visual.ringBaseScale);
+        if (visual.face && visual.faceBaseScale) visual.face.scale.copy(visual.faceBaseScale);
+        visual.pulse = 0;
+        continue;
+      }
+
+      visual.pulse *= Math.exp(-8 * dt);
+      const scale = 1 + 0.16 * visual.pulse;
+      if (visual.ring && visual.ringBaseScale) {
+        visual.ring.scale.set(
+          visual.ringBaseScale.x * scale,
+          visual.ringBaseScale.y * scale,
+          visual.ringBaseScale.z
+        );
+      }
+      if (visual.face && visual.faceBaseScale) {
+        visual.face.scale.set(
+          visual.faceBaseScale.x * (1 + 0.08 * visual.pulse),
+          visual.faceBaseScale.y * (1 + 0.08 * visual.pulse),
+          visual.faceBaseScale.z
+        );
+      }
+    }
   }
 
   function addScore(value, x, z, prefix = '') {
@@ -461,6 +514,12 @@ export function createGameplayController({
     for (const visual of targetVisuals.values()) {
       visual.pulse = 0;
       visual.object.scale.set(1, 1, 1);
+    }
+
+    for (const visual of scoringZoneVisuals.values()) {
+      visual.pulse = 0;
+      if (visual.ring && visual.ringBaseScale) visual.ring.scale.copy(visual.ringBaseScale);
+      if (visual.face && visual.faceBaseScale) visual.face.scale.copy(visual.faceBaseScale);
     }
 
     clearPressedControls();
