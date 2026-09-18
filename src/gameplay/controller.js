@@ -27,6 +27,8 @@ export function createGameplayController({
   launchMeterFill,
   fxBadge,
   soundButton,
+  soundGateElement,
+  enableSoundButton,
   gameOverElement,
   finalScoreElement,
   playAgainButton,
@@ -118,7 +120,7 @@ export function createGameplayController({
   const lighting = new GameplayFocusLighting({ root, tableConfig });
   lighting.setState(GAME_STATES.READY);
 
-  bindGlobalAudioUnlock();
+  bindSoundControls();
 
   engine.on('wall-hit', ({ impact, x }) => {
     const pan = panFromX(x);
@@ -537,42 +539,88 @@ export function createGameplayController({
     engine.nudge(direction);
   }
 
-  function bindGlobalAudioUnlock() {
-    const unlock = () => {
-      void sfx.unlock();
+  function bindSoundControls() {
+    const hideSoundGate = () => {
+      if (!soundGateElement) return;
+      soundGateElement.classList.add('hidden');
+      soundGateElement.setAttribute('aria-hidden', 'true');
     };
 
-    // iOS Safari may require a fresh user gesture after page restore or an
-    // interrupted audio session, so listen to both pointer and touch phases.
-    window.addEventListener('pointerdown', unlock, { capture: true, passive: true });
-    window.addEventListener('touchstart', unlock, { capture: true, passive: true });
-    window.addEventListener('touchend', unlock, { capture: true, passive: true });
-    window.addEventListener('keydown', unlock, { capture: true });
+    const showSoundGate = () => {
+      if (!soundGateElement) return;
+      soundGateElement.classList.remove('hidden');
+      soundGateElement.setAttribute('aria-hidden', 'false');
+    };
 
-    window.addEventListener('pageshow', () => {
-      if (sfx.context && sfx.context.state !== 'running') void sfx.unlock();
-    });
-
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && sfx.context && sfx.context.state !== 'running') {
-        void sfx.unlock();
+    const activateSound = () => {
+      if (enableSoundButton) {
+        enableSoundButton.disabled = true;
+        enableSoundButton.textContent = 'ENABLING…';
       }
-    });
+
+      return sfx.activateFromGesture().then((running) => {
+        if (enableSoundButton) {
+          enableSoundButton.disabled = false;
+          enableSoundButton.textContent = running ? 'SOUND ENABLED' : 'TAP TO RETRY';
+        }
+
+        if (soundButton) {
+          soundButton.classList.remove('muted');
+          soundButton.textContent = running ? 'SOUND ON' : 'ENABLE SOUND';
+        }
+
+        if (running) {
+          hideSoundGate();
+        } else {
+          showSoundGate();
+        }
+
+        return running;
+      });
+    };
+
+    if (enableSoundButton) {
+      enableSoundButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        void activateSound();
+      });
+    }
 
     if (soundButton) {
-      soundButton.addEventListener('pointerdown', (event) => {
+      soundButton.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
 
         if (!sfx.isRunning()) {
-          soundButton.classList.remove('muted');
-          void sfx.preview();
-        } else {
-          const muted = sfx.toggleMuted();
-          soundButton.classList.toggle('muted', muted);
+          void activateSound();
+          return;
         }
+
+        const muted = sfx.toggleMuted();
+        soundButton.classList.toggle('muted', muted);
+        soundButton.textContent = muted ? 'SOUND OFF' : 'SOUND ON';
       });
     }
+
+    // Keyboard/desktop controls can still unlock sound directly from a gesture.
+    window.addEventListener('keydown', () => {
+      if (!sfx.isRunning() && !sfx.muted) void sfx.unlock();
+    }, { capture: true });
+
+    window.addEventListener('pageshow', () => {
+      if (sfx.context && sfx.context.state !== 'running' && !sfx.muted) {
+        sfx.setStatus('ENABLE SOUND');
+        if (soundButton) soundButton.textContent = 'ENABLE SOUND';
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && sfx.context && sfx.context.state !== 'running' && !sfx.muted) {
+        sfx.setStatus('ENABLE SOUND');
+        if (soundButton) soundButton.textContent = 'ENABLE SOUND';
+      }
+    });
   }
 
   function bindGameOverControls() {

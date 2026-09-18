@@ -8,101 +8,150 @@ export class BrowserSfx {
     this.rolling = null;
     this.muted = false;
     this.unlocking = null;
-    this.setStatus('SOUND READY');
+    this.setStatus('ENABLE SOUND');
+  }
+
+  ensureContext() {
+    if (this.context && this.context.state !== 'closed') return true;
+
+    const AudioCtor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtor) {
+      this.setStatus('SOUND UNSUPPORTED');
+      return false;
+    }
+
+    try {
+      if (navigator.audioSession && 'type' in navigator.audioSession) {
+        navigator.audioSession.type = 'playback';
+      }
+    } catch {
+      // Optional iOS audio-session hint; Web Audio remains the fallback.
+    }
+
+    try {
+      this.context = new AudioCtor({ latencyHint: 'interactive' });
+    } catch {
+      this.context = new AudioCtor();
+    }
+
+    this.compressor = this.context.createDynamicsCompressor();
+    this.compressor.threshold.value = -18;
+    this.compressor.knee.value = 16;
+    this.compressor.ratio.value = 4;
+    this.compressor.attack.value = 0.004;
+    this.compressor.release.value = 0.18;
+
+    this.master = this.context.createGain();
+    this.master.gain.value = this.config.masterVolume;
+
+    this.compressor.connect(this.master);
+    this.master.connect(this.context.destination);
+
+    this.createRollingVoice();
+    return true;
   }
 
   async unlock() {
     if (!this.config.enabled || this.muted) {
-      this.setStatus(this.muted ? 'SOUND MUTED' : 'SOUND OFF');
-      return;
+      this.setStatus(this.muted ? 'SOUND OFF' : 'SOUND OFF');
+      return false;
+    }
+
+    if (!this.ensureContext()) return false;
+    if (this.context.state === 'running') {
+      this.setStatus('SOUND ON');
+      return true;
     }
 
     if (this.unlocking) return this.unlocking;
 
-    this.unlocking = this.doUnlock();
-    try {
-      await this.unlocking;
-    } finally {
-      this.unlocking = null;
-    }
+    this.unlocking = this.context.resume()
+      .then(() => {
+        const running = this.context.state === 'running';
+        this.setStatus(running ? 'SOUND ON' : 'ENABLE SOUND');
+        return running;
+      })
+      .catch((error) => {
+        console.warn('Audio resume was blocked:', error);
+        this.setStatus('ENABLE SOUND');
+        return false;
+      })
+      .finally(() => {
+        this.unlocking = null;
+      });
+
+    return this.unlocking;
   }
 
-  async doUnlock() {
-    if (!this.context) {
-      const AudioCtor = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtor) {
-        this.setStatus('SOUND UNSUPPORTED');
-        return;
-      }
-
-      this.context = new AudioCtor();
-
-      this.compressor = this.context.createDynamicsCompressor();
-      this.compressor.threshold.value = -18;
-      this.compressor.knee.value = 16;
-      this.compressor.ratio.value = 4;
-      this.compressor.attack.value = 0.004;
-      this.compressor.release.value = 0.18;
-
-      this.master = this.context.createGain();
-      this.master.gain.value = this.config.masterVolume;
-
-      this.compressor.connect(this.master);
-      this.master.connect(this.context.destination);
-
-      this.createRollingVoice();
+  activateFromGesture() {
+    if (!this.config.enabled) {
+      this.setStatus('SOUND OFF');
+      return Promise.resolve(false);
     }
 
-    // iOS Safari can leave Web Audio in a non-running state after navigation,
-    // tab switches or an interrupted audio route. Prime the output while this
-    // method is still executing from the user's gesture, then resume any
-    // non-running context state that can be resumed.
-    this.primeOutput();
+    this.muted = false;
+    if (!this.ensureContext()) return Promise.resolve(false);
 
-    if (this.context.state !== 'running' && this.context.state !== 'closed') {
-      try {
-        await this.context.resume();
-      } catch (error) {
-        console.warn('Audio resume was blocked:', error);
-      }
+    if (this.master) this.master.gain.value = this.config.masterVolume;
+
+    // Schedule the confirmation sound synchronously inside the user's click.
+    // If the context is suspended, the sound begins as soon as resume succeeds.
+    this.scheduleUnlockChime();
+
+    let resumeResult;
+    try {
+      resumeResult = this.context.state === 'running'
+        ? Promise.resolve()
+        : this.context.resume();
+    } catch (error) {
+      console.warn('Audio gesture activation failed:', error);
+      this.setStatus('ENABLE SOUND');
+      return Promise.resolve(false);
     }
 
-    if (this.context.state === 'running') this.primeOutput();
-
-    this.setStatus(this.context.state === 'running' ? 'SOUND ON' : 'TAP SOUND');
+    return Promise.resolve(resumeResult)
+      .then(() => {
+        const running = this.context.state === 'running';
+        this.setStatus(running ? 'SOUND ON' : 'ENABLE SOUND');
+        return running;
+      })
+      .catch((error) => {
+        console.warn('Audio gesture resume failed:', error);
+        this.setStatus('ENABLE SOUND');
+        return false;
+      });
   }
 
   isRunning() {
     return Boolean(this.context && this.context.state === 'running');
   }
 
-  async preview() {
-    await this.unlock();
-    if (!this.isRunning() || this.muted) return false;
-
-    this.tone(620, 0.055, Math.min(0.32, this.config.masterVolume), 'triangle', 90, 0);
-    window.setTimeout(
-      () => this.tone(880, 0.07, Math.min(0.28, this.config.masterVolume), 'triangle', -80, 0),
-      55
-    );
-    return true;
+  preview() {
+    return this.activateFromGesture();
   }
 
-  primeOutput() {
-    if (!this.context || !this.master || this.context.state === 'closed') return;
+  scheduleUnlockChime() {
+    if (!this.context || !this.compressor || this.context.state === 'closed') return;
 
     try {
-      const source = this.context.createBufferSource();
-      source.buffer = this.context.createBuffer(1, 1, this.context.sampleRate);
-
+      const now = this.context.currentTime + 0.008;
+      const osc = this.context.createOscillator();
       const gain = this.context.createGain();
-      gain.gain.value = 0.00001;
 
-      source.connect(gain);
-      gain.connect(this.master);
-      source.start(0);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(620, now);
+      osc.frequency.linearRampToValueAtTime(880, now + 0.11);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.32, now + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+
+      osc.connect(gain);
+      gain.connect(this.compressor);
+      osc.start(now);
+      osc.stop(now + 0.15);
     } catch (error) {
-      console.warn('Audio output prime failed:', error);
+      console.warn('Audio confirmation tone failed:', error);
     }
   }
 
@@ -117,7 +166,7 @@ export class BrowserSfx {
         0.02
       );
     }
-    this.setStatus(this.muted ? 'SOUND MUTED' : 'SOUND ON');
+    this.setStatus(this.muted ? 'SOUND OFF' : 'SOUND ON');
   }
 
   toggleMuted() {
