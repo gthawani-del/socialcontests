@@ -238,27 +238,65 @@ async function applyParisGraphics(root) {
   playfield.material.color.set(0x9aa6b6);
   root.add(playfield);
 
-  // Cover the printed placeholder ball baked into the approved playfield art.
-  // This is a flat decorative insert, not a gameplay collider.
+  // Convert the lower-center printed-ball cover into a real, readable
+  // non-blocking scoring target. Physics scoring is configured in table.json.
+  const cityLight = tableConfig.scoringZones?.find((zone) => zone.id === 'city-light');
+  const cityLightX = cityLight?.position?.[0] ?? 0;
+  const cityLightZ = cityLight?.position?.[1] ?? 1.02;
+  const cityLightScore = cityLight?.score ?? 750;
+
   const ballMask = new THREE.Mesh(
     new THREE.CircleGeometry(0.285, 48),
-    new THREE.MeshBasicMaterial({ color: 0x071a36, toneMapped: false, side: THREE.DoubleSide })
+    new THREE.MeshBasicMaterial({
+      color: 0x071a36,
+      toneMapped: false,
+      side: THREE.DoubleSide,
+      polygonOffset: true,
+      polygonOffsetFactor: -5,
+      polygonOffsetUnits: -5
+    })
   );
-  ballMask.position.set(0, 0.589, 1.02);
+  ballMask.position.set(cityLightX, 0.589, cityLightZ);
   ballMask.rotation.x = -Math.PI / 2;
   ballMask.renderOrder = 3;
-  ballMask.name = 'Paris_PrintBall_Mask';
+  ballMask.name = 'Paris_CityLight_Backplate';
   root.add(ballMask);
 
   const ballMaskRing = new THREE.Mesh(
     new THREE.RingGeometry(0.255, 0.285, 48),
-    new THREE.MeshBasicMaterial({ color: 0xd5a847, toneMapped: false, side: THREE.DoubleSide })
+    new THREE.MeshBasicMaterial({
+      color: 0xd5a847,
+      toneMapped: false,
+      side: THREE.DoubleSide,
+      polygonOffset: true,
+      polygonOffsetFactor: -6,
+      polygonOffsetUnits: -6
+    })
   );
-  ballMaskRing.position.set(0, 0.590, 1.02);
+  ballMaskRing.position.set(cityLightX, 0.590, cityLightZ);
   ballMaskRing.rotation.x = -Math.PI / 2;
   ballMaskRing.renderOrder = 4;
-  ballMaskRing.name = 'Paris_PrintBall_Mask_Ring';
+  ballMaskRing.name = 'Paris_CityLight_ScoreRing';
   root.add(ballMaskRing);
+
+  const cityLightTexture = makeCityLightTexture(cityLightScore);
+  const cityLightFace = new THREE.Mesh(
+    new THREE.CircleGeometry(0.235, 48),
+    new THREE.MeshBasicMaterial({
+      map: cityLightTexture,
+      transparent: true,
+      toneMapped: false,
+      side: THREE.DoubleSide,
+      polygonOffset: true,
+      polygonOffsetFactor: -7,
+      polygonOffsetUnits: -7
+    })
+  );
+  cityLightFace.position.set(cityLightX, 0.592, cityLightZ);
+  cityLightFace.rotation.x = -Math.PI / 2;
+  cityLightFace.renderOrder = 5;
+  cityLightFace.name = 'Paris_CityLight_ScoreFace';
+  root.add(cityLightFace);
 
   createParisTargetBank(root, tableConfig.targets);
 
@@ -399,6 +437,46 @@ function createParisTargetBank(root, targets) {
     group.add(frame, face);
     root.add(group);
   });
+}
+
+function makeCityLightTexture(score) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+
+  ctx.clearRect(0, 0, 256, 256);
+
+  const gradient = ctx.createRadialGradient(128, 108, 18, 128, 128, 118);
+  gradient.addColorStop(0, '#18365f');
+  gradient.addColorStop(0.72, '#091a34');
+  gradient.addColorStop(1, '#061126');
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(128, 128, 116, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = '#d8aa48';
+  ctx.lineWidth = 7;
+  ctx.beginPath();
+  ctx.arc(128, 128, 108, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = '#f6d77b';
+  ctx.font = '800 64px Inter, Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(String(score), 128, 119);
+
+  ctx.fillStyle = '#d4deec';
+  ctx.font = '700 22px Inter, Arial, sans-serif';
+  ctx.letterSpacing = '2px';
+  ctx.fillText('CITY LIGHT', 128, 168);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  return texture;
 }
 
 function makeTargetTexture(letter, fill, bg) {
