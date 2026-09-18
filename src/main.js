@@ -65,7 +65,7 @@ const clock = new THREE.Clock();
 let mixer = null;
 
 loader.load(
-  '/models/infinite-pinball-base-v1.glb',
+  '/models/infinite-pinball-base-v2.glb',
   (gltf) => {
     const root = gltf.scene;
 
@@ -76,7 +76,6 @@ loader.load(
       }
     });
 
-    // GLTF comes from Blender (Y-up export); center it automatically.
     const box = new THREE.Box3().setFromObject(root);
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
@@ -95,13 +94,13 @@ loader.load(
       gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
     }
 
-    status.textContent = 'V1 TABLE · LIVE';
+    status.textContent = 'V2 TABLE · LIVE';
     status.classList.add('ready');
   },
   (progress) => {
     if (progress.total) {
       const pct = Math.round((progress.loaded / progress.total) * 100);
-      status.textContent = `Loading table · ${pct}%`;
+      status.textContent = `Loading V2 · ${pct}%`;
     }
   },
   (error) => {
