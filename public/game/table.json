@@ -303,5 +303,17 @@
     "completionScore": 2500,
     "resetMs": 1800,
     "popupZ": -1.78
-  }
+  },
+  "scoringZones": [
+    {
+      "id": "city-light",
+      "position": [
+        0,
+        1.02
+      ],
+      "radius": 0.27,
+      "rearmRadius": 0.36,
+      "score": 750
+    }
+  ]
 }

@@ -3,15 +3,15 @@ const PRESETS = Object.freeze({
     label: 'EASY',
     flippers: Object.freeze({
       left: Object.freeze({
-        restAngleDeg: 28,
-        activeAngleDeg: 57,
+        restAngleDeg: 46,
+        activeAngleDeg: 64,
         speedDegPerSec: 760,
         returnSpeedDegPerSec: 560,
         kick: 1.20
       }),
       right: Object.freeze({
-        restAngleDeg: 152,
-        activeAngleDeg: 123,
+        restAngleDeg: 134,
+        activeAngleDeg: 116,
         speedDegPerSec: 760,
         returnSpeedDegPerSec: 560,
         kick: 1.20
@@ -33,15 +33,15 @@ const PRESETS = Object.freeze({
     label: 'STANDARD',
     flippers: Object.freeze({
       left: Object.freeze({
-        restAngleDeg: 35,
-        activeAngleDeg: 58,
+        restAngleDeg: 49,
+        activeAngleDeg: 66,
         speedDegPerSec: 700,
         returnSpeedDegPerSec: 520,
         kick: 1.15
       }),
       right: Object.freeze({
-        restAngleDeg: 145,
-        activeAngleDeg: 122,
+        restAngleDeg: 131,
+        activeAngleDeg: 114,
         speedDegPerSec: 700,
         returnSpeedDegPerSec: 520,
         kick: 1.15
@@ -63,15 +63,15 @@ const PRESETS = Object.freeze({
     label: 'HARD',
     flippers: Object.freeze({
       left: Object.freeze({
-        restAngleDeg: 40,
-        activeAngleDeg: 60,
+        restAngleDeg: 53,
+        activeAngleDeg: 69,
         speedDegPerSec: 660,
         returnSpeedDegPerSec: 500,
         kick: 1.10
       }),
       right: Object.freeze({
-        restAngleDeg: 140,
-        activeAngleDeg: 120,
+        restAngleDeg: 127,
+        activeAngleDeg: 111,
         speedDegPerSec: 660,
         returnSpeedDegPerSec: 500,
         kick: 1.10
@@ -137,8 +137,13 @@ export function getDifficultyMetrics(config) {
     (config.launcher.maxPower - config.launcher.minPower) *
       config.launcher.tapCharge;
 
+  const restGap = rightTipX - leftTipX;
+  const collisionClearance =
+    restGap - 2 * (left.radius + config.ball.radius);
+
   return {
-    restGap: rightTipX - leftTipX,
+    restGap,
+    collisionClearance,
     launchTapPower
   };
 }

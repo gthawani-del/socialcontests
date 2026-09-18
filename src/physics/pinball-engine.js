@@ -12,6 +12,9 @@ export class PinballEngine {
     this.slingshotHitAt = new Map();
     this.bumperHitAt = new Map();
     this.targetResetAt = null;
+    this.scoringZoneStates = new Map(
+      (config.scoringZones || []).map((zone) => [zone.id, { config: zone, inside: false }])
+    );
 
     this.ball = {
       position: { x: 0, z: 0 },
@@ -168,6 +171,7 @@ export class PinballEngine {
     this.tilted = false;
     this.accumulator = 0;
 
+    for (const zone of this.scoringZoneStates.values()) zone.inside = false;
     for (const flipper of this.flippers.values()) flipper.pressed = false;
 
     this.emit('reset', { position: { ...this.ball.position } });
@@ -338,6 +342,8 @@ export class PinballEngine {
       }
     }
 
+    this.updateScoringZones();
+
     for (const flipper of this.flippers.values()) {
       this.resolveFlipperCollision(flipper);
     }
@@ -349,6 +355,30 @@ export class PinballEngine {
   updateTargetBank() {
     if (this.targetResetAt !== null && this.simTime >= this.targetResetAt) {
       this.resetTargets();
+    }
+  }
+
+  updateScoringZones() {
+    for (const zone of this.scoringZoneStates.values()) {
+      const cfg = zone.config;
+      const dx = this.ball.position.x - cfg.position[0];
+      const dz = this.ball.position.z - cfg.position[1];
+      const distance = Math.hypot(dx, dz);
+
+      if (!zone.inside && distance <= cfg.radius) {
+        zone.inside = true;
+        this.emit('scoring-zone-hit', {
+          id: cfg.id,
+          score: this.tilted ? 0 : cfg.score,
+          x: cfg.position[0],
+          z: cfg.position[1]
+        });
+        continue;
+      }
+
+      if (zone.inside && distance >= cfg.rearmRadius) {
+        zone.inside = false;
+      }
     }
   }
 
