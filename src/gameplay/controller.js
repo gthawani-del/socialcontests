@@ -5,6 +5,7 @@ import { VfxEngine } from '../vfx/effects.js';
 import { GameplayFocusLighting } from './focus-lighting.js';
 
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
+const MODEL_FLIPPER_REST_DEG = Object.freeze({ left: 18, right: 162 });
 const GAME_STATES = Object.freeze({
   READY: 'READY',
   PLAYING: 'PLAYING',
@@ -81,6 +82,9 @@ export function createGameplayController({
     flipperVisuals.set(cfg.id, {
       object,
       restAngle: THREE.MathUtils.degToRad(cfg.restAngleDeg),
+      modelRestAngle: THREE.MathUtils.degToRad(
+        MODEL_FLIPPER_REST_DEG[cfg.id] ?? cfg.restAngleDeg
+      ),
       restQuaternion: object.quaternion.clone()
     });
   }
@@ -255,7 +259,7 @@ export function createGameplayController({
       const state = engine.getFlipper(id);
       if (!state) continue;
 
-      const delta = state.angle - visual.restAngle;
+      const delta = state.angle - visual.modelRestAngle;
       tempQuat.setFromAxisAngle(Y_AXIS, delta);
       visual.object.quaternion.copy(visual.restQuaternion).premultiply(tempQuat);
     }
