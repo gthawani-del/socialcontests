@@ -88,28 +88,57 @@ const camera = new THREE.PerspectiveCamera(
 // with touch controls on mobile.
 resetViewButton.hidden = true;
 
-const hemi = new THREE.HemisphereLight(0xc7dcff, 0x17100b, 1.9);
+const bombayLighting = themeConfig.id === 'bombay-1945';
+
+const hemi = new THREE.HemisphereLight(
+  bombayLighting ? 0xd7c49a : 0xc7dcff,
+  bombayLighting ? 0x111713 : 0x17100b,
+  bombayLighting ? 1.55 : 1.9
+);
 scene.add(hemi);
 
-const key = new THREE.DirectionalLight(0xffdfbc, 4.2);
+const key = new THREE.DirectionalLight(
+  bombayLighting ? 0xffd495 : 0xffdfbc,
+  bombayLighting ? 3.8 : 4.2
+);
 key.position.set(-3.3, 5.3, 7.4);
 key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
 scene.add(key);
 
-const rim = new THREE.PointLight(0x3588ff, 18, 14, 2);
+const rim = new THREE.PointLight(
+  bombayLighting ? 0x315b4b : 0x3588ff,
+  bombayLighting ? 12 : 18,
+  14,
+  2
+);
 rim.position.set(3.8, 2.8, 3.5);
 scene.add(rim);
 
-const warm = new THREE.PointLight(0xff8a2b, 14, 12, 2);
+const warm = new THREE.PointLight(
+  bombayLighting ? 0xd98b45 : 0xff8a2b,
+  bombayLighting ? 16 : 14,
+  12,
+  2
+);
 warm.position.set(-3.2, -1.8, 2.6);
 scene.add(warm);
 
-const lowerFill = new THREE.PointLight(0x8fb5ff, 17, 10, 2);
+const lowerFill = new THREE.PointLight(
+  bombayLighting ? 0xb9a574 : 0x8fb5ff,
+  bombayLighting ? 12 : 17,
+  10,
+  2
+);
 lowerFill.position.set(0, 3.0, 2.3);
 scene.add(lowerFill);
 
-const lowerWarm = new THREE.PointLight(0xffc08a, 8, 7, 2);
+const lowerWarm = new THREE.PointLight(
+  bombayLighting ? 0x7a342e : 0xffc08a,
+  bombayLighting ? 7 : 8,
+  7,
+  2
+);
 lowerWarm.position.set(0, 1.4, 3.8);
 scene.add(lowerWarm);
 
@@ -124,6 +153,7 @@ const clock = new THREE.Clock();
 let mixer = null;
 let modelRoot = null;
 let gameplay = null;
+let themeAnimator = null;
 let tableConfig = null;
 let rulesConfig = null;
 const requestedDifficulty = urlParams.get('difficulty');
@@ -727,6 +757,48 @@ async function applyBombayGraphics(root) {
   const portRed = new THREE.PointLight(0x7a342e, 6, 6, 2);
   portRed.position.set(1.1, 1.25, 0.2);
   root.add(portRed);
+
+  const signalGroup = new THREE.Group();
+  signalGroup.name = 'Bombay_1945_Signal_Lights';
+  const signals = [];
+
+  [
+    [-1.28, 0.72, 1.28],
+    [1.28, 0.72, 1.28],
+    [-1.22, 0.72, 0.48],
+    [1.22, 0.72, 0.48],
+    [-1.12, 0.72, -0.55],
+    [1.12, 0.72, -0.55]
+  ].forEach((position, index) => {
+    const material = new THREE.MeshStandardMaterial({
+      color: index % 2 ? 0xd6a84b : 0x8a3d35,
+      emissive: index % 2 ? 0xd6a84b : 0x8a3d35,
+      emissiveIntensity: 0.55,
+      metalness: 0.35,
+      roughness: 0.22
+    });
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 10), material);
+    bulb.position.set(...position);
+    signalGroup.add(bulb);
+    signals.push(bulb);
+  });
+
+  root.add(signalGroup);
+
+  const tramSweep = new THREE.PointLight(0xf1c66f, 3.2, 2.4, 2);
+  tramSweep.position.set(0, 0.86, 1.55);
+  root.add(tramSweep);
+
+  themeAnimator = (time) => {
+    signals.forEach((bulb, index) => {
+      bulb.material.emissiveIntensity =
+        0.42 + Math.max(0, Math.sin(time * 3.2 - index * 0.85)) * 1.25;
+    });
+
+    const phase = (Math.sin(time * 0.72) + 1) * 0.5;
+    tramSweep.position.z = 1.55 - phase * 3.35;
+    tramSweep.intensity = 2.2 + Math.sin(time * 4.4) * 0.45;
+  };
 }
 
 function makeCanvasTexture(canvas) {
@@ -1212,6 +1284,8 @@ function animate() {
     gameplay.step(dt);
     gameplay.sync();
   }
+
+  if (themeAnimator) themeAnimator(clock.elapsedTime);
 
   renderer.render(scene, camera);
 }
