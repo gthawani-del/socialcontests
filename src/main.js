@@ -24,6 +24,10 @@ const launchMeterFill = document.querySelector('#launchMeterFill');
 const fxBadge = document.querySelector('#fxBadge');
 const difficultySelect = document.querySelector('#difficultySelect');
 const soundButton = document.querySelector('#soundButton');
+const soundGateElement = document.querySelector('#soundGate');
+const enableSoundButton = document.querySelector('#enableSoundButton');
+const mobileMenuButton = document.querySelector('#mobileMenuButton');
+const runtimeState = document.querySelector('#runtimeState');
 const gameOverElement = document.querySelector('#gameOver');
 const finalScoreElement = document.querySelector('#finalScore');
 const playAgainButton = document.querySelector('#playAgain');
@@ -118,6 +122,29 @@ if (difficultySelect) {
     }
 
     window.location.assign(url.toString());
+  });
+}
+
+if (mobileMenuButton && runtimeState) {
+  const setSettingsOpen = (open) => {
+    runtimeState.classList.toggle('mobile-open', open);
+    mobileMenuButton.setAttribute('aria-expanded', String(open));
+  };
+
+  mobileMenuButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setSettingsOpen(!runtimeState.classList.contains('mobile-open'));
+  });
+
+  document.addEventListener('pointerdown', (event) => {
+    if (!runtimeState.classList.contains('mobile-open')) return;
+    if (runtimeState.contains(event.target) || mobileMenuButton.contains(event.target)) return;
+    setSettingsOpen(false);
+  }, { passive: true });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setSettingsOpen(false);
   });
 }
 
@@ -489,6 +516,8 @@ loader.load(
         launchMeterFill,
         fxBadge,
         soundButton,
+        soundGateElement,
+        enableSoundButton,
         gameOverElement,
         finalScoreElement,
         playAgainButton,
@@ -508,7 +537,7 @@ loader.load(
         gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
       }
 
-      status.textContent = 'V6.1 MOBILE FIX · ' + getDifficultyLabel(difficultyLevel);
+      status.textContent = 'V6.2 · ' + getDifficultyLabel(difficultyLevel);
       status.classList.add('ready');
       resetViewButton.disabled = true;
     } catch (error) {
