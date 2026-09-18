@@ -1,8 +1,8 @@
 {
-  "name": "Infinite Pinball Base V1",
+  "name": "Infinite Pinball Base V2",
   "source": "Higgsfield 3D Jutsu",
   "jutsuProjectId": "218ae5d8-09b8-44f3-932f-18ded9026133",
-  "jutsuRevision": 1,
+  "jutsuRevision": 2,
   "glb": "/models/infinite-pinball-base-v1.glb",
   "themeSlots": [
     "ThemeSlot_Hero",
@@ -17,5 +17,15 @@
     "Camera_Gameplay",
     "Camera_Cinematic"
   ],
-  "status": "prototype-blockout"
+  "refinements": [
+    "narrower main ramp with correctly offset rails",
+    "removed center jump ramp",
+    "smaller hero portal",
+    "brighter playfield and lighting",
+    "refined apron and drain",
+    "smaller bumpers with inserts",
+    "slimmer upper targets",
+    "side accent lighting"
+  ],
+  "status": "refined-v2"
 }
