@@ -2,5 +2,13 @@
   "version": 1,
   "ballsPerGame": 3,
   "drainResetDelayMs": 650,
-  "gameResetDelayMs": 1200
+  "gameResetDelayMs": 1200,
+  "audio": {
+    "enabled": true,
+    "masterVolume": 0.22,
+    "flipperGain": 0.26,
+    "wallGain": 0.12,
+    "slingshotGain": 0.24,
+    "drainGain": 0.22
+  }
 }

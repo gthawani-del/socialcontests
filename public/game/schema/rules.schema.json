@@ -2,11 +2,74 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "ballsPerGame", "drainResetDelayMs", "gameResetDelayMs"],
+  "required": [
+    "version",
+    "ballsPerGame",
+    "drainResetDelayMs",
+    "gameResetDelayMs",
+    "audio"
+  ],
   "properties": {
-    "version": { "type": "integer", "const": 1 },
-    "ballsPerGame": { "type": "integer", "minimum": 1, "maximum": 10 },
-    "drainResetDelayMs": { "type": "integer", "minimum": 100, "maximum": 5000 },
-    "gameResetDelayMs": { "type": "integer", "minimum": 250, "maximum": 10000 }
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "ballsPerGame": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "drainResetDelayMs": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 5000
+    },
+    "gameResetDelayMs": {
+      "type": "integer",
+      "minimum": 250,
+      "maximum": 10000
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "masterVolume",
+        "flipperGain",
+        "wallGain",
+        "slingshotGain",
+        "drainGain"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "masterVolume": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.6
+        },
+        "flipperGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.8
+        },
+        "wallGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.8
+        },
+        "slingshotGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.8
+        },
+        "drainGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.8
+        }
+      }
+    }
   }
 }

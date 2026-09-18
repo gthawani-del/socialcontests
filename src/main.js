@@ -167,6 +167,28 @@ async function applyParisGraphics(root) {
   playfield.name = 'Paris_AI_Playfield_Artwork';
   root.add(playfield);
 
+  // Cover the printed placeholder ball baked into the approved playfield art.
+  // This is a flat decorative insert, not a gameplay collider.
+  const ballMask = new THREE.Mesh(
+    new THREE.CircleGeometry(0.255, 48),
+    new THREE.MeshBasicMaterial({ color: 0x071a36, toneMapped: false, side: THREE.DoubleSide })
+  );
+  ballMask.position.set(0, 0.589, 0.34);
+  ballMask.rotation.x = -Math.PI / 2;
+  ballMask.renderOrder = 3;
+  ballMask.name = 'Paris_PrintBall_Mask';
+  root.add(ballMask);
+
+  const ballMaskRing = new THREE.Mesh(
+    new THREE.RingGeometry(0.225, 0.255, 48),
+    new THREE.MeshBasicMaterial({ color: 0xd5a847, toneMapped: false, side: THREE.DoubleSide })
+  );
+  ballMaskRing.position.set(0, 0.590, 0.34);
+  ballMaskRing.rotation.x = -Math.PI / 2;
+  ballMaskRing.renderOrder = 4;
+  ballMaskRing.name = 'Paris_PrintBall_Mask_Ring';
+  root.add(ballMaskRing);
+
   // Actual generated Paris skyline artwork behind the jackpot area.
   const backdrop = makePlane(
     textures.backdrop,

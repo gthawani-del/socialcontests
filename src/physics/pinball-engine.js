@@ -6,7 +6,10 @@ export class PinballEngine {
     this.config = config;
     this.fixedStep = config.physics.fixedStep;
     this.accumulator = 0;
+    this.simTime = 0;
     this.listeners = new Map();
+    this.wallHitAt = new Map();
+    this.slingshotHitAt = new Map();
 
     this.ball = {
       position: { x: 0, z: 0 },
@@ -77,6 +80,7 @@ export class PinballEngine {
   }
 
   integrate(dt) {
+    this.simTime += dt;
     this.updateFlippers(dt);
     if (!this.ball.active) return;
 
@@ -93,7 +97,34 @@ export class PinballEngine {
     this.ball.position.z += this.ball.velocity.z * dt;
 
     for (const wall of this.config.walls) {
-      this.resolveSegmentCollision(wall.a, wall.b, this.config.ball.radius, wall.restitution);
+      const hit = this.resolveSegmentCollision(
+        wall.a,
+        wall.b,
+        this.config.ball.radius,
+        wall.restitution
+      );
+      if (hit && hit.impact > 0.35 && this.canEmit(this.wallHitAt, wall.id, 0.045)) {
+        this.emit('wall-hit', { id: wall.id, impact: hit.impact });
+      }
+    }
+
+    for (const slingshot of this.config.slingshots) {
+      const hit = this.resolveSegmentCollision(
+        slingshot.a,
+        slingshot.b,
+        this.config.ball.radius,
+        slingshot.restitution
+      );
+
+      if (!hit) continue;
+
+      const cooldown = slingshot.cooldownMs / 1000;
+      if (this.canEmit(this.slingshotHitAt, slingshot.id, cooldown)) {
+        this.ball.velocity.x += hit.nx * slingshot.impulse;
+        this.ball.velocity.z += hit.nz * slingshot.impulse;
+        this.limitBallSpeed();
+        this.emit('slingshot-hit', { id: slingshot.id, impact: hit.impact });
+      }
     }
 
     for (const flipper of this.flippers.values()) {
@@ -102,6 +133,13 @@ export class PinballEngine {
 
     this.checkDrain();
     this.checkSafetyBounds();
+  }
+
+  canEmit(map, id, cooldownSeconds) {
+    const previous = map.get(id) ?? -Infinity;
+    if (this.simTime - previous < cooldownSeconds) return false;
+    map.set(id, this.simTime);
+    return true;
   }
 
   updateFlippers(dt) {
@@ -130,7 +168,7 @@ export class PinballEngine {
     let nz = this.ball.position.z - closest.z;
     let distSq = nx * nx + nz * nz;
 
-    if (distSq >= radius * radius) return;
+    if (distSq >= radius * radius) return null;
 
     if (distSq < EPS) {
       const dx = b[0] - a[0];
@@ -155,11 +193,15 @@ export class PinballEngine {
     this.ball.position.z += nz * penetration;
 
     const vn = this.ball.velocity.x * nx + this.ball.velocity.z * nz;
+    const impact = Math.max(0, -vn);
+
     if (vn < 0) {
       const impulse = -(1 + restitution) * vn;
       this.ball.velocity.x += nx * impulse;
       this.ball.velocity.z += nz * impulse;
     }
+
+    return { nx, nz, impact };
   }
 
   resolveFlipperCollision(flipper) {
@@ -218,7 +260,7 @@ export class PinballEngine {
       }
 
       this.limitBallSpeed();
-      this.emit('flipper-hit', { id: cfg.id });
+      this.emit('flipper-hit', { id: cfg.id, impact: Math.abs(relativeNormal) });
     }
   }
 
