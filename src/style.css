@@ -474,3 +474,5 @@ canvas{position:absolute;inset:0;display:block;width:100%;height:100%;touch-acti
   .secondary-controls{bottom:88px}
   .flipper-button{width:96px;height:58px}
 }
+
+.sound-gate[hidden]{display:none!important}
