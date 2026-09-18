@@ -15,13 +15,20 @@
         <div class="brand">
           <div class="eyebrow">SOCIAL CONTESTS</div>
           <h1>INFINITE PINBALL</h1>
-          <p>Paris Nights · Production Theme</p>
+          <p>Paris Nights · Playable V1</p>
         </div>
 
-        <div class="status" id="status">Loading Paris…</div>
+        <div class="status" id="status">Starting…</div>
+        <div class="ball-state" id="ballState">BALL —</div>
       </div>
 
-      <div class="controls">Drag to orbit · Pinch / scroll to zoom</div>
+      <div class="controls">A / ← LEFT · D / → RIGHT · R RESET</div>
+
+      <div class="flipper-controls" aria-label="Pinball controls">
+        <button class="flipper-button left" type="button" data-flipper="left" aria-label="Left flipper">LEFT</button>
+        <button class="flipper-button right" type="button" data-flipper="right" aria-label="Right flipper">RIGHT</button>
+      </div>
+
       <button class="reset-view" id="resetView" type="button" disabled>RESET VIEW</button>
     </div>
 

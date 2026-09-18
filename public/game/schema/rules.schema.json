@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "ballsPerGame", "drainResetDelayMs", "gameResetDelayMs"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "ballsPerGame": { "type": "integer", "minimum": 1, "maximum": 10 },
+    "drainResetDelayMs": { "type": "integer", "minimum": 100, "maximum": 5000 },
+    "gameResetDelayMs": { "type": "integer", "minimum": 250, "maximum": 10000 }
+  }
+}

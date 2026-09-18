@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "physics": {
+    "fixedStep": 0.008333333333333333,
+    "maxFrameDelta": 0.05,
+    "gravity": [0, 3.35],
+    "linearDamping": 0.14
+  },
+  "ball": {
+    "radius": 0.095,
+    "restitution": 0.78,
+    "maxSpeed": 8.5,
+    "start": [0.08, -1.65],
+    "initialVelocity": [0.62, 0.15]
+  },
+  "playfield": {
+    "surfaceY": 0.69,
+    "drain": { "minX": -0.43, "maxX": 0.43, "z": 2.62 },
+    "safetyBounds": { "minX": -2.1, "maxX": 2.1, "minZ": -3.3, "maxZ": 3.4 }
+  },
+  "walls": [
+    { "id": "left", "a": [-1.49, -2.62], "b": [-1.49, 2.50], "restitution": 0.74 },
+    { "id": "right", "a": [1.49, -2.62], "b": [1.49, 2.50], "restitution": 0.74 },
+    { "id": "top", "a": [-1.49, -2.62], "b": [1.49, -2.62], "restitution": 0.76 },
+    { "id": "bottom-left", "a": [-1.49, 2.50], "b": [-0.43, 2.62], "restitution": 0.70 },
+    { "id": "bottom-right", "a": [0.43, 2.62], "b": [1.49, 2.50], "restitution": 0.70 }
+  ],
+  "flippers": [
+    {
+      "id": "left",
+      "pivot": [-0.90, 2.26],
+      "length": 0.94,
+      "radius": 0.13,
+      "restAngleDeg": 18,
+      "activeAngleDeg": 55,
+      "speedDegPerSec": 720,
+      "returnSpeedDegPerSec": 520,
+      "restitution": 0.68,
+      "kick": 1.15
+    },
+    {
+      "id": "right",
+      "pivot": [0.90, 2.26],
+      "length": 0.94,
+      "radius": 0.13,
+      "restAngleDeg": 162,
+      "activeAngleDeg": 125,
+      "speedDegPerSec": 720,
+      "returnSpeedDegPerSec": 520,
+      "restitution": 0.68,
+      "kick": 1.15
+    }
+  ]
+}

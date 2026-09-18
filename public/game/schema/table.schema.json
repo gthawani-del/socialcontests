@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "physics", "ball", "playfield", "walls", "flippers"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "physics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixedStep", "maxFrameDelta", "gravity", "linearDamping"],
+      "properties": {
+        "fixedStep": { "type": "number", "minimum": 0.004, "maximum": 0.02 },
+        "maxFrameDelta": { "type": "number", "minimum": 0.016, "maximum": 0.1 },
+        "gravity": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": { "type": "number", "minimum": -20, "maximum": 20 }
+        },
+        "linearDamping": { "type": "number", "minimum": 0, "maximum": 3 }
+      }
+    },
+    "ball": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["radius", "restitution", "maxSpeed", "start", "initialVelocity"],
+      "properties": {
+        "radius": { "type": "number", "minimum": 0.04, "maximum": 0.2 },
+        "restitution": { "type": "number", "minimum": 0, "maximum": 1.5 },
+        "maxSpeed": { "type": "number", "minimum": 1, "maximum": 25 },
+        "start": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": { "type": "number", "minimum": -5, "maximum": 5 }
+        },
+        "initialVelocity": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": { "type": "number", "minimum": -10, "maximum": 10 }
+        }
+      }
+    },
+    "playfield": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["surfaceY", "drain", "safetyBounds"],
+      "properties": {
+        "surfaceY": { "type": "number", "minimum": 0, "maximum": 2 },
+        "drain": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["minX", "maxX", "z"],
+          "properties": {
+            "minX": { "type": "number", "minimum": -3, "maximum": 0 },
+            "maxX": { "type": "number", "minimum": 0, "maximum": 3 },
+            "z": { "type": "number", "minimum": 1, "maximum": 4 }
+          }
+        },
+        "safetyBounds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["minX", "maxX", "minZ", "maxZ"],
+          "properties": {
+            "minX": { "type": "number", "minimum": -10, "maximum": 0 },
+            "maxX": { "type": "number", "minimum": 0, "maximum": 10 },
+            "minZ": { "type": "number", "minimum": -10, "maximum": 0 },
+            "maxZ": { "type": "number", "minimum": 0, "maximum": 10 }
+          }
+        }
+      }
+    },
+    "walls": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "a", "b", "restitution"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 32, "pattern": "^[a-z0-9_-]+$" },
+          "a": {
+            "type": "array", "minItems": 2, "maxItems": 2,
+            "items": { "type": "number", "minimum": -5, "maximum": 5 }
+          },
+          "b": {
+            "type": "array", "minItems": 2, "maxItems": 2,
+            "items": { "type": "number", "minimum": -5, "maximum": 5 }
+          },
+          "restitution": { "type": "number", "minimum": 0, "maximum": 1.5 }
+        }
+      }
+    },
+    "flippers": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id", "pivot", "length", "radius", "restAngleDeg", "activeAngleDeg",
+          "speedDegPerSec", "returnSpeedDegPerSec", "restitution", "kick"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 16, "pattern": "^[a-z0-9_-]+$" },
+          "pivot": {
+            "type": "array", "minItems": 2, "maxItems": 2,
+            "items": { "type": "number", "minimum": -5, "maximum": 5 }
+          },
+          "length": { "type": "number", "minimum": 0.3, "maximum": 1.5 },
+          "radius": { "type": "number", "minimum": 0.04, "maximum": 0.3 },
+          "restAngleDeg": { "type": "number", "minimum": -180, "maximum": 360 },
+          "activeAngleDeg": { "type": "number", "minimum": -180, "maximum": 360 },
+          "speedDegPerSec": { "type": "number", "minimum": 60, "maximum": 1500 },
+          "returnSpeedDegPerSec": { "type": "number", "minimum": 60, "maximum": 1500 },
+          "restitution": { "type": "number", "minimum": 0, "maximum": 1.5 },
+          "kick": { "type": "number", "minimum": 0, "maximum": 6 }
+        }
+      }
+    }
+  }
+}

@@ -11,7 +11,9 @@ canvas{position:absolute;inset:0;display:block;width:100%;height:100%;touch-acti
 .hud h1{font-size:clamp(26px,4.2vw,44px);line-height:.96;margin:0;letter-spacing:-.045em;white-space:nowrap}
 .hud p{margin:9px 0 0;color:#a4afbd;font-size:12px;line-height:1.35}
 
-.status{position:absolute;top:max(18px,env(safe-area-inset-top));right:max(20px,env(safe-area-inset-right));font-size:10px;letter-spacing:.14em;border:1px solid rgba(255,255,255,.14);background:rgba(6,8,13,.64);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:999px;padding:9px 11px;color:#aeb9c6;white-space:nowrap}
+.status,.ball-state{position:absolute;right:max(20px,env(safe-area-inset-right));font-size:10px;letter-spacing:.14em;border:1px solid rgba(255,255,255,.14);background:rgba(6,8,13,.64);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:999px;padding:9px 11px;color:#aeb9c6;white-space:nowrap}
+.status{top:max(18px,env(safe-area-inset-top))}
+.ball-state{top:calc(max(18px,env(safe-area-inset-top)) + 43px);color:#e9c66c;border-color:rgba(233,198,108,.22)}
 .status.ready{color:#88ffc2;border-color:rgba(136,255,194,.28)}
 .status.error{color:#ff9b9b}
 
@@ -35,4 +37,25 @@ canvas{position:absolute;inset:0;display:block;width:100%;height:100%;touch-acti
   .eyebrow{font-size:9px}
   .hud h1{font-size:25px}
   .hud p{max-width:185px}
+}
+
+.flipper-controls{position:absolute;inset:0;z-index:5;pointer-events:none}
+.flipper-button{position:absolute;bottom:max(22px,env(safe-area-inset-bottom));width:92px;height:52px;border:1px solid rgba(229,173,67,.35);border-radius:18px;background:rgba(7,15,28,.74);color:#e6c46d;font:700 10px/1 Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.15em;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.flipper-button.left{left:max(20px,env(safe-area-inset-left))}
+.flipper-button.right{right:max(120px,calc(env(safe-area-inset-right) + 120px))}
+.flipper-button.pressed{transform:scale(.96);background:rgba(229,173,67,.20);border-color:rgba(229,173,67,.78);color:#fff}
+
+@media(pointer:fine) and (min-width:800px){
+  .flipper-button{opacity:.35}
+  .flipper-button:hover{opacity:.85}
+}
+
+@media(max-width:700px){
+  .status,.ball-state{right:max(18px,env(safe-area-inset-right));font-size:9px;padding:8px 10px}
+  .ball-state{top:calc(max(18px,env(safe-area-inset-top)) + 39px)}
+  .controls{display:none}
+  .reset-view{display:none}
+  .flipper-button{bottom:max(18px,env(safe-area-inset-bottom));width:92px;height:58px;opacity:1}
+  .flipper-button.left{left:max(16px,env(safe-area-inset-left))}
+  .flipper-button.right{right:max(16px,env(safe-area-inset-right))}
 }

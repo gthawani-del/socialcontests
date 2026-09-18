@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "ballsPerGame": 3,
+  "drainResetDelayMs": 650,
+  "gameResetDelayMs": 1200
+}

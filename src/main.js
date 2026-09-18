@@ -2,11 +2,16 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { loadValidatedJson } from './config/validate.js';
+import { createGameplayController } from './gameplay/controller.js';
 import './style.css';
 
 const canvas = document.querySelector('#game');
 const status = document.querySelector('#status');
 const resetViewButton = document.querySelector('#resetView');
+const ballStateElement = document.querySelector('#ballState');
+const leftFlipperButton = document.querySelector('[data-flipper="left"]');
+const rightFlipperButton = document.querySelector('[data-flipper="right"]');
 
 const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -77,6 +82,9 @@ const clock = new THREE.Clock();
 
 let mixer = null;
 let modelRoot = null;
+let gameplay = null;
+let tableConfig = null;
+let rulesConfig = null;
 const modelSize = new THREE.Vector3();
 
 const PARIS_ASSETS = {
@@ -303,28 +311,42 @@ loader.load(
     modelRoot.position.y += modelSize.y * 0.5;
 
     try {
+      status.textContent = 'Validating game config…';
+
+      [tableConfig, rulesConfig] = await Promise.all([
+        loadValidatedJson('/game/table.json', '/game/schema/table.schema.json'),
+        loadValidatedJson('/game/rules.json', '/game/schema/rules.schema.json')
+      ]);
+
       status.textContent = 'Loading Paris theme…';
       await applyParisGraphics(modelRoot);
+
+      gameplay = createGameplayController({
+        root: modelRoot,
+        tableConfig,
+        rulesConfig,
+        ballStateElement,
+        leftButton: leftFlipperButton,
+        rightButton: rightFlipperButton
+      });
+
+      scene.add(modelRoot);
+      gameplay.sync();
+      applyHeroView();
+
+      if (gltf.animations?.length) {
+        mixer = new THREE.AnimationMixer(modelRoot);
+        gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
+      }
+
+      status.textContent = 'PLAYABLE V1 · LIVE';
+      status.classList.add('ready');
+      resetViewButton.disabled = false;
     } catch (error) {
-      console.error('Paris graphics load failed:', error);
-      status.textContent = 'Paris theme failed';
+      console.error('Game boot failed:', error);
+      status.textContent = 'Game boot failed';
       status.classList.add('error');
     }
-
-    scene.add(modelRoot);
-    applyHeroView();
-
-    if (gltf.animations?.length) {
-      mixer = new THREE.AnimationMixer(modelRoot);
-      gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
-    }
-
-    if (!status.classList.contains('error')) {
-      status.textContent = 'PARIS V1 · LIVE';
-      status.classList.add('ready');
-    }
-
-    resetViewButton.disabled = false;
   },
   (progress) => {
     if (progress.total) {
@@ -368,6 +390,10 @@ function animate() {
 
   const dt = clock.getDelta();
   if (mixer) mixer.update(dt);
+  if (gameplay) {
+    gameplay.step(dt);
+    gameplay.sync();
+  }
 
   controls.update();
   renderer.render(scene, camera);
