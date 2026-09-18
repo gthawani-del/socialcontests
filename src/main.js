@@ -18,16 +18,16 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.08;
+renderer.toneMappingExposure = 1.12;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x06080d);
-scene.fog = new THREE.FogExp2(0x06080d, 0.026);
+scene.background = new THREE.Color(0x05070b);
+scene.fog = new THREE.FogExp2(0x05070b, 0.018);
 
 const camera = new THREE.PerspectiveCamera(
-  42,
+  41,
   window.innerWidth / window.innerHeight,
   0.01,
   100
@@ -38,20 +38,20 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.06;
 controls.enablePan = false;
 controls.minPolarAngle = THREE.MathUtils.degToRad(34);
-controls.maxPolarAngle = THREE.MathUtils.degToRad(74);
-controls.minAzimuthAngle = THREE.MathUtils.degToRad(-26);
-controls.maxAzimuthAngle = THREE.MathUtils.degToRad(26);
+controls.maxPolarAngle = THREE.MathUtils.degToRad(72);
+controls.minAzimuthAngle = THREE.MathUtils.degToRad(-24);
+controls.maxAzimuthAngle = THREE.MathUtils.degToRad(24);
 
-const hemi = new THREE.HemisphereLight(0xc7dcff, 0x1a1008, 1.65);
+const hemi = new THREE.HemisphereLight(0xc7dcff, 0x17100b, 1.85);
 scene.add(hemi);
 
-const key = new THREE.DirectionalLight(0xffdfbc, 3.8);
+const key = new THREE.DirectionalLight(0xffdfbc, 4.1);
 key.position.set(-3.3, 5.3, 7.4);
 key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
 scene.add(key);
 
-const rim = new THREE.PointLight(0x35a8ff, 19, 14, 2);
+const rim = new THREE.PointLight(0x35a8ff, 20, 14, 2);
 rim.position.set(3.8, 2.8, 3.5);
 scene.add(rim);
 
@@ -59,22 +59,15 @@ const warm = new THREE.PointLight(0xff6b2b, 12, 12, 2);
 warm.position.set(-3.2, -1.8, 2.6);
 scene.add(warm);
 
-const lowerFill = new THREE.PointLight(0x7ea8ff, 10, 9, 2);
-lowerFill.position.set(0, 2.1, 4.2);
+// Focused lower-table fill: improves flipper/drain readability without
+// illuminating the entire environment.
+const lowerFill = new THREE.PointLight(0x8fb5ff, 17, 10, 2);
+lowerFill.position.set(0, 3.0, 2.3);
 scene.add(lowerFill);
 
-const floor = new THREE.Mesh(
-  new THREE.CircleGeometry(12, 96),
-  new THREE.MeshStandardMaterial({
-    color: 0x0b1018,
-    roughness: 0.82,
-    metalness: 0.08
-  })
-);
-floor.rotation.x = -Math.PI / 2;
-floor.position.y = -0.04;
-floor.receiveShadow = true;
-scene.add(floor);
+const lowerWarm = new THREE.PointLight(0xffc08a, 7, 7, 2);
+lowerWarm.position.set(0, 1.4, 3.8);
+scene.add(lowerWarm);
 
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
@@ -94,31 +87,35 @@ function applyHeroView() {
   const isPortrait = aspect < 0.82;
   const isWide = aspect > 1.35;
 
-  // The table's long axis is Z after Blender -> glTF conversion.
   const tableLength = Math.max(modelSize.z, modelSize.x * 1.55);
   const tableHeight = modelSize.y;
 
   camera.aspect = aspect;
-  camera.fov = isPortrait ? 43 : isWide ? 39 : 41;
+  camera.fov = isPortrait ? 43 : isWide ? 40 : 41;
   camera.updateProjectionMatrix();
 
+  // Aim slightly higher on the cabinet so the machine sits lower in the
+  // viewport, leaving clean breathing room for the HUD.
   const target = new THREE.Vector3(
     0,
-    Math.max(tableHeight * 0.28, 0.42),
-    isPortrait ? 0.08 : 0
+    Math.max(tableHeight * 0.38, 0.52),
+    isPortrait ? 0.10 : 0.06
   );
 
   if (isPortrait) {
-    camera.position.set(0, tableLength * 0.96, tableLength * 1.13);
+    // Preserve full-table visibility on mobile while still being closer
+    // than V3.1.
+    camera.position.set(0, tableLength * 0.84, tableLength * 1.00);
   } else if (isWide) {
-    camera.position.set(0, tableLength * 0.78, tableLength * 1.27);
+    // Desktop hero framing: about one-third closer than V3.1.
+    camera.position.set(0, tableLength * 0.52, tableLength * 0.84);
   } else {
-    camera.position.set(0, tableLength * 0.88, tableLength * 1.20);
+    camera.position.set(0, tableLength * 0.64, tableLength * 0.94);
   }
 
   controls.target.copy(target);
-  controls.minDistance = tableLength * 0.92;
-  controls.maxDistance = tableLength * 2.15;
+  controls.minDistance = tableLength * (isPortrait ? 0.78 : 0.70);
+  controls.maxDistance = tableLength * 1.75;
   controls.update();
 }
 
@@ -134,8 +131,6 @@ loader.load(
       }
     });
 
-    // Center only once. Camera positioning is then deterministic and
-    // independent of viewport size.
     const box = new THREE.Box3().setFromObject(modelRoot);
     const center = box.getCenter(new THREE.Vector3());
     box.getSize(modelSize);
@@ -151,7 +146,7 @@ loader.load(
       gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
     }
 
-    status.textContent = 'V3.1 VIEW · LIVE';
+    status.textContent = 'V3.2 VIEW · LIVE';
     status.classList.add('ready');
     resetViewButton.disabled = false;
   },
@@ -168,11 +163,10 @@ loader.load(
   }
 );
 
-resetViewButton.addEventListener('click', () => {
-  applyHeroView();
-});
+resetViewButton.addEventListener('click', applyHeroView);
 
 let resizeFrame = null;
+
 function resize() {
   if (resizeFrame) cancelAnimationFrame(resizeFrame);
 
@@ -186,9 +180,7 @@ function resize() {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
 
-    if (modelRoot) {
-      applyHeroView();
-    }
+    if (modelRoot) applyHeroView();
   });
 }
 
