@@ -120,7 +120,7 @@ function applyHeroView() {
 }
 
 loader.load(
-  '/models/infinite-pinball-base-v3.glb',
+  '/models/infinite-pinball-base-v4.glb',
   (gltf) => {
     modelRoot = gltf.scene;
 
@@ -146,19 +146,19 @@ loader.load(
       gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
     }
 
-    status.textContent = 'V3.2 VIEW · LIVE';
+    status.textContent = 'V4 TABLE · LIVE';
     status.classList.add('ready');
     resetViewButton.disabled = false;
   },
   (progress) => {
     if (progress.total) {
       const pct = Math.round((progress.loaded / progress.total) * 100);
-      status.textContent = `Loading V3 · ${pct}%`;
+      status.textContent = `Loading V4 · ${pct}%`;
     }
   },
   (error) => {
     console.error(error);
-    status.textContent = 'V3 model failed to load';
+    status.textContent = 'V4 model failed to load';
     status.classList.add('error');
   }
 );

@@ -1,0 +1,28 @@
+{
+  "name": "Infinite Pinball Base V4",
+  "source": "Higgsfield 3D Jutsu",
+  "jutsuProjectId": "218ae5d8-09b8-44f3-932f-18ded9026133",
+  "jutsuRevision": 5,
+  "glb": "/models/infinite-pinball-base-v4.glb",
+  "compression": "EXT_meshopt_compression",
+  "themeSlots": [
+    "ThemeSlot_Hero",
+    "ThemeSlot_LeftWorld",
+    "ThemeSlot_RightWorld",
+    "ThemeSlot_RampGate",
+    "ThemeSlot_Jackpot",
+    "ThemeSlot_AnimatedProp",
+    "ThemeSlot_Backdrop"
+  ],
+  "refinements": [
+    "18 percent smaller tapered flippers with dark rubber underlay",
+    "narrower perimeter ramp with thinner rails",
+    "exposed forward jackpot zone",
+    "compact mounted upper target banks",
+    "smaller metallic side posts",
+    "purposeful playfield inserts and arrows",
+    "cleaner lower inlane and outlane guides",
+    "polished bumper trim rings"
+  ],
+  "status": "v4-final-visual-pass"
+}
