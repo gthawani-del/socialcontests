@@ -80,11 +80,13 @@ let modelRoot = null;
 const modelSize = new THREE.Vector3();
 
 const PARIS_ASSETS = {
-  playfield: 'https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_b5e27619-ddb5-49a0-b908-e3c79a417eb3.png',
-  backdrop: 'https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_3fb38076-8fbf-4097-bcf6-b5a23ee29353.png',
-  metro: 'https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_635eb25d-5989-4482-9a21-2d5467aed180.png',
-  cafe: 'https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_ab146467-3151-4823-bad7-f77aaedef167.png',
-  hero: 'https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_0a58e923-445c-4d98-970f-f73c933984c3.png'
+  playfield: '/themes/paris/assets/playfield.webp',
+  backdrop: '/themes/paris/assets/backdrop.webp',
+  metro: '/themes/paris/assets/metro.webp',
+  cafe: '/themes/paris/assets/cafe.webp',
+  paris: '/themes/paris/assets/paris.webp',
+  jackpot: '/themes/paris/assets/jackpot.webp',
+  hero: '/themes/paris/assets/hero.webp'
 };
 
 function prepareTexture(texture) {
@@ -179,7 +181,7 @@ async function applyParisGraphics(root) {
   root.add(cafe);
 
   // The center bumper uses the Eiffel hero artwork as the Paris landmark skin.
-  const paris = makeCircleGraphic(textures.hero, 0.205, [0, 1.036, -1.18]);
+  const paris = makeCircleGraphic(textures.paris, 0.205, [0, 1.036, -1.18]);
   paris.name = 'Paris_AI_Bumper_Landmark';
   root.add(paris);
 
@@ -194,6 +196,18 @@ async function applyParisGraphics(root) {
   );
   hero.name = 'Paris_AI_Hero_Eiffel';
   root.add(hero);
+
+  // Matching production jackpot artwork from the approved Paris art direction.
+  const jackpotGraphic = makePlane(
+    textures.jackpot,
+    1.20,
+    0.90,
+    [0, 1.30, -2.58],
+    [0, 0, 0],
+    { depthWrite: false, renderOrder: 6 }
+  );
+  jackpotGraphic.name = 'Paris_AI_Jackpot_Crest';
+  root.add(jackpotGraphic);
 
   // Theme mechanical accents.
   root.traverse((obj) => {
@@ -289,11 +303,11 @@ loader.load(
     modelRoot.position.y += modelSize.y * 0.5;
 
     try {
-      status.textContent = 'Loading Paris graphics…';
+      status.textContent = 'Loading Paris theme…';
       await applyParisGraphics(modelRoot);
     } catch (error) {
       console.error('Paris graphics load failed:', error);
-      status.textContent = 'Paris graphics failed';
+      status.textContent = 'Paris theme failed';
       status.classList.add('error');
     }
 
@@ -306,7 +320,7 @@ loader.load(
     }
 
     if (!status.classList.contains('error')) {
-      status.textContent = 'PARIS GRAPHICS · LIVE';
+      status.textContent = 'PARIS V1 · LIVE';
       status.classList.add('ready');
     }
 

@@ -1,15 +1,24 @@
 {
-  "id": "paris-nights-v2",
+  "id": "paris-nights-v3",
   "name": "Paris Nights",
   "baseTable": "v4",
-  "strategy": "generated-raster-theme",
+  "strategy": "local-production-theme-assets",
   "assets": {
-    "playfield": "https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_b5e27619-ddb5-49a0-b908-e3c79a417eb3.png",
-    "backdrop": "https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_3fb38076-8fbf-4097-bcf6-b5a23ee29353.png",
-    "bumperMetro": "https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_635eb25d-5989-4482-9a21-2d5467aed180.png",
-    "bumperCafe": "https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_ab146467-3151-4823-bad7-f77aaedef167.png",
-    "heroEiffel": "https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260918_114540_0a58e923-445c-4d98-970f-f73c933984c3.png"
+    "playfield": "/themes/paris/assets/playfield.webp",
+    "backdrop": "/themes/paris/assets/backdrop.webp",
+    "bumperMetro": "/themes/paris/assets/metro.webp",
+    "bumperCafe": "/themes/paris/assets/cafe.webp",
+    "bumperParis": "/themes/paris/assets/paris.webp",
+    "jackpot": "/themes/paris/assets/jackpot.webp",
+    "heroEiffel": "/themes/paris/assets/hero.webp"
   },
-  "generatedWith": "Higgsfield GPT Image 2.5",
-  "status": "graphics-live"
+  "palette": {
+    "navy": "#07162e",
+    "gold": "#e5ad43",
+    "cream": "#f6ead0",
+    "red": "#b43732",
+    "blue": "#3a69a7"
+  },
+  "generatedWith": "OpenAI built-in image generation",
+  "status": "production-theme-v1"
 }
