@@ -37,6 +37,15 @@ const nudgeLeftButton = document.querySelector('#nudgeLeft');
 const nudgeRightButton = document.querySelector('#nudgeRight');
 const rightFlipperButton = document.querySelector('[data-flipper="right"]');
 
+const isIPhone =
+  /iPhone/i.test(navigator.userAgent || '') ||
+  navigator.platform === 'iPhone';
+
+if (soundGateElement && isIPhone) {
+  soundGateElement.hidden = false;
+  soundGateElement.setAttribute('aria-hidden', 'false');
+}
+
 const renderer = new THREE.WebGLRenderer({
   canvas,
   antialias: true,
