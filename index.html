@@ -28,7 +28,11 @@
         </div>
         <div class="runtime-state">
           <button id="soundButton" type="button">SOUND READY</button>
-          <span id="difficultyBadge">DIFFICULTY STANDARD</span>
+          <select id="difficultySelect" aria-label="Gameplay difficulty">
+            <option value="easy">DIFFICULTY · EASY</option>
+            <option value="standard" selected>DIFFICULTY · STANDARD</option>
+            <option value="hard">DIFFICULTY · HARD</option>
+          </select>
           <span id="fxBadge">FX AUTO</span>
         </div>
       </div>
