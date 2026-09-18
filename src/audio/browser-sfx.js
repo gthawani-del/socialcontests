@@ -1,7 +1,8 @@
 export class BrowserSfx {
-  constructor(config, statusElement = null) {
+  constructor(config, statusElement = null, profile = 'paris') {
     this.config = config;
     this.statusElement = statusElement;
+    this.profile = profile;
     this.context = null;
     this.master = null;
     this.compressor = null;
@@ -175,6 +176,13 @@ export class BrowserSfx {
   }
 
   flipper(pan = 0) {
+    if (this.profile === 'bombay-1945') {
+      this.tone(132, 0.055, this.config.flipperGain, 'square', -48, pan);
+      this.tone(66, 0.085, this.config.flipperGain * 0.62, 'sine', -10, pan);
+      this.noise(0.042, this.config.flipperGain * 0.28, 1100, pan);
+      return;
+    }
+
     this.tone(118, 0.05, this.config.flipperGain, 'square', -36, pan);
     this.tone(74, 0.07, this.config.flipperGain * 0.58, 'sine', -12, pan);
     this.noise(0.032, this.config.flipperGain * 0.20, 1500, pan);
@@ -187,23 +195,87 @@ export class BrowserSfx {
   }
 
   slingshot(pan = 0) {
+    if (this.profile === 'bombay-1945') {
+      // Brass tram switch / track snap.
+      this.tone(208, 0.075, this.config.slingshotGain, 'square', 160, pan);
+      this.tone(1080, 0.055, this.config.slingshotGain * 0.72, 'triangle', -420, pan);
+      this.noise(0.036, this.config.slingshotGain * 0.34, 1450, pan);
+      return;
+    }
+
     this.tone(240, 0.06, this.config.slingshotGain, 'square', 210, pan);
     this.tone(720, 0.04, this.config.slingshotGain * 0.70, 'triangle', -260, pan);
     this.noise(0.028, this.config.slingshotGain * 0.28, 1700, pan);
   }
 
-  bumper(pan = 0) {
+  bumper(id = 'bumper', pan = 0) {
+    if (typeof id === 'number') {
+      pan = id;
+      id = 'bumper';
+    }
+
+    if (this.profile === 'bombay-1945') {
+      if (id === 'metro') {
+        // Bombay tram bell: bright double strike.
+        this.tone(1480, 0.11, this.config.bumperGain * 0.94, 'sine', -120, pan);
+        window.setTimeout(
+          () => this.tone(1120, 0.13, this.config.bumperGain * 0.72, 'sine', -90, pan),
+          72
+        );
+      } else if (id === 'cafe') {
+        // Victoria Terminus clock / station brass.
+        this.tone(640, 0.12, this.config.bumperGain * 0.92, 'triangle', 80, pan);
+        this.tone(320, 0.16, this.config.bumperGain * 0.55, 'sine', -45, pan);
+      } else {
+        // Port / dock resonance.
+        this.tone(118, 0.22, this.config.bumperGain * 0.95, 'sawtooth', -22, pan);
+        this.tone(236, 0.12, this.config.bumperGain * 0.48, 'triangle', -38, pan);
+      }
+      this.noise(0.03, this.config.bumperGain * 0.18, 1800, pan);
+      return;
+    }
+
     this.tone(310, 0.08, this.config.bumperGain, 'square', 250, pan);
     this.tone(880, 0.055, this.config.bumperGain * 0.78, 'triangle', -300, pan);
     this.noise(0.025, this.config.bumperGain * 0.22, 2600, pan);
   }
 
   target(pan = 0) {
+    if (this.profile === 'bombay-1945') {
+      // Telegraph / metal type strike.
+      this.tone(980, 0.038, this.config.targetGain, 'square', -410, pan);
+      this.noise(0.022, this.config.targetGain * 0.34, 2800, pan);
+      return;
+    }
+
     this.tone(760, 0.055, this.config.targetGain, 'square', -250, pan);
     this.tone(380, 0.045, this.config.targetGain * 0.62, 'triangle', -90, pan);
   }
 
+  scoringZone(id = 'zone', pan = 0) {
+    if (this.profile === 'bombay-1945') {
+      // Large tram bell / signal reward.
+      this.tone(1360, 0.16, this.config.targetGain, 'sine', -130, pan);
+      window.setTimeout(
+        () => this.tone(920, 0.20, this.config.targetGain * 0.82, 'sine', -70, pan),
+        82
+      );
+      return;
+    }
+
+    this.target(pan);
+  }
+
   bank() {
+    if (this.profile === 'bombay-1945') {
+      // BOMBAY bank: tram bell sequence resolving into a low port horn.
+      this.tone(980, 0.11, this.config.targetGain, 'sine', 180, -0.45);
+      window.setTimeout(() => this.tone(1240, 0.12, this.config.targetGain * 0.94, 'sine', 160, 0), 65);
+      window.setTimeout(() => this.tone(1540, 0.13, this.config.targetGain * 0.86, 'sine', -120, 0.45), 130);
+      window.setTimeout(() => this.tone(94, 0.34, this.config.targetGain * 0.58, 'sawtooth', -18, 0), 180);
+      return;
+    }
+
     this.tone(440, 0.11, this.config.targetGain, 'triangle', 260, -0.4);
     window.setTimeout(() => this.tone(660, 0.12, this.config.targetGain * 0.95, 'triangle', 260, 0), 70);
     window.setTimeout(() => this.tone(880, 0.14, this.config.targetGain * 0.88, 'triangle', 220, 0.4), 140);
@@ -215,6 +287,14 @@ export class BrowserSfx {
 
   launch(charge = 0.5) {
     const gain = this.config.launcherGain * (0.72 + clamp(charge, 0, 1) * 0.28);
+
+    if (this.profile === 'bombay-1945') {
+      this.tone(126, 0.14, gain, 'sawtooth', 180, 0.88);
+      this.tone(54, 0.13, gain * 0.64, 'sine', 36, 0.88);
+      this.noise(0.095, gain * 0.38, 720, 0.88);
+      return;
+    }
+
     this.tone(142, 0.11, gain, 'sawtooth', 290, 0.88);
     this.tone(58, 0.09, gain * 0.62, 'sine', 48, 0.88);
     this.noise(0.07, gain * 0.28, 900, 0.88);
@@ -231,6 +311,15 @@ export class BrowserSfx {
   }
 
   drain() {
+    if (this.profile === 'bombay-1945') {
+      this.tone(88, 0.30, this.config.drainGain, 'sawtooth', -24, 0);
+      window.setTimeout(
+        () => this.tone(52, 0.34, this.config.drainGain * 0.72, 'sine', -10, 0),
+        70
+      );
+      return;
+    }
+
     this.tone(92, 0.18, this.config.drainGain, 'sine', -46, 0);
     window.setTimeout(() => this.tone(58, 0.20, this.config.drainGain * 0.78, 'triangle', -18, 0), 50);
   }
