@@ -3,78 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#04070d" />
-    <meta name="description" content="Infinite Pinball — Paris Nights production theme." />
-    <title>Infinite Pinball · Paris Nights · V6.2</title>
+    <meta name="theme-color" content="#07090e" />
+    <meta name="description" content="Infinite Pinball — playable worlds, cities and eras." />
+    <title>Infinite Pinball · Choose Your World</title>
   </head>
   <body>
-    <div id="app">
-      <canvas id="game"></canvas>
+    <main id="landingApp">
+      <header class="site-head">
+        <a class="wordmark" href="/" aria-label="Infinite Pinball home">
+          <span class="mark">IP</span>
+          <span><strong>INFINITE PINBALL</strong><small>Playable worlds</small></span>
+        </a>
+        <nav>
+          <a href="#themes">Themes</a>
+          <a href="/admin">Admin</a>
+        </nav>
+      </header>
 
-      <div class="hud">
-        <div class="brand">
-          <div class="eyebrow">SOCIAL CONTESTS</div>
-          <h1>INFINITE PINBALL</h1>
-          <p>Paris Nights</p>
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">SOCIAL CONTESTS PRESENTS</span>
+          <h1>One machine.<br><em>Many worlds.</em></h1>
+          <p>Choose a city, an era and a mood. The same precision pinball engine transforms into a completely different playable world.</p>
+          <a class="hero-cta" href="#themes">Explore themes <b>↓</b></a>
+        </div>
+        <div class="hero-orbit" aria-hidden="true">
+          <i></i><i></i><i></i>
+          <div class="orbital-mark">∞</div>
+        </div>
+      </section>
+
+      <section class="themes" id="themes">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">THEME COLLECTION 01</span>
+            <h2>Choose your table</h2>
+          </div>
+          <p>Every theme carries its own art direction, score language, lighting and sound identity.</p>
         </div>
 
-        <div class="status" id="status">Starting…</div>
-        <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open game settings" aria-expanded="false">•••</button>
-        <div class="ball-state" id="ballState">BALL —</div>
-        <div class="score-state">SCORE <strong id="scoreValue">0</strong></div>
-        <div class="tilt-state" id="tiltState"></div>
-        <div class="launcher-state">
-          <span id="launcherState">HOLD / PULL LAUNCH</span>
-          <div class="launch-meter"><i id="launchMeterFill"></i></div>
+        <div class="theme-grid">
+          <a class="theme-card paris" href="/play?theme=paris" data-card>
+            <div class="theme-image"></div>
+            <div class="theme-shade"></div>
+            <div class="theme-top">
+              <span>LIVE</span>
+              <em>01</em>
+            </div>
+            <div class="theme-copy">
+              <span class="era">PARIS · AFTER DARK</span>
+              <h3>Paris Nights</h3>
+              <p>Gold, navy and boulevard light. Elegant, fast and luminous.</p>
+              <div class="enter">Enter Paris <b>↗</b></div>
+            </div>
+          </a>
+
+          <a class="theme-card bombay" href="/play?theme=bombay-1945" data-card>
+            <div class="theme-image"></div>
+            <div class="theme-shade"></div>
+            <div class="archive-stamp">ARCHIVAL WORLD · 1945</div>
+            <div class="theme-top">
+              <span>NEW</span>
+              <em>02</em>
+            </div>
+            <div class="theme-copy">
+              <span class="era">BOMBAY · 1945</span>
+              <h3>Bombay 1945</h3>
+              <p>Trams, Victoria Terminus, Fort, port signals and the mechanical pulse of a city on the edge of history.</p>
+              <div class="enter">Enter Bombay <b>↗</b></div>
+            </div>
+          </a>
         </div>
-        <div class="runtime-state" id="runtimeState">
-          <div class="settings-title">GAME SETTINGS</div>
-          <button id="soundButton" type="button">ENABLE SOUND</button>
-          <select id="difficultySelect" aria-label="Gameplay difficulty">
-            <option value="easy">DIFFICULTY · EASY</option>
-            <option value="standard" selected>DIFFICULTY · STANDARD</option>
-            <option value="hard">DIFFICULTY · HARD</option>
-          </select>
-          <span id="fxBadge">FX AUTO</span>
+
+        <div class="history-note">
+          <span>HISTORICAL FOUNDATION</span>
+          <div>
+            <p>Bombay 1945 is grounded in archival views of the city, then rebuilt as a cinematic pinball world rather than presented as a literal documentary reconstruction.</p>
+            <small>Archive anchor: Homai Vyarawalla · Victoria Terminus, Bombay · 1940 · Wikimedia Commons</small>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div class="controls">A / ← LEFT · D / → RIGHT · HOLD SPACE / PULL LAUNCH · Q/E NUDGE · R RESET</div>
-
-      <div class="secondary-controls" aria-label="Launcher and nudge controls">
-        <button class="nudge-button" id="nudgeLeft" type="button" aria-label="Nudge left">NUDGE L</button>
-        <button class="launch-button" id="launchButton" type="button" aria-label="Hold or pull down to charge launcher"><span>PULL</span><strong>LAUNCH</strong></button>
-        <button class="nudge-button" id="nudgeRight" type="button" aria-label="Nudge right">NUDGE R</button>
-      </div>
-
-      <div class="flipper-controls" aria-label="Pinball controls">
-        <button class="flipper-button left" type="button" data-flipper="left" aria-label="Left flipper">LEFT</button>
-        <button class="flipper-button right" type="button" data-flipper="right" aria-label="Right flipper">RIGHT</button>
-      </div>
-
-      <div class="sound-gate" id="soundGate" aria-hidden="true" hidden>
-        <div class="sound-gate-card">
-          <div class="sound-gate-kicker">PARIS NIGHTS</div>
-          <h2>ENABLE SOUND</h2>
-          <p>Tap once to enable game audio on iPhone.</p>
-          <button id="enableSoundButton" type="button">ENABLE SOUND</button>
+      <section class="platform">
+        <span class="eyebrow">THE INFINITE SYSTEM</span>
+        <h2>Same engine. New identity.</h2>
+        <div class="platform-grid">
+          <article><strong>01</strong><span>Physics</span><p>One configurable simulation for every table.</p></article>
+          <article><strong>02</strong><span>World</span><p>Theme-specific art, labels, lighting and atmosphere.</p></article>
+          <article><strong>03</strong><span>Sound</span><p>Distinct mechanical and environmental audio language.</p></article>
+          <article><strong>∞</strong><span>Expand</span><p>New cities and eras without rebuilding the engine.</p></article>
         </div>
-      </div>
+      </section>
 
-      <div class="game-over" id="gameOver" aria-hidden="true">
-        <div class="game-over-card" role="dialog" aria-modal="true" aria-labelledby="gameOverTitle">
-          <div class="game-over-kicker">PARIS NIGHTS</div>
-          <h2 id="gameOverTitle">GAME OVER</h2>
-          <div class="final-score-label">FINAL SCORE</div>
-          <strong class="final-score" id="finalScore">0</strong>
-          <button id="playAgain" type="button">PLAY AGAIN</button>
-        </div>
-      </div>
-
-      <div class="score-popups" id="scorePopups" aria-hidden="true"></div>
-      <button class="reset-view" id="resetView" type="button" disabled>RESET VIEW</button>
-    </div>
-
-    <script type="module" src="/src/main.js"></script>
+      <footer>
+        <span>INFINITE PINBALL</span>
+        <small>Paris Nights · Bombay 1945</small>
+      </footer>
+    </main>
+    <script type="module" src="/src/landing/landing.js"></script>
   </body>
 </html>
