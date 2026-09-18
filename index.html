@@ -3,102 +3,258 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#07090e" />
-    <meta name="description" content="Infinite Pinball — playable worlds, cities and eras." />
-    <title>Infinite Pinball · Choose Your World</title>
+    <meta name="theme-color" content="#080a0f" />
+    <meta name="description" content="Infinite Pinball — choose a world and play." />
+    <title>Infinite Pinball · Arcade Lobby</title>
   </head>
   <body>
     <main id="landingApp">
-      <header class="site-head">
-        <a class="wordmark" href="/" aria-label="Infinite Pinball home">
-          <span class="mark">IP</span>
-          <span><strong>INFINITE PINBALL</strong><small>Playable worlds</small></span>
+      <header class="lobby-header">
+        <a class="brand-lockup" href="/" aria-label="Infinite Pinball home">
+          <span class="brand-mark">IP</span>
+          <span>
+            <strong>INFINITE PINBALL</strong>
+            <small>ARCADE LOBBY</small>
+          </span>
         </a>
-        <nav>
-          <a href="#themes">Themes</a>
-          <a href="/admin">Admin</a>
-        </nav>
+
+        <div class="header-actions">
+          <a href="#worlds" class="desktop-link">Worlds</a>
+          <a href="#scores" class="desktop-link">Scores</a>
+          <a href="/admin" class="icon-action" aria-label="Open admin">⚙</a>
+        </div>
       </header>
 
-      <section class="hero">
-        <div class="hero-copy">
-          <span class="eyebrow">SOCIAL CONTESTS PRESENTS</span>
-          <h1>One machine.<br><em>Many worlds.</em></h1>
-          <p>Choose a city, an era and a mood. The same precision pinball engine transforms into a completely different playable world.</p>
-          <a class="hero-cta" href="#themes">Explore themes <b>↓</b></a>
+      <div class="chip-row" aria-label="Browse themes">
+        <button class="chip active" type="button" data-scroll="featured">Featured</button>
+        <button class="chip" type="button" data-scroll="worlds">Playable Worlds</button>
+        <button class="chip" type="button" data-scroll="historical">Historical</button>
+        <button class="chip" type="button" data-scroll="night-worlds">Night Worlds</button>
+        <button class="chip" type="button" data-scroll="coming-soon">Coming Soon</button>
+      </div>
+
+      <section class="featured-hero" id="featured">
+        <div class="hero-media"></div>
+        <div class="hero-vignette"></div>
+        <div class="hero-content">
+          <div class="hero-badges">
+            <span>FEATURED WORLD</span>
+            <span class="new">NEW</span>
+          </div>
+          <p class="hero-kicker">BOMBAY · 1945</p>
+          <h1>Bombay 1945</h1>
+          <p class="hero-tagline">Trams. Fort. Rail. Port.</p>
+          <p class="hero-description">A cinematic pinball world grounded in archival Bombay—Victoria Terminus, tram lines, Ballard Estate and the mechanical pulse of a city on the edge of history.</p>
+
+          <div class="hero-meta">
+            <span>HISTORICAL</span>
+            <i></i>
+            <span>3 BALLS</span>
+            <i></i>
+            <span>STANDARD</span>
+          </div>
+
+          <div class="hero-actions">
+            <a class="play-button" href="/play?theme=bombay-1945">
+              <b>▶</b><span>Play</span>
+            </a>
+            <button class="secondary-button" type="button" data-scroll="historical">
+              <b>＋</b><span>Explore World</span>
+            </button>
+          </div>
         </div>
-        <div class="hero-orbit" aria-hidden="true">
-          <i></i><i></i><i></i>
-          <div class="orbital-mark">∞</div>
-        </div>
+        <div class="archive-credit">Archive anchor · Victoria Terminus, Bombay · 1940 · Homai Vyarawalla</div>
       </section>
 
-      <section class="themes" id="themes">
-        <div class="section-head">
+      <section class="rail-section continue-section" id="continue" hidden>
+        <div class="rail-heading">
           <div>
-            <span class="eyebrow">THEME COLLECTION 01</span>
-            <h2>Choose your table</h2>
+            <span>JUMP BACK IN</span>
+            <h2>Continue Playing</h2>
           </div>
-          <p>Every theme carries its own art direction, score language, lighting and sound identity.</p>
+        </div>
+        <div class="continue-slot" id="continueSlot"></div>
+      </section>
+
+      <section class="rail-section" id="worlds">
+        <div class="rail-heading">
+          <div>
+            <span>LIVE NOW</span>
+            <h2>Playable Worlds</h2>
+          </div>
+          <small>Two worlds. One engine.</small>
         </div>
 
-        <div class="theme-grid">
-          <a class="theme-card paris" href="/play?theme=paris" data-card>
-            <div class="theme-image"></div>
-            <div class="theme-shade"></div>
-            <div class="theme-top">
-              <span>LIVE</span>
-              <em>01</em>
-            </div>
-            <div class="theme-copy">
-              <span class="era">PARIS · AFTER DARK</span>
-              <h3>Paris Nights</h3>
-              <p>Gold, navy and boulevard light. Elegant, fast and luminous.</p>
-              <div class="enter">Enter Paris <b>↗</b></div>
-            </div>
-          </a>
-
-          <a class="theme-card bombay" href="/play?theme=bombay-1945" data-card>
-            <div class="theme-image"></div>
-            <div class="theme-shade"></div>
-            <div class="archive-stamp">ARCHIVAL WORLD · 1945</div>
-            <div class="theme-top">
-              <span>NEW</span>
-              <em>02</em>
-            </div>
-            <div class="theme-copy">
-              <span class="era">BOMBAY · 1945</span>
+        <div class="card-rail">
+          <a class="world-card bombay-card" href="/play?theme=bombay-1945">
+            <div class="card-image"></div>
+            <div class="card-gradient"></div>
+            <div class="card-status"><span>NEW</span><em>1945</em></div>
+            <div class="card-copy">
+              <p>HISTORICAL · BOMBAY</p>
               <h3>Bombay 1945</h3>
-              <p>Trams, Victoria Terminus, Fort, port signals and the mechanical pulse of a city on the edge of history.</p>
-              <div class="enter">Enter Bombay <b>↗</b></div>
+              <small>Trams, Fort, rail and port signals.</small>
+              <div class="card-action">▶ Play world</div>
+            </div>
+          </a>
+
+          <a class="world-card paris-card" href="/play?theme=paris">
+            <div class="card-image"></div>
+            <div class="card-gradient"></div>
+            <div class="card-status"><span>LIVE</span><em>NIGHTS</em></div>
+            <div class="card-copy">
+              <p>CITY · AFTER DARK</p>
+              <h3>Paris Nights</h3>
+              <small>Gold, navy and boulevard light.</small>
+              <div class="card-action">▶ Play world</div>
             </div>
           </a>
         </div>
+      </section>
 
-        <div class="history-note">
-          <span>HISTORICAL FOUNDATION</span>
+      <section class="rail-section" id="historical">
+        <div class="rail-heading">
           <div>
-            <p>Bombay 1945 is grounded in archival views of the city, then rebuilt as a cinematic pinball world rather than presented as a literal documentary reconstruction.</p>
-            <small>Archive anchor: Homai Vyarawalla · Victoria Terminus, Bombay · 1940 · Wikimedia Commons</small>
+            <span>TIME CAPSULES</span>
+            <h2>Historical Worlds</h2>
           </div>
         </div>
-      </section>
 
-      <section class="platform">
-        <span class="eyebrow">THE INFINITE SYSTEM</span>
-        <h2>Same engine. New identity.</h2>
-        <div class="platform-grid">
-          <article><strong>01</strong><span>Physics</span><p>One configurable simulation for every table.</p></article>
-          <article><strong>02</strong><span>World</span><p>Theme-specific art, labels, lighting and atmosphere.</p></article>
-          <article><strong>03</strong><span>Sound</span><p>Distinct mechanical and environmental audio language.</p></article>
-          <article><strong>∞</strong><span>Expand</span><p>New cities and eras without rebuilding the engine.</p></article>
+        <div class="poster-rail">
+          <a class="poster-card bombay-poster" href="/play?theme=bombay-1945">
+            <div class="poster-image"></div>
+            <div class="poster-overlay"></div>
+            <div class="poster-copy">
+              <span>PLAYABLE</span>
+              <h3>Bombay 1945</h3>
+              <p>Fort · Tram · Rail · Port</p>
+            </div>
+          </a>
+
+          <article class="poster-card locked calcutta">
+            <div class="poster-image"></div>
+            <div class="poster-overlay"></div>
+            <div class="poster-copy">
+              <span>CONCEPT</span>
+              <h3>Calcutta 1930</h3>
+              <p>Colonial avenues · Howrah · tramlines</p>
+            </div>
+            <div class="lock-badge">COMING SOON</div>
+          </article>
+
+          <article class="poster-card locked cairo">
+            <div class="poster-image"></div>
+            <div class="poster-overlay"></div>
+            <div class="poster-copy">
+              <span>CONCEPT</span>
+              <h3>Cairo 1925</h3>
+              <p>Deco hotels · desert night · rail</p>
+            </div>
+            <div class="lock-badge">COMING SOON</div>
+          </article>
         </div>
       </section>
 
-      <footer>
-        <span>INFINITE PINBALL</span>
-        <small>Paris Nights · Bombay 1945</small>
+      <section class="rail-section" id="night-worlds">
+        <div class="rail-heading">
+          <div>
+            <span>AFTER DARK</span>
+            <h2>Night Worlds</h2>
+          </div>
+        </div>
+
+        <div class="poster-rail wide">
+          <a class="poster-card paris-poster" href="/play?theme=paris">
+            <div class="poster-image"></div>
+            <div class="poster-overlay"></div>
+            <div class="poster-copy">
+              <span>PLAYABLE</span>
+              <h3>Paris Nights</h3>
+              <p>City of Light · gold · navy</p>
+            </div>
+          </a>
+
+          <article class="poster-card locked tokyo">
+            <div class="poster-image"></div>
+            <div class="poster-overlay"></div>
+            <div class="poster-copy">
+              <span>CONCEPT</span>
+              <h3>Tokyo Neon</h3>
+              <p>Shibuya · rain · electric signage</p>
+            </div>
+            <div class="lock-badge">COMING SOON</div>
+          </article>
+
+          <article class="poster-card locked monsoon">
+            <div class="poster-image"></div>
+            <div class="poster-overlay"></div>
+            <div class="poster-copy">
+              <span>CONCEPT</span>
+              <h3>Mumbai Monsoon</h3>
+              <p>Rain · taxis · midnight streets</p>
+            </div>
+            <div class="lock-badge">COMING SOON</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="rail-section scores-section" id="scores">
+        <div class="rail-heading">
+          <div>
+            <span>YOUR ARCADE</span>
+            <h2>High Scores</h2>
+          </div>
+        </div>
+        <div class="score-grid" id="scoreGrid">
+          <article>
+            <div class="score-world bombay-score"></div>
+            <div><span>Bombay 1945</span><strong id="bombayHighScore">—</strong><small>HIGH SCORE</small></div>
+          </article>
+          <article>
+            <div class="score-world paris-score"></div>
+            <div><span>Paris Nights</span><strong id="parisHighScore">—</strong><small>HIGH SCORE</small></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="rail-section coming-section" id="coming-soon">
+        <div class="rail-heading">
+          <div>
+            <span>THE ROAD AHEAD</span>
+            <h2>Coming Soon</h2>
+          </div>
+        </div>
+
+        <div class="coming-rail">
+          <article class="coming-card tokyo-coming">
+            <span>03</span><div><small>NIGHT WORLD</small><h3>Tokyo Neon</h3></div><b>SOON</b>
+          </article>
+          <article class="coming-card monsoon-coming">
+            <span>04</span><div><small>CITY WORLD</small><h3>Mumbai Monsoon</h3></div><b>SOON</b>
+          </article>
+          <article class="coming-card space-coming">
+            <span>05</span><div><small>FUTURE WORLD</small><h3>Space Station</h3></div><b>SOON</b>
+          </article>
+          <article class="coming-card egypt-coming">
+            <span>06</span><div><small>ANCIENT WORLD</small><h3>Ancient Egypt</h3></div><b>SOON</b>
+          </article>
+        </div>
+      </section>
+
+      <footer class="lobby-footer">
+        <div>
+          <span>INFINITE PINBALL</span>
+          <small>One machine. Many worlds.</small>
+        </div>
+        <a href="/admin">Admin ↗</a>
       </footer>
+
+      <nav class="mobile-dock" aria-label="Lobby navigation">
+        <button class="dock-item active" type="button" data-scroll="featured"><b>⌂</b><span>Home</span></button>
+        <button class="dock-item" type="button" data-scroll="worlds"><b>▣</b><span>Worlds</span></button>
+        <button class="dock-item" type="button" data-scroll="scores"><b>★</b><span>Scores</span></button>
+        <a class="dock-item" href="/admin"><b>⚙</b><span>Admin</span></a>
+      </nav>
     </main>
     <script type="module" src="/src/landing/landing.js"></script>
   </body>
