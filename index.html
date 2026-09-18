@@ -10,16 +10,21 @@
   <body>
     <div id="app">
       <canvas id="game"></canvas>
+
       <div class="hud">
-        <div>
+        <div class="brand">
           <div class="eyebrow">SOCIAL CONTESTS</div>
           <h1>INFINITE PINBALL</h1>
-          <p>3D Jutsu base table · browser prototype</p>
+          <p>Responsive 3D table · browser prototype</p>
         </div>
+
         <div class="status" id="status">Loading table…</div>
       </div>
+
       <div class="controls">Drag to orbit · Pinch / scroll to zoom</div>
+      <button class="reset-view" id="resetView" type="button" disabled>RESET VIEW</button>
     </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
