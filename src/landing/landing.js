@@ -14,6 +14,12 @@ const THEMES = {
     name: 'Bombay 1945',
     className: 'bombay',
     href: '/play?theme=bombay-1945'
+  },
+  bollywood: {
+    id: 'bollywood',
+    name: 'Bollywood Legends',
+    className: 'bollywood',
+    href: '/play?theme=bollywood'
   }
 };
 
@@ -79,9 +85,11 @@ function setActiveNav(id) {
 
 function hydrateProgress(state) {
   const bombay = state.themes?.['bombay-1945'];
+  const bollywood = state.themes?.bollywood;
   const paris = state.themes?.paris;
 
   setScore('#bombayHighScore', bombay?.highScore);
+  setScore('#bollywoodHighScore', bollywood?.highScore);
   setScore('#parisHighScore', paris?.highScore);
 
   const lastId = state.lastPlayedTheme;
