@@ -12,6 +12,7 @@ import {
 } from './gameplay/difficulty.js';
 import { resolveTheme, THEMES } from './themes/registry.js';
 import { createThemeEffectController } from './theme-effects/effect-controller.js';
+import { applyBollywoodGraphics } from './themes/bollywood.js';
 import './style.css';
 
 const canvas = document.querySelector('#game');
@@ -1193,6 +1194,16 @@ loader.load(
       status.textContent = 'Loading ' + themeConfig.name + '…';
       if (themeConfig.type === 'bombay-1945') {
         await applyBombayGraphics(modelRoot);
+      } else if (themeConfig.type === 'bollywood-legends') {
+        await applyBollywoodGraphics({
+          root: modelRoot,
+          loader,
+          textureLoader,
+          renderer,
+          themeConfig,
+          tableConfig,
+          createThemeTargetBank
+        });
       } else {
         await applyParisGraphics(modelRoot);
       }
