@@ -27,6 +27,12 @@ export async function applyBollywoodGraphics({
   placeEnvironment(environment);
   root.add(environment);
 
+  await addBollywoodStarSkin({
+    root,
+    textureLoader,
+    renderer
+  });
+
   const portraitResults = await applyPortraits({
     environment,
     portraitAssets: themeConfig.assets.portraits,
@@ -127,6 +133,35 @@ function placeEnvironment(environment) {
   environment.position.y += 0.56 - box.min.y;
   environment.position.z += -3.28 - box.max.z;
   environment.updateMatrixWorld(true);
+}
+
+async function addBollywoodStarSkin({ root, textureLoader, renderer }) {
+  try {
+    const texture = await textureLoader.loadAsync('/themes/bollywood/bollywood-legends-skin.webp');
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.needsUpdate = true;
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      toneMapped: false,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+
+    const skin = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.94, 4.41),
+      material
+    );
+    skin.name = 'Bollywood_Stars_Skin';
+    skin.position.set(0, 2.78, -3.22);
+    skin.renderOrder = 50;
+    root.add(skin);
+  } catch (error) {
+    console.warn('Bollywood star skin failed to load.', error);
+  }
 }
 
 async function applyPortraits({
