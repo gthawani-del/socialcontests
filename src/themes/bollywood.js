@@ -27,6 +27,12 @@ export async function applyBollywoodGraphics({
   placeEnvironment(environment);
   root.add(environment);
 
+  await addBollywoodPlayfieldSkin({
+    root,
+    textureLoader,
+    renderer
+  });
+
   await addBollywoodStarSkin({
     root,
     textureLoader,
@@ -133,6 +139,46 @@ function placeEnvironment(environment) {
   environment.position.y += 0.56 - box.min.y;
   environment.position.z += -3.28 - box.max.z;
   environment.updateMatrixWorld(true);
+}
+
+async function addBollywoodPlayfieldSkin({ root, textureLoader, renderer }) {
+  try {
+    const texture = await textureLoader.loadAsync('/themes/bollywood/bollywood-legends-skin.webp');
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+
+    // The source artwork is a 2:3 poster. Crop it to the pinball playfield
+    // aspect ratio instead of stretching celebrity faces.
+    texture.repeat.set(0.819, 1);
+    texture.offset.set(0.0905, 0);
+    texture.needsUpdate = true;
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      color: 0xb9a89a,
+      toneMapped: false,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -4,
+      polygonOffsetUnits: -4
+    });
+
+    const playfield = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.18, 5.82),
+      material
+    );
+
+    playfield.name = 'Bollywood_Stars_Playfield';
+    playfield.position.set(0, 0.586, 0.02);
+    playfield.rotation.x = -Math.PI / 2;
+    playfield.renderOrder = 3;
+    root.add(playfield);
+  } catch (error) {
+    console.warn('Bollywood playfield skin failed to load.', error);
+  }
 }
 
 async function addBollywoodStarSkin({ root, textureLoader, renderer }) {
