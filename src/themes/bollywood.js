@@ -30,7 +30,8 @@ export async function applyBollywoodGraphics({
   await addBollywoodPlayfieldSkin({
     root,
     textureLoader,
-    renderer
+    renderer,
+    portraitAssets: themeConfig.assets.portraits
   });
 
   await addBollywoodStarSkin({
@@ -141,73 +142,257 @@ function placeEnvironment(environment) {
   environment.updateMatrixWorld(true);
 }
 
-async function addBollywoodPlayfieldSkin({ root, textureLoader, renderer }) {
-  try {
-    const texture = await textureLoader.loadAsync('/themes/bollywood/bollywood-legends-skin.webp');
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
+async function addBollywoodPlayfieldSkin({ root, textureLoader, renderer, portraitAssets }) {
+  const backgroundTexture = makeBollywoodPlayfieldTexture(renderer);
 
-    // The source artwork is a 2:3 poster. Crop it to the pinball playfield
-    // aspect ratio instead of stretching celebrity faces.
-    texture.repeat.set(0.819, 1);
-    texture.offset.set(0.0905, 0);
-    texture.needsUpdate = true;
-
-    const material = new THREE.MeshBasicMaterial({
-      map: texture,
-      color: 0xb9a89a,
+  const playfield = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.18, 5.82),
+    new THREE.MeshBasicMaterial({
+      map: backgroundTexture,
       toneMapped: false,
       side: THREE.DoubleSide,
       depthWrite: false,
       polygonOffset: true,
       polygonOffsetFactor: -4,
       polygonOffsetUnits: -4
-    });
+    })
+  );
 
-    const playfield = new THREE.Mesh(
-      new THREE.PlaneGeometry(3.18, 5.82),
-      material
-    );
+  playfield.name = 'Bollywood_Playfield_Background';
+  playfield.position.set(0, 0.586, 0.02);
+  playfield.rotation.x = -Math.PI / 2;
+  playfield.renderOrder = 2;
+  root.add(playfield);
 
-    playfield.name = 'Bollywood_Stars_Playfield';
-    playfield.position.set(0, 0.586, 0.02);
-    playfield.rotation.x = -Math.PI / 2;
-    playfield.renderOrder = 3;
-    root.add(playfield);
-  } catch (error) {
-    console.warn('Bollywood playfield skin failed to load.', error);
-  }
+  const portraitLayout = [
+    ['Shah_Rukh_Khan', -0.98, -1.78, 0.72, 1.02],
+    ['Amitabh_Bachchan', 0.00, -2.02, 0.82, 1.18],
+    ['Madhuri_Dixit', 0.98, -1.78, 0.72, 1.02],
+    ['Salman_Khan', -1.04, 0.18, 0.62, 0.88],
+    ['Sridevi', -0.34, 0.42, 0.62, 0.88],
+    ['Raj_Kapoor', 0.34, 0.42, 0.62, 0.88],
+    ['Rekha', 1.04, 0.18, 0.62, 0.88]
+  ];
+
+  await Promise.all(
+    portraitLayout.map(async ([key, x, z, width, height]) => {
+      const url = portraitAssets?.[key];
+      if (!url) return;
+
+      try {
+        const texture = await textureLoader.loadAsync(url);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.needsUpdate = true;
+
+        const frame = new THREE.Mesh(
+          new THREE.PlaneGeometry(width + 0.07, height + 0.07),
+          new THREE.MeshBasicMaterial({
+            color: 0xc39135,
+            toneMapped: false,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+            polygonOffset: true,
+            polygonOffsetFactor: -6,
+            polygonOffsetUnits: -6
+          })
+        );
+        frame.position.set(x, 0.589, z);
+        frame.rotation.x = -Math.PI / 2;
+        frame.renderOrder = 4;
+        frame.name = 'Bollywood_Frame_' + key;
+        root.add(frame);
+
+        const portrait = new THREE.Mesh(
+          new THREE.PlaneGeometry(width, height),
+          new THREE.MeshBasicMaterial({
+            map: texture,
+            color: 0xffffff,
+            toneMapped: false,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+            polygonOffset: true,
+            polygonOffsetFactor: -8,
+            polygonOffsetUnits: -8
+          })
+        );
+
+        portrait.position.set(x, 0.591, z);
+        portrait.rotation.x = -Math.PI / 2;
+        portrait.renderOrder = 5;
+        portrait.name = 'Bollywood_Playfield_' + key;
+        root.add(portrait);
+      } catch (error) {
+        console.warn('Bollywood playfield portrait failed:', key, error);
+      }
+    })
+  );
 }
 
-async function addBollywoodStarSkin({ root, textureLoader, renderer }) {
-  try {
-    const texture = await textureLoader.loadAsync('/themes/bollywood/bollywood-legends-skin.webp');
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.needsUpdate = true;
+function makeBollywoodPlayfieldTexture(renderer) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 1800;
+  const ctx = canvas.getContext('2d');
 
-    const material = new THREE.MeshBasicMaterial({
+  const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  bg.addColorStop(0, '#18070b');
+  bg.addColorStop(0.48, '#090608');
+  bg.addColorStop(1, '#030304');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const glow = ctx.createRadialGradient(512, 410, 30, 512, 410, 540);
+  glow.addColorStop(0, 'rgba(236,178,79,.34)');
+  glow.addColorStop(0.36, 'rgba(155,47,35,.18)');
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, canvas.width, 1050);
+
+  ctx.strokeStyle = '#b8862e';
+  ctx.lineWidth = 14;
+  ctx.strokeRect(32, 32, canvas.width - 64, canvas.height - 64);
+
+  ctx.strokeStyle = 'rgba(229,191,116,.48)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(52, 52, canvas.width - 104, canvas.height - 104);
+
+  // Stage-light rays.
+  ctx.save();
+  ctx.globalAlpha = 0.24;
+  ctx.strokeStyle = '#f1c66f';
+  ctx.lineWidth = 6;
+  for (let i = 0; i < 9; i += 1) {
+    const x = 160 + i * 88;
+    ctx.beginPath();
+    ctx.moveTo(512, 170);
+    ctx.lineTo(x, 1050);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Marquee title panel.
+  roundRect2D(ctx, 175, 95, 674, 165, 28);
+  ctx.fillStyle = '#080607';
+  ctx.fill();
+  ctx.strokeStyle = '#d0a34e';
+  ctx.lineWidth = 7;
+  ctx.stroke();
+
+  ctx.fillStyle = '#f4d69a';
+  ctx.textAlign = 'center';
+  ctx.font = '800 58px Georgia, serif';
+  ctx.fillText('BOLLYWOOD', 512, 165);
+
+  ctx.fillStyle = '#c69a42';
+  ctx.font = '800 34px Georgia, serif';
+  ctx.fillText('LEGENDS', 512, 215);
+
+  // Cinema ribbon near the flippers.
+  roundRect2D(ctx, 235, 1415, 554, 96, 18);
+  ctx.fillStyle = '#14090b';
+  ctx.fill();
+  ctx.strokeStyle = '#9d1b2a';
+  ctx.lineWidth = 5;
+  ctx.stroke();
+
+  ctx.fillStyle = '#f0d49b';
+  ctx.font = '800 28px ui-monospace, Menlo, monospace';
+  ctx.fillText('INDIAN CINEMA', 512, 1475);
+
+  // Film-reel / spotlight motifs.
+  for (const [cx, cy] of [[125, 1280], [899, 1280]]) {
+    ctx.strokeStyle = '#b8862e';
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 66, 0, Math.PI * 2);
+    ctx.stroke();
+
+    for (let a = 0; a < 5; a += 1) {
+      const angle = -Math.PI / 2 + a * (Math.PI * 2 / 5);
+      ctx.beginPath();
+      ctx.arc(
+        cx + Math.cos(angle) * 30,
+        cy + Math.sin(angle) * 30,
+        13,
+        0,
+        Math.PI * 2
+      );
+      ctx.stroke();
+    }
+  }
+
+  ctx.fillStyle = 'rgba(243,221,173,.58)';
+  ctx.font = '700 19px ui-monospace, Menlo, monospace';
+  ctx.fillText('LIGHTS  •  CAMERA  •  PLAY', 512, 1680);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function roundRect2D(ctx, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + width, y, x + width, y + height, r);
+  ctx.arcTo(x + width, y + height, x, y + height, r);
+  ctx.arcTo(x, y + height, x, y, r);
+  ctx.arcTo(x, y, x + width, y, r);
+  ctx.closePath();
+}
+
+async function addBollywoodStarSkin({ root }) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+
+  const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  bg.addColorStop(0, '#130608');
+  bg.addColorStop(0.5, '#050405');
+  bg.addColorStop(1, '#130608');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = '#b8862e';
+  ctx.lineWidth = 18;
+  ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+  ctx.fillStyle = '#f1d8a1';
+  ctx.textAlign = 'center';
+  ctx.font = '800 88px Georgia, serif';
+  ctx.fillText('BOLLYWOOD', 512, 215);
+
+  ctx.fillStyle = '#c79b45';
+  ctx.font = '800 54px Georgia, serif';
+  ctx.fillText('LEGENDS', 512, 300);
+
+  ctx.fillStyle = '#f0d49b';
+  ctx.font = '700 24px ui-monospace, Menlo, monospace';
+  ctx.fillText('INDIAN CINEMA', 512, 376);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+
+  const skin = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.94, 1.47),
+    new THREE.MeshBasicMaterial({
       map: texture,
       toneMapped: false,
       side: THREE.DoubleSide,
       depthWrite: false
-    });
+    })
+  );
 
-    const skin = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.94, 4.41),
-      material
-    );
-    skin.name = 'Bollywood_Stars_Skin';
-    skin.position.set(0, 2.78, -3.22);
-    skin.renderOrder = 50;
-    root.add(skin);
-  } catch (error) {
-    console.warn('Bollywood star skin failed to load.', error);
-  }
+  skin.name = 'Bollywood_Marquee_Backglass';
+  skin.position.set(0, 1.88, -3.20);
+  skin.renderOrder = 20;
+  root.add(skin);
 }
 
 async function applyPortraits({
