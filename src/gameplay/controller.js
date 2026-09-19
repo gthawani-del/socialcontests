@@ -3,6 +3,7 @@ import { PinballEngine } from '../physics/pinball-engine.js';
 import { BrowserSfx } from '../audio/browser-sfx.js';
 import { VfxEngine } from '../vfx/effects.js';
 import { GameplayFocusLighting } from './focus-lighting.js';
+import { BOMBAY_EFFECT_IDS } from '../theme-effects/hotspots.js';
 
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
 const PROGRESS_STORAGE_KEY = 'infinite-pinball-progress-v1';
@@ -21,6 +22,7 @@ export function createGameplayController({
   tableConfig,
   rulesConfig,
   themeConfig = null,
+  themeEffects = null,
   ballStateElement,
   scoreElement,
   popupLayer,
@@ -175,6 +177,9 @@ export function createGameplayController({
 
     const visual = bumperVisuals.get(id);
     if (visual) visual.pulse = 1;
+
+    const hotspotId = BOMBAY_EFFECT_IDS.bumper[id];
+    if (hotspotId) themeEffects?.trigger(hotspotId, 'gameplay', 1);
   });
 
   engine.on('target-hit', ({ id, score: value, x, z, impact }) => {
@@ -185,6 +190,8 @@ export function createGameplayController({
 
     const visual = targetVisuals.get(id);
     if (visual) visual.pulse = 1;
+
+    themeEffects?.trigger(BOMBAY_EFFECT_IDS.targetBank, 'gameplay', 0.32);
   });
 
   engine.on('target-bank-complete', ({ score: value, x, z }) => {
@@ -192,6 +199,8 @@ export function createGameplayController({
     addScore(value, x, z, 'BANK +');
     vfx.hit('bank', x, z, 1.3);
     lighting.pulseAt(x, z, 1.45);
+    themeEffects?.trigger(BOMBAY_EFFECT_IDS.targetBank, 'gameplay', 1.2);
+    themeEffects?.trigger(BOMBAY_EFFECT_IDS.jackpot, 'gameplay', 0.95);
   });
 
   engine.on('scoring-zone-hit', ({ id, score: value, x, z }) => {
@@ -207,6 +216,8 @@ export function createGameplayController({
 
     const visual = scoringZoneVisuals.get(id);
     if (visual) visual.pulse = 1;
+
+    themeEffects?.trigger(BOMBAY_EFFECT_IDS.scoringZone, 'gameplay', 1.15);
   });
 
   engine.on('launch', ({ charge }) => {
@@ -552,6 +563,7 @@ export function createGameplayController({
     popupLayer?.replaceChildren();
     vfx.reset();
     lighting.reset();
+    themeEffects?.reset();
 
     for (const visual of bumperVisuals.values()) {
       visual.pulse = 0;
