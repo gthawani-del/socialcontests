@@ -61,9 +61,26 @@ export async function applyBollywoodGraphics({
   });
 }
 
+async function loadEnvironmentAsset(loader, url) {
+  if (!url.endsWith('.gz')) return loader.loadAsync(url);
+
+  if (!('DecompressionStream' in window)) {
+    throw new Error('This browser cannot decompress the Bollywood GLB asset.');
+  }
+
+  const response = await fetch(url);
+  if (!response.ok || !response.body) {
+    throw new Error('Bollywood GLB request failed: ' + response.status);
+  }
+
+  const stream = response.body.pipeThrough(new DecompressionStream('gzip'));
+  const arrayBuffer = await new Response(stream).arrayBuffer();
+  return loader.parseAsync(arrayBuffer, '');
+}
+
 async function loadBollywoodEnvironment({ loader, themeConfig }) {
   try {
-    const gltf = await loader.loadAsync(themeConfig.assets.environment);
+    const gltf = await loadEnvironmentAsset(loader, themeConfig.assets.environment);
     const environment = gltf.scene;
     environment.name = 'Bollywood_Legends_Environment';
 

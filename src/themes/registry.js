@@ -106,7 +106,7 @@ export const THEMES = Object.freeze({
     targetBankLabel: 'CINEMA',
     scoringZoneLabel: 'SPOTLIGHT',
     assets: Object.freeze({
-      environment: '/models/bollywood-legends-environment.glb',
+      environment: '/models/bollywood-legends-environment.glb.gz',
       portraits: Object.freeze({
         Amitabh_Bachchan: 'https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260919_153504_7207219c-c8f2-43c2-a222-d93950fb57fb.png',
         Shah_Rukh_Khan: 'https://d8j0ntlcm91z4.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/hf_20260919_153504_cf85b95c-eef0-46cc-aaa7-a61642a488e1.png',
