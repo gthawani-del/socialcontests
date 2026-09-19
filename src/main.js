@@ -11,6 +11,7 @@ import {
   resolveDifficulty
 } from './gameplay/difficulty.js';
 import { resolveTheme, THEMES } from './themes/registry.js';
+import { createThemeEffectController } from './theme-effects/effect-controller.js';
 import './style.css';
 
 const canvas = document.querySelector('#game');
@@ -154,6 +155,7 @@ let mixer = null;
 let modelRoot = null;
 let gameplay = null;
 let themeAnimator = null;
+let themeEffects = null;
 let tableConfig = null;
 let rulesConfig = null;
 const requestedDifficulty = urlParams.get('difficulty');
@@ -1195,6 +1197,14 @@ loader.load(
         await applyParisGraphics(modelRoot);
       }
 
+      themeEffects = createThemeEffectController({
+        root: modelRoot,
+        camera,
+        renderer,
+        themeConfig,
+        tableConfig
+      });
+
       gameplay = createGameplayController({
         root: modelRoot,
         renderer,
@@ -1202,6 +1212,7 @@ loader.load(
         tableConfig,
         rulesConfig,
         themeConfig,
+        themeEffects,
         ballStateElement,
         scoreElement,
         popupLayer,
@@ -1286,6 +1297,7 @@ function animate() {
   }
 
   if (themeAnimator) themeAnimator(clock.elapsedTime);
+  if (themeEffects) themeEffects.update(dt);
 
   renderer.render(scene, camera);
 }
