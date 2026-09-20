@@ -11,46 +11,76 @@ export function chooseCpuBowling(difficulty = 'MEDIUM', cpuConfig = {}) {
   };
 }
 
-export function resolveCpuBatting({
+export function createCpuBattingAI({
+  engine,
+  tableConfig,
   difficulty = 'MEDIUM',
-  requiredRuns = null,
-  ballsRemaining = null,
   cpuConfig = {}
-} = {}) {
-  const preset = cpuConfig[difficulty] || cpuConfig.MEDIUM || {};
-  const wicketRisk = clamp(Number(preset.wicketRisk ?? 0.16), 0.01, 0.6);
-  let boundaryBias = clamp(Number(preset.boundaryBias ?? 0.22), 0.01, 0.65);
+}) {
+  let swingUntil = 0;
+  let cooldownUntil = 0;
+  let activeSide = null;
 
-  if (requiredRuns !== null && ballsRemaining !== null && ballsRemaining <= 2 && requiredRuns >= 4) {
-    boundaryBias = clamp(boundaryBias + 0.16, 0.01, 0.8);
+  function reset() {
+    swingUntil = 0;
+    cooldownUntil = 0;
+    activeSide = null;
+    engine?.setFlipper('left', false);
+    engine?.setFlipper('right', false);
   }
 
-  const weights = [
-    ['WICKET', wicketRisk],
-    ['DOT', 0.22],
-    ['ONE', 0.28],
-    ['TWO', 0.18],
-    ['FOUR', boundaryBias],
-    ['SIX', boundaryBias * 0.45]
-  ];
+  function update(nowMs, enabled) {
+    if (!engine) return;
 
-  const total = weights.reduce((sum, [, weight]) => sum + weight, 0);
-  let roll = Math.random() * total;
-  let type = 'DOT';
-
-  for (const [candidate, weight] of weights) {
-    roll -= weight;
-    if (roll <= 0) {
-      type = candidate;
-      break;
+    if (!enabled || engine.isAwaitingLaunch() || !engine.ball.active) {
+      reset();
+      return;
     }
+
+    if (nowMs < swingUntil) return;
+
+    if (activeSide) {
+      engine.setFlipper('left', false);
+      engine.setFlipper('right', false);
+      activeSide = null;
+    }
+
+    if (nowMs < cooldownUntil) return;
+
+    const preset = cpuConfig[difficulty] || cpuConfig.MEDIUM || {};
+    const ball = engine.ball;
+
+    // CPU only reacts to an incoming delivery moving toward the batting end.
+    if (ball.velocity.z <= 0) return;
+
+    const triggerZ = Number(preset.battingTriggerZ ?? 1.45);
+    const maxTriggerZ = Number(preset.battingMaxZ ?? 2.48);
+    if (ball.position.z < triggerZ || ball.position.z > maxTriggerZ) return;
+
+    const centreBand = Number(preset.battingCentreBand ?? 0.18);
+    const missChance = clamp(Number(preset.battingMissChance ?? 0.12), 0, 0.75);
+    if (Math.random() < missChance) {
+      cooldownUntil = nowMs + Number(preset.battingCooldownMs ?? 220);
+      return;
+    }
+
+    let side;
+    if (Math.abs(ball.position.x) <= centreBand) side = 'both';
+    else side = ball.position.x < 0 ? 'left' : 'right';
+
+    if (side === 'both') {
+      engine.setFlipper('left', true);
+      engine.setFlipper('right', true);
+    } else {
+      engine.setFlipper(side, true);
+    }
+
+    activeSide = side;
+    swingUntil = nowMs + Number(preset.battingHoldMs ?? 105);
+    cooldownUntil = swingUntil + Number(preset.battingCooldownMs ?? 210);
   }
 
-  return {
-    type,
-    runs: { WICKET:0, DOT:0, ONE:1, TWO:2, FOUR:4, SIX:6 }[type],
-    wicket: type === 'WICKET'
-  };
+  return { update, reset };
 }
 
 function clamp(value, min, max) {

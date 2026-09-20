@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -53,19 +53,37 @@
       "bowlingPowerMin": 0.45,
       "bowlingPowerMax": 0.72,
       "wicketRisk": 0.22,
-      "boundaryBias": 0.12
+      "boundaryBias": 0.12,
+      "battingTriggerZ": 1.68,
+      "battingMaxZ": 2.48,
+      "battingCentreBand": 0.16,
+      "battingHoldMs": 90,
+      "battingCooldownMs": 260,
+      "battingMissChance": 0.28
     },
     "MEDIUM": {
       "bowlingPowerMin": 0.58,
       "bowlingPowerMax": 0.86,
       "wicketRisk": 0.16,
-      "boundaryBias": 0.22
+      "boundaryBias": 0.22,
+      "battingTriggerZ": 1.48,
+      "battingMaxZ": 2.48,
+      "battingCentreBand": 0.19,
+      "battingHoldMs": 105,
+      "battingCooldownMs": 210,
+      "battingMissChance": 0.14
     },
     "HARD": {
       "bowlingPowerMin": 0.72,
       "bowlingPowerMax": 0.96,
       "wicketRisk": 0.1,
-      "boundaryBias": 0.34
+      "boundaryBias": 0.34,
+      "battingTriggerZ": 1.28,
+      "battingMaxZ": 2.48,
+      "battingCentreBand": 0.22,
+      "battingHoldMs": 120,
+      "battingCooldownMs": 165,
+      "battingMissChance": 0.06
     }
   },
   "superOver": {

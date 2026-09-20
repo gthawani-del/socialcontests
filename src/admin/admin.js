@@ -537,8 +537,11 @@ function renderCricketPinballAdmin() {
         [
           slider('Bowling power min', `cricketRules.cpu.${level}.bowlingPowerMin`, 0.1, 1, 0.01),
           slider('Bowling power max', `cricketRules.cpu.${level}.bowlingPowerMax`, 0.1, 1, 0.01),
-          slider('Wicket risk', `cricketRules.cpu.${level}.wicketRisk`, 0.01, 0.6, 0.01),
-          slider('Boundary bias', `cricketRules.cpu.${level}.boundaryBias`, 0.01, 0.8, 0.01)
+          slider('Batting trigger Z', `cricketRules.cpu.${level}.battingTriggerZ`, 0.5, 2.5, 0.01),
+          slider('Centre-ball band', `cricketRules.cpu.${level}.battingCentreBand`, 0.05, 0.5, 0.01),
+          number('Bat hold', `cricketRules.cpu.${level}.battingHoldMs`, 40, 300, 5, 'ms'),
+          number('Bat cooldown', `cricketRules.cpu.${level}.battingCooldownMs`, 50, 600, 5, 'ms'),
+          slider('Miss chance', `cricketRules.cpu.${level}.battingMissChance`, 0, 0.75, 0.01)
         ],
         true
       )).join('')}

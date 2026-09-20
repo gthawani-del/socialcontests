@@ -4,7 +4,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { PinballEngine } from '../../physics/pinball-engine.js';
 import { CricketMatchEngine } from '../match/match-engine.js';
 import { createCricketGameplayAdapter } from './gameplay-adapter.js';
-import { chooseCpuBowling, resolveCpuBatting } from './cpu-opponent.js';
+import { chooseCpuBowling, createCpuBattingAI } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 import '../ui/play.css';
 import playfieldSkinUrl from '../../../assets/cricket/world/playfield.png?url';
@@ -55,7 +55,7 @@ let coinMesh = null;
 let coinAnimation = null;
 let selectedLine = 'CENTRE';
 let deliveryResetTimer = null;
-let cpuResolveTimer = null;
+let cpuBattingAI = null;
 let powerPressed = false;
 let ballTrail = null;
 let ballTrailPoints = [];
@@ -259,6 +259,12 @@ async function boot() {
     createCoin();
     setupStadiumScoreboard();
     engine = new PinballEngine(tableConfig);
+    cpuBattingAI = createCpuBattingAI({
+      engine,
+      tableConfig,
+      difficulty,
+      cpuConfig: rulesConfig.cpu
+    });
     adapter = createCricketGameplayAdapter({
       engine,
       matchEngine: match,
@@ -794,6 +800,7 @@ async function beginInnings() {
 function prepareDelivery() {
   if (!engine || match.currentInnings?.complete || ['MATCH_OVER', 'SUPER_OVER'].includes(match.status)) return;
   engine.resetBall();
+  cpuBattingAI?.reset();
   resetBallTrail();
   showDeliveryCue(isHumanBowling() ? 'HOLD TO CHARGE · RELEASE TO BOWL' : 'GET READY TO BAT', 'READY');
   inputsLocked = false;
@@ -839,23 +846,10 @@ function releasePower() {
   updateRoleControls();
   updateScoreboards();
 
-  if (getPlayer(match.battingPlayerId).type === 'CPU') {
-    clearTimeout(cpuResolveTimer);
-    cpuResolveTimer = window.setTimeout(() => {
-      const state = match.getState();
-      const cpuResult = resolveCpuBatting({
-        difficulty,
-        requiredRuns: state.requiredRuns,
-        ballsRemaining: state.ballsRemaining,
-        cpuConfig: rulesConfig.cpu
-      });
-      adapter.resolve(cpuResult.type, { reason: 'CPU_BATTING_MODEL' });
-    }, 850);
-  }
 }
 
 function onDeliveryResolved(type) {
-  clearTimeout(cpuResolveTimer);
+  cpuBattingAI?.reset();
   inputsLocked = true;
   updateRoleControls();
   engine?.setFlipper('left', false);
@@ -1098,6 +1092,14 @@ function delay(ms) {
 function animate(now) {
   requestAnimationFrame(animate);
   const dt = Math.min(clock.getDelta(), 0.05);
+
+  const cpuBatting = Boolean(
+    engine &&
+    match.deliveryOpen &&
+    getPlayer(match.battingPlayerId)?.type === 'CPU'
+  );
+  cpuBattingAI?.update(now, cpuBatting);
+
   if (adapter) {
     adapter.step(dt);
     syncMechanics();
