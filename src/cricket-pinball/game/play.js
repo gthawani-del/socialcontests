@@ -1,22 +1,24 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { PinballEngine } from '../../physics/pinball-engine.js';
+import { CricketMatchEngine } from '../match/match-engine.js';
+import { createCricketGameplayAdapter } from './gameplay-adapter.js';
+import { chooseCpuBowling, resolveCpuBatting } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
-import { createMatchEngine } from '../match/match-engine.js';
-import { createCricketGameplayAdapter } from './cricket-gameplay-adapter.js';
 import '../ui/play.css';
 
+const WORLD_URL = '/models/cricket-world-v2.glb';
+const WORLD_BYTES = 9271344;
 const app = document.querySelector('#cricketPlayApp');
 if (!app) throw new Error('Cricket Pinball play root not found.');
 
 const params = new URLSearchParams(window.location.search);
+const pathnameMatch = window.location.pathname.match(/\/cricket-pinball\/match\/([^/]+)/);
+const matchId = pathnameMatch?.[1] || params.get('matchId') || 'local';
 const mode = params.get('mode') === 'LOCAL' ? 'LOCAL' : 'CPU';
-const format = ['LAST_3', 'ONE_OVER', 'TWO_OVER'].includes(params.get('format'))
-  ? params.get('format')
-  : 'ONE_OVER';
-const difficulty = ['EASY', 'MEDIUM', 'HARD'].includes(params.get('difficulty'))
-  ? params.get('difficulty')
-  : 'MEDIUM';
+const format = ['LAST_3', 'ONE_OVER', 'TWO_OVER'].includes(params.get('format')) ? params.get('format') : 'ONE_OVER';
+const difficulty = ['EASY', 'MEDIUM', 'HARD'].includes(params.get('difficulty')) ? params.get('difficulty') : 'MEDIUM';
 
 const players = mode === 'LOCAL'
   ? [
@@ -28,70 +30,88 @@ const players = mode === 'LOCAL'
       { id: 'cpu', name: 'CPU', type: 'CPU' }
     ];
 
-const caller = players[0];
-const opponent = players[1];
 const tossController = createTossController();
-const matchEngine = createMatchEngine({
-  format,
-  difficulty,
-  players,
-  maxWickets: 2,
-  superOverEnabled: true
-});
+const caller = tossController.pickCaller(players);
+const opponent = players.find((player) => player.id !== caller.id);
+const match = new CricketMatchEngine({ format, difficulty, players, maxWickets: 2, superOver: true });
 
-const state = {
-  phase: 'MATCH_INTRO',
-  toss: null,
-  battingPlayerId: null,
-  bowlingPlayerId: null
-};
+let inputsLocked = true;
+let engine = null;
+let adapter = null;
+let tableConfig = null;
+let rulesConfig = null;
+let modelRoot = null;
+let ballVisual = null;
+let leftFlipperVisual = null;
+let rightFlipperVisual = null;
+let scoreboardTexture = null;
+let coinMesh = null;
+let coinAnimation = null;
+let selectedLine = 'CENTRE';
+let deliveryResetTimer = null;
+let cpuResolveTimer = null;
+let powerPressed = false;
 
 app.innerHTML = `
   <main class="cricket-play-shell">
     <canvas id="cricketPlayWorld"></canvas>
 
+    <section class="play-loading" id="playLoading" aria-live="polite">
+      <p>LOADING MATCH</p>
+      <strong id="playLoadingPercent">0%</strong>
+      <span id="playLoadingStatus">Preparing stadium…</span>
+    </section>
+
     <header class="match-topbar">
       <a href="/cricket-pinball">← LOBBY</a>
-      <div>
-        <span>${formatLabel(format)}</span>
-        <strong>${difficulty}</strong>
-      </div>
+      <div><span>${formatLabel(format)}</span><strong>${difficulty}</strong></div>
+      <small>MATCH ${matchId.toUpperCase()}</small>
     </header>
 
-    <section class="match-intro" id="matchIntro">
+    <section class="match-hud" id="matchHud" hidden>
+      <div class="hud-score">
+        <span id="hudBatter">— BATTING</span>
+        <strong id="hudScore">0/0</strong>
+        <small id="hudInnings">INNINGS 1</small>
+      </div>
+      <div class="hud-chase">
+        <span id="hudTarget">TARGET —</span>
+        <strong id="hudNeed">BALL 1 / ${match.ballsPerInnings}</strong>
+        <small id="hudLast">LAST BALL —</small>
+      </div>
+      <div class="hud-role">
+        <span id="hudRole">ROLE —</span>
+        <strong id="hudBowler">— BOWLING</strong>
+        <small id="hudState">MATCH INTRO</small>
+      </div>
+    </section>
+
+    <section class="match-intro" id="matchIntro" hidden>
       <p>MATCH INTRO</p>
       <div class="versus">
         <div><span>${players[0].type}</span><strong>${players[0].name}</strong></div>
         <b>VS</b>
         <div><span>${players[1].type}</span><strong>${players[1].name}</strong></div>
       </div>
+      <small>${caller.name} WILL CALL THE TOSS</small>
       <button type="button" id="beginToss">BEGIN TOSS</button>
     </section>
 
     <section class="toss-panel" id="tossPanel" hidden>
       <div class="toss-copy">
-        <p id="tossEyebrow">TOSS</p>
+        <p id="tossEyebrow">TOSS · ${caller.name} CALLING</p>
         <h1 id="tossTitle">${caller.name} CALLS</h1>
         <span id="tossInstruction">Choose Heads or Tails</span>
       </div>
-
-      <div class="coin-stage" aria-hidden="true">
-        <div class="coin" id="coin">
-          <div class="coin-face coin-heads">H</div>
-          <div class="coin-face coin-tails">T</div>
-        </div>
-      </div>
-
+      <div class="coin-stage" id="coinStage"><span>3D COIN OVER PITCH</span></div>
       <div class="toss-actions" id="callActions">
         <button type="button" data-call="HEADS">HEADS</button>
         <button type="button" data-call="TAILS">TAILS</button>
       </div>
-
       <div class="toss-actions" id="roleActions" hidden>
         <button type="button" data-role="BAT">BAT</button>
         <button type="button" data-role="BOWL">BOWL</button>
       </div>
-
       <div class="role-confirmation" id="roleConfirmation" hidden>
         <strong id="battingRole"></strong>
         <span id="bowlingRole"></span>
@@ -99,8 +119,7 @@ app.innerHTML = `
     </section>
 
     <section class="stadium-scoreboard" id="stadiumScoreboard">
-      <span>TOSS</span>
-      <strong>READY</strong>
+      <span>CRICKET PINBALL</span><strong>READY</strong>
     </section>
 
     <section class="innings-intro" id="inningsIntro" hidden>
@@ -108,9 +127,37 @@ app.innerHTML = `
       <strong id="inningsBatting"></strong>
       <span id="inningsBowling"></span>
     </section>
+
+    <section class="bowling-controls" id="bowlingControls" hidden>
+      <div class="line-controls" aria-label="Bowling line">
+        <button type="button" data-line="LEFT">LEFT</button>
+        <button type="button" class="active" data-line="CENTRE">CENTRE</button>
+        <button type="button" data-line="RIGHT">RIGHT</button>
+      </div>
+      <button class="power-control" id="powerControl" type="button">
+        <span>HOLD TO CHARGE</span><strong id="powerValue">0%</strong>
+        <i><b id="powerFill"></b></i>
+      </button>
+    </section>
+
+    <section class="batting-controls" id="battingControls" hidden aria-label="Batter flipper controls">
+      <button type="button" data-flipper="left">LEFT FLIPPER</button>
+      <button type="button" data-flipper="right">RIGHT FLIPPER</button>
+    </section>
+
+    <section class="match-result" id="matchResult" hidden>
+      <p id="resultEyebrow">MATCH RESULT</p>
+      <strong id="resultTitle"></strong>
+      <span id="resultDetail"></span>
+      <div><a href="/cricket-pinball">BACK TO LOBBY</a><button type="button" id="rematch">REMATCH</button></div>
+    </section>
   </main>
 `;
 
+const canvas = document.querySelector('#cricketPlayWorld');
+const loading = document.querySelector('#playLoading');
+const loadingPercent = document.querySelector('#playLoadingPercent');
+const loadingStatus = document.querySelector('#playLoadingStatus');
 const intro = document.querySelector('#matchIntro');
 const tossPanel = document.querySelector('#tossPanel');
 const beginToss = document.querySelector('#beginToss');
@@ -119,75 +166,303 @@ const roleActions = document.querySelector('#roleActions');
 const roleConfirmation = document.querySelector('#roleConfirmation');
 const tossTitle = document.querySelector('#tossTitle');
 const tossInstruction = document.querySelector('#tossInstruction');
-const coin = document.querySelector('#coin');
 const scoreboard = document.querySelector('#stadiumScoreboard');
 const inningsIntro = document.querySelector('#inningsIntro');
+const matchHud = document.querySelector('#matchHud');
+const bowlingControls = document.querySelector('#bowlingControls');
+const battingControls = document.querySelector('#battingControls');
+const powerControl = document.querySelector('#powerControl');
+const resultPanel = document.querySelector('#matchResult');
 
-let inputsLocked = false;
-let gameplayAdapter = null;
-let gameplayBallVisual = null;
-let gameplayRoot = null;
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight, false);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
 
-const gameplayReady = Promise.all([
-  fetch('/game/cricket-table.json').then((response) => {
-    if (!response.ok) throw new Error('Failed to load cricket-table.json');
-    return response.json();
-  }),
-  fetch('/game/cricket-rules.json').then((response) => {
-    if (!response.ok) throw new Error('Failed to load cricket-rules.json');
-    return response.json();
-  })
-]).then(([tableConfig, cricketRules]) => ({ tableConfig, cricketRules }));
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x07110c);
+const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.05, 100);
+camera.position.set(0, 6, 8.5);
+camera.lookAt(0, 0.7, 0);
+scene.add(new THREE.HemisphereLight(0xe4f0e8, 0x07110c, 2.3));
+const key = new THREE.DirectionalLight(0xffffff, 3.5);
+key.position.set(-3, 7, 5);
+scene.add(key);
+const pitchGlow = new THREE.PointLight(0x64b883, 10, 18, 2);
+pitchGlow.position.set(0, 3, 0);
+scene.add(pitchGlow);
 
-beginToss.addEventListener('click', () => {
-  if (inputsLocked) return;
-  intro.hidden = true;
-  tossPanel.hidden = false;
-  state.phase = 'TOSS';
-});
+const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
+const clock = new THREE.Clock();
 
-document.querySelectorAll('[data-call]').forEach((button) => {
-  button.addEventListener('click', () => resolveToss(button.dataset.call));
-});
+bindUi();
+boot();
 
-document.querySelectorAll('[data-role]').forEach((button) => {
-  button.addEventListener('click', () => chooseRole(button.dataset.role));
-});
+async function boot() {
+  try {
+    loading.hidden = false;
+    const [table, cricketRules, gltf] = await Promise.all([
+      fetchJson('/game/table.json'),
+      fetchJson('/game/cricket-rules.json'),
+      loadWorld()
+    ]);
+
+    tableConfig = structuredClone(table);
+    rulesConfig = cricketRules;
+    tableConfig.launcher.bowlingLines = cricketRules.bowlingLines;
+
+    modelRoot = gltf.scene;
+    prepareWorld(modelRoot);
+    scene.add(modelRoot);
+    createMechanics();
+    createCoin();
+    setupStadiumScoreboard();
+    engine = new PinballEngine(tableConfig);
+    adapter = createCricketGameplayAdapter({
+      engine,
+      matchEngine: match,
+      maxLiveMs: rulesConfig.delivery.maxLiveMs,
+      onResolved: onDeliveryResolved
+    });
+
+    loadingPercent.textContent = '100%';
+    loadingStatus.textContent = 'Match ready';
+    await delay(250);
+    loading.hidden = true;
+    intro.hidden = false;
+    inputsLocked = false;
+    updateScoreboards();
+  } catch (error) {
+    console.error('Cricket Pinball boot failed:', error);
+    loadingPercent.textContent = 'ERROR';
+    loadingStatus.textContent = error.message || 'Cricket match could not load.';
+    loading.classList.add('is-error');
+  }
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) throw new Error(`${url} returned ${response.status}`);
+  return response.json();
+}
+
+function loadWorld() {
+  return new Promise((resolve, reject) => {
+    loader.load(
+      WORLD_URL,
+      resolve,
+      (progress) => {
+        const total = progress.total || WORLD_BYTES;
+        const pct = Math.min(99, Math.max(1, Math.round((progress.loaded / total) * 100)));
+        loadingPercent.textContent = `${pct}%`;
+        loadingStatus.textContent = 'Loading cricket-world-v2.glb…';
+      },
+      reject
+    );
+  });
+}
+
+function prepareWorld(root) {
+  root.traverse((object) => {
+    if (object.isMesh) {
+      object.castShadow = true;
+      object.receiveShadow = true;
+    }
+  });
+  const box = new THREE.Box3().setFromObject(root);
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  root.position.sub(center);
+  root.position.y += size.y * 0.5;
+  frameWorld(size);
+}
+
+function createMechanics() {
+  ballVisual = new THREE.Mesh(
+    new THREE.SphereGeometry(tableConfig.ball.radius, 28, 18),
+    new THREE.MeshStandardMaterial({ color: 0x8b1717, roughness: 0.42, metalness: 0.12 })
+  );
+  ballVisual.position.y = tableConfig.playfield.surfaceY + tableConfig.ball.radius;
+  scene.add(ballVisual);
+
+  leftFlipperVisual = modelRoot.getObjectByName('Flipper_Left') || makeFlipper(tableConfig.flippers[0]);
+  rightFlipperVisual = modelRoot.getObjectByName('Flipper_Right') || makeFlipper(tableConfig.flippers[1]);
+}
+
+function makeFlipper(cfg) {
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(cfg.length, 0.09, cfg.radius * 2),
+    new THREE.MeshStandardMaterial({ color: 0xf1d36a, roughness: 0.28, metalness: 0.45 })
+  );
+  mesh.position.set(cfg.pivot[0], tableConfig.playfield.surfaceY + 0.08, cfg.pivot[1]);
+  mesh.geometry.translate(cfg.length * 0.5, 0, 0);
+  scene.add(mesh);
+  return mesh;
+}
+
+function createCoin() {
+  const material = [
+    new THREE.MeshStandardMaterial({ color: 0xc69a38, metalness: 0.85, roughness: 0.22 }),
+    new THREE.MeshStandardMaterial({ color: 0xf2ca62, metalness: 0.76, roughness: 0.2 }),
+    new THREE.MeshStandardMaterial({ color: 0xd6aa44, metalness: 0.82, roughness: 0.2 })
+  ];
+  coinMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.055, 48), material);
+  coinMesh.rotation.z = Math.PI / 2;
+  coinMesh.position.set(0, 2.2, 0);
+  coinMesh.visible = false;
+  scene.add(coinMesh);
+}
+
+function setupStadiumScoreboard() {
+  const screen = modelRoot.getObjectByName('Cricket_Scoreboard_Screen');
+  if (!screen?.isMesh) return;
+  const boardCanvas = document.createElement('canvas');
+  boardCanvas.width = 1024;
+  boardCanvas.height = 512;
+  scoreboardTexture = new THREE.CanvasTexture(boardCanvas);
+  scoreboardTexture.colorSpace = THREE.SRGBColorSpace;
+  screen.material = new THREE.MeshBasicMaterial({ map: scoreboardTexture, toneMapped: false });
+  scoreboardTexture.userData.canvas = boardCanvas;
+  updateScoreboards();
+}
+
+function drawStadiumScoreboard(label, value) {
+  if (!scoreboardTexture) return;
+  const boardCanvas = scoreboardTexture.userData.canvas;
+  const ctx = boardCanvas.getContext('2d');
+  ctx.fillStyle = '#06120c';
+  ctx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+  ctx.strokeStyle = '#d6b65b';
+  ctx.lineWidth = 12;
+  ctx.strokeRect(18, 18, boardCanvas.width - 36, boardCanvas.height - 36);
+  ctx.fillStyle = '#91b99f';
+  ctx.font = '700 48px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText(label, 512, 170);
+  ctx.fillStyle = '#fff4cf';
+  ctx.font = '900 76px system-ui';
+  ctx.fillText(value, 512, 300);
+  scoreboardTexture.needsUpdate = true;
+}
+
+function bindUi() {
+  beginToss.addEventListener('click', () => {
+    if (inputsLocked) return;
+    intro.hidden = true;
+    tossPanel.hidden = false;
+  });
+
+  document.querySelectorAll('[data-call]').forEach((button) => {
+    button.addEventListener('click', () => resolveToss(button.dataset.call));
+  });
+  document.querySelectorAll('[data-role]').forEach((button) => {
+    button.addEventListener('click', () => chooseRole(button.dataset.role));
+  });
+  document.querySelectorAll('[data-line]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (inputsLocked || !isHumanBowling()) return;
+      selectedLine = button.dataset.line;
+      document.querySelectorAll('[data-line]').forEach((node) => node.classList.toggle('active', node === button));
+    });
+  });
+
+  bindPowerControl();
+  bindFlippers();
+
+  document.querySelector('#rematch').addEventListener('click', () => window.location.reload());
+
+  window.addEventListener('keydown', (event) => {
+    if (inputsLocked || !engine) return;
+    if (isHumanBowling()) {
+      if (event.code === 'KeyQ') setLineFromKeyboard('LEFT');
+      if (event.code === 'KeyW') setLineFromKeyboard('CENTRE');
+      if (event.code === 'KeyE') setLineFromKeyboard('RIGHT');
+      if (event.code === 'Space' && !event.repeat) {
+        event.preventDefault();
+        beginPower();
+      }
+    }
+    if (isHumanBatting()) {
+      if ((event.code === 'KeyA' || event.code === 'ArrowLeft') && !event.repeat) engine.setFlipper('left', true);
+      if ((event.code === 'KeyD' || event.code === 'ArrowRight') && !event.repeat) engine.setFlipper('right', true);
+    }
+  });
+
+  window.addEventListener('keyup', (event) => {
+    if (!engine) return;
+    if (event.code === 'Space' && powerPressed) {
+      event.preventDefault();
+      releasePower();
+    }
+    if (event.code === 'KeyA' || event.code === 'ArrowLeft') engine.setFlipper('left', false);
+    if (event.code === 'KeyD' || event.code === 'ArrowRight') engine.setFlipper('right', false);
+  });
+}
+
+function bindPowerControl() {
+  const finish = (event) => {
+    if (!powerPressed) return;
+    event?.preventDefault();
+    releasePower();
+  };
+  powerControl.addEventListener('pointerdown', (event) => {
+    event.preventDefault();
+    beginPower();
+    try { powerControl.setPointerCapture(event.pointerId); } catch {}
+  });
+  powerControl.addEventListener('pointerup', finish);
+  powerControl.addEventListener('pointercancel', finish);
+  powerControl.addEventListener('lostpointercapture', finish);
+}
+
+function bindFlippers() {
+  document.querySelectorAll('[data-flipper]').forEach((button) => {
+    const id = button.dataset.flipper;
+    const release = (event) => {
+      event.preventDefault();
+      engine?.setFlipper(id, false);
+      button.classList.remove('pressed');
+    };
+    button.addEventListener('pointerdown', (event) => {
+      if (inputsLocked || !isHumanBatting()) return;
+      event.preventDefault();
+      engine?.setFlipper(id, true);
+      button.classList.add('pressed');
+      try { button.setPointerCapture(event.pointerId); } catch {}
+    });
+    button.addEventListener('pointerup', release);
+    button.addEventListener('pointercancel', release);
+    button.addEventListener('lostpointercapture', release);
+  });
+}
 
 async function resolveToss(call) {
   if (inputsLocked || tossController.isLocked()) return;
   inputsLocked = true;
   disableTossInputs(true);
 
-  state.toss = tossController.perform(call, caller.id, opponent.id);
+  const toss = tossController.perform(call, caller.id, opponent.id);
+  match.setToss(toss);
   callActions.hidden = true;
   tossTitle.textContent = `${caller.name} CALLED ${call}`;
   tossInstruction.textContent = 'Coin in the air…';
-  scoreboard.innerHTML = '<span>TOSS</span><strong>COIN IN AIR</strong>';
+  setScoreboard('TOSS', 'COIN IN AIR');
+  await animateCoin(toss.result);
 
-  coin.classList.remove('show-heads', 'show-tails');
-  coin.classList.add('is-flipping');
-
-  await delay(1250);
-
-  coin.classList.remove('is-flipping');
-  coin.classList.add(state.toss.result === 'HEADS' ? 'show-heads' : 'show-tails');
-
-  tossTitle.textContent = `${state.toss.result}`;
-  tossInstruction.textContent =
-    `${playerName(state.toss.winnerId)} WON THE TOSS`;
-  scoreboard.innerHTML =
-    `<span>TOSS RESULT</span><strong>${state.toss.result} · ${playerName(state.toss.winnerId)} WINS</strong>`;
-
+  tossTitle.textContent = toss.result;
+  tossInstruction.textContent = `${playerName(toss.winnerId)} WON THE TOSS`;
+  setScoreboard('TOSS RESULT', `${toss.result} · ${playerName(toss.winnerId)} WINS`);
   await delay(450);
 
-  state.phase = 'ROLE_SELECT';
-  const winner = getPlayer(state.toss.winnerId);
-
+  const winner = getPlayer(toss.winnerId);
   if (winner.type === 'CPU') {
     tossInstruction.textContent = 'CPU is choosing…';
     await delay(500);
-    chooseRole(cpuRoleChoice());
+    inputsLocked = false;
+    chooseRole(Math.random() < 0.5 ? 'BAT' : 'BOWL');
     return;
   }
 
@@ -204,65 +479,191 @@ async function chooseRole(choice) {
   disableTossInputs(true);
   roleActions.hidden = true;
 
-  const winnerId = state.toss.winnerId;
+  const winnerId = match.toss.winnerId;
   const loserId = players.find((player) => player.id !== winnerId).id;
+  const battingPlayerId = choice === 'BAT' ? winnerId : loserId;
+  const bowlingPlayerId = choice === 'BAT' ? loserId : winnerId;
+  match.assignRoles({ battingPlayerId, bowlingPlayerId, choice });
 
-  if (choice === 'BAT') {
-    state.battingPlayerId = winnerId;
-    state.bowlingPlayerId = loserId;
-  } else {
-    state.battingPlayerId = loserId;
-    state.bowlingPlayerId = winnerId;
-  }
-
-  state.toss.choice = choice;
-  state.phase = 'ROLE_CONFIRMATION';
-
-  matchEngine.assignOpeningRoles({
-    battingPlayerId: state.battingPlayerId,
-    bowlingPlayerId: state.bowlingPlayerId
-  });
-
-  const battingName = playerName(state.battingPlayerId);
-  const bowlingName = playerName(state.bowlingPlayerId);
-
+  const battingName = playerName(battingPlayerId);
+  const bowlingName = playerName(bowlingPlayerId);
   tossTitle.textContent = `${playerName(winnerId)} CHOOSES ${choice}`;
   tossInstruction.textContent = 'Roles confirmed';
   document.querySelector('#battingRole').textContent = `${battingName} BATTING`;
   document.querySelector('#bowlingRole').textContent = `${bowlingName} BOWLING`;
   roleConfirmation.hidden = false;
+  setScoreboard('TOSS', `${battingName} BAT · ${bowlingName} BOWL`);
 
-  scoreboard.innerHTML =
-    `<span>TOSS</span><strong>${battingName} BAT · ${bowlingName} BOWL</strong>`;
-
-  await delay(950);
-
+  await delay(900);
   tossPanel.hidden = true;
+  await beginInnings();
+}
+
+async function beginInnings() {
+  match.startInnings();
+  updateScoreboards();
   inningsIntro.hidden = false;
-  state.phase = 'INNINGS_INTRO';
-  document.querySelector('#inningsBatting').textContent = `${battingName} BATTING`;
-  document.querySelector('#inningsBowling').textContent = `${bowlingName} BOWLING`;
+  document.querySelector('#inningsBatting').textContent = `${playerName(match.battingPlayerId)} BATTING`;
+  document.querySelector('#inningsBowling').textContent = `${playerName(match.bowlingPlayerId)} BOWLING`;
+  inningsIntro.querySelector('p').textContent = `INNINGS ${match.inningsNumber}`;
+  await delay(900);
+  inningsIntro.hidden = true;
+  matchHud.hidden = false;
+  inputsLocked = false;
+  prepareDelivery();
+}
 
-  await delay(1100);
+function prepareDelivery() {
+  if (!engine || match.currentInnings?.complete || ['MATCH_OVER', 'SUPER_OVER'].includes(match.status)) return;
+  engine.resetBall();
+  inputsLocked = false;
+  updateScoreboards();
+  updateRoleControls();
 
-  const match = matchEngine.startMatch();
-  state.phase = 'FIRST_DELIVERY_READY';
-  inningsIntro.querySelector('p').textContent = 'FIRST DELIVERY';
-  inningsIntro.querySelector('span').textContent = `${match.ballsPerInnings} BALLS · ${playerName(match.bowlingPlayerId)} TO BOWL`;
-  scoreboard.innerHTML = `<span>INNINGS ${match.innings}</span><strong>${playerName(match.battingPlayerId)} 0/0 · BALL 1/${match.ballsPerInnings}</strong>`;
+  if (getPlayer(match.bowlingPlayerId).type === 'CPU') {
+    inputsLocked = isHumanBatting() ? false : true;
+    window.setTimeout(() => launchCpuDelivery(), 650);
+  }
+}
 
-  await ensureGameplayAdapter();
-  gameplayAdapter.beginDelivery();
+function launchCpuDelivery() {
+  if (!engine || match.deliveryOpen || match.currentInnings?.complete) return;
+  const bowling = chooseCpuBowling(difficulty);
+  selectedLine = bowling.line;
+  match.beginDelivery(bowling);
+  adapter.armDelivery();
+  engine.releaseLaunch({ charge: bowling.power, line: bowling.line, deliveryType: bowling.type });
+  updateScoreboards();
+}
+
+function beginPower() {
+  if (inputsLocked || !engine || !isHumanBowling() || match.deliveryOpen || powerPressed) return;
+  powerPressed = engine.beginLaunch();
+  powerControl.classList.toggle('pressed', powerPressed);
+}
+
+function releasePower() {
+  if (!powerPressed || !engine || !isHumanBowling()) return;
+  powerPressed = false;
+  powerControl.classList.remove('pressed');
+  const charge = Math.max(engine.getLauncherCharge(), tableConfig.launcher.tapCharge);
+  const bowling = { line: selectedLine, power: charge, type: 'PACE' };
+  if (!match.beginDelivery(bowling)) return;
+  adapter.armDelivery();
+  engine.releaseLaunch({ charge, line: selectedLine, deliveryType: 'PACE' });
+  updateScoreboards();
+
+  if (getPlayer(match.battingPlayerId).type === 'CPU') {
+    clearTimeout(cpuResolveTimer);
+    cpuResolveTimer = window.setTimeout(() => {
+      const state = match.getState();
+      const cpuResult = resolveCpuBatting({
+        difficulty,
+        requiredRuns: state.requiredRuns,
+        ballsRemaining: state.ballsRemaining
+      });
+      adapter.resolve(cpuResult.type, { reason: 'CPU_BATTING_MODEL' });
+    }, 850);
+  }
+}
+
+function onDeliveryResolved(type) {
+  clearTimeout(cpuResolveTimer);
+  inputsLocked = true;
+  engine?.setFlipper('left', false);
+  engine?.setFlipper('right', false);
+  document.querySelector('#hudLast').textContent = `LAST BALL ${displayOutcome(type)}`;
+  updateScoreboards();
+
+  clearTimeout(deliveryResetTimer);
+  deliveryResetTimer = window.setTimeout(async () => {
+    if (match.status === 'INNINGS_BREAK') {
+      setScoreboard('TARGET', String(match.target));
+      inningsIntro.hidden = false;
+      inningsIntro.querySelector('p').textContent = 'INNINGS BREAK';
+      document.querySelector('#inningsBatting').textContent = `TARGET ${match.target}`;
+      document.querySelector('#inningsBowling').textContent = 'ROLES SWITCHING';
+      await delay(1100);
+      inningsIntro.hidden = true;
+      match.startSecondInnings();
+      prepareDelivery();
+      return;
+    }
+
+    if (match.status === 'MATCH_OVER' || match.status === 'SUPER_OVER') {
+      showResult();
+      return;
+    }
+
+    prepareDelivery();
+  }, rulesConfig.delivery.resolveDelayMs);
+}
+
+function showResult() {
+  inputsLocked = true;
+  bowlingControls.hidden = true;
+  battingControls.hidden = true;
+  resultPanel.hidden = false;
+  const result = match.result;
+  if (match.status === 'SUPER_OVER') {
+    document.querySelector('#resultEyebrow').textContent = 'TIE';
+    document.querySelector('#resultTitle').textContent = 'SUPER OVER READY';
+    document.querySelector('#resultDetail').textContent = 'The match is tied. Super Over is the next match state.';
+    setScoreboard('TIE', 'SUPER OVER');
+    return;
+  }
+  const winner = playerName(result.winnerId);
+  document.querySelector('#resultTitle').textContent = `${winner} WINS`;
+  document.querySelector('#resultDetail').textContent = result.marginType === 'RUNS'
+    ? `Won by ${result.margin} run${result.margin === 1 ? '' : 's'}.`
+    : `Won with ${result.margin} ball${result.margin === 1 ? '' : 's'} remaining.`;
+  setScoreboard('MATCH RESULT', `${winner} WINS`);
+}
+
+function updateRoleControls() {
+  const humanBowling = isHumanBowling();
+  const humanBatting = isHumanBatting();
+  bowlingControls.hidden = !humanBowling;
+  battingControls.hidden = !humanBatting;
+  document.querySelector('#hudRole').textContent = humanBowling ? 'YOU ARE BOWLING' : humanBatting ? 'YOU ARE BATTING' : 'CPU VS CPU';
+}
+
+function updateScoreboards() {
+  const state = match.getState();
+  const batting = playerName(state.battingPlayerId);
+  const bowling = playerName(state.bowlingPlayerId);
+  document.querySelector('#hudBatter').textContent = `${batting} BATTING`;
+  document.querySelector('#hudBowler').textContent = `${bowling} BOWLING`;
+  document.querySelector('#hudScore').textContent = `${state.score.runs}/${state.score.wickets}`;
+  document.querySelector('#hudInnings').textContent = `INNINGS ${Math.max(1, state.innings)}`;
+  document.querySelector('#hudTarget').textContent = state.target === null ? 'TARGET —' : `TARGET ${state.target}`;
+  document.querySelector('#hudNeed').textContent = state.target === null
+    ? `BALL ${Math.min(state.score.balls + 1, state.ballsPerInnings)} / ${state.ballsPerInnings}`
+    : `NEED ${state.requiredRuns} FROM ${state.ballsRemaining}`;
+  document.querySelector('#hudState').textContent = state.status.replaceAll('_', ' ');
+  if (state.innings > 0) setScoreboard(`INNINGS ${state.innings}`, `${state.score.runs}/${state.score.wickets}`);
+}
+
+function setScoreboard(label, value) {
+  scoreboard.innerHTML = `<span>${label}</span><strong>${value}</strong>`;
+  drawStadiumScoreboard(label, value);
+}
+
+function setLineFromKeyboard(line) {
+  selectedLine = line;
+  document.querySelectorAll('[data-line]').forEach((button) => button.classList.toggle('active', button.dataset.line === line));
 }
 
 function disableTossInputs(disabled) {
-  document.querySelectorAll('[data-call], [data-role]').forEach((button) => {
-    button.disabled = disabled;
-  });
+  document.querySelectorAll('[data-call], [data-role]').forEach((button) => { button.disabled = disabled; });
 }
 
-function cpuRoleChoice() {
-  return Math.random() < 0.5 ? 'BAT' : 'BOWL';
+function isHumanBowling() {
+  return getPlayer(match.bowlingPlayerId)?.type === 'HUMAN';
+}
+
+function isHumanBatting() {
+  return getPlayer(match.battingPlayerId)?.type === 'HUMAN';
 }
 
 function getPlayer(id) {
@@ -270,98 +671,63 @@ function getPlayer(id) {
 }
 
 function playerName(id) {
-  return getPlayer(id)?.name || 'PLAYER';
+  return getPlayer(id)?.name || '—';
 }
 
 function formatLabel(value) {
-  return {
-    LAST_3: 'LAST 3 BALLS',
-    ONE_OVER: '1 OVER',
-    TWO_OVER: '2 OVERS'
-  }[value] || '1 OVER';
+  return { LAST_3: 'LAST 3 BALLS', ONE_OVER: '1 OVER', TWO_OVER: '2 OVERS' }[value] || '1 OVER';
 }
 
-function delay(ms) {
-  return new Promise((resolve) => window.setTimeout(resolve, ms));
+function displayOutcome(type) {
+  return { WICKET: 'W', DOT: '0', ONE: '1', TWO: '2', FOUR: '4', SIX: '6' }[type] || type;
 }
 
-const renderer = new THREE.WebGLRenderer({
-  canvas: document.querySelector('#cricketPlayWorld'),
-  antialias: true,
-  powerPreference: 'high-performance'
-});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight, false);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.08;
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x07110c);
-const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.05, 100);
-camera.position.set(0, 6, 8.5);
-camera.lookAt(0, 0.7, 0);
-
-scene.add(new THREE.HemisphereLight(0xe4f0e8, 0x07110c, 2.3));
-const key = new THREE.DirectionalLight(0xffffff, 3.5);
-key.position.set(-3, 7, 5);
-scene.add(key);
-const pitchGlow = new THREE.PointLight(0x64b883, 10, 18, 2);
-pitchGlow.position.set(0, 3, 0);
-scene.add(pitchGlow);
-
-const loader = new GLTFLoader();
-loader.setMeshoptDecoder(MeshoptDecoder);
-loader.load('/models/cricket-world-v2.glb', async (gltf) => {
-  const root = gltf.scene;
-  gameplayRoot = root;
-  const box = new THREE.Box3().setFromObject(root);
-  const center = box.getCenter(new THREE.Vector3());
-  const size = box.getSize(new THREE.Vector3());
-  root.position.sub(center);
-  root.position.y += size.y * 0.5;
-  scene.add(root);
-  frameWorld(size);
-  await ensureGameplayAdapter();
-  attachGameplayBall(root);
-}, undefined, (error) => {
-  console.error('Cricket world failed to load on play route:', error);
-});
-
-async function ensureGameplayAdapter() {
-  if (gameplayAdapter) return gameplayAdapter;
-
-  const { tableConfig, cricketRules } = await gameplayReady;
-
-  gameplayAdapter = createCricketGameplayAdapter({
-    tableConfig,
-    cricketRules,
-    matchEngine,
-    onEvent: (eventName, payload) => {
-      console.info('[Cricket Pinball]', eventName, payload);
-    }
+function animateCoin(result) {
+  return new Promise((resolve) => {
+    const duration = 1250;
+    coinAnimation = { start: performance.now(), duration, result, resolve };
+    coinMesh.visible = true;
   });
-
-  if (gameplayRoot) attachGameplayBall(gameplayRoot);
-  return gameplayAdapter;
 }
 
-function attachGameplayBall(root) {
-  if (!gameplayAdapter || gameplayBallVisual) return;
+function updateCoin(now) {
+  if (!coinAnimation || !coinMesh) return;
+  const t = Math.min(1, (now - coinAnimation.start) / coinAnimation.duration);
+  coinMesh.position.y = 1.35 + Math.sin(t * Math.PI) * 2.1;
+  coinMesh.rotation.x = t * Math.PI * 12;
+  coinMesh.rotation.z = Math.PI / 2 + t * Math.PI * 8;
+  if (t >= 1) {
+    coinMesh.rotation.x = coinAnimation.result === 'HEADS' ? 0 : Math.PI;
+    const done = coinAnimation.resolve;
+    coinAnimation = null;
+    window.setTimeout(() => { coinMesh.visible = false; }, 420);
+    done();
+  }
+}
 
-  const radius = gameplayAdapter.engine.config.ball.radius;
-  gameplayBallVisual = new THREE.Mesh(
-    new THREE.SphereGeometry(radius, 28, 18),
-    new THREE.MeshStandardMaterial({
-      color: 0x8f1d1d,
-      roughness: 0.34,
-      metalness: 0.08
-    })
+function syncMechanics() {
+  if (!engine || !ballVisual) return;
+  ballVisual.visible = engine.ball.active;
+  ballVisual.position.set(
+    engine.ball.position.x,
+    tableConfig.playfield.surfaceY + tableConfig.ball.radius,
+    engine.ball.position.z
   );
 
-  gameplayBallVisual.name = 'CricketGameplayBall';
-  gameplayBallVisual.castShadow = true;
-  root.add(gameplayBallVisual);
+  syncFlipper(leftFlipperVisual, engine.getFlipper('left'), tableConfig.flippers[0]);
+  syncFlipper(rightFlipperVisual, engine.getFlipper('right'), tableConfig.flippers[1]);
+
+  const charge = engine.getLauncherCharge();
+  document.querySelector('#powerValue').textContent = `${Math.round(charge * 100)}%`;
+  document.querySelector('#powerFill').style.width = `${Math.round(charge * 100)}%`;
+}
+
+function syncFlipper(object, state, cfg) {
+  if (!object || !state) return;
+  object.rotation.y = state.angle;
+  if (!object.userData.cricketFallbackFlipper) return;
+  object.position.x = cfg.pivot[0];
+  object.position.z = cfg.pivot[1];
 }
 
 function frameWorld(size) {
@@ -375,32 +741,24 @@ function frameWorld(size) {
 }
 
 window.addEventListener('resize', () => {
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight, false);
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 }, { passive: true });
 
-function animate() {
+function delay(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function animate(now) {
   requestAnimationFrame(animate);
-
-  const dt = Math.min(0.05, 1 / 60);
-  if (gameplayAdapter) {
-    gameplayAdapter.step(dt);
-
-    if (gameplayBallVisual) {
-      const ball = gameplayAdapter.engine.ball;
-      const surfaceY = gameplayAdapter.engine.config.playfield.surfaceY;
-      const radius = gameplayAdapter.engine.config.ball.radius;
-
-      gameplayBallVisual.visible = ball.active;
-      gameplayBallVisual.position.set(
-        ball.position.x,
-        surfaceY + radius,
-        ball.position.z
-      );
-    }
+  const dt = Math.min(clock.getDelta(), 0.05);
+  if (engine) {
+    engine.step(dt);
+    syncMechanics();
   }
-
+  updateCoin(now);
   renderer.render(scene, camera);
 }
-animate();
+requestAnimationFrame(animate);

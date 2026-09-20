@@ -1,11 +1,17 @@
 export function createTossController({ random = Math.random } = {}) {
   let locked = false;
 
+  function pickCaller(players) {
+    if (!Array.isArray(players) || players.length !== 2) throw new Error('Toss requires two players.');
+    return players[random() < 0.5 ? 0 : 1];
+  }
+
   function perform(call, callerId, opponentId) {
     if (locked) return null;
+    const normalizedCall = String(call || '').toUpperCase();
+    if (!['HEADS', 'TAILS'].includes(normalizedCall)) throw new Error('Toss call must be HEADS or TAILS.');
     locked = true;
 
-    const normalizedCall = String(call || '').toUpperCase();
     const result = random() < 0.5 ? 'HEADS' : 'TAILS';
     const callerWon = normalizedCall === result;
 
@@ -26,5 +32,5 @@ export function createTossController({ random = Math.random } = {}) {
     return locked;
   }
 
-  return { perform, reset, isLocked };
+  return { pickCaller, perform, reset, isLocked };
 }
