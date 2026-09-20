@@ -7,12 +7,6 @@ import { createCricketGameplayAdapter } from './gameplay-adapter.js';
 import { chooseCpuBowling, resolveCpuBatting } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 import '../ui/play.css';
-import playfieldSkinUrl from '../../../assets/cricket/world/playfield.png?url';
-import fourRampSkinUrl from '../../../assets/cricket/world/four-ramp.png?url';
-import sixRampSkinUrl from '../../../assets/cricket/world/six-ramp.png?url';
-import pavilionSkinUrl from '../../../assets/cricket/world/pavilion.png?url';
-import tunnelSkinUrl from '../../../assets/cricket/world/tunnel.png?url';
-import wicketSkinUrl from '../../../assets/cricket/world/wicket.png?url';
 
 const WORLD_URL = '/models/cricket-world-v2.glb';
 const WORLD_BYTES = 9271344;
@@ -225,15 +219,6 @@ scene.add(pitchGlow);
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
 const clock = new THREE.Clock();
-const textureLoader = new THREE.TextureLoader();
-const cricketSkinRules = [
-  { tokens: ['playfield', 'pitch'], url: playfieldSkinUrl },
-  { tokens: ['four_ramp', 'four-ramp', 'four ramp', 'four'], url: fourRampSkinUrl },
-  { tokens: ['six_ramp', 'six-ramp', 'six ramp', 'six'], url: sixRampSkinUrl },
-  { tokens: ['pavilion'], url: pavilionSkinUrl },
-  { tokens: ['tunnel'], url: tunnelSkinUrl },
-  { tokens: ['wicket'], url: wicketSkinUrl }
-];
 
 bindUi();
 boot();
@@ -311,7 +296,6 @@ function prepareWorld(root) {
       object.castShadow = true;
       object.receiveShadow = true;
       normalizeEmbeddedMaterials(object, maxAnisotropy);
-      applyExplicitCricketSkin(object, maxAnisotropy);
     }
   });
   const box = new THREE.Box3().setFromObject(root);
@@ -333,41 +317,6 @@ function normalizeEmbeddedMaterials(object, maxAnisotropy) {
     }
     material.needsUpdate = true;
   }
-}
-
-function applyExplicitCricketSkin(object, maxAnisotropy) {
-  const materials = Array.isArray(object.material) ? object.material : [object.material];
-  const haystack = [
-    object.name,
-    ...materials.map((material) => material?.name || '')
-  ].join(' ').toLowerCase();
-
-  const rule = cricketSkinRules.find(({ tokens }) =>
-    tokens.some((token) => haystack.includes(token))
-  );
-
-  if (!rule) return;
-
-  textureLoader.load(rule.url, (texture) => {
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.flipY = false;
-    texture.anisotropy = maxAnisotropy;
-    texture.needsUpdate = true;
-
-    const applyToMaterial = (source) => {
-      if (!source) return source;
-      const material = source.clone();
-      material.map = texture;
-      material.transparent = true;
-      material.alphaTest = 0.02;
-      material.needsUpdate = true;
-      return material;
-    };
-
-    object.material = Array.isArray(object.material)
-      ? object.material.map(applyToMaterial)
-      : applyToMaterial(object.material);
-  });
 }
 
 function createMechanics() {
@@ -689,7 +638,7 @@ async function resolveToss(call) {
   tossTitle.textContent = toss.result;
   tossInstruction.textContent = `${playerName(toss.winnerId)} WON THE TOSS`;
   setScoreboard('TOSS RESULT', `${toss.result} · ${playerName(toss.winnerId)} WINS`);
-  await delay(800);
+  await delay(rulesConfig.toss?.resultHoldMs ?? 800);
 
   const winner = getPlayer(toss.winnerId);
   if (winner.type === 'CPU') {
@@ -728,7 +677,7 @@ async function chooseRole(choice) {
   roleConfirmation.hidden = false;
   setScoreboard('TOSS', `${battingName} BAT · ${bowlingName} BOWL`);
 
-  await delay(900);
+  await delay(rulesConfig.toss?.roleConfirmMs ?? 900);
   tossPanel.hidden = true;
   await beginInnings();
 }
@@ -740,7 +689,7 @@ async function beginInnings() {
   document.querySelector('#inningsBatting').textContent = `${playerName(match.battingPlayerId)} BATTING`;
   document.querySelector('#inningsBowling').textContent = `${playerName(match.bowlingPlayerId)} BOWLING`;
   inningsIntro.querySelector('p').textContent = `INNINGS ${match.inningsNumber}`;
-  await delay(900);
+  await delay(rulesConfig.toss?.inningsIntroMs ?? 900);
   inningsIntro.hidden = true;
   matchHud.hidden = false;
   inputsLocked = false;
@@ -764,7 +713,7 @@ function prepareDelivery() {
 
 function launchCpuDelivery() {
   if (!engine || match.deliveryOpen || match.currentInnings?.complete) return;
-  const bowling = chooseCpuBowling(difficulty);
+  const bowling = chooseCpuBowling(difficulty, rulesConfig.cpu);
   selectedLine = bowling.line;
   match.beginDelivery(bowling);
   adapter.armDelivery();
@@ -802,7 +751,8 @@ function releasePower() {
       const cpuResult = resolveCpuBatting({
         difficulty,
         requiredRuns: state.requiredRuns,
-        ballsRemaining: state.ballsRemaining
+        ballsRemaining: state.ballsRemaining,
+        cpuConfig: rulesConfig.cpu
       });
       adapter.resolve(cpuResult.type, { reason: 'CPU_BATTING_MODEL' });
     }, 850);
@@ -951,7 +901,7 @@ function displayOutcome(type) {
 
 function animateCoin(result) {
   return new Promise((resolve) => {
-    const duration = 1600;
+    const duration = rulesConfig?.toss?.coinMs ?? 1600;
 
     coinStatus.textContent = 'COIN IN THE AIR';
     tossCoin.classList.remove('is-flipping', 'show-tails');

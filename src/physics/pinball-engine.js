@@ -431,7 +431,11 @@ export class PinballEngine {
       this.ball.velocity.x = -Math.abs(this.ball.velocity.x) * cfg.laneRestitution;
     }
 
-    if (this.ball.position.z <= cfg.lane.exitZ) {
+    const exitReached = cfg.lane.exitDirection === 'GTE'
+      ? this.ball.position.z >= cfg.lane.exitZ
+      : this.ball.position.z <= cfg.lane.exitZ;
+
+    if (exitReached) {
       this.launcher.inLane = false;
       const exitKick = this.launcher.exitKick || cfg.exitKick;
       this.ball.velocity.x += exitKick[0];

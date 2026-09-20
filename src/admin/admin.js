@@ -70,19 +70,30 @@ async function boot() {
   renderLoading();
 
   try {
-    const [table, rules] = await Promise.all([
+    const [table, rules, cricketTable, cricketRules] = await Promise.all([
       fetchJson('/game/table.json'),
-      fetchJson('/game/rules.json')
+      fetchJson('/game/rules.json'),
+      fetchJson('/game/cricket-table.json'),
+      fetchJson('/game/cricket-rules.json')
     ]);
 
     live = {
       table,
       rules,
-      difficulty: clone(DEFAULT_DIFFICULTY)
+      difficulty: clone(DEFAULT_DIFFICULTY),
+      cricketTable,
+      cricketRules
     };
 
     const saved = safeParse(localStorage.getItem(DRAFT_KEY));
-    draft = saved?.table && saved?.rules && saved?.difficulty ? saved : clone(live);
+    draft = saved?.table && saved?.rules && saved?.difficulty
+      ? {
+          ...clone(live),
+          ...saved,
+          cricketTable: saved.cricketTable || clone(cricketTable),
+          cricketRules: saved.cricketRules || clone(cricketRules)
+        }
+      : clone(live);
     savedBaseline = clone(draft);
     dirty = false;
 
@@ -435,34 +446,104 @@ function renderCricketPinballAdmin() {
       <div>
         <span>PRODUCT-SPECIFIC CONFIGURATION</span>
         <h2>CRICKET PINBALL</h2>
-        <p>Everything below applies only to Cricket Pinball. General pinball physics and table controls remain in the sections above.</p>
+        <p>These controls edit only the Cricket Pinball draft. General Pinball configuration above is separate and does not drive Cricket gameplay.</p>
       </div>
       <div class="product-admin-source">
         <strong>Dedicated sources</strong>
-        <code>/game/cricket-table.json</code>
-        <code>/game/cricket-rules.json</code>
+        <code>/game/cricket-table.json · v${draft.cricketTable.version}</code>
+        <code>/game/cricket-rules.json · v${draft.cricketRules.version}</code>
       </div>
     </section>
 
-    <div class="product-admin-grid">
-      ${productAdminCard('Match formats', 'Last 3 Balls, 1 Over and 2 Overs.', 'MATCH RULES')}
-      ${productAdminCard('Toss & innings', 'Toss, role selection, innings switch, target and chase state.', 'MATCH FLOW')}
-      ${productAdminCard('Bowling controls', 'Left, Centre and Right lines plus launch power.', 'CRICKET INPUT')}
-      ${productAdminCard('Delivery outcomes', 'Wicket, Dot, 1, 2, 4 and 6 terminal results.', 'SCORING')}
-      ${productAdminCard('CPU opponent', 'Difficulty-specific bowling and batting behaviour.', 'CPU')}
-      ${productAdminCard('Spectator / Fan Picks', 'Watch state, fan points and streaks. Non-monetary only.', 'SPECTATOR')}
-      ${productAdminCard('Assets & portraits', 'Cricket world, player portraits and presentation assets.', 'ASSETS')}
-      ${productAdminCard('Commentary & audio', 'Cricket-specific commentary and audio cues.', 'AUDIO')}
-      ${productAdminCard('Analytics', 'Cricket match, innings and delivery telemetry.', 'ANALYTICS')}
-      ${productAdminCard('Live operations', 'Product-specific match operations and status.', 'OPS')}
+    ${sectionGrid([
+      card('Match format', 'Cricket innings and tie rules.', [
+        number('Last 3 Balls', 'cricketRules.formats.LAST_3.ballsPerInnings', 1, 24, 1, 'balls'),
+        number('1 Over', 'cricketRules.formats.ONE_OVER.ballsPerInnings', 1, 24, 1, 'balls'),
+        number('2 Overs', 'cricketRules.formats.TWO_OVER.ballsPerInnings', 1, 36, 1, 'balls'),
+        number('Max wickets', 'cricketRules.maxWickets', 1, 10, 1),
+        toggle('Super Over enabled', 'cricketRules.superOver.enabled'),
+        number('Super Over balls', 'cricketRules.superOver.ballsPerInnings', 1, 12, 1, 'balls')
+      ]),
+      card('Delivery lifecycle', 'One physical delivery produces one official cricket result.', [
+        number('Max live time', 'cricketRules.delivery.maxLiveMs', 1000, 20000, 100, 'ms'),
+        number('Result hold', 'cricketRules.delivery.resolveDelayMs', 200, 3000, 50, 'ms'),
+        slider('Stalled speed', 'cricketRules.delivery.stalledSpeed', 0.05, 1, 0.01),
+        number('Stalled for', 'cricketRules.delivery.stalledForMs', 200, 5000, 50, 'ms')
+      ]),
+      card('Toss & transitions', 'Visible toss and innings transition timing.', [
+        number('Coin animation', 'cricketRules.toss.coinMs', 500, 4000, 50, 'ms'),
+        number('Result hold', 'cricketRules.toss.resultHoldMs', 200, 3000, 50, 'ms'),
+        number('Role confirmation', 'cricketRules.toss.roleConfirmMs', 200, 3000, 50, 'ms'),
+        number('Innings intro', 'cricketRules.toss.inningsIntroMs', 200, 3000, 50, 'ms')
+      ]),
+      card('Cricket ball physics', 'Physics used only by the Cricket table config.', [
+        slider('Ball radius', 'cricketTable.ball.radius', 0.04, 0.2, 0.005),
+        slider('Max speed', 'cricketTable.ball.maxSpeed', 2, 16, 0.1),
+        vector('Gravity', 'cricketTable.physics.gravity', -10, 10, 0.05, ['X','Z']),
+        slider('Linear damping', 'cricketTable.physics.linearDamping', 0, 1, 0.01),
+        slider('Rolling friction', 'cricketTable.physics.rollingFriction', 0, 0.5, 0.005)
+      ]),
+      card('Bowling launcher', 'Cricket bowling path, charge and release.', [
+        vector('Bowling spawn', 'cricketTable.launcher.spawn', -4, 4, 0.01, ['X','Z']),
+        vector('Bowling direction', 'cricketTable.launcher.direction', -1, 1, 0.01, ['X','Z']),
+        slider('Minimum power', 'cricketTable.launcher.minPower', 1, 15, 0.1),
+        slider('Maximum power', 'cricketTable.launcher.maxPower', 1, 18, 0.1),
+        number('Charge time', 'cricketTable.launcher.chargeTimeMs', 200, 3000, 50, 'ms'),
+        slider('Tap charge', 'cricketTable.launcher.tapCharge', 0.05, 0.9, 0.01)
+      ])
+    ])}
+
+    <div class="repeat-grid">
+      ${['LEFT','CENTRE','RIGHT'].map(line => card(
+        `${line} bowling line`,
+        'Line-specific trajectory tuning.',
+        [
+          slider('Direction offset X', `cricketTable.launcher.bowlingLines.${line}.directionOffsetX`, -0.6, 0.6, 0.01),
+          slider('Exit kick X', `cricketTable.launcher.bowlingLines.${line}.exitKickX`, -3, 3, 0.05)
+        ],
+        true
+      )).join('')}
+    </div>
+
+    <h2 style="margin:22px 0 10px">CRICKET BATS / FLIPPERS</h2>
+    ${repeatedCards('cricketTable.flippers', 'Cricket bat', [
+      vectorSpec('Pivot', 'pivot', -4, 4, 0.01, ['X','Z']),
+      sliderSpec('Length', 'length', 0.3, 1.8, 0.01),
+      sliderSpec('Collision radius', 'radius', 0.04, 0.35, 0.005),
+      sliderSpec('Rest angle', 'restAngleDeg', -180, 360, 1, '°'),
+      sliderSpec('Active angle', 'activeAngleDeg', -180, 360, 1, '°'),
+      sliderSpec('Stroke speed', 'speedDegPerSec', 60, 1500, 10, '°/s'),
+      sliderSpec('Return speed', 'returnSpeedDegPerSec', 60, 1500, 10, '°/s'),
+      sliderSpec('Bat kick', 'kick', 0, 6, 0.05)
+    ])}
+
+    <h2 style="margin:22px 0 10px">OFFICIAL DELIVERY ZONES</h2>
+    ${repeatedCards('cricketTable.deliveryZones', 'Cricket result zone', [
+      vectorSpec('Position', 'position', -4, 4, 0.01, ['X','Z']),
+      sliderSpec('Trigger radius', 'radius', 0.05, 0.8, 0.01)
+    ], true)}
+
+    <div class="repeat-grid" style="margin-top:14px">
+      ${['EASY','MEDIUM','HARD'].map(level => card(
+        `CPU · ${level}`,
+        'Cricket CPU bowling and batting tuning.',
+        [
+          slider('Bowling power min', `cricketRules.cpu.${level}.bowlingPowerMin`, 0.1, 1, 0.01),
+          slider('Bowling power max', `cricketRules.cpu.${level}.bowlingPowerMax`, 0.1, 1, 0.01),
+          slider('Wicket risk', `cricketRules.cpu.${level}.wicketRisk`, 0.01, 0.6, 0.01),
+          slider('Boundary bias', `cricketRules.cpu.${level}.boundaryBias`, 0.01, 0.8, 0.01)
+        ],
+        true
+      )).join('')}
     </div>
 
     <section class="product-admin-note">
-      <strong>PASS 1 BOUNDARY</strong>
-      <span>This is the merged Cricket Pinball admin section. Editing/CRUD is intentionally deferred until its backoffice specification is implemented.</span>
+      <strong>STRICT CONFIG BOUNDARY</strong>
+      <span>Cricket Pinball reads cricketTable/cricketRules only. Generic bumpers, PARIS targets, generic scoring zones and generic launcher geometry are not part of this product configuration.</span>
     </section>
   `;
 }
+
 
 function productAdminCard(title, description, tag) {
   return `
@@ -732,7 +813,8 @@ function searchCatalog() {
     ['zones','Scoring Zones','City Light scoring zone','Trigger, re-arm and score'],
     ['audio','Audio','Sound mix','Master and per-mechanic volume'],
     ['vfx','Visual Effects','Particles, trail & shake','Rendering feedback controls'],
-    ['advanced','Advanced','Compatibility fields','Declared parameters and versions']
+    ['advanced','Advanced','Compatibility fields','Declared parameters and versions'],
+    ['cricket-pinball','Cricket Pinball','Cricket-only table & match controls','Bowling, bats, result zones, formats, toss and CPU tuning']
   ].map(([category,categoryLabel,title,description]) => ({
     category, categoryLabel, title, description,
     search: (categoryLabel+' '+title+' '+description).toLowerCase()
@@ -825,7 +907,9 @@ function exportDraft() {
     exportedAt: new Date().toISOString(),
     table: draft.table,
     rules: draft.rules,
-    difficulty: draft.difficulty
+    difficulty: draft.difficulty,
+    cricketTable: draft.cricketTable,
+    cricketRules: draft.cricketRules
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
   const url = URL.createObjectURL(blob);
