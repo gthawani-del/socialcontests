@@ -108,13 +108,21 @@ export class PinballEngine {
     return true;
   }
 
-  releaseLaunch() {
+  releaseLaunch(options = null) {
     if (this.tilted || !this.ball.active || !this.launcher.awaitingLaunch) return false;
 
     const cfg = this.config.launcher;
-    const charge = Math.max(this.getLauncherCharge(), cfg.tapCharge);
+    const requestedCharge = Number(options?.charge);
+    const charge = Number.isFinite(requestedCharge)
+      ? clamp(requestedCharge, 0, 1)
+      : Math.max(this.getLauncherCharge(), cfg.tapCharge);
+    const line = String(options?.line || 'CENTRE').toUpperCase();
+    const lineConfig = cfg.bowlingLines?.[line] || null;
+    const direction = normalize2(
+      cfg.direction[0] + Number(lineConfig?.directionOffsetX || 0),
+      cfg.direction[1]
+    );
     const power = cfg.minPower + (cfg.maxPower - cfg.minPower) * charge;
-    const direction = normalize2(cfg.direction[0], cfg.direction[1]);
 
     this.ball.velocity.x = direction.x * power;
     this.ball.velocity.z = direction.z * power;
@@ -122,9 +130,29 @@ export class PinballEngine {
     this.launcher.charging = false;
     this.launcher.inLane = true;
     this.launcher.chargeSeconds = 0;
+    this.launcher.deliveryLine = line;
+    this.launcher.deliveryType = String(options?.deliveryType || 'PACE').toUpperCase();
+    this.launcher.exitKick = [
+      Number.isFinite(Number(lineConfig?.exitKickX))
+        ? Number(lineConfig.exitKickX)
+        : cfg.exitKick[0],
+      cfg.exitKick[1]
+    ];
 
-    this.emit('launch', { power, charge });
+    this.emit('launch', {
+      power,
+      charge,
+      line: this.launcher.deliveryLine,
+      deliveryType: this.launcher.deliveryType
+    });
     return true;
+  }
+
+  freezeBall() {
+    this.ball.velocity.x = 0;
+    this.ball.velocity.z = 0;
+    this.launcher.charging = false;
+    this.launcher.chargeSeconds = 0;
   }
 
   nudge(direction) {
@@ -166,6 +194,9 @@ export class PinballEngine {
     this.launcher.charging = false;
     this.launcher.chargeSeconds = 0;
     this.launcher.inLane = true;
+    this.launcher.deliveryLine = 'CENTRE';
+    this.launcher.deliveryType = 'PACE';
+    this.launcher.exitKick = [...cfg.exitKick];
 
     this.nudgeTimes = [];
     this.tilted = false;
@@ -402,9 +433,13 @@ export class PinballEngine {
 
     if (this.ball.position.z <= cfg.lane.exitZ) {
       this.launcher.inLane = false;
-      this.ball.velocity.x += cfg.exitKick[0];
-      this.ball.velocity.z += cfg.exitKick[1];
-      this.emit('launcher-exit');
+      const exitKick = this.launcher.exitKick || cfg.exitKick;
+      this.ball.velocity.x += exitKick[0];
+      this.ball.velocity.z += exitKick[1];
+      this.emit('launcher-exit', {
+        line: this.launcher.deliveryLine,
+        deliveryType: this.launcher.deliveryType
+      });
     }
   }
 
