@@ -14,6 +14,10 @@
     {
       "source": "/cricket-pinball",
       "destination": "/cricket-pinball/index.html"
+    },
+    {
+      "source": "/cricket-pinball/play",
+      "destination": "/cricket-pinball/play/index.html"
     }
   ]
 }
