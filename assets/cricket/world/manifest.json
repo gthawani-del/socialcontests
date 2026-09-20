@@ -1,0 +1,16 @@
+{
+  "name": "cricket-world-v2",
+  "sourceRevision": 6,
+  "glb": "/models/cricket-world-v2.glb",
+  "embeddedTextures": true,
+  "fielderAnimation": true,
+  "scoreHudExternal": true,
+  "sourceTextures": {
+    "playfield": "playfield.png",
+    "fourRamp": "four-ramp.png",
+    "sixRamp": "six-ramp.png",
+    "pavilion": "pavilion.png",
+    "tunnel": "tunnel.png",
+    "wicket": "wicket.png"
+  }
+}
