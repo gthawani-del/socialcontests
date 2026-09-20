@@ -191,44 +191,50 @@ loader.load(
 );
 
 function bindLobby() {
-  document.querySelectorAll('[data-mode]').forEach((button) => {
-    button.addEventListener('click', () => {
-      lobbyState.mode = button.dataset.mode;
-      setActive('[data-mode]', button);
+  lobby.addEventListener('click', (event) => {
+    const modeButton = event.target.closest('[data-mode]');
+    if (modeButton) {
+      lobbyState.mode = modeButton.dataset.mode;
+      setActive('[data-mode]', modeButton);
       goToStep(2);
-    });
-  });
+      return;
+    }
 
-  document.querySelectorAll('[data-format]').forEach((button) => {
-    button.addEventListener('click', () => {
-      lobbyState.format = button.dataset.format;
-      setActive('[data-format]', button);
+    const formatButton = event.target.closest('[data-format]');
+    if (formatButton) {
+      lobbyState.format = formatButton.dataset.format;
+      setActive('[data-format]', formatButton);
       updateStartButton();
       goToStep(3);
-    });
-  });
+      return;
+    }
 
-  document.querySelectorAll('[data-difficulty]').forEach((button) => {
-    button.addEventListener('click', () => {
-      lobbyState.difficulty = button.dataset.difficulty;
-      setActive('[data-difficulty]', button);
+    const difficultyButton = event.target.closest('[data-difficulty]');
+    if (difficultyButton) {
+      lobbyState.difficulty = difficultyButton.dataset.difficulty;
+      setActive('[data-difficulty]', difficultyButton);
       updateStartButton();
-    });
-  });
+      return;
+    }
 
-  document.querySelectorAll('[data-back]').forEach((button) => {
-    button.addEventListener('click', () => goToStep(Number(button.dataset.back)));
-  });
+    const backButton = event.target.closest('[data-back]');
+    if (backButton) {
+      goToStep(Number(backButton.dataset.back));
+      return;
+    }
 
-  startButton.addEventListener('click', startMatch);
-  document.querySelector('#quickPlay').addEventListener('click', startMatch);
-  document.querySelector('#changeMatch').addEventListener('click', () => {
-    quickMatch.hidden = true;
-    setupFlow.hidden = false;
-    goToStep(1);
+    if (event.target.closest('#cricketStart') || event.target.closest('#quickPlay')) {
+      startMatch();
+      return;
+    }
+
+    if (event.target.closest('#changeMatch')) {
+      quickMatch.hidden = true;
+      setupFlow.hidden = false;
+      goToStep(1);
+    }
   });
 }
-
 function hydrateSelections() {
   document.querySelectorAll('[data-mode]').forEach((node) => {
     node.classList.toggle('active', node.dataset.mode === lobbyState.mode);
