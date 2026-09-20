@@ -254,7 +254,7 @@ async function boot() {
     modelRoot = gltf.scene;
     prepareWorld(modelRoot);
     scene.add(modelRoot);
-    await createCricketSkinLayers();
+    await bindCricketSkinTextures();
     createMechanics();
     createCoin();
     setupStadiumScoreboard();
@@ -335,50 +335,83 @@ function normalizeEmbeddedMaterials(object, maxAnisotropy) {
   }
 }
 
-async function createCricketSkinLayers() {
-  const layers = tableConfig.skinLayers || [];
+async function bindCricketSkinTextures() {
+  const bindings = tableConfig.skinBindings || [];
   const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+  const candidates = [];
 
-  await Promise.all(layers.map(async (layer, index) => {
-    const url = cricketSkinUrls[layer.texture];
-    if (!url) return;
+  modelRoot.updateMatrixWorld(true);
+
+  modelRoot.traverse((object) => {
+    if (!object.isMesh || !object.geometry?.attributes?.uv) return;
+
+    object.geometry.computeBoundingBox();
+    const localBox = object.geometry.boundingBox;
+    if (!localBox) return;
+
+    const worldBox = localBox.clone().applyMatrix4(object.matrixWorld);
+    const center = worldBox.getCenter(new THREE.Vector3());
+    const size = worldBox.getSize(new THREE.Vector3());
+
+    candidates.push({ object, center, size });
+  });
+
+  for (const binding of bindings) {
+    const url = cricketSkinUrls[binding.texture];
+    if (!url) continue;
+
+    const target = new THREE.Vector3(...(binding.targetPosition || [0, 0, 0]));
+    const expected = binding.targetSize || [1, 1];
+    const maxDistance = Number(binding.maxDistance ?? 1.6);
+
+    let best = null;
+    let bestScore = Infinity;
+
+    for (const candidate of candidates) {
+      const distance = candidate.center.distanceTo(target);
+      if (distance > maxDistance) continue;
+
+      const horizontalSpan = Math.max(candidate.size.x, candidate.size.z);
+      const verticalSpan = candidate.size.y;
+      const sizePenalty =
+        Math.abs(horizontalSpan - Number(expected[0] || 1)) * 0.35 +
+        Math.abs(Math.max(verticalSpan, Math.min(candidate.size.x, candidate.size.z)) - Number(expected[1] || 1)) * 0.25;
+
+      const score = distance + sizePenalty;
+      if (score < bestScore) {
+        best = candidate;
+        bestScore = score;
+      }
+    }
+
+    if (!best) {
+      console.warn('[Cricket Skin] No UV mesh matched', binding.id);
+      continue;
+    }
 
     const texture = await textureLoader.loadAsync(url);
     texture.colorSpace = THREE.SRGBColorSpace;
+    texture.flipY = false;
     texture.anisotropy = maxAnisotropy;
     texture.needsUpdate = true;
 
-    const material = new THREE.MeshBasicMaterial({
-      map: texture,
-      transparent: true,
-      opacity: Number(layer.opacity ?? 1),
-      depthWrite: false,
-      side: THREE.DoubleSide,
-      toneMapped: false
-    });
+    const applyTexture = (source) => {
+      const material = source?.clone?.() || new THREE.MeshStandardMaterial();
+      material.map = texture;
+      material.transparent = false;
+      material.opacity = 1;
+      material.depthWrite = true;
+      material.needsUpdate = true;
+      return material;
+    };
 
-    const width = Number(layer.size?.[0] ?? 1);
-    const height = Number(layer.size?.[1] ?? 1);
-    const plane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
+    best.object.material = Array.isArray(best.object.material)
+      ? best.object.material.map(applyTexture)
+      : applyTexture(best.object.material);
 
-    plane.name = `CricketSkin_${layer.id}`;
-    plane.position.set(
-      Number(layer.position?.[0] ?? 0),
-      Number(layer.position?.[1] ?? tableConfig.playfield.surfaceY + 0.02),
-      Number(layer.position?.[2] ?? 0)
-    );
-
-    const rot = layer.rotationDeg || [0, 0, 0];
-    plane.rotation.set(
-      THREE.MathUtils.degToRad(Number(rot[0] || 0)),
-      THREE.MathUtils.degToRad(Number(rot[1] || 0)),
-      THREE.MathUtils.degToRad(Number(rot[2] || 0))
-    );
-
-    plane.renderOrder = 2 + index;
-    plane.frustumCulled = false;
-    scene.add(plane);
-  }));
+    best.object.userData.cricketSkinBinding = binding.id;
+    console.info('[Cricket Skin]', binding.id, '→', best.object.name || best.object.uuid);
+  }
 }
 
 function createMechanics() {

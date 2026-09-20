@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "product": "CRICKET_PINBALL",
   "world": {
     "glb": "/models/cricket-world-v2.glb",
@@ -250,120 +250,90 @@
       "terminal": true
     }
   ],
-  "skinLayers": [
+  "skinBindings": [
     {
       "id": "playfield",
       "texture": "playfield",
-      "position": [
+      "targetPosition": [
         0,
         0.72,
         0
       ],
-      "size": [
+      "targetSize": [
         3.02,
         5.24
       ],
-      "rotationDeg": [
-        -90,
-        0,
-        0
-      ],
-      "opacity": 1
+      "maxDistance": 1.6
     },
     {
       "id": "four-ramp",
       "texture": "fourRamp",
-      "position": [
+      "targetPosition": [
         -1.14,
         0.82,
         -2.1
       ],
-      "size": [
+      "targetSize": [
         0.78,
         0.86
       ],
-      "rotationDeg": [
-        -78,
-        0,
-        0
-      ],
-      "opacity": 1
+      "maxDistance": 1.6
     },
     {
       "id": "six-ramp",
       "texture": "sixRamp",
-      "position": [
+      "targetPosition": [
         1.14,
         0.82,
         -2.1
       ],
-      "size": [
+      "targetSize": [
         0.78,
         0.86
       ],
-      "rotationDeg": [
-        -78,
-        0,
-        0
-      ],
-      "opacity": 1
+      "maxDistance": 1.6
     },
     {
       "id": "pavilion",
       "texture": "pavilion",
-      "position": [
+      "targetPosition": [
         0,
         1.72,
         -2.58
       ],
-      "size": [
+      "targetSize": [
         3.05,
         1.18
       ],
-      "rotationDeg": [
-        0,
-        0,
-        0
-      ],
-      "opacity": 1
+      "maxDistance": 1.6
     },
     {
       "id": "tunnel",
       "texture": "tunnel",
-      "position": [
+      "targetPosition": [
         0,
         1.13,
         -2.4
       ],
-      "size": [
+      "targetSize": [
         1.02,
         1.06
       ],
-      "rotationDeg": [
-        0,
-        0,
-        0
-      ],
-      "opacity": 1
+      "maxDistance": 1.6
     },
     {
       "id": "wicket",
       "texture": "wicket",
-      "position": [
+      "targetPosition": [
         0,
         1.02,
         -1.93
       ],
-      "size": [
+      "targetSize": [
         0.74,
         0.98
       ],
-      "rotationDeg": [
-        0,
-        0,
-        0
-      ],
-      "opacity": 1
+      "maxDistance": 1.6
     }
   ]
 }

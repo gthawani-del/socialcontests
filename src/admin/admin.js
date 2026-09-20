@@ -522,12 +522,11 @@ function renderCricketPinballAdmin() {
       vectorSpec('Position', 'position', -4, 4, 0.01, ['X','Z']),
       sliderSpec('Trigger radius', 'radius', 0.05, 0.8, 0.01)
     ], true)}
-    <h2 style="margin:22px 0 10px">CRICKET THEME LAYERS</h2>
-    ${repeatedCards('cricketTable.skinLayers', 'Theme layer', [
-      vectorSpec('Position', 'position', -5, 5, 0.01, ['X','Y','Z']),
-      vectorSpec('Size', 'size', 0.1, 8, 0.01, ['W','H']),
-      vectorSpec('Rotation', 'rotationDeg', -180, 180, 1, ['X°','Y°','Z°']),
-      sliderSpec('Opacity', 'opacity', 0, 1, 0.01)
+    <h2 style="margin:22px 0 10px">CRICKET THEME BINDINGS</h2>
+    ${repeatedCards('cricketTable.skinBindings', 'Theme binding', [
+      vectorSpec('Target position', 'targetPosition', -5, 5, 0.01, ['X','Y','Z']),
+      vectorSpec('Target size', 'targetSize', 0.1, 8, 0.01, ['W','H']),
+      sliderSpec('Max bind distance', 'maxDistance', 0.2, 4, 0.05)
     ], true)}
 
 
