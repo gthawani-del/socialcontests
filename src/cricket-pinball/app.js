@@ -14,6 +14,64 @@ document.documentElement.dataset.product = 'cricket-pinball';
 app.innerHTML = `
   <main class="cricket-pinball-shell">
     <canvas id="cricketWorld"></canvas>
+
+    <section class="cricket-lobby" id="cricketLobby" aria-labelledby="cricketLobbyTitle" hidden>
+      <div class="cricket-lobby-panel">
+        <div class="cricket-lobby-brand">
+          <p>CRICKET PINBALL</p>
+          <h1 id="cricketLobbyTitle">BAT WITH FLIPPERS. BOWL THE DELIVERY.</h1>
+          <span>Short-format cricket. One ball = one official result.</span>
+        </div>
+
+        <div class="cricket-mode-grid" aria-label="Choose match mode">
+          <button type="button" class="cricket-mode active" data-mode="CPU">
+            <span>01</span>
+            <strong>PLAY VS CPU</strong>
+            <small>Solo competitive match</small>
+          </button>
+          <button type="button" class="cricket-mode" data-mode="LOCAL">
+            <span>02</span>
+            <strong>LOCAL 2 PLAYER</strong>
+            <small>Two players, one device</small>
+          </button>
+          <a class="cricket-mode cricket-mode-link" href="/cricket-pinball/watch/demo">
+            <span>03</span>
+            <strong>WATCH MATCHES</strong>
+            <small>Spectator mode</small>
+          </a>
+        </div>
+
+        <div class="cricket-selector-block">
+          <div class="cricket-selector-heading">
+            <span>MATCH FORMAT</span>
+            <small>Choose innings length</small>
+          </div>
+          <div class="cricket-segmented" id="formatSelector">
+            <button type="button" data-format="LAST_3">LAST 3 BALLS</button>
+            <button type="button" class="active" data-format="ONE_OVER">1 OVER</button>
+            <button type="button" data-format="TWO_OVER">2 OVERS</button>
+          </div>
+        </div>
+
+        <div class="cricket-selector-block">
+          <div class="cricket-selector-heading">
+            <span>DIFFICULTY</span>
+            <small>Separate from match length</small>
+          </div>
+          <div class="cricket-segmented" id="difficultySelector">
+            <button type="button" data-difficulty="EASY">EASY</button>
+            <button type="button" class="active" data-difficulty="MEDIUM">MEDIUM</button>
+            <button type="button" data-difficulty="HARD">HARD</button>
+          </div>
+        </div>
+
+        <button type="button" class="cricket-start" id="cricketStart">
+          START MATCH
+          <span>1 OVER · MEDIUM · VS CPU</span>
+        </button>
+      </div>
+    </section>
+
     <section class="cricket-loading" id="cricketLoading" aria-live="polite">
       <p>CRICKET PINBALL</p>
       <strong id="cricketLoadingPercent">0%</strong>
@@ -23,9 +81,19 @@ app.innerHTML = `
 `;
 
 const canvas = document.querySelector('#cricketWorld');
+const lobby = document.querySelector('#cricketLobby');
 const loading = document.querySelector('#cricketLoading');
 const loadingPercent = document.querySelector('#cricketLoadingPercent');
 const loadingStatus = document.querySelector('#cricketLoadingStatus');
+const startButton = document.querySelector('#cricketStart');
+
+const lobbyState = {
+  mode: 'CPU',
+  format: 'ONE_OVER',
+  difficulty: 'MEDIUM'
+};
+
+bindLobby();
 
 const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -93,6 +161,7 @@ loader.load(
 
     window.setTimeout(() => {
       loading.hidden = true;
+      lobby.hidden = false;
     }, 350);
   },
   (progress) => {
@@ -112,6 +181,61 @@ loader.load(
     loading.classList.add('is-error');
   }
 );
+
+function bindLobby() {
+  document.querySelectorAll('[data-mode]').forEach((button) => {
+    button.addEventListener('click', () => {
+      lobbyState.mode = button.dataset.mode;
+      setActive('[data-mode]', button);
+      updateStartButton();
+    });
+  });
+
+  document.querySelectorAll('[data-format]').forEach((button) => {
+    button.addEventListener('click', () => {
+      lobbyState.format = button.dataset.format;
+      setActive('[data-format]', button);
+      updateStartButton();
+    });
+  });
+
+  document.querySelectorAll('[data-difficulty]').forEach((button) => {
+    button.addEventListener('click', () => {
+      lobbyState.difficulty = button.dataset.difficulty;
+      setActive('[data-difficulty]', button);
+      updateStartButton();
+    });
+  });
+
+  startButton.addEventListener('click', () => {
+    const params = new URLSearchParams({
+      mode: lobbyState.mode,
+      format: lobbyState.format,
+      difficulty: lobbyState.difficulty
+    });
+    window.location.assign(`/cricket-pinball/play?${params.toString()}`);
+  });
+
+  updateStartButton();
+}
+
+function setActive(selector, selected) {
+  document.querySelectorAll(selector).forEach((node) => {
+    node.classList.toggle('active', node === selected);
+  });
+}
+
+function updateStartButton() {
+  const formatLabel = {
+    LAST_3: 'LAST 3 BALLS',
+    ONE_OVER: '1 OVER',
+    TWO_OVER: '2 OVERS'
+  }[lobbyState.format];
+
+  const modeLabel = lobbyState.mode === 'LOCAL' ? 'LOCAL 2 PLAYER' : 'VS CPU';
+  startButton.querySelector('span').textContent =
+    `${formatLabel} · ${lobbyState.difficulty} · ${modeLabel}`;
+}
 
 function frameWorld(size) {
   const aspect = window.innerWidth / window.innerHeight;
