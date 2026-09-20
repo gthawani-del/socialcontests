@@ -18,6 +18,18 @@
     {
       "source": "/cricket-pinball/play",
       "destination": "/cricket-pinball/play/index.html"
+    },
+    {
+      "source": "/cricket-pinball/match/:matchId",
+      "destination": "/cricket-pinball/play/index.html"
+    },
+    {
+      "source": "/cricket-pinball/watch/:matchId",
+      "destination": "/cricket-pinball/watch/index.html"
+    },
+    {
+      "source": "/cricket-pinball/admin",
+      "destination": "/cricket-pinball/admin/index.html"
     }
   ]
 }
