@@ -395,3 +395,50 @@ button, a { font: inherit; }
     top:58px;
   }
 }
+
+
+/* Toss must be unmistakably visible above the 3D world */
+.toss-panel{
+  z-index:18;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(44,112,70,.34),transparent 30%),
+    rgba(2,8,5,.84);
+  backdrop-filter:blur(12px);
+}
+.coin-stage{
+  width:220px;
+  height:240px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:14px;
+}
+.coin{
+  width:132px;
+  height:132px;
+}
+.coin-face{
+  border-width:7px;
+  font-size:58px;
+  box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 50px rgba(240,205,109,.22);
+}
+.coin-stage small{
+  color:#f2d67f;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.16em;
+}
+.coin.is-flipping{
+  animation:cricket-coin-flip 1.6s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes cricket-coin-flip{
+  0%{transform:translateY(24px) rotateY(0) rotateX(0) scale(.94)}
+  45%{transform:translateY(-110px) rotateY(1080deg) rotateX(540deg) scale(1.18)}
+  100%{transform:translateY(0) rotateY(2160deg) rotateX(1080deg) scale(1)}
+}
+
+/* Controls are phase-specific: bowling setup OR live batting, never both */
+.bowling-controls[hidden],
+.batting-controls[hidden]{
+  display:none!important;
+}
