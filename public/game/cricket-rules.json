@@ -15,7 +15,9 @@
   "delivery": {
     "maxLiveMs": 10000,
     "resolveDelayMs": 850,
-    "bowlerDecisionMs": 5000
+    "bowlerDecisionMs": 5000,
+    "stalledSpeed": 0.2,
+    "stalledForMs": 1200
   },
   "outcomes": {
     "DOT": 0,
