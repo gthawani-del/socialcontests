@@ -295,3 +295,101 @@ button {
     font-size: 10px;
   }
 }
+
+
+.setup-progress {
+  display: flex;
+  gap: 8px;
+  margin-top: 26px;
+}
+
+.setup-progress span {
+  flex: 1;
+  padding: 8px 10px;
+  border-top: 2px solid rgba(255,255,255,.10);
+  color: rgba(247,248,244,.34);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.setup-progress span.active {
+  border-color: #b8e2c2;
+  color: #b8e2c2;
+}
+
+.setup-step {
+  margin-top: 22px;
+}
+
+.setup-back,
+.text-button {
+  border: 0;
+  background: transparent;
+  color: rgba(247,248,244,.58);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+
+.setup-back {
+  margin-top: 12px;
+}
+
+.quick-match {
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid rgba(184,226,194,.26);
+  border-radius: 18px;
+  background: rgba(34,82,50,.16);
+}
+
+.quick-match > span {
+  display: block;
+  color: #b8e2c2;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.quick-match > strong {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(30px,5vw,52px);
+  line-height: 1;
+}
+
+.quick-match p {
+  margin: 10px 0 18px;
+  color: rgba(247,248,244,.62);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.quick-match > button:first-of-type {
+  width: 100%;
+  min-height: 56px;
+  border: 0;
+  border-radius: 14px;
+  background: #f5f7e9;
+  color: #07110c;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.quick-match .text-button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+@media (max-width:700px) {
+  .setup-progress {
+    margin-top: 18px;
+  }
+
+  .setup-progress span {
+    padding: 7px 4px;
+    font-size: 9px;
+  }
+}
