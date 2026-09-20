@@ -32,13 +32,13 @@ app.innerHTML = `
       <article class="pick-card">
         <p>FAN PICK</p>
         <h1>PREDICT THE WINNER</h1>
-        <span>Your pick is for points only. No stake, odds or monetary reward.</span>
+        <span>Your pick is for fan points only. No money or prizes.</span>
         <div class="pick-buttons">
           <button type="button" data-pick="p1">PLAYER 1</button>
           <button type="button" data-pick="p2">PLAYER 2</button>
         </div>
         <button type="button" id="confirmPick" disabled>CONFIRM PICK</button>
-        <strong id="pickStatus">Choose before the first delivery.</strong>
+        <strong id="pickStatus">Choose before the first delivery.</strong>\n        <div class="fan-stats"><span>POINTS <b id="fanPoints">0</b></span><span>STREAK <b id="fanStreak">0</b></span></div>
       </article>
     </section>
     <section class="demo-strip" id="demoStrip"><span>LOCAL MOCK FEED · architecture ready for authoritative match events</span><button id="startDemo" type="button">START DEMO MATCH</button></section>
