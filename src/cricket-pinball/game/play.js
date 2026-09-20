@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { createTossController } from '../toss/toss-controller.js';
+import { createMatchEngine } from '../match/match-engine.js';
 import '../ui/play.css';
 
 const app = document.querySelector('#cricketPlayApp');
@@ -29,6 +30,13 @@ const players = mode === 'LOCAL'
 const caller = players[0];
 const opponent = players[1];
 const tossController = createTossController();
+const matchEngine = createMatchEngine({
+  format,
+  difficulty,
+  players,
+  maxWickets: 2,
+  superOverEnabled: true
+});
 
 const state = {
   phase: 'MATCH_INTRO',
@@ -195,6 +203,11 @@ async function chooseRole(choice) {
   state.toss.choice = choice;
   state.phase = 'ROLE_CONFIRMATION';
 
+  matchEngine.assignOpeningRoles({
+    battingPlayerId: state.battingPlayerId,
+    bowlingPlayerId: state.bowlingPlayerId
+  });
+
   const battingName = playerName(state.battingPlayerId);
   const bowlingName = playerName(state.bowlingPlayerId);
 
@@ -217,10 +230,12 @@ async function chooseRole(choice) {
 
   await delay(1100);
 
+  const match = matchEngine.startMatch();
+  matchEngine.readyDelivery();
   state.phase = 'FIRST_DELIVERY_READY';
   inningsIntro.querySelector('p').textContent = 'FIRST DELIVERY';
-  inningsIntro.querySelector('span').textContent = 'Gameplay wiring comes in the next step.';
-  scoreboard.innerHTML = '<span>INNINGS 1</span><strong>FIRST DELIVERY READY</strong>';
+  inningsIntro.querySelector('span').textContent = `${match.ballsPerInnings} BALLS · ${playerName(match.bowlingPlayerId)} TO BOWL`;
+  scoreboard.innerHTML = `<span>INNINGS ${match.innings}</span><strong>${playerName(match.battingPlayerId)} 0/0 · BALL 1/${match.ballsPerInnings}</strong>`;
 }
 
 function disableTossInputs(disabled) {
