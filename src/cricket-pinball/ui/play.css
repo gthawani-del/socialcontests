@@ -1,0 +1,285 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #f7f8f4;
+  background: #07110c;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #cricketPlayApp, .cricket-play-shell {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  background: #07110c;
+}
+
+button, a { font: inherit; }
+
+.cricket-play-shell {
+  position: relative;
+  min-height: 100vh;
+}
+
+#cricketPlayWorld {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.match-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  background: linear-gradient(180deg, rgba(3,9,6,.82), transparent);
+}
+
+.match-topbar a {
+  color: #f7f8f4;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.match-topbar div {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+}
+
+.match-topbar span { color: rgba(247,248,244,.62); }
+
+.match-intro,
+.toss-panel,
+.innings-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  padding: 24px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(25,91,52,.22), transparent 34%),
+    rgba(3, 9, 6, .56);
+  backdrop-filter: blur(5px);
+}
+
+.match-intro p,
+.toss-copy p,
+.innings-intro p {
+  margin: 0;
+  color: #b8e2c2;
+  letter-spacing: .16em;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.versus {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) auto minmax(120px, 1fr);
+  align-items: center;
+  gap: 24px;
+}
+
+.versus div {
+  min-width: 180px;
+  padding: 24px 18px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 18px;
+  background: rgba(7,17,12,.78);
+}
+
+.versus span,
+.versus strong {
+  display: block;
+}
+
+.versus span {
+  color: rgba(247,248,244,.46);
+  font-size: 10px;
+}
+
+.versus strong {
+  margin-top: 8px;
+  font-size: 22px;
+}
+
+.match-intro button,
+.toss-actions button {
+  min-width: 180px;
+  min-height: 56px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 14px;
+  color: #07110c;
+  background: #f5f7e9;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.toss-panel {
+  gap: 20px;
+}
+
+.toss-copy h1 {
+  margin: 8px 0 6px;
+  font-size: clamp(34px, 6vw, 64px);
+  line-height: .95;
+}
+
+.toss-copy span {
+  color: rgba(247,248,244,.65);
+  font-size: 13px;
+}
+
+.coin-stage {
+  width: 160px;
+  height: 160px;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+}
+
+.coin {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  transform-style: preserve-3d;
+}
+
+.coin.is-flipping {
+  animation: cricket-coin-flip 1.25s cubic-bezier(.2,.7,.2,1);
+}
+
+.coin.show-tails { transform: rotateY(180deg); }
+
+.coin-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 5px solid #f0cd6d;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  background:
+    radial-gradient(circle at 35% 30%, #fff0a3 0, #d4a62c 38%, #8b6414 100%);
+  box-shadow: 0 18px 45px rgba(0,0,0,.4);
+  color: #3b2a07;
+  font-family: Georgia, serif;
+  font-size: 48px;
+  font-weight: 900;
+}
+
+.coin-tails { transform: rotateY(180deg); }
+
+@keyframes cricket-coin-flip {
+  0% { transform: translateY(18px) rotateY(0) rotateX(0); }
+  45% { transform: translateY(-90px) rotateY(900deg) rotateX(360deg) scale(1.08); }
+  100% { transform: translateY(0) rotateY(1800deg) rotateX(720deg); }
+}
+
+.toss-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.toss-actions button {
+  min-width: 150px;
+}
+
+.toss-actions button:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+.role-confirmation strong,
+.role-confirmation span,
+.innings-intro strong,
+.innings-intro span {
+  display: block;
+}
+
+.role-confirmation strong,
+.innings-intro strong {
+  font-size: clamp(30px, 6vw, 58px);
+}
+
+.role-confirmation span,
+.innings-intro span {
+  margin-top: 6px;
+  color: rgba(247,248,244,.62);
+  font-size: 16px;
+}
+
+.stadium-scoreboard {
+  position: fixed;
+  z-index: 7;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: min(560px, calc(100vw - 32px));
+  padding: 12px 18px;
+  border: 1px solid rgba(184,226,194,.28);
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(3,9,6,.82);
+}
+
+.stadium-scoreboard span,
+.stadium-scoreboard strong {
+  display: block;
+}
+
+.stadium-scoreboard span {
+  color: #b8e2c2;
+  font-size: 9px;
+  letter-spacing: .18em;
+}
+
+.stadium-scoreboard strong {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+[hidden] { display: none !important; }
+
+@media (max-width: 680px) {
+  .versus {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .versus b {
+    font-size: 12px;
+  }
+
+  .versus div {
+    min-width: min(82vw, 320px);
+    padding: 16px;
+  }
+
+  .toss-actions {
+    width: min(92vw, 360px);
+  }
+
+  .toss-actions button {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .stadium-scoreboard {
+    top: 64px;
+  }
+}
