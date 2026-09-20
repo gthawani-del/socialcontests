@@ -8,7 +8,8 @@ export default defineConfig({
         home: resolve(process.cwd(), 'index.html'),
         play: resolve(process.cwd(), 'play/index.html'),
         admin: resolve(process.cwd(), 'admin/index.html'),
-        cricketPinball: resolve(process.cwd(), 'cricket-pinball/index.html')
+        cricketPinball: resolve(process.cwd(), 'cricket-pinball/index.html'),
+        cricketPinballPlay: resolve(process.cwd(), 'cricket-pinball/play/index.html')
       }
     }
   }
