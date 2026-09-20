@@ -7,6 +7,12 @@ import { createCricketGameplayAdapter } from './gameplay-adapter.js';
 import { chooseCpuBowling, resolveCpuBatting } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 import '../ui/play.css';
+import playfieldSkinUrl from '../../../assets/cricket/world/playfield.png?url';
+import fourRampSkinUrl from '../../../assets/cricket/world/four-ramp.png?url';
+import sixRampSkinUrl from '../../../assets/cricket/world/six-ramp.png?url';
+import pavilionSkinUrl from '../../../assets/cricket/world/pavilion.png?url';
+import tunnelSkinUrl from '../../../assets/cricket/world/tunnel.png?url';
+import wicketSkinUrl from '../../../assets/cricket/world/wicket.png?url';
 
 const WORLD_URL = '/models/cricket-world-v2.glb';
 const WORLD_BYTES = 9271344;
@@ -219,6 +225,15 @@ scene.add(pitchGlow);
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
 const clock = new THREE.Clock();
+const textureLoader = new THREE.TextureLoader();
+const cricketSkinUrls = {
+  playfield: playfieldSkinUrl,
+  fourRamp: fourRampSkinUrl,
+  sixRamp: sixRampSkinUrl,
+  pavilion: pavilionSkinUrl,
+  tunnel: tunnelSkinUrl,
+  wicket: wicketSkinUrl
+};
 
 bindUi();
 boot();
@@ -239,6 +254,7 @@ async function boot() {
     modelRoot = gltf.scene;
     prepareWorld(modelRoot);
     scene.add(modelRoot);
+    await createCricketSkinLayers();
     createMechanics();
     createCoin();
     setupStadiumScoreboard();
@@ -317,6 +333,52 @@ function normalizeEmbeddedMaterials(object, maxAnisotropy) {
     }
     material.needsUpdate = true;
   }
+}
+
+async function createCricketSkinLayers() {
+  const layers = tableConfig.skinLayers || [];
+  const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+
+  await Promise.all(layers.map(async (layer, index) => {
+    const url = cricketSkinUrls[layer.texture];
+    if (!url) return;
+
+    const texture = await textureLoader.loadAsync(url);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = maxAnisotropy;
+    texture.needsUpdate = true;
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      transparent: true,
+      opacity: Number(layer.opacity ?? 1),
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      toneMapped: false
+    });
+
+    const width = Number(layer.size?.[0] ?? 1);
+    const height = Number(layer.size?.[1] ?? 1);
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
+
+    plane.name = `CricketSkin_${layer.id}`;
+    plane.position.set(
+      Number(layer.position?.[0] ?? 0),
+      Number(layer.position?.[1] ?? tableConfig.playfield.surfaceY + 0.02),
+      Number(layer.position?.[2] ?? 0)
+    );
+
+    const rot = layer.rotationDeg || [0, 0, 0];
+    plane.rotation.set(
+      THREE.MathUtils.degToRad(Number(rot[0] || 0)),
+      THREE.MathUtils.degToRad(Number(rot[1] || 0)),
+      THREE.MathUtils.degToRad(Number(rot[2] || 0))
+    );
+
+    plane.renderOrder = 2 + index;
+    plane.frustumCulled = false;
+    scene.add(plane);
+  }));
 }
 
 function createMechanics() {
