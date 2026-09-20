@@ -205,7 +205,7 @@ async function boot() {
   try {
     loading.hidden = false;
     const [table, cricketRules, gltf] = await Promise.all([
-      fetchJson('/game/table.json'),
+      fetchJson('/game/cricket-table.json'),
       fetchJson('/game/cricket-rules.json'),
       loadWorld()
     ]);
@@ -224,7 +224,8 @@ async function boot() {
     adapter = createCricketGameplayAdapter({
       engine,
       matchEngine: match,
-      maxLiveMs: rulesConfig.delivery.maxLiveMs,
+      tableConfig,
+      cricketRules: rulesConfig,
       onResolved: onDeliveryResolved
     });
 
@@ -754,7 +755,10 @@ function delay(ms) {
 function animate(now) {
   requestAnimationFrame(animate);
   const dt = Math.min(clock.getDelta(), 0.05);
-  if (engine) {
+  if (adapter) {
+    adapter.step(dt);
+    syncMechanics();
+  } else if (engine) {
     engine.step(dt);
     syncMechanics();
   }
