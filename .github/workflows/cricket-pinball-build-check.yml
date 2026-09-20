@@ -1,0 +1,29 @@
+name: Cricket Pinball build check
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Verify generic and Cricket Pinball outputs
+        run: |
+          test -f dist/index.html
+          test -f dist/play/index.html
+          test -f dist/admin/index.html
+          test -f dist/cricket-pinball/index.html
+          test -f dist/cricket-pinball/play/index.html
+          test -f dist/cricket-pinball/watch/index.html
+          test -f dist/cricket-pinball/admin/index.html
+          test -f dist/models/cricket-world-v2.glb
