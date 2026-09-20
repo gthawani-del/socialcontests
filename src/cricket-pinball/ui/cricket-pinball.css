@@ -393,3 +393,28 @@ button {
     font-size: 9px;
   }
 }
+
+
+/* Interaction safety: WebGL/background layers never intercept lobby controls */
+#cricketWorld {
+  pointer-events: none;
+}
+
+.cricket-lobby {
+  pointer-events: auto;
+}
+
+.cricket-lobby-panel,
+.cricket-mode,
+.cricket-segmented button,
+.cricket-start,
+.text-button,
+.quick-match button {
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.cricket-loading.is-ready {
+  pointer-events: none;
+}
