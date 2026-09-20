@@ -506,3 +506,51 @@ html[data-admin-theme="light"] .sidebar nav button.active{background:linear-grad
   .text-scale-control{min-width:120px}
   .draft-status{display:none}
 }
+
+/* Complete light-mode coverage for legacy admin surfaces */
+html[data-admin-theme="light"] .environment-card,
+html[data-admin-theme="light"] .product-mark,
+html[data-admin-theme="light"] .loader-mark,
+html[data-admin-theme="light"] .preset-summary>div,
+html[data-admin-theme="light"] .score-economy>div,
+html[data-admin-theme="light"] .preset-tabs,
+html[data-admin-theme="light"] .warning-panel,
+html[data-admin-theme="light"] .search-results button,
+html[data-admin-theme="light"] .empty-state,
+html[data-admin-theme="light"] .fatal-card,
+html[data-admin-theme="light"] .loading-screen,
+html[data-admin-theme="light"] .fatal,
+html[data-admin-theme="light"] .difficulty-panel,
+html[data-admin-theme="light"] .repeat-grid article,
+html[data-admin-theme="light"] .readout,
+html[data-admin-theme="light"] .number-wrap,
+html[data-admin-theme="light"] .vector-wrap label{
+  background:#fff;
+  color:var(--text);
+}
+html[data-admin-theme="light"] .product-mark,
+html[data-admin-theme="light"] .loader-mark{
+  background:linear-gradient(145deg,#fff,#edf2f6);
+}
+html[data-admin-theme="light"] .value-box input,
+html[data-admin-theme="light"] .number-wrap input,
+html[data-admin-theme="light"] .vector-wrap input,
+html[data-admin-theme="light"] .select-control,
+html[data-admin-theme="light"] .search input{
+  color:#16202b;
+}
+html[data-admin-theme="light"] .value-box span,
+html[data-admin-theme="light"] .number-wrap span,
+html[data-admin-theme="light"] .vector-wrap label span,
+html[data-admin-theme="light"] .readout,
+html[data-admin-theme="light"] .search-results small,
+html[data-admin-theme="light"] .warning-panel p{
+  color:var(--muted);
+}
+html[data-admin-theme="light"] input[type="range"]{
+  background:#d8e0e8;
+}
+html[data-admin-theme="light"] .switch span{
+  background:#d5dde6;
+  border-color:#bdc8d4;
+}
