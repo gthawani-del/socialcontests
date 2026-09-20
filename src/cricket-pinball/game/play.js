@@ -7,6 +7,12 @@ import { createCricketGameplayAdapter } from './gameplay-adapter.js';
 import { chooseCpuBowling, resolveCpuBatting } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 import '../ui/play.css';
+import playfieldSkinUrl from '../../../assets/cricket/world/playfield.png?url';
+import fourRampSkinUrl from '../../../assets/cricket/world/four-ramp.png?url';
+import sixRampSkinUrl from '../../../assets/cricket/world/six-ramp.png?url';
+import pavilionSkinUrl from '../../../assets/cricket/world/pavilion.png?url';
+import tunnelSkinUrl from '../../../assets/cricket/world/tunnel.png?url';
+import wicketSkinUrl from '../../../assets/cricket/world/wicket.png?url';
 
 const WORLD_URL = '/models/cricket-world-v2.glb';
 const WORLD_BYTES = 9271344;
@@ -211,6 +217,15 @@ scene.add(pitchGlow);
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
 const clock = new THREE.Clock();
+const textureLoader = new THREE.TextureLoader();
+const cricketSkinRules = [
+  { tokens: ['playfield', 'pitch'], url: playfieldSkinUrl },
+  { tokens: ['four_ramp', 'four-ramp', 'four ramp', 'four'], url: fourRampSkinUrl },
+  { tokens: ['six_ramp', 'six-ramp', 'six ramp', 'six'], url: sixRampSkinUrl },
+  { tokens: ['pavilion'], url: pavilionSkinUrl },
+  { tokens: ['tunnel'], url: tunnelSkinUrl },
+  { tokens: ['wicket'], url: wicketSkinUrl }
+];
 
 bindUi();
 boot();
@@ -281,10 +296,14 @@ function loadWorld() {
 }
 
 function prepareWorld(root) {
+  const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+
   root.traverse((object) => {
     if (object.isMesh) {
       object.castShadow = true;
       object.receiveShadow = true;
+      normalizeEmbeddedMaterials(object, maxAnisotropy);
+      applyExplicitCricketSkin(object, maxAnisotropy);
     }
   });
   const box = new THREE.Box3().setFromObject(root);
@@ -293,6 +312,54 @@ function prepareWorld(root) {
   root.position.sub(center);
   root.position.y += size.y * 0.5;
   frameWorld(size);
+}
+
+function normalizeEmbeddedMaterials(object, maxAnisotropy) {
+  const materials = Array.isArray(object.material) ? object.material : [object.material];
+  for (const material of materials) {
+    if (!material) continue;
+    if (material.map) {
+      material.map.colorSpace = THREE.SRGBColorSpace;
+      material.map.anisotropy = maxAnisotropy;
+      material.map.needsUpdate = true;
+    }
+    material.needsUpdate = true;
+  }
+}
+
+function applyExplicitCricketSkin(object, maxAnisotropy) {
+  const materials = Array.isArray(object.material) ? object.material : [object.material];
+  const haystack = [
+    object.name,
+    ...materials.map((material) => material?.name || '')
+  ].join(' ').toLowerCase();
+
+  const rule = cricketSkinRules.find(({ tokens }) =>
+    tokens.some((token) => haystack.includes(token))
+  );
+
+  if (!rule) return;
+
+  textureLoader.load(rule.url, (texture) => {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.flipY = false;
+    texture.anisotropy = maxAnisotropy;
+    texture.needsUpdate = true;
+
+    const applyToMaterial = (source) => {
+      if (!source) return source;
+      const material = source.clone();
+      material.map = texture;
+      material.transparent = true;
+      material.alphaTest = 0.02;
+      material.needsUpdate = true;
+      return material;
+    };
+
+    object.material = Array.isArray(object.material)
+      ? object.material.map(applyToMaterial)
+      : applyToMaterial(object.material);
+  });
 }
 
 function createMechanics() {
