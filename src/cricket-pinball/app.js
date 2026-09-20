@@ -3,13 +3,19 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import './ui/cricket-pinball.css';
 
+const STORAGE_KEY = 'cricket-pinball-preferences-v1';
 const app = document.querySelector('#cricketPinballApp');
 
-if (!app) {
-  throw new Error('Cricket Pinball root element not found.');
-}
+if (!app) throw new Error('Cricket Pinball root element not found.');
 
 document.documentElement.dataset.product = 'cricket-pinball';
+
+const saved = readPreferences();
+const lobbyState = {
+  mode: saved.mode || 'CPU',
+  format: saved.format || 'ONE_OVER',
+  difficulty: saved.difficulty || 'MEDIUM'
+};
 
 app.innerHTML = `
   <main class="cricket-pinball-shell">
@@ -20,55 +26,72 @@ app.innerHTML = `
         <div class="cricket-lobby-brand">
           <p>CRICKET PINBALL</p>
           <h1 id="cricketLobbyTitle">BAT WITH FLIPPERS. BOWL THE DELIVERY.</h1>
-          <span>Short-format cricket. One ball = one official result.</span>
+          <span>Short-format cricket. One pinball = one cricket ball.</span>
         </div>
 
-        <div class="cricket-mode-grid" aria-label="Choose match mode">
-          <button type="button" class="cricket-mode active" data-mode="CPU">
-            <span>01</span>
-            <strong>PLAY VS CPU</strong>
-            <small>Solo competitive match</small>
-          </button>
-          <button type="button" class="cricket-mode" data-mode="LOCAL">
-            <span>02</span>
-            <strong>LOCAL 2 PLAYER</strong>
-            <small>Two players, one device</small>
-          </button>
-          <a class="cricket-mode cricket-mode-link" href="/cricket-pinball/watch/demo">
-            <span>03</span>
-            <strong>WATCH MATCHES</strong>
-            <small>Spectator mode</small>
-          </a>
-        </div>
+        <section class="quick-match" id="quickMatch" hidden>
+          <span>WELCOME BACK</span>
+          <strong>QUICK MATCH</strong>
+          <p id="quickMatchSummary"></p>
+          <button type="button" id="quickPlay">PLAY</button>
+          <button type="button" class="text-button" id="changeMatch">CHANGE MATCH</button>
+        </section>
 
-        <div class="cricket-selector-block">
-          <div class="cricket-selector-heading">
-            <span>MATCH FORMAT</span>
-            <small>Choose innings length</small>
+        <section class="setup-flow" id="setupFlow">
+          <div class="setup-progress" aria-label="Match setup progress">
+            <span class="active" data-step-dot="1">1 MODE</span>
+            <span data-step-dot="2">2 FORMAT</span>
+            <span data-step-dot="3">3 DIFFICULTY</span>
           </div>
-          <div class="cricket-segmented" id="formatSelector">
-            <button type="button" data-format="LAST_3">LAST 3 BALLS</button>
-            <button type="button" class="active" data-format="ONE_OVER">1 OVER</button>
-            <button type="button" data-format="TWO_OVER">2 OVERS</button>
-          </div>
-        </div>
 
-        <div class="cricket-selector-block">
-          <div class="cricket-selector-heading">
-            <span>DIFFICULTY</span>
-            <small>Separate from match length</small>
-          </div>
-          <div class="cricket-segmented" id="difficultySelector">
-            <button type="button" data-difficulty="EASY">EASY</button>
-            <button type="button" class="active" data-difficulty="MEDIUM">MEDIUM</button>
-            <button type="button" data-difficulty="HARD">HARD</button>
-          </div>
-        </div>
+          <section class="setup-step" data-step="1">
+            <div class="cricket-selector-heading">
+              <span>CHOOSE MODE</span>
+              <small>How do you want to play?</small>
+            </div>
+            <div class="cricket-mode-grid" aria-label="Choose match mode">
+              <button type="button" class="cricket-mode" data-mode="CPU">
+                <span>01</span><strong>PLAY VS CPU</strong><small>Solo competitive match</small>
+              </button>
+              <button type="button" class="cricket-mode" data-mode="LOCAL">
+                <span>02</span><strong>LOCAL 2 PLAYER</strong><small>Two players, one device</small>
+              </button>
+              <a class="cricket-mode cricket-mode-link" href="/cricket-pinball/watch/demo">
+                <span>03</span><strong>WATCH MATCHES</strong><small>Spectator mode</small>
+              </a>
+            </div>
+          </section>
 
-        <button type="button" class="cricket-start" id="cricketStart">
-          START MATCH
-          <span>1 OVER · MEDIUM · VS CPU</span>
-        </button>
+          <section class="setup-step" data-step="2" hidden>
+            <div class="cricket-selector-heading">
+              <span>CHOOSE FORMAT</span>
+              <small>How long should the innings be?</small>
+            </div>
+            <div class="cricket-segmented">
+              <button type="button" data-format="LAST_3">LAST 3 BALLS</button>
+              <button type="button" data-format="ONE_OVER">1 OVER</button>
+              <button type="button" data-format="TWO_OVER">2 OVERS</button>
+            </div>
+            <button type="button" class="text-button setup-back" data-back="1">← BACK</button>
+          </section>
+
+          <section class="setup-step" data-step="3" hidden>
+            <div class="cricket-selector-heading">
+              <span>CHOOSE DIFFICULTY</span>
+              <small>Independent from match length</small>
+            </div>
+            <div class="cricket-segmented">
+              <button type="button" data-difficulty="EASY">EASY</button>
+              <button type="button" data-difficulty="MEDIUM">MEDIUM</button>
+              <button type="button" data-difficulty="HARD">HARD</button>
+            </div>
+            <button type="button" class="cricket-start" id="cricketStart">
+              START MATCH
+              <span></span>
+            </button>
+            <button type="button" class="text-button setup-back" data-back="2">← BACK</button>
+          </section>
+        </section>
       </div>
     </section>
 
@@ -85,22 +108,18 @@ const lobby = document.querySelector('#cricketLobby');
 const loading = document.querySelector('#cricketLoading');
 const loadingPercent = document.querySelector('#cricketLoadingPercent');
 const loadingStatus = document.querySelector('#cricketLoadingStatus');
+const setupFlow = document.querySelector('#setupFlow');
+const quickMatch = document.querySelector('#quickMatch');
+const quickSummary = document.querySelector('#quickMatchSummary');
 const startButton = document.querySelector('#cricketStart');
 
-const lobbyState = {
-  mode: 'CPU',
-  format: 'ONE_OVER',
-  difficulty: 'MEDIUM'
-};
+let currentStep = 1;
 
 bindLobby();
+hydrateSelections();
+renderLandingMode();
 
-const renderer = new THREE.WebGLRenderer({
-  canvas,
-  antialias: true,
-  powerPreference: 'high-performance'
-});
-
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -110,22 +129,14 @@ renderer.toneMappingExposure = 1.1;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07110c);
 
-const camera = new THREE.PerspectiveCamera(
-  42,
-  window.innerWidth / window.innerHeight,
-  0.05,
-  100
-);
-
+const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.05, 100);
 camera.position.set(0, 5.8, 8.4);
 camera.lookAt(0, 0.8, 0);
 
 scene.add(new THREE.HemisphereLight(0xdcefe3, 0x0c140f, 2.2));
-
 const keyLight = new THREE.DirectionalLight(0xffffff, 3.4);
 keyLight.position.set(-3, 7, 5);
 scene.add(keyLight);
-
 const rimLight = new THREE.PointLight(0x4daa74, 12, 18, 2);
 rimLight.position.set(4, 3, -2);
 scene.add(rimLight);
@@ -137,7 +148,6 @@ loader.load(
   '/models/cricket-world-v2.glb',
   (gltf) => {
     const root = gltf.scene;
-
     root.traverse((object) => {
       if (object.isMesh) {
         object.castShadow = true;
@@ -151,7 +161,6 @@ loader.load(
 
     root.position.sub(center);
     root.position.y += size.y * 0.5;
-
     scene.add(root);
     frameWorld(size);
 
@@ -169,7 +178,6 @@ loader.load(
       loadingStatus.textContent = 'Loading stadium…';
       return;
     }
-
     const percent = Math.min(100, Math.round((progress.loaded / progress.total) * 100));
     loadingPercent.textContent = `${percent}%`;
     loadingStatus.textContent = percent < 100 ? 'Loading stadium…' : 'Preparing scene…';
@@ -187,7 +195,7 @@ function bindLobby() {
     button.addEventListener('click', () => {
       lobbyState.mode = button.dataset.mode;
       setActive('[data-mode]', button);
-      updateStartButton();
+      goToStep(2);
     });
   });
 
@@ -196,6 +204,7 @@ function bindLobby() {
       lobbyState.format = button.dataset.format;
       setActive('[data-format]', button);
       updateStartButton();
+      goToStep(3);
     });
   });
 
@@ -207,16 +216,62 @@ function bindLobby() {
     });
   });
 
-  startButton.addEventListener('click', () => {
-    const params = new URLSearchParams({
-      mode: lobbyState.mode,
-      format: lobbyState.format,
-      difficulty: lobbyState.difficulty
-    });
-    window.location.assign(`/cricket-pinball/play?${params.toString()}`);
+  document.querySelectorAll('[data-back]').forEach((button) => {
+    button.addEventListener('click', () => goToStep(Number(button.dataset.back)));
   });
 
+  startButton.addEventListener('click', startMatch);
+  document.querySelector('#quickPlay').addEventListener('click', startMatch);
+  document.querySelector('#changeMatch').addEventListener('click', () => {
+    quickMatch.hidden = true;
+    setupFlow.hidden = false;
+    goToStep(1);
+  });
+}
+
+function hydrateSelections() {
+  document.querySelectorAll('[data-mode]').forEach((node) => {
+    node.classList.toggle('active', node.dataset.mode === lobbyState.mode);
+  });
+  document.querySelectorAll('[data-format]').forEach((node) => {
+    node.classList.toggle('active', node.dataset.format === lobbyState.format);
+  });
+  document.querySelectorAll('[data-difficulty]').forEach((node) => {
+    node.classList.toggle('active', node.dataset.difficulty === lobbyState.difficulty);
+  });
   updateStartButton();
+}
+
+function renderLandingMode() {
+  if (saved.hasPlayed) {
+    setupFlow.hidden = true;
+    quickMatch.hidden = false;
+    quickSummary.textContent = summaryLabel();
+  } else {
+    quickMatch.hidden = true;
+    setupFlow.hidden = false;
+    goToStep(1);
+  }
+}
+
+function goToStep(step) {
+  currentStep = step;
+  document.querySelectorAll('[data-step]').forEach((section) => {
+    section.hidden = Number(section.dataset.step) !== step;
+  });
+  document.querySelectorAll('[data-step-dot]').forEach((dot) => {
+    dot.classList.toggle('active', Number(dot.dataset.stepDot) <= step);
+  });
+}
+
+function startMatch() {
+  writePreferences({ ...lobbyState, hasPlayed: true });
+  const params = new URLSearchParams({
+    mode: lobbyState.mode,
+    format: lobbyState.format,
+    difficulty: lobbyState.difficulty
+  });
+  window.location.assign(`/cricket-pinball/play?${params.toString()}`);
 }
 
 function setActive(selector, selected) {
@@ -226,6 +281,11 @@ function setActive(selector, selected) {
 }
 
 function updateStartButton() {
+  const span = startButton.querySelector('span');
+  if (span) span.textContent = summaryLabel();
+}
+
+function summaryLabel() {
   const formatLabel = {
     LAST_3: 'LAST 3 BALLS',
     ONE_OVER: '1 OVER',
@@ -233,8 +293,24 @@ function updateStartButton() {
   }[lobbyState.format];
 
   const modeLabel = lobbyState.mode === 'LOCAL' ? 'LOCAL 2 PLAYER' : 'VS CPU';
-  startButton.querySelector('span').textContent =
-    `${formatLabel} · ${lobbyState.difficulty} · ${modeLabel}`;
+  return `${formatLabel} · ${lobbyState.difficulty} · ${modeLabel}`;
+}
+
+function readPreferences() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function writePreferences(next) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  } catch {}
 }
 
 function frameWorld(size) {
