@@ -2,6 +2,7 @@ import './admin.css';
 
 const root = document.querySelector('#adminApp');
 const DRAFT_KEY = 'infinite-pinball-admin-draft-v1';
+const ADMIN_PREFS_KEY = 'infinite-pinball-admin-display-v1';
 
 const DEFAULT_DIFFICULTY = {
   easy: {
@@ -48,15 +49,20 @@ const NAV = [
   ['zones', 'Scoring Zones', '⊙'],
   ['audio', 'Audio', '◖'],
   ['vfx', 'Visual Effects', '✺'],
-  ['advanced', 'Advanced', '⚙']
+  ['advanced', 'Advanced', '⚙'],
+  ['cricket-pinball', 'CRICKET PINBALL · PRODUCT', '◆']
 ];
 
 let live = null;
 let draft = null;
-let active = 'overview';
+const requestedSection = new URLSearchParams(window.location.search).get('section');
+let active = NAV.some(([id]) => id === requestedSection) ? requestedSection : 'overview';
 let query = '';
 let dirty = false;
 let savedBaseline = null;
+
+const displayPrefs = readAdminDisplayPrefs();
+applyAdminDisplayPrefs(displayPrefs);
 
 boot();
 
@@ -132,8 +138,16 @@ function renderShell() {
         </div>
 
         <nav id="sideNav">
-          ${NAV.map(([id, label, icon]) => `
+          <div class="nav-section-label">GENERAL PINBALL</div>
+          ${NAV.filter(([id]) => id !== 'cricket-pinball').map(([id, label, icon]) => `
             <button type="button" data-nav="${id}" class="${id === active ? 'active' : ''}">
+              <span class="nav-icon">${icon}</span>
+              <span>${label}</span>
+            </button>
+          `).join('')}
+          <div class="nav-section-label product-label">PRODUCT GAMES</div>
+          ${NAV.filter(([id]) => id === 'cricket-pinball').map(([id, label, icon]) => `
+            <button type="button" data-nav="${id}" class="product-nav ${id === active ? 'active' : ''}">
               <span class="nav-icon">${icon}</span>
               <span>${label}</span>
             </button>
@@ -154,6 +168,15 @@ function renderShell() {
             <kbd>⌘ K</kbd>
           </div>
           <div class="top-actions">
+            <div class="display-controls" aria-label="Admin display controls">
+              <button class="ghost theme-toggle" id="themeToggle" type="button" aria-pressed="false">LIGHT</button>
+              <label class="text-scale-control" title="Admin text size">
+                <span>A−</span>
+                <input id="textScale" type="range" min="85" max="125" step="5" value="100" aria-label="Text size" />
+                <span>A+</span>
+                <b id="textScaleValue">100%</b>
+              </label>
+            </div>
             <span class="draft-status" id="draftStatus"><i></i>Saved</span>
             <button class="ghost" id="exportButton" type="button">Export JSON</button>
           </div>
@@ -180,6 +203,10 @@ function renderShell() {
     const button = event.target.closest('[data-nav]');
     if (!button) return;
     active = button.dataset.nav;
+    const url = new URL(window.location.href);
+    if (active === 'overview') url.searchParams.delete('section');
+    else url.searchParams.set('section', active);
+    window.history.replaceState({}, '', url);
     query = '';
     const search = root.querySelector('#settingSearch');
     if (search) search.value = '';
@@ -196,6 +223,7 @@ function renderShell() {
   root.querySelector('#saveButton').addEventListener('click', saveDraft);
   root.querySelector('#resetButton').addEventListener('click', resetLive);
   root.querySelector('#exportButton').addEventListener('click', exportDraft);
+  bindDisplayControls();
 
   window.addEventListener('keydown', (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -252,7 +280,8 @@ function pageMeta(id) {
     zones: ['SCORING', 'Scoring Zones', 'Non-blocking scoring areas with independent re-arm rules.', '1 ZONE'],
     audio: ['FEEDBACK', 'Audio', 'Master sound plus per-mechanic gain controls.', 'WEB AUDIO'],
     vfx: ['FEEDBACK', 'Visual Effects', 'Particles, pulse rings, ball trail, quality and shake intensity.', 'WEBGL'],
-    advanced: ['SYSTEM', 'Advanced', 'Versioning and currently declared compatibility fields.', 'EXPERT']
+    advanced: ['SYSTEM', 'Advanced', 'Versioning and currently declared compatibility fields.', 'EXPERT'],
+    'cricket-pinball': ['PRODUCT-SPECIFIC', 'Cricket Pinball', 'Cricket-only match rules and product systems. These do not replace the general pinball configuration.', 'CRICKET ONLY']
   };
   const item = map[id] || map.overview;
   return { kicker:item[0], title:item[1], description:item[2], badge:item[3] };
@@ -392,8 +421,110 @@ function renderCategory(id) {
       ])
     ]);
     case 'advanced': return renderAdvanced();
+    case 'cricket-pinball': return renderCricketPinballAdmin();
     default: return renderOverview();
   }
+}
+
+
+function renderCricketPinballAdmin() {
+  return `
+    <section class="product-admin-banner">
+      <div>
+        <span>PRODUCT-SPECIFIC CONFIGURATION</span>
+        <h2>CRICKET PINBALL</h2>
+        <p>Everything below applies only to Cricket Pinball. General pinball physics and table controls remain in the sections above.</p>
+      </div>
+      <div class="product-admin-source">
+        <strong>Dedicated sources</strong>
+        <code>/game/cricket-table.json</code>
+        <code>/game/cricket-rules.json</code>
+      </div>
+    </section>
+
+    <div class="product-admin-grid">
+      ${productAdminCard('Match formats', 'Last 3 Balls, 1 Over and 2 Overs.', 'MATCH RULES')}
+      ${productAdminCard('Toss & innings', 'Toss, role selection, innings switch, target and chase state.', 'MATCH FLOW')}
+      ${productAdminCard('Bowling controls', 'Left, Centre and Right lines plus launch power.', 'CRICKET INPUT')}
+      ${productAdminCard('Delivery outcomes', 'Wicket, Dot, 1, 2, 4 and 6 terminal results.', 'SCORING')}
+      ${productAdminCard('CPU opponent', 'Difficulty-specific bowling and batting behaviour.', 'CPU')}
+      ${productAdminCard('Spectator / Fan Picks', 'Watch state, fan points and streaks. Non-monetary only.', 'SPECTATOR')}
+      ${productAdminCard('Assets & portraits', 'Cricket world, player portraits and presentation assets.', 'ASSETS')}
+      ${productAdminCard('Commentary & audio', 'Cricket-specific commentary and audio cues.', 'AUDIO')}
+      ${productAdminCard('Analytics', 'Cricket match, innings and delivery telemetry.', 'ANALYTICS')}
+      ${productAdminCard('Live operations', 'Product-specific match operations and status.', 'OPS')}
+    </div>
+
+    <section class="product-admin-note">
+      <strong>PASS 1 BOUNDARY</strong>
+      <span>This is the merged Cricket Pinball admin section. Editing/CRUD is intentionally deferred until its backoffice specification is implemented.</span>
+    </section>
+  `;
+}
+
+function productAdminCard(title, description, tag) {
+  return `
+    <article class="product-admin-card">
+      <span>${escapeHtml(tag)}</span>
+      <h3>${escapeHtml(title)}</h3>
+      <p>${escapeHtml(description)}</p>
+      <small>CRICKET PINBALL ONLY</small>
+    </article>
+  `;
+}
+
+function readAdminDisplayPrefs() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(ADMIN_PREFS_KEY) || '{}');
+    return {
+      theme: parsed.theme === 'light' ? 'light' : 'dark',
+      textScale: Math.min(125, Math.max(85, Number(parsed.textScale) || 100))
+    };
+  } catch {
+    return { theme: 'dark', textScale: 100 };
+  }
+}
+
+function saveAdminDisplayPrefs(prefs) {
+  try {
+    localStorage.setItem(ADMIN_PREFS_KEY, JSON.stringify(prefs));
+  } catch {}
+}
+
+function applyAdminDisplayPrefs(prefs) {
+  document.documentElement.dataset.adminTheme = prefs.theme;
+  document.documentElement.style.setProperty('--admin-text-scale', String(prefs.textScale / 100));
+}
+
+function bindDisplayControls() {
+  const themeButton = root.querySelector('#themeToggle');
+  const textScale = root.querySelector('#textScale');
+  const textScaleValue = root.querySelector('#textScaleValue');
+  if (!themeButton || !textScale || !textScaleValue) return;
+
+  const sync = () => {
+    const isLight = displayPrefs.theme === 'light';
+    themeButton.textContent = isLight ? 'DARK' : 'LIGHT';
+    themeButton.setAttribute('aria-pressed', String(isLight));
+    textScale.value = String(displayPrefs.textScale);
+    textScaleValue.textContent = displayPrefs.textScale + '%';
+  };
+
+  themeButton.addEventListener('click', () => {
+    displayPrefs.theme = displayPrefs.theme === 'light' ? 'dark' : 'light';
+    applyAdminDisplayPrefs(displayPrefs);
+    saveAdminDisplayPrefs(displayPrefs);
+    sync();
+  });
+
+  textScale.addEventListener('input', () => {
+    displayPrefs.textScale = Number(textScale.value);
+    applyAdminDisplayPrefs(displayPrefs);
+    saveAdminDisplayPrefs(displayPrefs);
+    sync();
+  });
+
+  sync();
 }
 
 function renderOverview() {
