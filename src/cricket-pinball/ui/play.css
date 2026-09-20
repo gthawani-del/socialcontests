@@ -355,3 +355,43 @@ button, a { font: inherit; }
     padding:12px 14px;
   }
 }
+
+
+/* Keep bowling controls fully visible in desktop and mobile viewports */
+.bowling-controls{
+  bottom:16px;
+  width:min(760px,calc(100% - 28px));
+  grid-template-columns:1fr;
+  padding-bottom:max(0px,env(safe-area-inset-bottom));
+}
+.line-controls button{
+  min-height:48px;
+}
+.power-control{
+  min-height:58px;
+  padding:10px 14px;
+}
+.power-control>span,
+.power-control>strong{
+  font-size:14px;
+}
+.power-control i{
+  height:8px;
+}
+@media(max-height:780px){
+  .bowling-controls{
+    bottom:8px;
+    gap:6px;
+  }
+  .line-controls button{
+    min-height:42px;
+    padding:8px;
+  }
+  .power-control{
+    min-height:50px;
+    padding:8px 12px;
+  }
+  .match-hud{
+    top:58px;
+  }
+}
