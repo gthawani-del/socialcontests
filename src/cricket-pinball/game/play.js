@@ -55,6 +55,8 @@ let ballTrail = null;
 let ballTrailPoints = [];
 let ballGlow = null;
 let deliveryCueTimer = null;
+let aimGuide = null;
+let aimMarker = null;
 
 app.innerHTML = `
   <main class="cricket-play-shell">
@@ -294,80 +296,135 @@ function prepareWorld(root) {
 }
 
 function createMechanics() {
-  const ballRadius = tableConfig.ball.radius * 1.45;
+  const ballRadius = tableConfig.ball.radius * 1.6;
   ballVisual = new THREE.Mesh(
     new THREE.SphereGeometry(ballRadius, 32, 22),
     new THREE.MeshStandardMaterial({
-      color: 0xb61f2e,
-      emissive: 0x3d0308,
-      emissiveIntensity: 0.75,
-      roughness: 0.34,
-      metalness: 0.08
+      color: 0xc82131,
+      emissive: 0x5a0810,
+      emissiveIntensity: 1.0,
+      roughness: 0.28,
+      metalness: 0.04
     })
   );
-  ballVisual.renderOrder = 10;
+  ballVisual.renderOrder = 12;
   scene.add(ballVisual);
 
   ballGlow = new THREE.Mesh(
-    new THREE.SphereGeometry(ballRadius * 1.55, 20, 14),
+    new THREE.SphereGeometry(ballRadius * 1.8, 24, 16),
     new THREE.MeshBasicMaterial({
       color: 0xffd56a,
       transparent: true,
-      opacity: 0.18,
+      opacity: 0.26,
       depthWrite: false
     })
   );
-  ballGlow.renderOrder = 9;
+  ballGlow.renderOrder = 11;
   scene.add(ballGlow);
 
   const trailGeometry = new THREE.BufferGeometry();
-  const trailPositions = new Float32Array(30 * 3);
-  trailGeometry.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+  trailGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(30 * 3), 3));
   trailGeometry.setDrawRange(0, 0);
   ballTrail = new THREE.Line(
     trailGeometry,
     new THREE.LineBasicMaterial({
-      color: 0xffd56a,
+      color: 0xffdc73,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.86,
       depthWrite: false
     })
   );
   ballTrail.frustumCulled = false;
-  ballTrail.renderOrder = 8;
+  ballTrail.renderOrder = 10;
   scene.add(ballTrail);
 
-  leftFlipperVisual = modelRoot.getObjectByName('Flipper_Left') || makeCricketBatFlipper(tableConfig.flippers[0]);
-  rightFlipperVisual = modelRoot.getObjectByName('Flipper_Right') || makeCricketBatFlipper(tableConfig.flippers[1]);
+  // The GLB contains pale placeholder flipper meshes. Hide them and use cricket-bat paddles.
+  ['Flipper_Left', 'Flipper_Right'].forEach((name) => {
+    const object = modelRoot.getObjectByName(name);
+    if (object) object.visible = false;
+  });
+  leftFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[0]);
+  rightFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[1]);
+
+  createAimGuide();
 }
 
 function makeCricketBatFlipper(cfg) {
   const group = new THREE.Group();
-  const bladeLength = cfg.length * 0.76;
+
+  const bladeLength = cfg.length * 0.74;
+  const bladeWidth = cfg.radius * 1.95;
   const blade = new THREE.Mesh(
-    new THREE.BoxGeometry(bladeLength, 0.075, cfg.radius * 1.6),
+    new THREE.BoxGeometry(bladeLength, 0.12, bladeWidth),
     new THREE.MeshStandardMaterial({
-      color: 0xd8b978,
-      roughness: 0.58,
+      color: 0xd6b06c,
+      roughness: 0.48,
       metalness: 0.02
     })
   );
-  blade.position.x = bladeLength * 0.5;
+  blade.geometry.translate(bladeLength * 0.5, 0, 0);
 
-  const handleLength = cfg.length * 0.24;
+  const toe = new THREE.Mesh(
+    new THREE.BoxGeometry(bladeWidth * 0.55, 0.13, bladeWidth * 1.02),
+    new THREE.MeshStandardMaterial({ color: 0xe7c985, roughness: 0.5 })
+  );
+  toe.position.x = bladeLength;
+
+  const handleLength = cfg.length * 0.28;
   const handle = new THREE.Mesh(
-    new THREE.CylinderGeometry(cfg.radius * 0.32, cfg.radius * 0.32, handleLength, 12),
-    new THREE.MeshStandardMaterial({ color: 0x3b2115, roughness: 0.82 })
+    new THREE.CylinderGeometry(cfg.radius * 0.28, cfg.radius * 0.28, handleLength, 12),
+    new THREE.MeshStandardMaterial({ color: 0x352116, roughness: 0.9 })
   );
   handle.rotation.z = Math.PI / 2;
-  handle.position.x = bladeLength + handleLength * 0.5;
+  handle.position.x = bladeLength + handleLength * 0.55;
 
-  group.add(blade, handle);
-  group.position.set(cfg.pivot[0], tableConfig.playfield.surfaceY + 0.16, cfg.pivot[1]);
+  group.add(blade, toe, handle);
+  group.position.set(cfg.pivot[0], tableConfig.playfield.surfaceY + 0.22, cfg.pivot[1]);
   group.userData.cricketFallbackFlipper = true;
   scene.add(group);
   return group;
 }
+
+function createAimGuide() {
+  const points = [
+    new THREE.Vector3(tableConfig.launcher.spawn[0], tableConfig.playfield.surfaceY + 0.16, tableConfig.launcher.spawn[1]),
+    new THREE.Vector3(tableConfig.launcher.spawn[0], tableConfig.playfield.surfaceY + 0.16, tableConfig.launcher.lane.exitZ)
+  ];
+  aimGuide = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(points),
+    new THREE.LineDashedMaterial({
+      color: 0xffd56a,
+      dashSize: 0.16,
+      gapSize: 0.10,
+      transparent: true,
+      opacity: 0.88,
+      depthWrite: false
+    })
+  );
+  aimGuide.computeLineDistances();
+  aimGuide.renderOrder = 9;
+  scene.add(aimGuide);
+
+  aimMarker = new THREE.Mesh(
+    new THREE.RingGeometry(0.14, 0.19, 32),
+    new THREE.MeshBasicMaterial({
+      color: 0xffd56a,
+      transparent: true,
+      opacity: 0.9,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    })
+  );
+  aimMarker.rotation.x = -Math.PI / 2;
+  aimMarker.position.set(
+    tableConfig.launcher.spawn[0],
+    tableConfig.playfield.surfaceY + 0.18,
+    tableConfig.launcher.spawn[1]
+  );
+  aimMarker.renderOrder = 10;
+  scene.add(aimMarker);
+}
+
 
 function resetBallTrail() {
   ballTrailPoints = [];
@@ -619,7 +676,7 @@ function prepareDelivery() {
   if (!engine || match.currentInnings?.complete || ['MATCH_OVER', 'SUPER_OVER'].includes(match.status)) return;
   engine.resetBall();
   resetBallTrail();
-  showDeliveryCue(isHumanBowling() ? 'CHOOSE LINE · HOLD TO BOWL' : 'GET READY TO BAT', 'READY', 1200);
+  showDeliveryCue(isHumanBowling() ? 'HOLD TO CHARGE · RELEASE TO BOWL' : 'GET READY TO BAT', 'READY');
   inputsLocked = false;
   updateScoreboards();
   updateRoleControls();
@@ -822,9 +879,20 @@ function syncMechanics() {
     tableConfig.playfield.surfaceY + tableConfig.ball.radius + 0.08,
     engine.ball.position.z
   );
+  const awaitingLaunch = engine.isAwaitingLaunch();
   if (ballGlow) {
-    ballGlow.visible = engine.ball.active && !engine.isAwaitingLaunch();
+    ballGlow.visible = engine.ball.active;
     ballGlow.position.copy(ballVisual.position);
+    const pulse = 1 + Math.sin(performance.now() * 0.008) * 0.12;
+    ballGlow.scale.setScalar(pulse);
+  }
+  ballVisual.rotation.x += 0.03;
+  ballVisual.rotation.z += 0.045;
+  if (aimGuide) aimGuide.visible = awaitingLaunch && isHumanBowling();
+  if (aimMarker) {
+    aimMarker.visible = awaitingLaunch && isHumanBowling();
+    const markerPulse = 1 + Math.sin(performance.now() * 0.01) * 0.18;
+    aimMarker.scale.setScalar(markerPulse);
   }
   pushBallTrailPoint();
 
