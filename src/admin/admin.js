@@ -89,6 +89,8 @@ async function boot() {
     renderShell();
     renderActive();
     updateDirtyUi();
+    observeAdminTextScale();
+    applyAdminDisplayPrefs(displayPrefs);
   } catch (error) {
     root.innerHTML = `
       <main class="fatal">
@@ -494,6 +496,35 @@ function saveAdminDisplayPrefs(prefs) {
 function applyAdminDisplayPrefs(prefs) {
   document.documentElement.dataset.adminTheme = prefs.theme;
   document.documentElement.style.setProperty('--admin-text-scale', String(prefs.textScale / 100));
+  if (root) {
+    window.requestAnimationFrame(() => applyAdminTextScale(root, prefs.textScale / 100));
+  }
+}
+
+function applyAdminTextScale(container, scale) {
+  const selector = 'a,button,input,select,textarea,label,span,small,strong,p,h1,h2,h3,h4,kbd,code,dt,dd';
+  container.querySelectorAll(selector).forEach((node) => {
+    if (!node.dataset.adminBaseFontSize) {
+      const size = Number.parseFloat(window.getComputedStyle(node).fontSize);
+      if (Number.isFinite(size) && size > 0) {
+        node.dataset.adminBaseFontSize = String(size);
+      }
+    }
+
+    const base = Number(node.dataset.adminBaseFontSize);
+    if (Number.isFinite(base) && base > 0) {
+      node.style.fontSize = (base * scale).toFixed(2) + 'px';
+    }
+  });
+}
+
+function observeAdminTextScale() {
+  if (window.__adminTextScaleObserver) return;
+  const observer = new MutationObserver(() => {
+    applyAdminTextScale(root, displayPrefs.textScale / 100);
+  });
+  observer.observe(root, { childList: true, subtree: true });
+  window.__adminTextScaleObserver = observer;
 }
 
 function bindDisplayControls() {
