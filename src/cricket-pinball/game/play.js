@@ -51,6 +51,10 @@ let selectedLine = 'CENTRE';
 let deliveryResetTimer = null;
 let cpuResolveTimer = null;
 let powerPressed = false;
+let ballTrail = null;
+let ballTrailPoints = [];
+let ballGlow = null;
+let deliveryCueTimer = null;
 
 app.innerHTML = `
   <main class="cricket-play-shell">
@@ -145,6 +149,11 @@ app.innerHTML = `
       <button type="button" data-flipper="right">RIGHT FLIPPER</button>
     </section>
 
+    <section class="delivery-cue" id="deliveryCue" hidden aria-live="polite">
+      <small id="deliveryCueLabel">DELIVERY</small>
+      <strong id="deliveryCueValue">READY</strong>
+    </section>
+
     <section class="match-result" id="matchResult" hidden>
       <p id="resultEyebrow">MATCH RESULT</p>
       <strong id="resultTitle"></strong>
@@ -173,6 +182,9 @@ const bowlingControls = document.querySelector('#bowlingControls');
 const battingControls = document.querySelector('#battingControls');
 const powerControl = document.querySelector('#powerControl');
 const resultPanel = document.querySelector('#matchResult');
+const deliveryCue = document.querySelector('#deliveryCue');
+const deliveryCueLabel = document.querySelector('#deliveryCueLabel');
+const deliveryCueValue = document.querySelector('#deliveryCueValue');
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -282,27 +294,116 @@ function prepareWorld(root) {
 }
 
 function createMechanics() {
+  const ballRadius = tableConfig.ball.radius * 1.45;
   ballVisual = new THREE.Mesh(
-    new THREE.SphereGeometry(tableConfig.ball.radius, 28, 18),
-    new THREE.MeshStandardMaterial({ color: 0x8b1717, roughness: 0.42, metalness: 0.12 })
+    new THREE.SphereGeometry(ballRadius, 32, 22),
+    new THREE.MeshStandardMaterial({
+      color: 0xb61f2e,
+      emissive: 0x3d0308,
+      emissiveIntensity: 0.75,
+      roughness: 0.34,
+      metalness: 0.08
+    })
   );
-  ballVisual.position.y = tableConfig.playfield.surfaceY + tableConfig.ball.radius;
+  ballVisual.renderOrder = 10;
   scene.add(ballVisual);
 
-  leftFlipperVisual = modelRoot.getObjectByName('Flipper_Left') || makeFlipper(tableConfig.flippers[0]);
-  rightFlipperVisual = modelRoot.getObjectByName('Flipper_Right') || makeFlipper(tableConfig.flippers[1]);
+  ballGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(ballRadius * 1.55, 20, 14),
+    new THREE.MeshBasicMaterial({
+      color: 0xffd56a,
+      transparent: true,
+      opacity: 0.18,
+      depthWrite: false
+    })
+  );
+  ballGlow.renderOrder = 9;
+  scene.add(ballGlow);
+
+  const trailGeometry = new THREE.BufferGeometry();
+  const trailPositions = new Float32Array(30 * 3);
+  trailGeometry.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+  trailGeometry.setDrawRange(0, 0);
+  ballTrail = new THREE.Line(
+    trailGeometry,
+    new THREE.LineBasicMaterial({
+      color: 0xffd56a,
+      transparent: true,
+      opacity: 0.72,
+      depthWrite: false
+    })
+  );
+  ballTrail.frustumCulled = false;
+  ballTrail.renderOrder = 8;
+  scene.add(ballTrail);
+
+  leftFlipperVisual = modelRoot.getObjectByName('Flipper_Left') || makeCricketBatFlipper(tableConfig.flippers[0]);
+  rightFlipperVisual = modelRoot.getObjectByName('Flipper_Right') || makeCricketBatFlipper(tableConfig.flippers[1]);
 }
 
-function makeFlipper(cfg) {
-  const mesh = new THREE.Mesh(
-    new THREE.BoxGeometry(cfg.length, 0.09, cfg.radius * 2),
-    new THREE.MeshStandardMaterial({ color: 0xf1d36a, roughness: 0.28, metalness: 0.45 })
+function makeCricketBatFlipper(cfg) {
+  const group = new THREE.Group();
+  const bladeLength = cfg.length * 0.76;
+  const blade = new THREE.Mesh(
+    new THREE.BoxGeometry(bladeLength, 0.075, cfg.radius * 1.6),
+    new THREE.MeshStandardMaterial({
+      color: 0xd8b978,
+      roughness: 0.58,
+      metalness: 0.02
+    })
   );
-  mesh.position.set(cfg.pivot[0], tableConfig.playfield.surfaceY + 0.08, cfg.pivot[1]);
-  mesh.geometry.translate(cfg.length * 0.5, 0, 0);
-  scene.add(mesh);
-  return mesh;
+  blade.position.x = bladeLength * 0.5;
+
+  const handleLength = cfg.length * 0.24;
+  const handle = new THREE.Mesh(
+    new THREE.CylinderGeometry(cfg.radius * 0.32, cfg.radius * 0.32, handleLength, 12),
+    new THREE.MeshStandardMaterial({ color: 0x3b2115, roughness: 0.82 })
+  );
+  handle.rotation.z = Math.PI / 2;
+  handle.position.x = bladeLength + handleLength * 0.5;
+
+  group.add(blade, handle);
+  group.position.set(cfg.pivot[0], tableConfig.playfield.surfaceY + 0.16, cfg.pivot[1]);
+  group.userData.cricketFallbackFlipper = true;
+  scene.add(group);
+  return group;
 }
+
+function resetBallTrail() {
+  ballTrailPoints = [];
+  if (ballTrail) ballTrail.geometry.setDrawRange(0, 0);
+}
+
+function pushBallTrailPoint() {
+  if (!ballTrail || !engine?.ball?.active || engine.isAwaitingLaunch()) return;
+  const y = tableConfig.playfield.surfaceY + tableConfig.ball.radius + 0.08;
+  ballTrailPoints.push(new THREE.Vector3(engine.ball.position.x, y, engine.ball.position.z));
+  if (ballTrailPoints.length > 30) ballTrailPoints.shift();
+
+  const attribute = ballTrail.geometry.getAttribute('position');
+  for (let i = 0; i < ballTrailPoints.length; i += 1) {
+    const point = ballTrailPoints[i];
+    attribute.setXYZ(i, point.x, point.y, point.z);
+  }
+  attribute.needsUpdate = true;
+  ballTrail.geometry.setDrawRange(0, ballTrailPoints.length);
+}
+
+function showDeliveryCue(value, label = 'DELIVERY', holdMs = 0) {
+  clearTimeout(deliveryCueTimer);
+  deliveryCueLabel.textContent = label;
+  deliveryCueValue.textContent = value;
+  deliveryCue.hidden = false;
+  deliveryCue.classList.remove('is-result');
+  if (label === 'RESULT') deliveryCue.classList.add('is-result');
+
+  if (holdMs > 0) {
+    deliveryCueTimer = window.setTimeout(() => {
+      deliveryCue.hidden = true;
+    }, holdMs);
+  }
+}
+
 
 function createCoin() {
   const material = [
@@ -517,6 +618,8 @@ async function beginInnings() {
 function prepareDelivery() {
   if (!engine || match.currentInnings?.complete || ['MATCH_OVER', 'SUPER_OVER'].includes(match.status)) return;
   engine.resetBall();
+  resetBallTrail();
+  showDeliveryCue(isHumanBowling() ? 'CHOOSE LINE · HOLD TO BOWL' : 'GET READY TO BAT', 'READY', 1200);
   inputsLocked = false;
   updateScoreboards();
   updateRoleControls();
@@ -533,6 +636,8 @@ function launchCpuDelivery() {
   selectedLine = bowling.line;
   match.beginDelivery(bowling);
   adapter.armDelivery();
+  resetBallTrail();
+  showDeliveryCue('BALL LIVE', bowling.line + ' LINE', 800);
   engine.releaseLaunch({ charge: bowling.power, line: bowling.line, deliveryType: bowling.type });
   updateScoreboards();
 }
@@ -551,6 +656,8 @@ function releasePower() {
   const bowling = { line: selectedLine, power: charge, type: 'PACE' };
   if (!match.beginDelivery(bowling)) return;
   adapter.armDelivery();
+  resetBallTrail();
+  showDeliveryCue('BALL LIVE', selectedLine + ' LINE', 800);
   engine.releaseLaunch({ charge, line: selectedLine, deliveryType: 'PACE' });
   updateScoreboards();
 
@@ -574,6 +681,7 @@ function onDeliveryResolved(type) {
   engine?.setFlipper('left', false);
   engine?.setFlipper('right', false);
   document.querySelector('#hudLast').textContent = `LAST BALL ${displayOutcome(type)}`;
+  showDeliveryCue(displayOutcome(type), 'RESULT', Math.max(900, rulesConfig.delivery.resolveDelayMs));
   updateScoreboards();
 
   clearTimeout(deliveryResetTimer);
@@ -711,9 +819,14 @@ function syncMechanics() {
   ballVisual.visible = engine.ball.active;
   ballVisual.position.set(
     engine.ball.position.x,
-    tableConfig.playfield.surfaceY + tableConfig.ball.radius,
+    tableConfig.playfield.surfaceY + tableConfig.ball.radius + 0.08,
     engine.ball.position.z
   );
+  if (ballGlow) {
+    ballGlow.visible = engine.ball.active && !engine.isAwaitingLaunch();
+    ballGlow.position.copy(ballVisual.position);
+  }
+  pushBallTrailPoint();
 
   syncFlipper(leftFlipperVisual, engine.getFlipper('left'), tableConfig.flippers[0]);
   syncFlipper(rightFlipperVisual, engine.getFlipper('right'), tableConfig.flippers[1]);
