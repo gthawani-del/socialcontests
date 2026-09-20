@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { createTossController } from '../toss/toss-controller.js';
 import { createMatchEngine } from '../match/match-engine.js';
+import { createCricketGameplayAdapter } from './cricket-gameplay-adapter.js';
 import '../ui/play.css';
 
 const app = document.querySelector('#cricketPlayApp');
@@ -123,6 +124,20 @@ const scoreboard = document.querySelector('#stadiumScoreboard');
 const inningsIntro = document.querySelector('#inningsIntro');
 
 let inputsLocked = false;
+let gameplayAdapter = null;
+let gameplayBallVisual = null;
+let gameplayRoot = null;
+
+const gameplayReady = Promise.all([
+  fetch('/game/cricket-table.json').then((response) => {
+    if (!response.ok) throw new Error('Failed to load cricket-table.json');
+    return response.json();
+  }),
+  fetch('/game/cricket-rules.json').then((response) => {
+    if (!response.ok) throw new Error('Failed to load cricket-rules.json');
+    return response.json();
+  })
+]).then(([tableConfig, cricketRules]) => ({ tableConfig, cricketRules }));
 
 beginToss.addEventListener('click', () => {
   if (inputsLocked) return;
@@ -231,11 +246,13 @@ async function chooseRole(choice) {
   await delay(1100);
 
   const match = matchEngine.startMatch();
-  matchEngine.readyDelivery();
   state.phase = 'FIRST_DELIVERY_READY';
   inningsIntro.querySelector('p').textContent = 'FIRST DELIVERY';
   inningsIntro.querySelector('span').textContent = `${match.ballsPerInnings} BALLS · ${playerName(match.bowlingPlayerId)} TO BOWL`;
   scoreboard.innerHTML = `<span>INNINGS ${match.innings}</span><strong>${playerName(match.battingPlayerId)} 0/0 · BALL 1/${match.ballsPerInnings}</strong>`;
+
+  await ensureGameplayAdapter();
+  gameplayAdapter.beginDelivery();
 }
 
 function disableTossInputs(disabled) {
@@ -295,8 +312,9 @@ scene.add(pitchGlow);
 
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
-loader.load('/models/cricket-world-v2.glb', (gltf) => {
+loader.load('/models/cricket-world-v2.glb', async (gltf) => {
   const root = gltf.scene;
+  gameplayRoot = root;
   const box = new THREE.Box3().setFromObject(root);
   const center = box.getCenter(new THREE.Vector3());
   const size = box.getSize(new THREE.Vector3());
@@ -304,9 +322,47 @@ loader.load('/models/cricket-world-v2.glb', (gltf) => {
   root.position.y += size.y * 0.5;
   scene.add(root);
   frameWorld(size);
+  await ensureGameplayAdapter();
+  attachGameplayBall(root);
 }, undefined, (error) => {
   console.error('Cricket world failed to load on play route:', error);
 });
+
+async function ensureGameplayAdapter() {
+  if (gameplayAdapter) return gameplayAdapter;
+
+  const { tableConfig, cricketRules } = await gameplayReady;
+
+  gameplayAdapter = createCricketGameplayAdapter({
+    tableConfig,
+    cricketRules,
+    matchEngine,
+    onEvent: (eventName, payload) => {
+      console.info('[Cricket Pinball]', eventName, payload);
+    }
+  });
+
+  if (gameplayRoot) attachGameplayBall(gameplayRoot);
+  return gameplayAdapter;
+}
+
+function attachGameplayBall(root) {
+  if (!gameplayAdapter || gameplayBallVisual) return;
+
+  const radius = gameplayAdapter.engine.config.ball.radius;
+  gameplayBallVisual = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 28, 18),
+    new THREE.MeshStandardMaterial({
+      color: 0x8f1d1d,
+      roughness: 0.34,
+      metalness: 0.08
+    })
+  );
+
+  gameplayBallVisual.name = 'CricketGameplayBall';
+  gameplayBallVisual.castShadow = true;
+  root.add(gameplayBallVisual);
+}
 
 function frameWorld(size) {
   const span = Math.max(size.x, size.z, 1);
@@ -326,6 +382,25 @@ window.addEventListener('resize', () => {
 
 function animate() {
   requestAnimationFrame(animate);
+
+  const dt = Math.min(0.05, 1 / 60);
+  if (gameplayAdapter) {
+    gameplayAdapter.step(dt);
+
+    if (gameplayBallVisual) {
+      const ball = gameplayAdapter.engine.ball;
+      const surfaceY = gameplayAdapter.engine.config.playfield.surfaceY;
+      const radius = gameplayAdapter.engine.config.ball.radius;
+
+      gameplayBallVisual.visible = ball.active;
+      gameplayBallVisual.position.set(
+        ball.position.x,
+        surfaceY + radius,
+        ball.position.z
+      );
+    }
+  }
+
   renderer.render(scene, camera);
 }
 animate();
