@@ -115,7 +115,13 @@ app.innerHTML = `
         <h1 id="tossTitle">${caller.name} CALLS</h1>
         <span id="tossInstruction">Choose Heads or Tails</span>
       </div>
-      <div class="coin-stage" id="coinStage"><span>3D COIN OVER PITCH</span></div>
+      <div class="coin-stage" id="coinStage" aria-live="polite">
+        <div class="coin" id="tossCoin" aria-hidden="true">
+          <div class="coin-face coin-heads">H</div>
+          <div class="coin-face coin-tails">T</div>
+        </div>
+        <small id="coinStatus">READY FOR TOSS</small>
+      </div>
       <div class="toss-actions" id="callActions">
         <button type="button" data-call="HEADS">HEADS</button>
         <button type="button" data-call="TAILS">TAILS</button>
@@ -183,6 +189,8 @@ const roleActions = document.querySelector('#roleActions');
 const roleConfirmation = document.querySelector('#roleConfirmation');
 const tossTitle = document.querySelector('#tossTitle');
 const tossInstruction = document.querySelector('#tossInstruction');
+const tossCoin = document.querySelector('#tossCoin');
+const coinStatus = document.querySelector('#coinStatus');
 const scoreboard = document.querySelector('#stadiumScoreboard');
 const inningsIntro = document.querySelector('#inningsIntro');
 const matchHud = document.querySelector('#matchHud');
@@ -611,7 +619,7 @@ function bindUi() {
         beginPower();
       }
     }
-    if (isHumanBatting()) {
+    if (isHumanBatting() && match.deliveryOpen && !engine.isAwaitingLaunch()) {
       if ((event.code === 'KeyA' || event.code === 'ArrowLeft') && !event.repeat) engine.setFlipper('left', true);
       if ((event.code === 'KeyD' || event.code === 'ArrowRight') && !event.repeat) engine.setFlipper('right', true);
     }
@@ -653,7 +661,7 @@ function bindFlippers() {
       button.classList.remove('pressed');
     };
     button.addEventListener('pointerdown', (event) => {
-      if (inputsLocked || !isHumanBatting()) return;
+      if (inputsLocked || !isHumanBatting() || !match.deliveryOpen || engine?.isAwaitingLaunch()) return;
       event.preventDefault();
       engine?.setFlipper(id, true);
       button.classList.add('pressed');
@@ -681,7 +689,7 @@ async function resolveToss(call) {
   tossTitle.textContent = toss.result;
   tossInstruction.textContent = `${playerName(toss.winnerId)} WON THE TOSS`;
   setScoreboard('TOSS RESULT', `${toss.result} · ${playerName(toss.winnerId)} WINS`);
-  await delay(450);
+  await delay(800);
 
   const winner = getPlayer(toss.winnerId);
   if (winner.type === 'CPU') {
@@ -763,6 +771,7 @@ function launchCpuDelivery() {
   resetBallTrail();
   showDeliveryCue('BALL LIVE', bowling.line + ' LINE', 800);
   engine.releaseLaunch({ charge: bowling.power, line: bowling.line, deliveryType: bowling.type });
+  updateRoleControls();
   updateScoreboards();
 }
 
@@ -783,6 +792,7 @@ function releasePower() {
   resetBallTrail();
   showDeliveryCue('BALL LIVE', selectedLine + ' LINE', 800);
   engine.releaseLaunch({ charge, line: selectedLine, deliveryType: 'PACE' });
+  updateRoleControls();
   updateScoreboards();
 
   if (getPlayer(match.battingPlayerId).type === 'CPU') {
@@ -802,6 +812,7 @@ function releasePower() {
 function onDeliveryResolved(type) {
   clearTimeout(cpuResolveTimer);
   inputsLocked = true;
+  updateRoleControls();
   engine?.setFlipper('left', false);
   engine?.setFlipper('right', false);
   document.querySelector('#hudLast').textContent = `LAST BALL ${displayOutcome(type)}`;
@@ -854,13 +865,36 @@ function showResult() {
 }
 
 function updateRoleControls() {
-  const humanBowling = isHumanBowling();
-  const humanBatting = isHumanBatting();
-  bowlingControls.hidden = !humanBowling;
-  battingControls.hidden = !humanBatting;
-  document.querySelector('#hudRole').textContent = humanBowling ? 'YOU ARE BOWLING' : humanBatting ? 'YOU ARE BATTING' : 'CPU VS CPU';
-}
+  const state = match.getState();
+  const ballLive = state.deliveryOpen && engine && !engine.isAwaitingLaunch();
+  const deliveryReady = !state.deliveryOpen && engine?.isAwaitingLaunch();
 
+  const bowler = getPlayer(state.bowlingPlayerId);
+  const batter = getPlayer(state.battingPlayerId);
+
+  const showBowling = !inputsLocked && deliveryReady && bowler?.type === 'HUMAN';
+  const showBatting = !inputsLocked && ballLive && batter?.type === 'HUMAN';
+
+  bowlingControls.hidden = !showBowling;
+  battingControls.hidden = !showBatting;
+
+  // Hard lock flippers unless the live ball belongs to a human batter.
+  if (!showBatting) {
+    engine?.setFlipper('left', false);
+    engine?.setFlipper('right', false);
+    document.querySelectorAll('[data-flipper]').forEach((button) => button.classList.remove('pressed'));
+  }
+
+  const roleText = showBowling
+    ? `${playerName(state.bowlingPlayerId)} · BOWLING`
+    : showBatting
+      ? `${playerName(state.battingPlayerId)} · BATTING`
+      : ballLive
+        ? `${playerName(state.battingPlayerId)} BATTING`
+        : 'DELIVERY SETUP';
+
+  document.querySelector('#hudRole').textContent = roleText;
+}
 function updateScoreboards() {
   const state = match.getState();
   const batting = playerName(state.battingPlayerId);
@@ -917,12 +951,28 @@ function displayOutcome(type) {
 
 function animateCoin(result) {
   return new Promise((resolve) => {
-    const duration = 1250;
-    coinAnimation = { start: performance.now(), duration, result, resolve };
+    const duration = 1600;
+
+    coinStatus.textContent = 'COIN IN THE AIR';
+    tossCoin.classList.remove('is-flipping', 'show-tails');
+    void tossCoin.offsetWidth;
+    tossCoin.classList.add('is-flipping');
+
+    coinAnimation = {
+      start: performance.now(),
+      duration,
+      result,
+      resolve: () => {
+        tossCoin.classList.remove('is-flipping');
+        tossCoin.classList.toggle('show-tails', result === 'TAILS');
+        coinStatus.textContent = result;
+        resolve();
+      }
+    };
+
     coinMesh.visible = true;
   });
 }
-
 function updateCoin(now) {
   if (!coinAnimation || !coinMesh) return;
   const t = Math.min(1, (now - coinAnimation.start) / coinAnimation.duration);
@@ -933,7 +983,7 @@ function updateCoin(now) {
     coinMesh.rotation.x = coinAnimation.result === 'HEADS' ? 0 : Math.PI;
     const done = coinAnimation.resolve;
     coinAnimation = null;
-    window.setTimeout(() => { coinMesh.visible = false; }, 420);
+    window.setTimeout(() => { coinMesh.visible = false; }, 650);
     done();
   }
 }
