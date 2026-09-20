@@ -1,0 +1,77 @@
+name: Import Cricket Pinball Assets
+
+on:
+  push:
+    paths:
+      - '.github/workflows/import-cricket-assets.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download frozen Cricket Pinball assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/models assets/cricket/world
+
+          curl -fL --retry 3 --retry-delay 2 \
+            "https://695d5a9fc666e505559765690b5db7dd.r2.cloudflarestorage.com/3d-scene-builder/projects/81857029-c4e6-4aba-a82a-068a9fadcdaf/revisions/00000006-final-uv-skin-pass-v6b/preview.glb?X-Amz-Expires=900&X-Amz-Date=20260920T165515Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=f4fb15da414147020cebc9c7007b912d%2F20260920%2Fauto%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=7871bde344c1a9289e09702218a56ac896b28faf2965a7679a82b38c54d4bc01" \
+            -o public/models/cricket-world-v2.glb
+
+          curl -fL "https://d2ol7oe51mr4n9.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/ec9890cc-c775-4dab-b4e7-b007a0d97cbe.png" -o assets/cricket/world/playfield.png
+          curl -fL "https://d2ol7oe51mr4n9.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/e249102d-8123-4f81-a3ac-637ed1f5b75a.png" -o assets/cricket/world/four-ramp.png
+          curl -fL "https://d2ol7oe51mr4n9.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/cca11c81-6a60-4013-8559-0db43b7b4686.png" -o assets/cricket/world/six-ramp.png
+          curl -fL "https://d2ol7oe51mr4n9.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/a15ada72-9001-416f-a1db-e8fee383280c.png" -o assets/cricket/world/pavilion.png
+          curl -fL "https://d2ol7oe51mr4n9.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/3094ca8d-b978-4b44-b0d8-2fb2ff93569f.png" -o assets/cricket/world/tunnel.png
+          curl -fL "https://d2ol7oe51mr4n9.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/6db0a621-a86c-4011-a9e8-23fb9474621d.png" -o assets/cricket/world/wicket.png
+
+          test -s public/models/cricket-world-v2.glb
+          test -s assets/cricket/world/playfield.png
+          test -s assets/cricket/world/four-ramp.png
+          test -s assets/cricket/world/six-ramp.png
+          test -s assets/cricket/world/pavilion.png
+          test -s assets/cricket/world/tunnel.png
+          test -s assets/cricket/world/wicket.png
+
+      - name: Add asset manifest
+        shell: bash
+        run: |
+          cat > assets/cricket/world/manifest.json <<'EOF'
+          {
+            "name": "cricket-world-v2",
+            "sourceRevision": 6,
+            "glb": "/models/cricket-world-v2.glb",
+            "embeddedTextures": true,
+            "fielderAnimation": true,
+            "scoreHudExternal": true,
+            "sourceTextures": {
+              "playfield": "playfield.png",
+              "fourRamp": "four-ramp.png",
+              "sixRamp": "six-ramp.png",
+              "pavilion": "pavilion.png",
+              "tunnel": "tunnel.png",
+              "wicket": "wicket.png"
+            }
+          }
+          EOF
+
+      - name: Commit assets
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/models/cricket-world-v2.glb assets/cricket/world
+          if git diff --cached --quiet; then
+            echo "Assets already up to date."
+          else
+            git commit -m "Add final Cricket Pinball world and texture assets"
+            git push
+          fi
