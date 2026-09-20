@@ -13,285 +13,229 @@ const OUTCOMES = Object.freeze({
   SIX: { runs: 6, wicket: false }
 });
 
-export function createMatchEngine({
-  format = 'ONE_OVER',
-  difficulty = 'MEDIUM',
-  players,
-  maxWickets = 2,
-  superOverEnabled = true
-}) {
-  if (!Array.isArray(players) || players.length !== 2) {
-    throw new Error('Cricket match requires exactly two players.');
+export class CricketMatchEngine {
+  constructor({ format = 'ONE_OVER', difficulty = 'MEDIUM', players, maxWickets = 2, superOver = true } = {}) {
+    if (!FORMAT_BALLS[format]) throw new Error('Unsupported cricket format: ' + format);
+    if (!Array.isArray(players) || players.length !== 2) throw new Error('Cricket match requires exactly two players.');
+
+    this.listeners = new Map();
+    this.format = format;
+    this.difficulty = difficulty;
+    this.players = players.map((player) => ({ ...player }));
+    this.ballsPerInnings = FORMAT_BALLS[format];
+    this.maxWickets = maxWickets;
+    this.superOverEnabled = superOver;
+    this.status = 'MATCH_INTRO';
+    this.inningsNumber = 0;
+    this.innings = [];
+    this.target = null;
+    this.battingPlayerId = null;
+    this.bowlingPlayerId = null;
+    this.toss = null;
+    this.deliveryOpen = false;
+    this.deliveryHistory = [];
+    this.result = null;
   }
 
-  const ballsPerInnings = FORMAT_BALLS[format];
-  if (!ballsPerInnings) throw new Error(`Unsupported cricket format: ${format}`);
-
-  const state = {
-    format,
-    difficulty,
-    players: players.map((player) => ({ ...player })),
-    ballsPerInnings,
-    maxWickets,
-    superOverEnabled,
-    status: 'AWAITING_ROLES',
-    innings: 0,
-    battingPlayerId: null,
-    bowlingPlayerId: null,
-    target: null,
-    requiredRuns: null,
-    current: null,
-    inningsHistory: [],
-    deliveryHistory: [],
-    winnerId: null,
-    result: null,
-    superOver: false
-  };
-
-  let deliveryOpen = false;
-
-  function assignOpeningRoles({ battingPlayerId, bowlingPlayerId }) {
-    assertPlayer(battingPlayerId);
-    assertPlayer(bowlingPlayerId);
-    if (battingPlayerId === bowlingPlayerId) {
-      throw new Error('Batting and bowling players must be different.');
-    }
-
-    state.battingPlayerId = battingPlayerId;
-    state.bowlingPlayerId = bowlingPlayerId;
-    state.status = 'INNINGS_SETUP';
-    return snapshot();
+  on(type, handler) {
+    const handlers = this.listeners.get(type) || new Set();
+    handlers.add(handler);
+    this.listeners.set(type, handlers);
+    return () => handlers.delete(handler);
   }
 
-  function startMatch() {
-    if (!state.battingPlayerId || !state.bowlingPlayerId) {
-      throw new Error('Assign opening roles before starting the match.');
-    }
-
-    state.innings = 1;
-    state.target = null;
-    state.requiredRuns = null;
-    state.winnerId = null;
-    state.result = null;
-    state.superOver = false;
-    state.inningsHistory = [];
-    state.deliveryHistory = [];
-    startInnings();
-    return snapshot();
+  emit(type, detail = {}) {
+    const payload = { ...detail, match: this.getState() };
+    for (const handler of this.listeners.get(type) || []) handler(payload);
   }
 
-  function readyDelivery() {
-    if (!state.current || !['INNINGS_LIVE', 'DELIVERY_RESOLVED'].includes(state.status)) {
-      return false;
-    }
-
-    if (deliveryOpen) return false;
-    deliveryOpen = true;
-    state.status = 'DELIVERY_READY';
-    return true;
+  setToss(toss) {
+    this.toss = { ...toss };
+    this.status = 'ROLE_SELECT';
+    this.emit('match:toss-result', { toss: this.toss });
   }
 
-  function resolveDelivery({ type, bowling = {}, pinballScore = 0, durationMs = 0 }) {
-    if (!deliveryOpen || state.status !== 'DELIVERY_READY') {
-      return { accepted: false, reason: 'DELIVERY_NOT_READY', state: snapshot() };
-    }
+  assignRoles({ battingPlayerId, bowlingPlayerId, choice = null }) {
+    if (!this.players.some((player) => player.id === battingPlayerId)) throw new Error('Unknown batting player.');
+    if (!this.players.some((player) => player.id === bowlingPlayerId)) throw new Error('Unknown bowling player.');
+    if (battingPlayerId === bowlingPlayerId) throw new Error('Batting and bowling roles must differ.');
 
-    const outcomeKey = String(type || '').toUpperCase();
-    const outcome = OUTCOMES[outcomeKey];
-    if (!outcome) {
-      throw new Error(`Unsupported cricket outcome: ${type}`);
-    }
-
-    deliveryOpen = false;
-    const current = state.current;
-
-    current.runs += outcome.runs;
-    current.wickets += outcome.wicket ? 1 : 0;
-    current.ballsBowled += 1;
-
-    const record = {
-      innings: state.innings,
-      ballNumber: current.ballsBowled,
-      batter: state.battingPlayerId,
-      bowler: state.bowlingPlayerId,
-      bowling: {
-        line: bowling.line || 'CENTRE',
-        power: Number.isFinite(Number(bowling.power)) ? Number(bowling.power) : null,
-        type: bowling.type || 'PACE'
-      },
-      result: {
-        type: outcomeKey,
-        runs: outcome.runs,
-        wicket: outcome.wicket
-      },
-      pinballScore: Number(pinballScore) || 0,
-      durationMs: Number(durationMs) || 0
-    };
-
-    state.deliveryHistory.push(record);
-    state.status = 'DELIVERY_RESOLVED';
-
-    if (state.innings === 2) {
-      state.requiredRuns = Math.max(0, state.target - current.runs);
-    }
-
-    const inningsDecision = evaluateInningsEnd();
-
-    if (inningsDecision.ended) {
-      finishInnings(inningsDecision.reason);
-    }
-
-    return { accepted: true, delivery: record, state: snapshot() };
+    this.battingPlayerId = battingPlayerId;
+    this.bowlingPlayerId = bowlingPlayerId;
+    if (this.toss) this.toss.choice = choice;
+    this.status = 'INNINGS_SETUP';
+    this.emit('match:role-selected', { battingPlayerId, bowlingPlayerId, choice });
   }
 
-  function evaluateInningsEnd() {
-    const current = state.current;
+  startInnings() {
+    if (!this.battingPlayerId || !this.bowlingPlayerId) throw new Error('Roles must be assigned before innings starts.');
 
-    if (state.innings === 2 && current.runs >= state.target) {
-      return { ended: true, reason: 'TARGET_REACHED' };
-    }
-
-    if (current.wickets >= state.maxWickets) {
-      return { ended: true, reason: 'WICKETS' };
-    }
-
-    if (current.ballsBowled >= current.ballsPerInnings) {
-      return { ended: true, reason: 'BALLS_COMPLETE' };
-    }
-
-    return { ended: false, reason: null };
-  }
-
-  function finishInnings(reason) {
-    const completed = {
-      innings: state.innings,
-      battingPlayerId: state.battingPlayerId,
-      bowlingPlayerId: state.bowlingPlayerId,
-      runs: state.current.runs,
-      wickets: state.current.wickets,
-      ballsBowled: state.current.ballsBowled,
-      ballsPerInnings: state.current.ballsPerInnings,
-      reason
-    };
-
-    state.inningsHistory.push(completed);
-
-    if (state.innings === 1) {
-      state.target = completed.runs + 1;
-      state.requiredRuns = state.target;
-      state.status = 'INNINGS_BREAK';
-      swapRoles();
-      state.innings = 2;
-      startInnings();
-      return;
-    }
-
-    finishMatch();
-  }
-
-  function startInnings() {
-    state.current = {
+    this.inningsNumber += 1;
+    const innings = {
+      number: this.inningsNumber,
+      battingPlayerId: this.battingPlayerId,
+      bowlingPlayerId: this.bowlingPlayerId,
       runs: 0,
       wickets: 0,
-      ballsBowled: 0,
-      ballsPerInnings: state.superOver ? 3 : state.ballsPerInnings
+      balls: 0,
+      complete: false
     };
-
-    if (state.innings === 2 && state.target != null) {
-      state.requiredRuns = state.target;
-    }
-
-    state.status = state.innings === 2 ? 'SECOND_INNINGS' : 'INNINGS_LIVE';
-    deliveryOpen = false;
+    this.innings.push(innings);
+    this.status = this.inningsNumber === 1 ? 'DELIVERY_SETUP' : 'SECOND_INNINGS';
+    this.deliveryOpen = false;
+    this.emit('match:innings-start', { innings: { ...innings } });
+    return this.getState();
   }
 
-  function finishMatch() {
-    const first = state.inningsHistory[0];
-    const second = state.inningsHistory[1];
+  beginDelivery(bowling = {}) {
+    if (!this.currentInnings || this.currentInnings.complete) return false;
+    if (this.deliveryOpen) return false;
 
-    if (second.runs >= state.target) {
-      state.winnerId = second.battingPlayerId;
-      state.result = {
-        type: 'CHASE_WIN',
-        winnerId: state.winnerId,
-        ballsRemaining: Math.max(0, second.ballsPerInnings - second.ballsBowled)
-      };
-      state.status = 'MATCH_OVER';
-      return;
-    }
-
-    if (second.runs < first.runs) {
-      state.winnerId = first.battingPlayerId;
-      state.result = {
-        type: 'DEFENCE_WIN',
-        winnerId: state.winnerId,
-        runs: first.runs - second.runs
-      };
-      state.status = 'MATCH_OVER';
-      return;
-    }
-
-    state.winnerId = null;
-    state.result = { type: 'TIE' };
-    state.status = state.superOverEnabled ? 'SUPER_OVER' : 'MATCH_OVER';
-  }
-
-  function startSuperOver() {
-    if (state.status !== 'SUPER_OVER') return false;
-
-    state.superOver = true;
-    state.status = 'INNINGS_SETUP';
-    state.innings = 1;
-    state.target = null;
-    state.requiredRuns = null;
-    state.winnerId = null;
-    state.result = null;
-    state.inningsHistory = [];
-    state.deliveryHistory = [];
-    startInnings();
+    this.deliveryOpen = true;
+    this.status = 'BALL_LIVE';
+    this.currentBowling = {
+      line: bowling.line || 'CENTRE',
+      power: Number.isFinite(bowling.power) ? bowling.power : 0.5,
+      type: bowling.type || 'PACE',
+      startedAt: performanceNow()
+    };
+    this.emit('delivery:launch', { bowling: { ...this.currentBowling } });
     return true;
   }
 
-  function swapRoles() {
-    const previousBatter = state.battingPlayerId;
-    state.battingPlayerId = state.bowlingPlayerId;
-    state.bowlingPlayerId = previousBatter;
+  resolveDelivery(outcome, metadata = {}) {
+    if (!this.deliveryOpen) return false;
+    const normalized = String(outcome || '').toUpperCase();
+    const result = OUTCOMES[normalized];
+    if (!result) throw new Error('Unsupported cricket outcome: ' + outcome);
+
+    this.deliveryOpen = false;
+    const innings = this.currentInnings;
+    innings.balls += 1;
+    innings.runs += result.runs;
+    if (result.wicket) innings.wickets += 1;
+
+    const record = {
+      innings: innings.number,
+      ballNumber: innings.balls,
+      batter: innings.battingPlayerId,
+      bowler: innings.bowlingPlayerId,
+      bowling: { ...this.currentBowling },
+      result: { type: normalized, runs: result.runs, wicket: result.wicket },
+      durationMs: Math.max(0, Math.round(performanceNow() - (this.currentBowling?.startedAt || performanceNow()))),
+      ...metadata
+    };
+    this.deliveryHistory.push(record);
+    this.status = 'DELIVERY_RESOLVED';
+    this.emit('delivery:resolved', { delivery: record });
+    this.emit('score:changed', { innings: { ...innings } });
+
+    if (this.shouldEndInnings()) {
+      this.finishInnings();
+    } else {
+      this.status = 'DELIVERY_SETUP';
+      this.emit('delivery:ready', {});
+    }
+    return true;
   }
 
-  function getBallsRemaining() {
-    if (!state.current) return state.ballsPerInnings;
-    return Math.max(0, state.current.ballsPerInnings - state.current.ballsBowled);
+  shouldEndInnings() {
+    const innings = this.currentInnings;
+    if (!innings) return true;
+    if (innings.wickets >= this.maxWickets) return true;
+    if (innings.balls >= this.ballsPerInnings) return true;
+    if (innings.number === 2 && this.target !== null && innings.runs >= this.target) return true;
+    return false;
   }
 
-  function snapshot() {
+  finishInnings() {
+    const innings = this.currentInnings;
+    innings.complete = true;
+    this.emit('innings:end', { innings: { ...innings } });
+
+    if (innings.number === 1) {
+      this.target = innings.runs + 1;
+      const nextBatter = innings.bowlingPlayerId;
+      const nextBowler = innings.battingPlayerId;
+      this.battingPlayerId = nextBatter;
+      this.bowlingPlayerId = nextBowler;
+      this.status = 'INNINGS_BREAK';
+      this.emit('match:target-set', { target: this.target });
+      return;
+    }
+
+    this.finishMatch();
+  }
+
+  startSecondInnings() {
+    if (this.status !== 'INNINGS_BREAK') return false;
+    this.startInnings();
+    return true;
+  }
+
+  finishMatch() {
+    const first = this.innings[0];
+    const second = this.innings[1];
+    if (!first || !second) return;
+
+    if (second.runs >= this.target) {
+      this.result = {
+        type: 'WIN',
+        winnerId: second.battingPlayerId,
+        loserId: first.battingPlayerId,
+        margin: this.ballsPerInnings - second.balls,
+        marginType: 'BALLS'
+      };
+      this.status = 'MATCH_OVER';
+    } else if (second.runs < first.runs) {
+      this.result = {
+        type: 'WIN',
+        winnerId: first.battingPlayerId,
+        loserId: second.battingPlayerId,
+        margin: first.runs - second.runs,
+        marginType: 'RUNS'
+      };
+      this.status = 'MATCH_OVER';
+    } else {
+      this.result = { type: 'TIE', winnerId: null };
+      this.status = this.superOverEnabled ? 'SUPER_OVER' : 'MATCH_OVER';
+      if (this.status === 'SUPER_OVER') this.emit('superover:start', {});
+    }
+
+    this.emit('match:end', { result: this.result });
+  }
+
+  get currentInnings() {
+    return this.innings[this.innings.length - 1] || null;
+  }
+
+  getState() {
+    const innings = this.currentInnings;
+    const balls = innings?.balls || 0;
+    const runs = innings?.runs || 0;
     return {
-      ...state,
-      players: state.players.map((player) => ({ ...player })),
-      current: state.current ? { ...state.current } : null,
-      inningsHistory: state.inningsHistory.map((innings) => ({ ...innings })),
-      deliveryHistory: state.deliveryHistory.map((delivery) => ({
-        ...delivery,
-        bowling: { ...delivery.bowling },
-        result: { ...delivery.result }
-      })),
-      ballsRemaining: getBallsRemaining()
+      format: this.format,
+      difficulty: this.difficulty,
+      ballsPerInnings: this.ballsPerInnings,
+      maxWickets: this.maxWickets,
+      players: this.players.map((player) => ({ ...player })),
+      status: this.status,
+      innings: this.inningsNumber,
+      score: innings ? { runs, wickets: innings.wickets, balls } : { runs: 0, wickets: 0, balls: 0 },
+      target: this.target,
+      requiredRuns: this.target === null ? null : Math.max(0, this.target - runs),
+      ballsRemaining: Math.max(0, this.ballsPerInnings - balls),
+      battingPlayerId: this.battingPlayerId,
+      bowlingPlayerId: this.bowlingPlayerId,
+      toss: this.toss ? { ...this.toss } : null,
+      result: this.result ? { ...this.result } : null,
+      deliveryOpen: this.deliveryOpen
     };
   }
-
-  function assertPlayer(id) {
-    if (!state.players.some((player) => player.id === id)) {
-      throw new Error(`Unknown player: ${id}`);
-    }
-  }
-
-  return {
-    assignOpeningRoles,
-    startMatch,
-    readyDelivery,
-    resolveDelivery,
-    startSuperOver,
-    getState: snapshot
-  };
 }
 
 export { FORMAT_BALLS, OUTCOMES };
+
+function performanceNow() {
+  return typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
+}

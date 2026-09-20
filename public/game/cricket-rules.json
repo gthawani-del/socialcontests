@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "formats": {
+    "LAST_3": {
+      "ballsPerInnings": 3
+    },
+    "ONE_OVER": {
+      "ballsPerInnings": 6
+    },
+    "TWO_OVER": {
+      "ballsPerInnings": 12
+    }
+  },
+  "maxWickets": 2,
+  "delivery": {
+    "maxLiveMs": 10000,
+    "resolveDelayMs": 850,
+    "bowlerDecisionMs": 5000
+  },
+  "outcomes": {
+    "DOT": 0,
+    "ONE": 1,
+    "TWO": 2,
+    "FOUR": 4,
+    "SIX": 6,
+    "WICKET": 0
+  },
+  "bowlingLines": {
+    "LEFT": {
+      "directionOffsetX": -0.16,
+      "exitKickX": -2
+    },
+    "CENTRE": {
+      "directionOffsetX": 0,
+      "exitKickX": -1.75
+    },
+    "RIGHT": {
+      "directionOffsetX": 0.16,
+      "exitKickX": -1.45
+    }
+  },
+  "superOver": {
+    "enabled": true,
+    "ballsPerInnings": 3
+  }
+}
