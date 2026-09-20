@@ -8,53 +8,73 @@
 
 html,
 body,
-#cricketPinballApp {
+#cricketPinballApp,
+.cricket-pinball-shell {
+  width: 100%;
   min-height: 100%;
   margin: 0;
 }
 
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 50% 18%, rgba(51, 122, 80, 0.22), transparent 36%),
-    #07110c;
+  overflow: hidden;
+  background: #07110c;
 }
 
 .cricket-pinball-shell {
+  position: relative;
   min-height: 100vh;
+}
+
+#cricketWorld {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.cricket-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
   display: grid;
-  place-items: center;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
   padding: 24px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(51, 122, 80, 0.28), transparent 34%),
+    #07110c;
+  transition: opacity 220ms ease;
 }
 
-.cricket-pinball-boundary {
-  width: min(680px, 100%);
-  padding: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  background: rgba(10, 24, 16, 0.88);
+.cricket-loading.is-ready {
+  opacity: 0;
 }
 
-.cricket-pinball-kicker,
-.cricket-pinball-status {
-  letter-spacing: 0.16em;
+.cricket-loading.is-error {
+  color: #ffb7b7;
+}
+
+.cricket-loading p,
+.cricket-loading span {
+  margin: 0;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cricket-loading p {
   font-size: 12px;
   font-weight: 800;
 }
 
-.cricket-pinball-boundary h1 {
-  margin: 10px 0 12px;
-  font-size: clamp(32px, 6vw, 64px);
-  line-height: 0.95;
+.cricket-loading strong {
+  font-size: clamp(52px, 11vw, 108px);
+  line-height: 0.9;
 }
 
-.cricket-pinball-boundary p {
-  max-width: 52ch;
-  color: rgba(247, 248, 244, 0.72);
-}
-
-.cricket-pinball-status {
-  display: inline-block;
-  margin-top: 20px;
-  color: #b8e2c2;
+.cricket-loading span {
+  color: rgba(247, 248, 244, 0.68);
+  font-size: 11px;
+  font-weight: 700;
 }
