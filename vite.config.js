@@ -11,7 +11,8 @@ export default defineConfig({
         cricketPinball: resolve(process.cwd(), 'cricket-pinball/index.html'),
         cricketPinballPlay: resolve(process.cwd(), 'cricket-pinball/play/index.html'),
         cricketPinballWatch: resolve(process.cwd(), 'cricket-pinball/watch/index.html'),
-        cricketPinballAdmin: resolve(process.cwd(), 'cricket-pinball/admin/index.html')
+        cricketPinballAdmin: resolve(process.cwd(), 'cricket-pinball/admin/index.html'),
+        cricketPinballWorldTest: resolve(process.cwd(), 'cricket-pinball/world-test/index.html')
       }
     }
   }

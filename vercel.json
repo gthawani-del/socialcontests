@@ -28,6 +28,10 @@
       "destination": "/cricket-pinball/watch/index.html"
     },
     {
+      "source": "/cricket-pinball/world-test",
+      "destination": "/cricket-pinball/world-test/index.html"
+    },
+    {
       "source": "/cricket-pinball/admin",
       "destination": "/cricket-pinball/admin/index.html"
     }
