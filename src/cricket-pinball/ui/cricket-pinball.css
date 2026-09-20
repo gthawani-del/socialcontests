@@ -1,0 +1,60 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #f7f8f4;
+  background: #07110c;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body,
+#cricketPinballApp {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(51, 122, 80, 0.22), transparent 36%),
+    #07110c;
+}
+
+.cricket-pinball-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.cricket-pinball-boundary {
+  width: min(680px, 100%);
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  background: rgba(10, 24, 16, 0.88);
+}
+
+.cricket-pinball-kicker,
+.cricket-pinball-status {
+  letter-spacing: 0.16em;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cricket-pinball-boundary h1 {
+  margin: 10px 0 12px;
+  font-size: clamp(32px, 6vw, 64px);
+  line-height: 0.95;
+}
+
+.cricket-pinball-boundary p {
+  max-width: 52ch;
+  color: rgba(247, 248, 244, 0.72);
+}
+
+.cricket-pinball-status {
+  display: inline-block;
+  margin-top: 20px;
+  color: #b8e2c2;
+}
