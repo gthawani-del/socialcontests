@@ -60,6 +60,7 @@ let active = NAV.some(([id]) => id === requestedSection) ? requestedSection : 'o
 let query = '';
 let dirty = false;
 let savedBaseline = null;
+let cricketAdminTab = 'overview';
 
 const displayPrefs = readAdminDisplayPrefs();
 applyAdminDisplayPrefs(displayPrefs);
@@ -441,132 +442,136 @@ function renderCategory(id) {
 
 
 function renderCricketPinballAdmin() {
-  return `
-    <section class="product-admin-banner">
-      <div>
-        <span>PRODUCT-SPECIFIC CONFIGURATION</span>
-        <h2>CRICKET PINBALL</h2>
-        <p>These controls edit only the Cricket Pinball draft. General Pinball configuration above is separate and does not drive Cricket gameplay.</p>
-      </div>
-      <div class="product-admin-source">
-        <strong>Dedicated sources</strong>
-        <code>/game/cricket-table.json · v${draft.cricketTable.version}</code>
-        <code>/game/cricket-rules.json · v${draft.cricketRules.version}</code>
-      </div>
-    </section>
+  const tabs = [
+    ['overview','Overview'],['match','Match'],['bowling','Bowling'],['batting','Batting'],
+    ['scoring','Scoring'],['cpu','CPU'],['content','Content'],['visuals','Visuals'],['advanced','Advanced']
+  ];
+  const tabBar = `
+    <div class="cricket-tabs" role="tablist" aria-label="Cricket Pinball settings">
+      ${tabs.map(([id,label]) => `<button type="button" role="tab" data-cricket-tab="${id}" aria-selected="${cricketAdminTab===id}" class="${cricketAdminTab===id?'active':''}">${label}</button>`).join('')}
+    </div>`;
 
-    <h2 style="margin:22px 0 10px">CONTENT & TYPOGRAPHY</h2>
-    ${sectionGrid([
-      card('Global font', 'Font face used across the Cricket Pinball HTML interface.', [
-        textInput('Font face', 'cricketRules.content.fontFace', 'CSS font-family, e.g. Arial, Helvetica, sans-serif')
-      ])
-    ])}
-    <div class="repeat-grid dense">
-      ${Object.entries(draft.cricketRules.content?.items || {}).map(([key,item]) => card(item.label || key, 'Edit copy, font size and font color.', [
-        textInput('Text', `cricketRules.content.items.${key}.text`),
-        number('Font size', `cricketRules.content.items.${key}.fontSize`, 8, 96, 1, 'px'),
-        colorInput('Font color', `cricketRules.content.items.${key}.color`)
-      ], true)).join('')}
-    </div>
+  const match = sectionGrid([
+    card('Match format', 'Innings length, wickets and tie resolution.', [
+      number('Last 3 Balls', 'cricketRules.formats.LAST_3.ballsPerInnings', 1, 24, 1, 'balls'),
+      number('1 Over', 'cricketRules.formats.ONE_OVER.ballsPerInnings', 1, 24, 1, 'balls'),
+      number('2 Overs', 'cricketRules.formats.TWO_OVER.ballsPerInnings', 1, 36, 1, 'balls'),
+      number('Max wickets', 'cricketRules.maxWickets', 1, 10, 1),
+      toggle('Super Over enabled', 'cricketRules.superOver.enabled'),
+      number('Super Over balls', 'cricketRules.superOver.ballsPerInnings', 1, 12, 1, 'balls')
+    ]),
+    card('Delivery lifecycle', 'One physical delivery produces one official cricket result.', [
+      number('Max live time', 'cricketRules.delivery.maxLiveMs', 1000, 20000, 100, 'ms'),
+      number('Result hold', 'cricketRules.delivery.resolveDelayMs', 200, 3000, 50, 'ms'),
+      number('Between balls', 'cricketRules.delivery.betweenBallsMs', 1000, 10000, 250, 'ms'),
+      slider('Stalled speed', 'cricketRules.delivery.stalledSpeed', 0.05, 1, 0.01),
+      number('Stalled for', 'cricketRules.delivery.stalledForMs', 200, 5000, 50, 'ms')
+    ]),
+    card('Toss & transitions', 'Timing for toss and innings hand-off.', [
+      number('Coin animation', 'cricketRules.toss.coinMs', 500, 4000, 50, 'ms'),
+      number('Result hold', 'cricketRules.toss.resultHoldMs', 200, 3000, 50, 'ms'),
+      number('Role confirmation', 'cricketRules.toss.roleConfirmMs', 200, 3000, 50, 'ms'),
+      number('Innings intro', 'cricketRules.toss.inningsIntroMs', 200, 3000, 50, 'ms')
+    ])
+  ]);
 
-    ${sectionGrid([
-      card('Match format', 'Cricket innings and tie rules.', [
-        number('Last 3 Balls', 'cricketRules.formats.LAST_3.ballsPerInnings', 1, 24, 1, 'balls'),
-        number('1 Over', 'cricketRules.formats.ONE_OVER.ballsPerInnings', 1, 24, 1, 'balls'),
-        number('2 Overs', 'cricketRules.formats.TWO_OVER.ballsPerInnings', 1, 36, 1, 'balls'),
-        number('Max wickets', 'cricketRules.maxWickets', 1, 10, 1),
-        toggle('Super Over enabled', 'cricketRules.superOver.enabled'),
-        number('Super Over balls', 'cricketRules.superOver.ballsPerInnings', 1, 12, 1, 'balls')
-      ]),
-      card('Delivery lifecycle', 'One physical delivery produces one official cricket result.', [
-        number('Max live time', 'cricketRules.delivery.maxLiveMs', 1000, 20000, 100, 'ms'),
-        number('Result hold', 'cricketRules.delivery.resolveDelayMs', 200, 3000, 50, 'ms'),
-        slider('Stalled speed', 'cricketRules.delivery.stalledSpeed', 0.05, 1, 0.01),
-        number('Stalled for', 'cricketRules.delivery.stalledForMs', 200, 5000, 50, 'ms')
-      ]),
-      card('Toss & transitions', 'Visible toss and innings transition timing.', [
-        number('Coin animation', 'cricketRules.toss.coinMs', 500, 4000, 50, 'ms'),
-        number('Result hold', 'cricketRules.toss.resultHoldMs', 200, 3000, 50, 'ms'),
-        number('Role confirmation', 'cricketRules.toss.roleConfirmMs', 200, 3000, 50, 'ms'),
-        number('Innings intro', 'cricketRules.toss.inningsIntroMs', 200, 3000, 50, 'ms')
-      ]),
-      card('Cricket ball physics', 'Physics used only by the Cricket table config.', [
-        slider('Ball radius', 'cricketTable.ball.radius', 0.04, 0.2, 0.005),
-        slider('Max speed', 'cricketTable.ball.maxSpeed', 2, 16, 0.1),
-        vector('Gravity', 'cricketTable.physics.gravity', -10, 10, 0.05, ['X','Z']),
-        slider('Linear damping', 'cricketTable.physics.linearDamping', 0, 1, 0.01),
-        slider('Rolling friction', 'cricketTable.physics.rollingFriction', 0, 0.5, 0.005)
-      ]),
-      card('Bowling launcher', 'Cricket bowling path, charge and release.', [
-        vector('Bowling spawn', 'cricketTable.launcher.spawn', -4, 4, 0.01, ['X','Z']),
-        vector('Bowling direction', 'cricketTable.launcher.direction', -1, 1, 0.01, ['X','Z']),
-        slider('Minimum power', 'cricketTable.launcher.minPower', 1, 15, 0.1),
-        slider('Maximum power', 'cricketTable.launcher.maxPower', 1, 18, 0.1),
-        number('Charge time', 'cricketTable.launcher.chargeTimeMs', 200, 3000, 50, 'ms'),
-        slider('Tap charge', 'cricketTable.launcher.tapCharge', 0.05, 0.9, 0.01)
-      ])
-    ])}
+  const bowling = sectionGrid([
+    card('Bowling launcher', 'Spawn, direction, charge and release.', [
+      vector('Bowling spawn', 'cricketTable.launcher.spawn', -4, 4, 0.01, ['X','Z']),
+      vector('Bowling direction', 'cricketTable.launcher.direction', -1, 1, 0.01, ['X','Z']),
+      slider('Minimum power', 'cricketTable.launcher.minPower', 1, 15, 0.1),
+      slider('Maximum power', 'cricketTable.launcher.maxPower', 1, 18, 0.1),
+      number('Charge time', 'cricketTable.launcher.chargeTimeMs', 200, 3000, 50, 'ms'),
+      slider('Tap charge', 'cricketTable.launcher.tapCharge', 0.05, 0.9, 0.01)
+    ]),
+    card('Cricket ball physics', 'Physics used only by Cricket Pinball.', [
+      slider('Ball radius', 'cricketTable.ball.radius', 0.04, 0.2, 0.005),
+      slider('Max speed', 'cricketTable.ball.maxSpeed', 2, 16, 0.1),
+      vector('Gravity', 'cricketTable.physics.gravity', -10, 10, 0.05, ['X','Z']),
+      slider('Linear damping', 'cricketTable.physics.linearDamping', 0, 1, 0.01),
+      slider('Rolling friction', 'cricketTable.physics.rollingFriction', 0, 0.5, 0.005)
+    ])
+  ]) + `<div class="repeat-grid cricket-section-gap">${['LEFT','CENTRE','RIGHT'].map(line => card(`${line} bowling line`,'Line-specific trajectory tuning.',[
+    slider('Direction offset X', `cricketTable.launcher.bowlingLines.${line}.directionOffsetX`, -0.6, 0.6, 0.01),
+    slider('Exit kick X', `cricketTable.launcher.bowlingLines.${line}.exitKickX`, -3, 3, 0.05)
+  ],true)).join('')}</div>`;
 
-    <div class="repeat-grid">
-      ${['LEFT','CENTRE','RIGHT'].map(line => card(
-        `${line} bowling line`,
-        'Line-specific trajectory tuning.',
-        [
-          slider('Direction offset X', `cricketTable.launcher.bowlingLines.${line}.directionOffsetX`, -0.6, 0.6, 0.01),
-          slider('Exit kick X', `cricketTable.launcher.bowlingLines.${line}.exitKickX`, -3, 3, 0.05)
-        ],
-        true
-      )).join('')}
-    </div>
+  const batting = repeatedCards('cricketTable.flippers', 'Cricket bat', [
+    vectorSpec('Pivot', 'pivot', -4, 4, 0.01, ['X','Z']),
+    sliderSpec('Length', 'length', 0.3, 1.8, 0.01),
+    sliderSpec('Collision radius', 'radius', 0.04, 0.35, 0.005),
+    sliderSpec('Rest angle', 'restAngleDeg', -180, 360, 1, '°'),
+    sliderSpec('Active angle', 'activeAngleDeg', -180, 360, 1, '°'),
+    sliderSpec('Stroke speed', 'speedDegPerSec', 60, 1500, 10, '°/s'),
+    sliderSpec('Return speed', 'returnSpeedDegPerSec', 60, 1500, 10, '°/s'),
+    sliderSpec('Bat kick', 'kick', 0, 6, 0.05)
+  ]);
 
-    <h2 style="margin:22px 0 10px">CRICKET BATS / FLIPPERS</h2>
-    ${repeatedCards('cricketTable.flippers', 'Cricket bat', [
-      vectorSpec('Pivot', 'pivot', -4, 4, 0.01, ['X','Z']),
-      sliderSpec('Length', 'length', 0.3, 1.8, 0.01),
-      sliderSpec('Collision radius', 'radius', 0.04, 0.35, 0.005),
-      sliderSpec('Rest angle', 'restAngleDeg', -180, 360, 1, '°'),
-      sliderSpec('Active angle', 'activeAngleDeg', -180, 360, 1, '°'),
-      sliderSpec('Stroke speed', 'speedDegPerSec', 60, 1500, 10, '°/s'),
-      sliderSpec('Return speed', 'returnSpeedDegPerSec', 60, 1500, 10, '°/s'),
-      sliderSpec('Bat kick', 'kick', 0, 6, 0.05)
-    ])}
+  const scoring = repeatedCards('cricketTable.deliveryZones', 'Cricket result zone', [
+    vectorSpec('Position', 'position', -4, 4, 0.01, ['X','Z']),
+    sliderSpec('Trigger radius', 'radius', 0.05, 0.8, 0.01)
+  ], true);
 
-    <h2 style="margin:22px 0 10px">OFFICIAL DELIVERY ZONES</h2>
-    ${repeatedCards('cricketTable.deliveryZones', 'Cricket result zone', [
-      vectorSpec('Position', 'position', -4, 4, 0.01, ['X','Z']),
-      sliderSpec('Trigger radius', 'radius', 0.05, 0.8, 0.01)
-    ], true)}
-    <h2 style="margin:22px 0 10px">CRICKET THEME SURFACES</h2>
-    ${repeatedCards('cricketTable.themeSurfaces', 'Theme surface', [
-      vectorSpec('Position', 'position', -6, 6, 0.01, ['X','Y','Z']),
-      vectorSpec('Size', 'size', 0.1, 10, 0.01, ['W','H']),
-      vectorSpec('Rotation', 'rotationDeg', -180, 180, 1, ['X°','Y°','Z°']),
-      sliderSpec('Opacity', 'opacity', 0, 1, 0.01)
-    ], true)}
+  const cpu = `<div class="repeat-grid">${['EASY','MEDIUM','HARD'].map(level => card(`CPU · ${level}`,'Bowling and batting behaviour.',[
+    slider('Bowling power min', `cricketRules.cpu.${level}.bowlingPowerMin`, 0.1, 1, 0.01),
+    slider('Bowling power max', `cricketRules.cpu.${level}.bowlingPowerMax`, 0.1, 1, 0.01),
+    slider('Batting trigger Z', `cricketRules.cpu.${level}.battingTriggerZ`, 0.5, 2.5, 0.01),
+    slider('Centre-ball band', `cricketRules.cpu.${level}.battingCentreBand`, 0.05, 0.5, 0.01),
+    number('Bat hold', `cricketRules.cpu.${level}.battingHoldMs`, 40, 300, 5, 'ms'),
+    number('Bat cooldown', `cricketRules.cpu.${level}.battingCooldownMs`, 50, 600, 5, 'ms'),
+    slider('Miss chance', `cricketRules.cpu.${level}.battingMissChance`, 0, 0.75, 0.01)
+  ],true)).join('')}</div>`;
 
+  const content = sectionGrid([
+    card('Global typography', 'One font stack for Cricket Pinball UI.', [
+      textInput('Font face', 'cricketRules.content.fontFace', 'CSS font-family stack')
+    ])
+  ]) + `<div class="repeat-grid dense cricket-section-gap">${Object.entries(draft.cricketRules.content?.items || {}).map(([key,item]) => card(item.label || key,'Displayed copy and typography.',[
+    textInput('Text', `cricketRules.content.items.${key}.text`),
+    number('Font size', `cricketRules.content.items.${key}.fontSize`, 8, 96, 1, 'px'),
+    colorInput('Font color', `cricketRules.content.items.${key}.color`)
+  ],true)).join('')}</div>`;
 
-    <div class="repeat-grid" style="margin-top:14px">
-      ${['EASY','MEDIUM','HARD'].map(level => card(
-        `CPU · ${level}`,
-        'Cricket CPU bowling and batting tuning.',
-        [
-          slider('Bowling power min', `cricketRules.cpu.${level}.bowlingPowerMin`, 0.1, 1, 0.01),
-          slider('Bowling power max', `cricketRules.cpu.${level}.bowlingPowerMax`, 0.1, 1, 0.01),
-          slider('Batting trigger Z', `cricketRules.cpu.${level}.battingTriggerZ`, 0.5, 2.5, 0.01),
-          slider('Centre-ball band', `cricketRules.cpu.${level}.battingCentreBand`, 0.05, 0.5, 0.01),
-          number('Bat hold', `cricketRules.cpu.${level}.battingHoldMs`, 40, 300, 5, 'ms'),
-          number('Bat cooldown', `cricketRules.cpu.${level}.battingCooldownMs`, 50, 600, 5, 'ms'),
-          slider('Miss chance', `cricketRules.cpu.${level}.battingMissChance`, 0, 0.75, 0.01)
-        ],
-        true
-      )).join('')}
-    </div>
+  const visuals = repeatedCards('cricketTable.themeSurfaces', 'Theme surface', [
+    vectorSpec('Position', 'position', -6, 6, 0.01, ['X','Y','Z']),
+    vectorSpec('Size', 'size', 0.1, 10, 0.01, ['W','H']),
+    vectorSpec('Rotation', 'rotationDeg', -180, 180, 1, ['X°','Y°','Z°']),
+    sliderSpec('Opacity', 'opacity', 0, 1, 0.01)
+  ], true);
 
+  const advanced = `
     <section class="product-admin-note">
       <strong>STRICT CONFIG BOUNDARY</strong>
-      <span>Cricket Pinball reads cricketTable/cricketRules only. Its GLB, theme surfaces, bats, bowling, scoring zones and match rules are isolated from General Pinball.</span>
+      <span>Cricket Pinball reads cricketTable/cricketRules only. Its GLB, theme surfaces, bats, bowling, scoring zones and match rules remain isolated from General Pinball.</span>
     </section>
-  `;
+    <section class="panel setting-card cricket-section-gap">
+      <div class="panel-head"><div><h2>Dedicated configuration sources</h2><p>Reference only. Export preserves every Cricket configuration path.</p></div></div>
+      <div class="control-list">
+        ${readonly('Table source', '/game/cricket-table.json', `v${draft.cricketTable.version}`)}
+        ${readonly('Rules source', '/game/cricket-rules.json', `v${draft.cricketRules.version}`)}
+      </div>
+    </section>`;
+
+  const sections = {overview:'',match,bowling,batting,scoring,cpu,content,visuals,advanced};
+  sections.overview = `
+    <div class="cricket-overview">
+      ${productAdminCard('Match & innings','Formats, delivery lifecycle, toss and transitions.','MATCH')}
+      ${productAdminCard('Bowling','Launcher, ball physics and left/centre/right trajectories.','BOWLING')}
+      ${productAdminCard('Batting','Both Cricket bats/flippers and their complete physics.','BATTING')}
+      ${productAdminCard('Scoring','Every official terminal delivery zone.','SCORING')}
+      ${productAdminCard('CPU','Easy, Medium and Hard behaviour controls.','CPU')}
+      ${productAdminCard('Content','All game copy, font face, size and colour.','CONTENT')}
+      ${productAdminCard('Visuals','Existing Cricket theme surface configuration.','VISUALS')}
+      ${productAdminCard('Advanced','Sources and strict Cricket config boundary.','ADVANCED')}
+    </div>`;
+
+  return `
+    <section class="product-admin-banner">
+      <div><span>PRODUCT CONFIGURATION</span><h2>Cricket Pinball</h2><p>One product workspace. Every existing Cricket setting is preserved and grouped by task.</p></div>
+      <div class="product-admin-source"><strong>Draft configuration</strong><code>Table v${draft.cricketTable.version}</code><code>Rules v${draft.cricketRules.version}</code></div>
+    </section>
+    ${tabBar}
+    <div class="cricket-tab-panel" role="tabpanel">${sections[cricketAdminTab] || sections.overview}</div>`;
 }
 
 
@@ -847,6 +852,12 @@ function searchCatalog() {
 }
 
 function bindEditors(container) {
+  container.querySelectorAll('[data-cricket-tab]').forEach(button => {
+    button.addEventListener('click', () => {
+      cricketAdminTab = button.dataset.cricketTab;
+      renderActive();
+    });
+  });
   container.querySelectorAll('[data-jump]').forEach(button => {
     button.addEventListener('click', () => {
       active = button.dataset.jump;
