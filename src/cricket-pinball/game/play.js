@@ -242,6 +242,7 @@ async function boot() {
     tableConfig = structuredClone(table);
     rulesConfig = cricketRules;
     tableConfig.launcher.bowlingLines = cricketRules.bowlingLines;
+    applyConfiguredContent(cricketRules.content);
 
     modelRoot = gltf.scene;
     prepareWorld(modelRoot);
@@ -579,6 +580,29 @@ function drawStadiumScoreboard(label, value) {
   ctx.font = '900 76px system-ui';
   ctx.fillText(value, 512, 300);
   scoreboardTexture.needsUpdate = true;
+}
+
+function applyConfiguredContent(content) {
+  if (!content) return;
+  const items = content.items || {};
+  const set = (selector,key,fallbackDynamic=false) => {
+    const node = document.querySelector(selector);
+    const item = items[key];
+    if (!node || !item) return;
+    if (!fallbackDynamic && item.text != null) node.textContent = item.text;
+    node.style.setProperty('font-size', `${Number(item.fontSize) || 16}px`, 'important');
+    node.style.setProperty('color', item.color || '#ffffff', 'important');
+  };
+  document.querySelector('.cricket-play-shell')?.style.setProperty('font-family', content.fontFace || 'Arial, Helvetica, sans-serif');
+  set('#matchIntro > p','matchIntro'); set('#beginToss','beginToss');
+  set('#tossEyebrow','tossEyebrow',true); set('#tossTitle','tossTitle',true); set('#tossInstruction','tossInstruction');
+  set('#coinStatus','coinStatus'); set('[data-call="HEADS"]','heads'); set('[data-call="TAILS"]','tails');
+  set('[data-role="BAT"]','bat'); set('[data-role="BOWL"]','bowl');
+  set('#hudScore','hudScore',true); set('#hudNeed','hudBall',true); set('#hudBowler','hudRole',true);
+  set('[data-line="LEFT"]','leftLine'); set('[data-line="CENTRE"]','centreLine'); set('[data-line="RIGHT"]','rightLine');
+  set('#powerControl span','charge'); set('[data-flipper="left"]','leftBat'); set('[data-flipper="right"]','rightBat');
+  set('#nextBallClock > span','nextBall'); set('#nextBallClock > small','seconds');
+  set('#deliveryCueLabel','delivery'); set('#deliveryCueValue','ready',true); set('#resultEyebrow','matchResult');
 }
 
 function bindUi() {

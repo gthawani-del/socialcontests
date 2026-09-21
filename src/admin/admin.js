@@ -455,6 +455,20 @@ function renderCricketPinballAdmin() {
       </div>
     </section>
 
+    <h2 style="margin:22px 0 10px">CONTENT & TYPOGRAPHY</h2>
+    ${sectionGrid([
+      card('Global font', 'Font face used across the Cricket Pinball HTML interface.', [
+        textInput('Font face', 'cricketRules.content.fontFace', 'CSS font-family, e.g. Arial, Helvetica, sans-serif')
+      ])
+    ])}
+    <div class="repeat-grid dense">
+      ${Object.entries(draft.cricketRules.content?.items || {}).map(([key,item]) => card(item.label || key, 'Edit copy, font size and font color.', [
+        textInput('Text', `cricketRules.content.items.${key}.text`),
+        number('Font size', `cricketRules.content.items.${key}.fontSize`, 8, 96, 1, 'px'),
+        colorInput('Font color', `cricketRules.content.items.${key}.color`)
+      ], true)).join('')}
+    </div>
+
     ${sectionGrid([
       card('Match format', 'Cricket innings and tie rules.', [
         number('Last 3 Balls', 'cricketRules.formats.LAST_3.ballsPerInnings', 1, 24, 1, 'balls'),
@@ -851,7 +865,7 @@ function bindEditors(container) {
 
       if (input.type === 'checkbox') {
         value = input.checked;
-      } else if (input.tagName === 'SELECT') {
+      } else if (input.dataset.valueType === 'string' || input.tagName === 'SELECT') {
         value = input.value;
       } else {
         value = Number(input.value);
@@ -1048,6 +1062,15 @@ function select(label,path,options) {
         ${options.map(([id,text]) => `<option value="${id}" ${id===value?'selected':''}>${text}</option>`).join('')}
       </select>
     </div>`;
+}
+
+function textInput(label,path,note='') {
+  const value = getPath(draft,path) ?? '';
+  return `<div class="control"><div class="control-copy"><label>${label}</label>${note ? `<small>${note}</small>` : ''}</div><input class="select-control" type="text" data-path="${path}" data-value-type="string" value="${escapeHtml(String(value))}"></div>`;
+}
+function colorInput(label,path) {
+  const value = getPath(draft,path) || '#ffffff';
+  return `<div class="control"><div class="control-copy"><label>${label}</label></div><div class="number-wrap"><input type="color" data-path="${path}" data-value-type="string" value="${escapeHtml(String(value))}"><input type="text" data-path="${path}" data-value-type="string" value="${escapeHtml(String(value))}"></div></div>`;
 }
 
 function readonly(label,value,note='') {

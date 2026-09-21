@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -90,5 +90,154 @@
   "superOver": {
     "enabled": true,
     "ballsPerInnings": 3
+  },
+  "content": {
+    "fontFace": "Arial, Helvetica, sans-serif",
+    "items": {
+      "matchIntro": {
+        "label": "Match intro",
+        "text": "MATCH INTRO",
+        "fontSize": 18,
+        "color": "#ffffff"
+      },
+      "beginToss": {
+        "label": "Begin toss",
+        "text": "BEGIN TOSS",
+        "fontSize": 17,
+        "color": "#07110c"
+      },
+      "tossEyebrow": {
+        "label": "Toss eyebrow",
+        "text": "TOSS",
+        "fontSize": 16,
+        "color": "#a9b8ad"
+      },
+      "tossTitle": {
+        "label": "Toss title",
+        "text": "CALLS",
+        "fontSize": 48,
+        "color": "#ffffff"
+      },
+      "tossInstruction": {
+        "label": "Toss instruction",
+        "text": "Choose Heads or Tails",
+        "fontSize": 18,
+        "color": "#ffffff"
+      },
+      "coinStatus": {
+        "label": "Coin status",
+        "text": "READY FOR TOSS",
+        "fontSize": 15,
+        "color": "#f2d67f"
+      },
+      "heads": {
+        "label": "Heads button",
+        "text": "HEADS",
+        "fontSize": 17,
+        "color": "#07110c"
+      },
+      "tails": {
+        "label": "Tails button",
+        "text": "TAILS",
+        "fontSize": 17,
+        "color": "#07110c"
+      },
+      "bat": {
+        "label": "Bat choice",
+        "text": "BAT",
+        "fontSize": 17,
+        "color": "#07110c"
+      },
+      "bowl": {
+        "label": "Bowl choice",
+        "text": "BOWL",
+        "fontSize": 17,
+        "color": "#07110c"
+      },
+      "hudScore": {
+        "label": "HUD score",
+        "text": "0/0",
+        "fontSize": 26,
+        "color": "#fff0b0"
+      },
+      "hudBall": {
+        "label": "HUD ball",
+        "text": "BALL",
+        "fontSize": 26,
+        "color": "#fff0b0"
+      },
+      "hudRole": {
+        "label": "HUD role",
+        "text": "BOWLING",
+        "fontSize": 26,
+        "color": "#fff0b0"
+      },
+      "leftLine": {
+        "label": "Bowling line left",
+        "text": "LEFT",
+        "fontSize": 16,
+        "color": "#f4e7b4"
+      },
+      "centreLine": {
+        "label": "Bowling line centre",
+        "text": "CENTRE",
+        "fontSize": 16,
+        "color": "#f4e7b4"
+      },
+      "rightLine": {
+        "label": "Bowling line right",
+        "text": "RIGHT",
+        "fontSize": 16,
+        "color": "#f4e7b4"
+      },
+      "charge": {
+        "label": "Power control",
+        "text": "HOLD TO CHARGE",
+        "fontSize": 14,
+        "color": "#f4e7b4"
+      },
+      "leftBat": {
+        "label": "Left bat",
+        "text": "← LEFT BAT",
+        "fontSize": 18,
+        "color": "#f4e7b4"
+      },
+      "rightBat": {
+        "label": "Right bat",
+        "text": "RIGHT BAT →",
+        "fontSize": 18,
+        "color": "#f4e7b4"
+      },
+      "nextBall": {
+        "label": "Next ball clock",
+        "text": "NEXT BALL",
+        "fontSize": 12,
+        "color": "#a7b6aa"
+      },
+      "seconds": {
+        "label": "Clock unit",
+        "text": "SECONDS",
+        "fontSize": 12,
+        "color": "#a7b6aa"
+      },
+      "delivery": {
+        "label": "Delivery cue",
+        "text": "DELIVERY",
+        "fontSize": 14,
+        "color": "#9db5a4"
+      },
+      "ready": {
+        "label": "Ready cue",
+        "text": "READY",
+        "fontSize": 24,
+        "color": "#ffe28a"
+      },
+      "matchResult": {
+        "label": "Match result",
+        "text": "MATCH RESULT",
+        "fontSize": 16,
+        "color": "#ffffff"
+      }
+    }
   }
 }
