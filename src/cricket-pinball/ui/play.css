@@ -682,9 +682,10 @@ button, a { font: inherit; }
 
 /* Cricket HUD — single authoritative layout; size is admin-driven via --hud-scale. */
 #matchHud{
-  top:18px!important;
+  --hud-safe-top:24px;
+  top:var(--hud-safe-top)!important;
   left:50%!important;
-  width:min(760px,calc(100vw - 32px))!important;
+  width:min(760px,calc(100vw - 48px))!important;
   transform:translateX(-50%) scale(var(--hud-scale,1))!important;
   transform-origin:top center!important;
   grid-template-columns:1fr 1.08fr 1fr!important;
@@ -709,9 +710,11 @@ button, a { font: inherit; }
 #hudScore,#hudNeed,#hudBowler{font-size:22px!important;line-height:1.08!important}
 #hudInnings,#hudLast,#hudState{font-size:11px!important}
 @media(max-width:680px){
-  #matchHud{top:8px!important;width:calc(100vw - 16px)!important}
+  #matchHud{--hud-safe-top:12px;width:calc(100vw - 24px)!important}
   #matchHud>div{min-height:64px!important;padding:7px 8px!important}
   #hudBatter,#hudTarget,#hudRole{font-size:9px!important}
   #hudScore,#hudNeed,#hudBowler{font-size:17px!important}
   #hudInnings,#hudLast,#hudState{font-size:9px!important}
 }
+
+#matchHud + .scoreboard{display:none!important}
