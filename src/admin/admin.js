@@ -549,6 +549,11 @@ function renderCricketPinballAdmin() {
       number('Max live time', 'cricketRules.delivery.maxLiveMs', 1000, 20000, 100, 'ms'),
       number('Result hold', 'cricketRules.delivery.resolveDelayMs', 200, 3000, 50, 'ms'),
       number('Between balls', 'cricketRules.delivery.betweenBallsMs', 1000, 10000, 250, 'ms'),
+      toggle('Gutter rescue', 'cricketRules.delivery.gutterRescueEnabled'),
+      number('Max gutter rescues', 'cricketRules.delivery.gutterRescueMax', 0, 3, 1),
+      slider('Gutter rescue X impulse', 'cricketRules.delivery.gutterRescueImpulseX', 0.5, 6, 0.1),
+      slider('Gutter rescue Z impulse', 'cricketRules.delivery.gutterRescueImpulseZ', 0.5, 6, 0.1),
+      number('Gutter trap timeout', 'cricketRules.delivery.gutterTrapMs', 250, 3000, 50, 'ms'),
       slider('Stalled speed', 'cricketRules.delivery.stalledSpeed', 0.05, 1, 0.01),
       number('Stalled for', 'cricketRules.delivery.stalledForMs', 200, 5000, 50, 'ms')
     ]),

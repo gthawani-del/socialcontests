@@ -9,6 +9,8 @@ export function createCricketGameplayAdapter({
   let liveStartedAt = 0;
   let stalledSince = null;
   let battingContact = false;
+  let gutterRescues = 0;
+  let gutterEnteredAt = null;
   const zones = (tableConfig.deliveryZones || []).filter((zone) => zone.terminal);
   const unsubs = [];
 
@@ -17,6 +19,8 @@ export function createCricketGameplayAdapter({
     liveStartedAt = performanceNow();
     stalledSince = null;
     battingContact = false;
+    gutterRescues = 0;
+    gutterEnteredAt = null;
   }
 
   function resolve(type, metadata = {}) {
@@ -42,28 +46,60 @@ export function createCricketGameplayAdapter({
       return;
     }
 
-    // Cricket runs can only exist after the batter has actually played the ball.
-    // The outbound bowling path is never a scoring path.
-    if (!battingContact) return;
+    const now = performanceNow();
 
-    for (const zone of zones) {
-      if (zone.direction === 'RETURN' && engine.ball.velocity.z >= -0.05) continue;
-      if (zone.direction === 'DELIVERY' && engine.ball.velocity.z <= 0.05) continue;
+    // Side gutters are not free/dead balls. Before bat contact, allow one
+    // controlled rescue pop back into play; a repeated/trapped gutter is DOT.
+    const gutterCfg = cricketRules.delivery || {};
+    const gutterThreshold = (tableConfig.playfield?.drain?.maxX ?? 0.46) + 0.12;
+    const inBattingGutter =
+      engine.ball.position.z >= 1.72 &&
+      Math.abs(engine.ball.position.x) >= gutterThreshold;
 
-      const dx = engine.ball.position.x - zone.position[0];
-      const dz = engine.ball.position.z - zone.position[1];
+    if (inBattingGutter) {
+      if (gutterEnteredAt === null) gutterEnteredAt = now;
 
-      if (Math.hypot(dx, dz) <= zone.radius) {
-        resolve(zone.outcome, {
-          reason: 'DELIVERY_ZONE',
-          zoneId: zone.id,
-          runs: zone.runs
+      if (
+        !battingContact &&
+        gutterCfg.gutterRescueEnabled !== false &&
+        gutterRescues < (gutterCfg.gutterRescueMax ?? 1)
+      ) {
+        const side = Math.sign(engine.ball.position.x) || 1;
+        engine.ball.velocity.x = -side * (gutterCfg.gutterRescueImpulseX ?? 2.4);
+        engine.ball.velocity.z = -(gutterCfg.gutterRescueImpulseZ ?? 2.2);
+        gutterRescues += 1;
+        gutterEnteredAt = null;
+      } else if (now - gutterEnteredAt >= (gutterCfg.gutterTrapMs ?? 1200)) {
+        resolve('DOT', {
+          reason: battingContact ? 'POST_BAT_GUTTER' : 'GUTTER_TRAPPED',
+          gutterRescues
         });
         return;
       }
+    } else {
+      gutterEnteredAt = null;
     }
 
-    const now = performanceNow();
+    // Cricket runs can only exist after actual bat contact. Stall/timeout and
+    // gutter handling still run before contact so a delivery can never hang.
+    if (battingContact) {
+      for (const zone of zones) {
+        if (zone.direction === 'RETURN' && engine.ball.velocity.z >= -0.05) continue;
+        if (zone.direction === 'DELIVERY' && engine.ball.velocity.z <= 0.05) continue;
+
+        const dx = engine.ball.position.x - zone.position[0];
+        const dz = engine.ball.position.z - zone.position[1];
+
+        if (Math.hypot(dx, dz) <= zone.radius) {
+          resolve(zone.outcome, {
+            reason: 'DELIVERY_ZONE',
+            zoneId: zone.id,
+            runs: zone.runs
+          });
+          return;
+        }
+      }
+    }
     const speed = Math.hypot(engine.ball.velocity.x, engine.ball.velocity.z);
     const stalledSpeed = cricketRules.delivery?.stalledSpeed ?? 0.2;
     const stalledForMs = cricketRules.delivery?.stalledForMs ?? 1200;
@@ -97,7 +133,11 @@ export function createCricketGameplayAdapter({
   }));
 
   unsubs.push(engine.on('drain', ({ safetyReset = false } = {}) => {
-    resolve('WICKET', { reason: safetyReset ? 'SAFETY_DRAIN' : 'DRAIN' });
+    if (safetyReset) {
+      resolve('DOT', { reason: 'SAFETY_DRAIN' });
+      return;
+    }
+    resolve('WICKET', { reason: 'WICKET_DRAIN' });
   }));
 
   return {
