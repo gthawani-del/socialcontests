@@ -44,3 +44,37 @@ footer{max-width:1450px;margin:auto;border-top:1px solid var(--line);padding:20p
 @media(max-width:520px){.hero{height:220px}.cover,.mini{flex-basis:43%}.categories{gap:22px}}
 @media(max-width:380px){.hero{height:205px}.cover,.mini{flex-basis:45%}.categories{gap:20px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* 2026 world-card treatment: artwork-first, UI-owned hierarchy */
+@media (min-width:901px){
+  .feature-layout{grid-template-columns:minmax(0,1fr) 315px;gap:22px}
+  .cover-rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;overflow:visible}
+  .cover-rail .cover{min-width:0;width:100%;height:auto;aspect-ratio:.74}
+  .cover-rail .cover:nth-child(5){display:none}
+  .small-rail{display:flex;gap:18px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x proximity}
+  .small-rail .mini{flex:0 0 calc((100% - 72px)/5);height:auto;aspect-ratio:.74;scroll-snap-align:start}
+}
+.cover,.mini{isolation:isolate;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.cover img,.mini img{z-index:0;transition:transform .22s ease,filter .22s ease}
+.cover:after,.mini:after{z-index:1;background:linear-gradient(180deg,#03101a42 0,transparent 24%,transparent 55%,#02080edb 100%)}
+.category{top:10px;left:10px;right:auto;height:auto;min-height:24px;padding:5px 9px;border-radius:999px;font-size:11px;line-height:1;letter-spacing:.035em;color:#fff!important;background:#0aa980b8!important;backdrop-filter:blur(7px);box-shadow:0 1px 8px #0004}
+.category.historical{background:#c98a25c7!important}.category.night{background:#7b27d5c7!important}.category.classics{background:#c98a25c7!important}.category.scifi{background:#137fc5c7!important}.category.cities{background:#2089b9c7!important}.category.sports{background:#128b5fc7!important}
+.card-title{position:absolute;z-index:3;left:13px;right:12px;bottom:13px;font-size:17px;line-height:1.05;font-weight:900;text-transform:uppercase;text-shadow:0 2px 8px #000;letter-spacing:-.02em}
+.card-action{position:absolute;z-index:3;right:12px;bottom:12px;opacity:0;transform:translateY(4px);font-size:11px;font-weight:800;color:#ffc052;transition:opacity .18s ease,transform .18s ease}
+.cover:not(.unavailable) .card-title{right:62px}
+.status{left:13px;bottom:42px;background:#06121cd9;backdrop-filter:blur(6px)}
+@media (hover:hover) and (pointer:fine){
+  .cover:not(.unavailable):hover{transform:translateY(-4px) scale(1.018);border-color:#ffb13d80;box-shadow:0 14px 28px #0007}
+  .cover:not(.unavailable):hover img{transform:scale(1.035);filter:brightness(.82) saturate(1.05)}
+  .cover:not(.unavailable):hover .card-action{opacity:1;transform:translateY(0)}
+  .mini:hover img,.cover.unavailable:hover img{transform:scale(1.02);filter:brightness(.88)}
+  .mini:hover,.cover.unavailable:hover{border-color:#ffffff30;box-shadow:0 10px 22px #0005}
+}
+@media(max-width:900px){
+  .cover-rail .cover:nth-child(5){display:block}
+  .category{top:8px;left:8px;min-height:22px;padding:4px 8px;font-size:10px}
+  .card-title{left:10px;right:10px;bottom:10px;font-size:14px}
+  .card-action{display:none}
+  .status{left:10px;bottom:35px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.cover,.mini,.cover img,.mini img,.card-action{transition:none!important;transform:none!important}}
