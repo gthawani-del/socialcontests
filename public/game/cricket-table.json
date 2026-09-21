@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "product": "CRICKET_PINBALL",
   "world": {
     "glb": "/models/cricket-world-v2.glb",
@@ -250,90 +250,158 @@
       "terminal": true
     }
   ],
-  "skinBindings": [
+  "theme": {
+    "pack": "cricket-theme-v2",
+    "renderer": "explicit-overlay-surfaces"
+  },
+  "themeSurfaces": [
     {
       "id": "playfield",
-      "texture": "playfield",
-      "targetPosition": [
+      "asset": "playfield",
+      "position": [
         0,
-        0.72,
+        0.705,
+        0.1
+      ],
+      "size": [
+        3.02,
+        5.18
+      ],
+      "rotationDeg": [
+        -90,
+        0,
         0
       ],
-      "targetSize": [
-        3.02,
-        5.24
-      ],
-      "maxDistance": 1.6
+      "opacity": 1,
+      "depthWrite": false,
+      "renderOrder": 2
     },
     {
-      "id": "four-ramp",
-      "texture": "fourRamp",
-      "targetPosition": [
-        -1.14,
-        0.82,
-        -2.1
+      "id": "four-lane",
+      "asset": "fourLane",
+      "position": [
+        -1.12,
+        0.735,
+        -0.35
       ],
-      "targetSize": [
-        0.78,
-        0.86
+      "size": [
+        0.48,
+        2.3
       ],
-      "maxDistance": 1.6
-    },
-    {
-      "id": "six-ramp",
-      "texture": "sixRamp",
-      "targetPosition": [
-        1.14,
-        0.82,
-        -2.1
-      ],
-      "targetSize": [
-        0.78,
-        0.86
-      ],
-      "maxDistance": 1.6
-    },
-    {
-      "id": "pavilion",
-      "texture": "pavilion",
-      "targetPosition": [
+      "rotationDeg": [
+        -90,
         0,
-        1.72,
-        -2.58
+        -10
       ],
-      "targetSize": [
-        3.05,
-        1.18
-      ],
-      "maxDistance": 1.6
+      "opacity": 1,
+      "depthWrite": false,
+      "renderOrder": 3
     },
     {
-      "id": "tunnel",
-      "texture": "tunnel",
-      "targetPosition": [
+      "id": "six-lane",
+      "asset": "sixLane",
+      "position": [
+        1.12,
+        0.735,
+        -0.35
+      ],
+      "size": [
+        0.48,
+        2.3
+      ],
+      "rotationDeg": [
+        -90,
         0,
-        1.13,
-        -2.4
+        10
       ],
-      "targetSize": [
-        1.02,
-        1.06
-      ],
-      "maxDistance": 1.6
+      "opacity": 1,
+      "depthWrite": false,
+      "renderOrder": 3
     },
     {
       "id": "wicket",
-      "texture": "wicket",
-      "targetPosition": [
+      "asset": "wicket",
+      "position": [
         0,
-        1.02,
-        -1.93
+        1.45,
+        -2.45
       ],
-      "targetSize": [
-        0.74,
-        0.98
+      "size": [
+        0.95,
+        0.72
       ],
-      "maxDistance": 1.6
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "depthWrite": false,
+      "renderOrder": 4
+    },
+    {
+      "id": "pavilion",
+      "asset": "pavilion",
+      "position": [
+        0,
+        1.78,
+        -3.05
+      ],
+      "size": [
+        3.65,
+        2.05
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "depthWrite": false,
+      "renderOrder": 1
+    },
+    {
+      "id": "stand-left",
+      "asset": "stand",
+      "position": [
+        -2.25,
+        1.05,
+        -0.2
+      ],
+      "size": [
+        2.1,
+        1.58
+      ],
+      "rotationDeg": [
+        0,
+        30,
+        0
+      ],
+      "opacity": 1,
+      "depthWrite": false,
+      "renderOrder": 1
+    },
+    {
+      "id": "stand-right",
+      "asset": "stand",
+      "position": [
+        2.25,
+        1.05,
+        -0.2
+      ],
+      "size": [
+        2.1,
+        1.58
+      ],
+      "rotationDeg": [
+        0,
+        -30,
+        0
+      ],
+      "opacity": 1,
+      "depthWrite": false,
+      "renderOrder": 1,
+      "flipX": true
     }
   ]
 }

@@ -7,12 +7,12 @@ import { createCricketGameplayAdapter } from './gameplay-adapter.js';
 import { chooseCpuBowling, createCpuBattingAI } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 import '../ui/play.css';
-import playfieldSkinUrl from '../../../assets/cricket/world/playfield.png?url';
-import fourRampSkinUrl from '../../../assets/cricket/world/four-ramp.png?url';
-import sixRampSkinUrl from '../../../assets/cricket/world/six-ramp.png?url';
-import pavilionSkinUrl from '../../../assets/cricket/world/pavilion.png?url';
-import tunnelSkinUrl from '../../../assets/cricket/world/tunnel.png?url';
-import wicketSkinUrl from '../../../assets/cricket/world/wicket.png?url';
+import cricketPlayfieldUrl from '../../../assets/cricket/theme-v2/playfield.webp?url';
+import fourLaneUrl from '../../../assets/cricket/theme-v2/four-lane.webp?url';
+import sixLaneUrl from '../../../assets/cricket/theme-v2/six-lane.webp?url';
+import wicketPanelUrl from '../../../assets/cricket/theme-v2/wicket.webp?url';
+import pavilionUrl from '../../../assets/cricket/theme-v2/pavilion.webp?url';
+import standUrl from '../../../assets/cricket/theme-v2/stand.webp?url';
 
 const WORLD_URL = '/models/cricket-world-v2.glb';
 const WORLD_BYTES = 9271344;
@@ -159,8 +159,8 @@ app.innerHTML = `
     </section>
 
     <section class="batting-controls" id="battingControls" hidden aria-label="Batter flipper controls">
-      <button type="button" data-flipper="left">LEFT FLIPPER</button>
-      <button type="button" data-flipper="right">RIGHT FLIPPER</button>
+      <button type="button" data-flipper="left">LEFT BAT</button>
+      <button type="button" data-flipper="right">RIGHT BAT</button>
     </section>
 
     <section class="delivery-cue" id="deliveryCue" hidden aria-live="polite">
@@ -226,13 +226,13 @@ const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
 const clock = new THREE.Clock();
 const textureLoader = new THREE.TextureLoader();
-const cricketSkinUrls = {
-  playfield: playfieldSkinUrl,
-  fourRamp: fourRampSkinUrl,
-  sixRamp: sixRampSkinUrl,
-  pavilion: pavilionSkinUrl,
-  tunnel: tunnelSkinUrl,
-  wicket: wicketSkinUrl
+const cricketThemeUrls = {
+  playfield: cricketPlayfieldUrl,
+  fourLane: fourLaneUrl,
+  sixLane: sixLaneUrl,
+  wicket: wicketPanelUrl,
+  pavilion: pavilionUrl,
+  stand: standUrl
 };
 
 bindUi();
@@ -254,7 +254,7 @@ async function boot() {
     modelRoot = gltf.scene;
     prepareWorld(modelRoot);
     scene.add(modelRoot);
-    await bindCricketSkinTextures();
+    await applyCricketTheme(modelRoot);
     createMechanics();
     createCoin();
     setupStadiumScoreboard();
@@ -341,82 +341,82 @@ function normalizeEmbeddedMaterials(object, maxAnisotropy) {
   }
 }
 
-async function bindCricketSkinTextures() {
-  const bindings = tableConfig.skinBindings || [];
-  const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
-  const candidates = [];
+function prepareCricketThemeTexture(texture, flipX = false) {
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  texture.wrapS = flipX ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
 
-  modelRoot.updateMatrixWorld(true);
+  if (flipX) {
+    texture.repeat.x = -1;
+    texture.offset.x = 1;
+  }
 
-  modelRoot.traverse((object) => {
-    if (!object.isMesh || !object.geometry?.attributes?.uv) return;
+  texture.needsUpdate = true;
+  return texture;
+}
 
-    object.geometry.computeBoundingBox();
-    const localBox = object.geometry.boundingBox;
-    if (!localBox) return;
+async function loadCricketThemeTextures() {
+  const entries = await Promise.all(
+    Object.entries(cricketThemeUrls).map(async ([name, url]) => {
+      const texture = await textureLoader.loadAsync(url);
+      return [name, prepareCricketThemeTexture(texture)];
+    })
+  );
+  return Object.fromEntries(entries);
+}
 
-    const worldBox = localBox.clone().applyMatrix4(object.matrixWorld);
-    const center = worldBox.getCenter(new THREE.Vector3());
-    const size = worldBox.getSize(new THREE.Vector3());
-
-    candidates.push({ object, center, size });
+function makeCricketThemePlane(texture, surface) {
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: Number(surface.opacity ?? 1) < 1,
+    opacity: Number(surface.opacity ?? 1),
+    depthWrite: surface.depthWrite ?? false,
+    side: THREE.DoubleSide,
+    toneMapped: false,
+    polygonOffset: true,
+    polygonOffsetFactor: -3,
+    polygonOffsetUnits: -3
   });
 
-  for (const binding of bindings) {
-    const url = cricketSkinUrls[binding.texture];
-    if (!url) continue;
+  const width = Number(surface.size?.[0] ?? 1);
+  const height = Number(surface.size?.[1] ?? 1);
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
 
-    const target = new THREE.Vector3(...(binding.targetPosition || [0, 0, 0]));
-    const expected = binding.targetSize || [1, 1];
-    const maxDistance = Number(binding.maxDistance ?? 1.6);
+  mesh.position.set(
+    Number(surface.position?.[0] ?? 0),
+    Number(surface.position?.[1] ?? 0),
+    Number(surface.position?.[2] ?? 0)
+  );
 
-    let best = null;
-    let bestScore = Infinity;
+  const rotation = surface.rotationDeg || [0, 0, 0];
+  mesh.rotation.set(
+    THREE.MathUtils.degToRad(Number(rotation[0] || 0)),
+    THREE.MathUtils.degToRad(Number(rotation[1] || 0)),
+    THREE.MathUtils.degToRad(Number(rotation[2] || 0))
+  );
 
-    for (const candidate of candidates) {
-      const distance = candidate.center.distanceTo(target);
-      if (distance > maxDistance) continue;
+  mesh.renderOrder = Number(surface.renderOrder ?? 2);
+  mesh.name = `CricketTheme_${surface.id}`;
+  mesh.frustumCulled = false;
+  return mesh;
+}
 
-      const horizontalSpan = Math.max(candidate.size.x, candidate.size.z);
-      const verticalSpan = candidate.size.y;
-      const sizePenalty =
-        Math.abs(horizontalSpan - Number(expected[0] || 1)) * 0.35 +
-        Math.abs(Math.max(verticalSpan, Math.min(candidate.size.x, candidate.size.z)) - Number(expected[1] || 1)) * 0.25;
+async function applyCricketTheme(root) {
+  const textures = await loadCricketThemeTextures();
 
-      const score = distance + sizePenalty;
-      if (score < bestScore) {
-        best = candidate;
-        bestScore = score;
-      }
-    }
-
-    if (!best) {
-      console.warn('[Cricket Skin] No UV mesh matched', binding.id);
+  for (const surface of tableConfig.themeSurfaces || []) {
+    const source = textures[surface.asset];
+    if (!source) {
+      console.warn('[Cricket Theme] Missing asset', surface.asset, 'for', surface.id);
       continue;
     }
 
-    const texture = await textureLoader.loadAsync(url);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.flipY = false;
-    texture.anisotropy = maxAnisotropy;
-    texture.needsUpdate = true;
+    const texture = surface.flipX
+      ? prepareCricketThemeTexture(source.clone(), true)
+      : source;
 
-    const applyTexture = (source) => {
-      const material = source?.clone?.() || new THREE.MeshStandardMaterial();
-      material.map = texture;
-      material.transparent = false;
-      material.opacity = 1;
-      material.depthWrite = true;
-      material.needsUpdate = true;
-      return material;
-    };
-
-    best.object.material = Array.isArray(best.object.material)
-      ? best.object.material.map(applyTexture)
-      : applyTexture(best.object.material);
-
-    best.object.userData.cricketSkinBinding = binding.id;
-    console.info('[Cricket Skin]', binding.id, '→', best.object.name || best.object.uuid);
+    root.add(makeCricketThemePlane(texture, surface));
   }
 }
 
