@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -18,7 +18,8 @@
     "resolveDelayMs": 900,
     "bowlerDecisionMs": 5000,
     "stalledSpeed": 0.18,
-    "stalledForMs": 1300
+    "stalledForMs": 1300,
+    "betweenBallsMs": 5000
   },
   "toss": {
     "coinMs": 1600,

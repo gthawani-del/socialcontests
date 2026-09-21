@@ -469,3 +469,22 @@ button, a { font: inherit; }
   .delivery-cue{top:150px;min-width:0;width:auto;padding:7px 10px;}
   .delivery-cue.is-result{top:46%;}
 }
+
+/* Cricket delivery cadence */
+.next-ball-clock{
+  position:fixed;
+  z-index:14;
+  left:24px;
+  top:50%;
+  transform:translateY(-50%);
+  width:112px;
+  padding:14px 10px;
+  border:1px solid rgba(243,209,107,.48);
+  border-radius:14px;
+  background:rgba(3,12,7,.9);
+  text-align:center;
+  pointer-events:none;
+}
+.next-ball-clock span,.next-ball-clock small{display:block;color:#a7b6aa;font-size:10px;font-weight:900;letter-spacing:.12em}
+.next-ball-clock strong{display:block;margin:4px 0;color:#ffe28a;font-size:48px;line-height:1}
+@media(max-width:680px){.next-ball-clock{left:10px;top:42%;width:88px;padding:10px 6px}.next-ball-clock strong{font-size:38px}}

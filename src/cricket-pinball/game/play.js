@@ -150,9 +150,15 @@ app.innerHTML = `
     </section>
 
     <section class="batting-controls" id="battingControls" hidden aria-label="Batter flipper controls">
-      <button type="button" data-flipper="left">LEFT BAT</button>
-      <button type="button" data-flipper="right">RIGHT BAT</button>
+      <button type="button" data-flipper="left">← LEFT BAT</button>
+      <button type="button" data-flipper="right">RIGHT BAT →</button>
     </section>
+
+    <aside class="next-ball-clock" id="nextBallClock" hidden aria-live="polite">
+      <span>NEXT BALL</span>
+      <strong id="nextBallSeconds">5</strong>
+      <small>SECONDS</small>
+    </aside>
 
     <section class="delivery-cue" id="deliveryCue" hidden aria-live="polite">
       <small id="deliveryCueLabel">DELIVERY</small>
@@ -192,6 +198,9 @@ const resultPanel = document.querySelector('#matchResult');
 const deliveryCue = document.querySelector('#deliveryCue');
 const deliveryCueLabel = document.querySelector('#deliveryCueLabel');
 const deliveryCueValue = document.querySelector('#deliveryCueValue');
+const nextBallClock = document.querySelector('#nextBallClock');
+const nextBallSeconds = document.querySelector('#nextBallSeconds');
+let nextBallCountdownTimer = null;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -613,7 +622,23 @@ function bindUi() {
   document.querySelector('#rematch').addEventListener('click', () => window.location.reload());
 
   window.addEventListener('keydown', (event) => {
-    if (inputsLocked || !engine) return;
+    if (!engine) return;
+
+    const humanBattingLive = isHumanBatting() && match.deliveryOpen && !engine.isAwaitingLaunch();
+    if (humanBattingLive && !event.repeat) {
+      if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+        event.preventDefault();
+        engine.setFlipper('left', true);
+        return;
+      }
+      if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+        event.preventDefault();
+        engine.setFlipper('right', true);
+        return;
+      }
+    }
+
+    if (inputsLocked) return;
     if (canBowlNow()) {
       if (event.code === 'KeyQ') setLineFromKeyboard('LEFT');
       if (event.code === 'KeyW') setLineFromKeyboard('CENTRE');
@@ -622,11 +647,6 @@ function bindUi() {
         event.preventDefault();
         beginPower();
       }
-      return;
-    }
-    if (canBatNow()) {
-      if ((event.code === 'KeyA' || event.code === 'ArrowLeft') && !event.repeat) engine.setFlipper('left', true);
-      if ((event.code === 'KeyD' || event.code === 'ArrowRight') && !event.repeat) engine.setFlipper('right', true);
     }
   });
 
@@ -794,10 +814,10 @@ function launchCpuDelivery() {
   adapter.armDelivery();
   resetBallTrail();
 
-  // The CPU owns the bowling phase; the human receives control only after release.
-  engine.releaseLaunch({ charge: bowling.power, line: bowling.line, deliveryType: bowling.type });
+  // Transfer control to the human batter before the physical release.
   inputsLocked = false;
-  showDeliveryCue('BAT NOW', 'BALL LIVE', 450);
+  engine.releaseLaunch({ charge: bowling.power, line: bowling.line, deliveryType: bowling.type });
+  showDeliveryCue('BAT NOW · ← / →', 'BALL LIVE', 650);
   updateRoleControls();
   updateScoreboards();
 }
@@ -836,7 +856,14 @@ function onDeliveryResolved(type) {
   updateScoreboards();
 
   clearTimeout(deliveryResetTimer);
-  deliveryResetTimer = window.setTimeout(async () => {
+  clearInterval(nextBallCountdownTimer);
+
+  if (match.status === 'MATCH_OVER' || match.status === 'SUPER_OVER') {
+    deliveryResetTimer = window.setTimeout(showResult, rulesConfig.delivery.resolveDelayMs);
+    return;
+  }
+
+  startNextBallCountdown(async () => {
     if (match.status === 'INNINGS_BREAK') {
       setScoreboard('TARGET', String(match.target));
       inningsIntro.hidden = false;
@@ -846,17 +873,27 @@ function onDeliveryResolved(type) {
       await delay(1100);
       inningsIntro.hidden = true;
       match.startSecondInnings();
-      prepareDelivery();
-      return;
     }
-
-    if (match.status === 'MATCH_OVER' || match.status === 'SUPER_OVER') {
-      showResult();
-      return;
-    }
-
     prepareDelivery();
-  }, rulesConfig.delivery.resolveDelayMs);
+  });
+}
+
+function startNextBallCountdown(onComplete) {
+  clearInterval(nextBallCountdownTimer);
+  let remaining = 5;
+  nextBallSeconds.textContent = String(remaining);
+  nextBallClock.hidden = false;
+
+  nextBallCountdownTimer = window.setInterval(() => {
+    remaining -= 1;
+    nextBallSeconds.textContent = String(Math.max(0, remaining));
+    if (remaining <= 0) {
+      clearInterval(nextBallCountdownTimer);
+      nextBallCountdownTimer = null;
+      nextBallClock.hidden = true;
+      onComplete?.();
+    }
+  }, 1000);
 }
 
 function showResult() {
