@@ -423,10 +423,30 @@ function createMechanics() {
 
   // Use the authored GLB flipper/bat meshes as the visible controls.
   // Only create a fallback bat if a mapped GLB mesh is genuinely absent.
-  leftFlipperVisual = getCricketComponent('bat-left')[0] || makeCricketBatFlipper(tableConfig.flippers[0]);
-  rightFlipperVisual = getCricketComponent('bat-right')[0] || makeCricketBatFlipper(tableConfig.flippers[1]);
+  const authoredLeftBat = getCricketComponent('bat-left')[0];
+  const authoredRightBat = getCricketComponent('bat-right')[0];
+  leftFlipperVisual = authoredLeftBat
+    ? makeAuthoredBatPivot(authoredLeftBat, tableConfig.flippers[0])
+    : makeCricketBatFlipper(tableConfig.flippers[0]);
+  rightFlipperVisual = authoredRightBat
+    ? makeAuthoredBatPivot(authoredRightBat, tableConfig.flippers[1])
+    : makeCricketBatFlipper(tableConfig.flippers[1]);
 
   createAimGuide();
+}
+
+function makeAuthoredBatPivot(mesh, cfg) {
+  // Imported GLB meshes often have an origin unrelated to the hinge. Re-parent
+  // the authored bat under a scene-space hinge so physics and visuals share
+  // the same pivot and angle.
+  mesh.updateWorldMatrix(true, false);
+  const pivot = new THREE.Group();
+  pivot.position.set(cfg.pivot[0], tableConfig.playfield.surfaceY + 0.22, cfg.pivot[1]);
+  scene.add(pivot);
+  pivot.attach(mesh);
+  pivot.userData.cricketAuthoredFlipper = true;
+  pivot.userData.cricketFlipperMesh = mesh;
+  return pivot;
 }
 
 function makeCricketBatFlipper(cfg) {
@@ -668,11 +688,13 @@ function bindUi() {
       if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
         event.preventDefault();
         engine.setFlipper('left', true);
+        document.querySelector('[data-flipper="left"]')?.classList.add('pressed');
         return;
       }
       if (event.code === 'ArrowRight' || event.code === 'KeyD') {
         event.preventDefault();
         engine.setFlipper('right', true);
+        document.querySelector('[data-flipper="right"]')?.classList.add('pressed');
         return;
       }
     }
@@ -695,8 +717,14 @@ function bindUi() {
       event.preventDefault();
       releasePower();
     }
-    if (event.code === 'KeyA' || event.code === 'ArrowLeft') engine.setFlipper('left', false);
-    if (event.code === 'KeyD' || event.code === 'ArrowRight') engine.setFlipper('right', false);
+    if (event.code === 'KeyA' || event.code === 'ArrowLeft') {
+      engine.setFlipper('left', false);
+      document.querySelector('[data-flipper="left"]')?.classList.remove('pressed');
+    }
+    if (event.code === 'KeyD' || event.code === 'ArrowRight') {
+      engine.setFlipper('right', false);
+      document.querySelector('[data-flipper="right"]')?.classList.remove('pressed');
+    }
   });
 }
 
@@ -1129,9 +1157,10 @@ function syncMechanics() {
 function syncFlipper(object, state, cfg) {
   if (!object || !state) return;
   object.rotation.y = state.angle;
-  if (!object.userData.cricketFallbackFlipper) return;
-  object.position.x = cfg.pivot[0];
-  object.position.z = cfg.pivot[1];
+  if (object.userData.cricketFallbackFlipper) {
+    object.position.x = cfg.pivot[0];
+    object.position.z = cfg.pivot[1];
+  }
 }
 
 function frameWorld(size) {

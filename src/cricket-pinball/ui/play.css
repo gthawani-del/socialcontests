@@ -666,3 +666,24 @@ button, a { font: inherit; }
   .batting-controls{width:calc(100vw - 24px);gap:8px!important}
   .batting-controls button{width:min(var(--bat-control-width,220px),46vw)!important}
 }
+
+/* Bat controls live in a dedicated control dock, not on top of the table. */
+.cricket-play-shell:has(.batting-controls:not([hidden])) #cricketPlayWorld{
+  height:calc(100vh - 82px)!important;
+}
+.batting-controls{
+  left:0!important;right:0!important;bottom:0!important;transform:none!important;
+  width:100%!important;height:82px;padding:8px 16px;
+  box-sizing:border-box;display:flex;align-items:center;justify-content:center!important;
+  gap:var(--bat-control-gap,14px)!important;
+  background:rgba(3,12,7,.97);border-top:1px solid rgba(214,184,91,.28);
+  backdrop-filter:blur(12px)
+}
+.batting-controls button{
+  width:var(--bat-control-width,220px)!important;
+  height:var(--bat-control-height,60px)!important;
+}
+@media(max-width:680px){
+  .cricket-play-shell:has(.batting-controls:not([hidden])) #cricketPlayWorld{height:calc(100vh - 74px)!important}
+  .batting-controls{height:74px;padding:7px 10px}
+}
