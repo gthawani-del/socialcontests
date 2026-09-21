@@ -53,3 +53,6 @@
   .cover,.mini{flex-basis:45%}
   .categories{gap:20px}
 }
+
+/* Production Infinite Pinball header logo */
+.brand{display:flex;align-items:center;width:auto;line-height:0}.brand img{display:block;width:168px;height:auto;object-fit:contain}.brand .ball,.brand>span{display:none}@media(max-width:900px){.brand img{width:136px}}
