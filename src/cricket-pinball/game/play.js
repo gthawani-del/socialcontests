@@ -26,7 +26,7 @@ const players = mode === 'LOCAL'
       { id: 'p2', name: 'PLAYER 2', type: 'HUMAN' }
     ]
   : [
-      { id: 'p1', name: 'PLAYER 1', type: 'HUMAN' },
+      { id: 'p1', name: 'YOU', type: 'HUMAN' },
       { id: 'cpu', name: 'CPU', type: 'CPU' }
     ];
 
@@ -57,6 +57,7 @@ let ballGlow = null;
 let deliveryCueTimer = null;
 let aimGuide = null;
 let aimMarker = null;
+let cpuDeliveryCountdownToken = 0;
 
 app.innerHTML = `
   <main class="cricket-play-shell">
@@ -745,26 +746,47 @@ function prepareDelivery() {
   engine.resetBall();
   cpuBattingAI?.reset();
   resetBallTrail();
-  showDeliveryCue(isHumanBowling() ? 'READY TO BOWL' : 'GET READY TO BAT', 'READY', 700);
+  cpuDeliveryCountdownToken += 1;
   inputsLocked = false;
   updateScoreboards();
   updateRoleControls();
 
   if (getPlayer(match.bowlingPlayerId).type === 'CPU') {
-    inputsLocked = isHumanBatting() ? false : true;
-    window.setTimeout(() => launchCpuDelivery(), 650);
+    startCpuBowlingCountdown();
+    return;
   }
+
+  showDeliveryCue('READY TO BOWL', 'YOUR DELIVERY', 700);
+}
+
+async function startCpuBowlingCountdown() {
+  const token = ++cpuDeliveryCountdownToken;
+  inputsLocked = true;
+  updateRoleControls();
+
+  for (const count of [3, 2, 1]) {
+    if (token !== cpuDeliveryCountdownToken || match.deliveryOpen || match.currentInnings?.complete) return;
+    showDeliveryCue(String(count), 'CPU BOWLING', 0);
+    setScoreboard('GET READY', String(count));
+    await delay(700);
+  }
+
+  if (token !== cpuDeliveryCountdownToken || match.deliveryOpen || match.currentInnings?.complete) return;
+  launchCpuDelivery();
 }
 
 function launchCpuDelivery() {
   if (!engine || match.deliveryOpen || match.currentInnings?.complete) return;
   const bowling = chooseCpuBowling(difficulty, rulesConfig.cpu);
   selectedLine = bowling.line;
-  match.beginDelivery(bowling);
+  if (!match.beginDelivery(bowling)) return;
   adapter.armDelivery();
   resetBallTrail();
-  showDeliveryCue('BALL LIVE', bowling.line + ' LINE', 450);
+
+  // The CPU owns the bowling phase; the human receives control only after release.
   engine.releaseLaunch({ charge: bowling.power, line: bowling.line, deliveryType: bowling.type });
+  inputsLocked = false;
+  showDeliveryCue('BAT NOW', 'BALL LIVE', 450);
   updateRoleControls();
   updateScoreboards();
 }
@@ -792,6 +814,7 @@ function releasePower() {
 }
 
 function onDeliveryResolved(type) {
+  cpuDeliveryCountdownToken += 1;
   cpuBattingAI?.reset();
   inputsLocked = true;
   updateRoleControls();
