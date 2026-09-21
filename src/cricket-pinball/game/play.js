@@ -572,10 +572,25 @@ function drawStadiumScoreboard(label, value) {
 }
 
 function bindUi() {
-  beginToss.addEventListener('click', () => {
+  beginToss.addEventListener('click', async () => {
     if (inputsLocked) return;
     intro.hidden = true;
     tossPanel.hidden = false;
+
+    if (caller.type === 'CPU') {
+      callActions.hidden = true;
+      tossTitle.textContent = 'CPU CALLS';
+      tossInstruction.textContent = 'CPU is choosing Heads or Tails…';
+      inputsLocked = true;
+      await delay(500);
+      inputsLocked = false;
+      resolveToss(Math.random() < 0.5 ? 'HEADS' : 'TAILS');
+      return;
+    }
+
+    callActions.hidden = false;
+    tossTitle.textContent = 'PLAYER 1 CALLS';
+    tossInstruction.textContent = 'Choose Heads or Tails';
   });
 
   document.querySelectorAll('[data-call]').forEach((button) => {
@@ -1050,8 +1065,8 @@ function frameWorld(size) {
   const aspect = window.innerWidth / window.innerHeight;
   camera.aspect = aspect;
   camera.fov = aspect < 0.85 ? 48 : 42;
-  camera.position.set(0, Math.max(size.y * 1.28, span * 0.72), Math.max(span * 1.28, 7));
-  camera.lookAt(0, Math.max(size.y * 0.25, 0.45), 0);
+  camera.position.set(0, Math.max(size.y * 1.08, span * 0.61), Math.max(span * 1.08, 6.1));
+  camera.lookAt(0, Math.max(size.y * 0.23, 0.42), 0);
   camera.updateProjectionMatrix();
 }
 

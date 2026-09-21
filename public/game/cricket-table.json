@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "product": "CRICKET_PINBALL",
   "world": {
     "glb": "/models/cricket-world-v2.glb",
@@ -272,21 +272,21 @@
   "launcher": {
     "role": "BOWLING",
     "spawn": [
-      0,
-      -2.3
+      1.32,
+      2.24
     ],
     "direction": [
       0,
-      1
+      -1
     ],
     "minPower": 4.8,
     "maxPower": 8.4,
     "chargeTimeMs": 1050,
     "lane": {
-      "minX": -0.24,
-      "maxX": 0.24,
+      "minX": 1.16,
+      "maxX": 1.48,
       "exitZ": -1.62,
-      "exitDirection": "GTE"
+      "exitDirection": "LTE"
     },
     "laneRestitution": 0.3,
     "exitKick": [
@@ -296,16 +296,16 @@
     "tapCharge": 0.34,
     "bowlingLines": {
       "LEFT": {
-        "directionOffsetX": -0.13,
-        "exitKickX": -0.35
+        "directionOffsetX": -0.055,
+        "exitKickX": -0.42
       },
       "CENTRE": {
         "directionOffsetX": 0,
-        "exitKickX": 0
+        "exitKickX": -0.18
       },
       "RIGHT": {
-        "directionOffsetX": 0.13,
-        "exitKickX": 0.35
+        "directionOffsetX": 0.055,
+        "exitKickX": 0.1
       }
     }
   },

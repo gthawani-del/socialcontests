@@ -86,7 +86,14 @@ export function createCricketGameplayAdapter({
   }
 
   unsubs.push(engine.on('flipper-hit', ({ pressed = false } = {}) => {
-    if (!resolved && matchEngine.getState().deliveryOpen && pressed) battingContact = true;
+    if (
+      !resolved &&
+      matchEngine.getState().deliveryOpen &&
+      pressed &&
+      engine.ball.position.z >= 1.72
+    ) {
+      battingContact = true;
+    }
   }));
 
   unsubs.push(engine.on('drain', ({ safetyReset = false } = {}) => {
