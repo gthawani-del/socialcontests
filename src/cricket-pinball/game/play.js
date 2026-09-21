@@ -424,19 +424,18 @@ function createMechanics() {
   ballTrail.renderOrder = 10;
   scene.add(ballTrail);
 
-  // Use the authored GLB flipper/bat meshes as the visible controls.
-  // Only create a fallback bat if a mapped GLB mesh is genuinely absent.
+  // Deterministic gameplay bats: physics and visible bats share the same
+  // configured pivot/angle. The authored GLB flipper meshes are decorative and
+  // hidden during gameplay because their authoring origins are not reliable hinges.
   const authoredLeftBat = getCricketComponent('bat-left')[0];
   const authoredRightBat = getCricketComponent('bat-right')[0];
   if (!engine.getFlipper('left') || !engine.getFlipper('right')) {
     throw new Error('Cricket flipper configuration is missing left/right engine bats.');
   }
-  leftFlipperVisual = authoredLeftBat
-    ? makeAuthoredBatPivot(authoredLeftBat, tableConfig.flippers[0])
-    : makeCricketBatFlipper(tableConfig.flippers[0]);
-  rightFlipperVisual = authoredRightBat
-    ? makeAuthoredBatPivot(authoredRightBat, tableConfig.flippers[1])
-    : makeCricketBatFlipper(tableConfig.flippers[1]);
+  if (authoredLeftBat) authoredLeftBat.visible = false;
+  if (authoredRightBat) authoredRightBat.visible = false;
+  leftFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[0]);
+  rightFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[1]);
 
   createAimGuide();
 }
@@ -1041,8 +1040,9 @@ function updateScoreboards() {
   const state = match.getState();
   const batting = playerName(state.battingPlayerId);
   const bowling = playerName(state.bowlingPlayerId);
-  document.querySelector('#hudBatter').textContent = `${batting} BATTING`;
-  document.querySelector('#hudBowler').textContent = `${bowling} BOWLING`;
+  document.querySelector('#hudBatter').textContent = `${batting} · BATTING`;
+  document.querySelector('#hudRole').textContent = `${bowling} · BOWLING`;
+  document.querySelector('#hudBowler').textContent = bowling;
   document.querySelector('#hudScore').textContent = `${state.score.runs}/${state.score.wickets}`;
   document.querySelector('#hudInnings').textContent = `INNINGS ${Math.max(1, state.innings)}`;
   document.querySelector('#hudTarget').textContent = state.target === null ? 'TARGET —' : `TARGET ${state.target}`;
