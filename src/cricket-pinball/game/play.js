@@ -425,6 +425,9 @@ function createMechanics() {
   // Only create a fallback bat if a mapped GLB mesh is genuinely absent.
   const authoredLeftBat = getCricketComponent('bat-left')[0];
   const authoredRightBat = getCricketComponent('bat-right')[0];
+  if (!engine.getFlipper('left') || !engine.getFlipper('right')) {
+    throw new Error('Cricket flipper configuration is missing left/right engine bats.');
+  }
   leftFlipperVisual = authoredLeftBat
     ? makeAuthoredBatPivot(authoredLeftBat, tableConfig.flippers[0])
     : makeCricketBatFlipper(tableConfig.flippers[0]);
@@ -436,16 +439,37 @@ function createMechanics() {
 }
 
 function makeAuthoredBatPivot(mesh, cfg) {
-  // Imported GLB meshes often have an origin unrelated to the hinge. Re-parent
-  // the authored bat under a scene-space hinge so physics and visuals share
-  // the same pivot and angle.
-  mesh.updateWorldMatrix(true, false);
+  // RCA: the GLB is recentered after load, so cfg.pivot is in PHYSICS space
+  // while the authored mesh lives under modelRoot in MODEL space. The previous
+  // scene-level wrapper mixed those coordinate spaces and then applied an
+  // absolute physics angle to an authored mesh that already had its own rest
+  // rotation. Input changed engine state, but the visible bat did not follow
+  // that state correctly.
+  //
+  // Keep the authored mesh inside modelRoot's coordinate system and preserve
+  // its exact rest transform. The wrapper only applies the DELTA between the
+  // physics rest angle and the current physics angle.
+  const parent = mesh.parent;
+  if (!parent) return mesh;
+
+  mesh.updateMatrix();
   const pivot = new THREE.Group();
-  pivot.position.set(cfg.pivot[0], tableConfig.playfield.surfaceY + 0.22, cfg.pivot[1]);
-  scene.add(pivot);
-  pivot.attach(mesh);
+  pivot.name = `CricketBatPivot_${cfg.id}`;
+  pivot.position.copy(mesh.position);
+  pivot.quaternion.copy(mesh.quaternion);
+  pivot.scale.copy(mesh.scale);
+
+  parent.add(pivot);
+  parent.remove(mesh);
+  mesh.position.set(0, 0, 0);
+  mesh.quaternion.identity();
+  mesh.scale.set(1, 1, 1);
+  pivot.add(mesh);
+
   pivot.userData.cricketAuthoredFlipper = true;
   pivot.userData.cricketFlipperMesh = mesh;
+  pivot.userData.cricketRestAngle = cfg.restAngleDeg * Math.PI / 180;
+  pivot.userData.cricketBaseQuaternion = pivot.quaternion.clone();
   return pivot;
 }
 
@@ -1156,6 +1180,15 @@ function syncMechanics() {
 
 function syncFlipper(object, state, cfg) {
   if (!object || !state) return;
+
+  if (object.userData.cricketAuthoredFlipper) {
+    const rest = object.userData.cricketRestAngle ?? (cfg.restAngleDeg * Math.PI / 180);
+    const delta = state.angle - rest;
+    object.quaternion.copy(object.userData.cricketBaseQuaternion);
+    object.rotateY(delta);
+    return;
+  }
+
   object.rotation.y = state.angle;
   if (object.userData.cricketFallbackFlipper) {
     object.position.x = cfg.pivot[0];
