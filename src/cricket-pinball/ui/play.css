@@ -489,11 +489,119 @@ button, a { font: inherit; }
 .next-ball-clock strong{display:block;margin:4px 0;color:#ffe28a;font-size:48px;line-height:1}
 @media(max-width:680px){.next-ball-clock{left:10px;top:42%;width:88px;padding:10px 6px}.next-ball-clock strong{font-size:38px}}
 
-/* Readability pass */
-.match-topbar a{font-size:16px}.match-topbar div{font-size:15px}.match-topbar small{font-size:14px;font-weight:800}
-.match-hud span,.match-hud small{font-size:14px}.match-hud strong{font-size:24px}.match-hud>div{padding:12px 16px}
-.match-intro p,.toss-copy p,.innings-intro p{font-size:15px}.match-intro>small{font-size:15px}
-.toss-copy span{font-size:18px}.coin-stage small{font-size:14px}.toss-actions button{font-size:17px}
-.role-confirmation span,.innings-intro span{font-size:18px}.stadium-scoreboard span{font-size:12px}.stadium-scoreboard strong{font-size:18px}
-.delivery-cue small{font-size:12px}.delivery-cue strong{font-size:20px}
-@media(max-width:680px){.match-topbar a{font-size:13px}.match-topbar div{font-size:12px}.match-hud span,.match-hud small{font-size:11px}.match-hud strong{font-size:18px}.match-intro p,.toss-copy p,.innings-intro p{font-size:12px}.toss-copy span{font-size:15px}.coin-stage small{font-size:12px}}
+
+/* Authoritative Cricket UI typography — desktop first */
+.match-topbar{
+  min-height:48px;
+  padding:0 20px;
+}
+.match-topbar a,
+.match-topbar div{
+  font-size:15px!important;
+  line-height:1.2!important;
+}
+.match-topbar small{
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+
+.match-hud{
+  top:26px;
+  width:min(760px,calc(100vw - 48px));
+}
+.match-hud>div{
+  min-height:72px;
+  padding:10px 18px!important;
+}
+.match-hud span,
+.match-hud small{
+  font-size:13px!important;
+  line-height:1.2!important;
+  letter-spacing:.06em!important;
+}
+.match-hud strong{
+  margin-top:4px;
+  font-size:24px!important;
+  line-height:1.05!important;
+}
+
+.match-intro,
+.toss-panel,
+.role-confirmation,
+.innings-intro{
+  font-size:16px!important;
+}
+.match-intro h1,
+.toss-copy h2,
+.role-confirmation h2,
+.innings-intro h2{
+  font-size:clamp(32px,3vw,48px)!important;
+  line-height:1.05!important;
+}
+.match-intro p,
+.match-intro>small,
+.toss-copy p,
+.innings-intro p{
+  font-size:17px!important;
+  line-height:1.4!important;
+}
+.toss-copy span,
+.role-confirmation span,
+.innings-intro span{
+  font-size:18px!important;
+  line-height:1.3!important;
+}
+.coin-stage small{
+  font-size:15px!important;
+  line-height:1.3!important;
+}
+.toss-actions button,
+.role-actions button,
+.match-intro button,
+.innings-intro button{
+  min-height:48px;
+  padding:12px 22px!important;
+  font-size:16px!important;
+}
+
+.bowling-controls button,
+.batting-controls button{
+  min-height:48px;
+  font-size:15px!important;
+}
+.power-control span,
+.power-control strong{
+  font-size:13px!important;
+}
+
+.delivery-cue small{
+  font-size:13px!important;
+}
+.delivery-cue strong{
+  font-size:22px!important;
+}
+
+.next-ball-clock{
+  width:132px;
+}
+.next-ball-clock span,
+.next-ball-clock small{
+  font-size:12px!important;
+}
+.next-ball-clock strong{
+  font-size:56px!important;
+}
+
+@media(max-width:680px){
+  .match-topbar a,.match-topbar div{font-size:12px!important}
+  .match-topbar small{font-size:11px!important}
+  .match-hud{top:52px;width:calc(100vw - 20px)}
+  .match-hud>div{min-height:58px;padding:8px 10px!important}
+  .match-hud span,.match-hud small{font-size:10px!important}
+  .match-hud strong{font-size:18px!important}
+  .match-intro h1,.toss-copy h2,.role-confirmation h2,.innings-intro h2{font-size:28px!important}
+  .match-intro p,.match-intro>small,.toss-copy p,.innings-intro p{font-size:14px!important}
+  .toss-actions button,.role-actions button,.match-intro button,.innings-intro button{font-size:14px!important}
+  .next-ball-clock{width:92px}
+  .next-ball-clock strong{font-size:42px!important}
+}
