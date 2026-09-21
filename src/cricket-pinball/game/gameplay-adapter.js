@@ -41,6 +41,9 @@ export function createCricketGameplayAdapter({
     }
 
     for (const zone of zones) {
+      if (zone.direction === 'RETURN' && engine.ball.velocity.z >= -0.05) continue;
+      if (zone.direction === 'DELIVERY' && engine.ball.velocity.z <= 0.05) continue;
+
       const dx = engine.ball.position.x - zone.position[0];
       const dz = engine.ball.position.z - zone.position[1];
 

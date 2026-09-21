@@ -442,3 +442,30 @@ button, a { font: inherit; }
 .batting-controls[hidden]{
   display:none!important;
 }
+
+/* Cricket gameplay visibility pass: cues must never cover the playfield. */
+.delivery-cue{
+  top:186px;
+  min-width:0;
+  width:auto;
+  max-width:min(360px,calc(100vw - 32px));
+  padding:8px 12px;
+  border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
+.delivery-cue strong{
+  margin-top:2px;
+  font-size:16px;
+  line-height:1.1;
+}
+.delivery-cue small{font-size:8px;}
+.delivery-cue.is-result{
+  top:50%;
+  min-width:min(260px,calc(100vw - 32px));
+  padding:14px 18px;
+}
+.delivery-cue.is-result strong{font-size:clamp(38px,7vw,78px);}
+@media(max-width:680px){
+  .delivery-cue{top:150px;min-width:0;width:auto;padding:7px 10px;}
+  .delivery-cue.is-result{top:46%;}
+}

@@ -7,10 +7,10 @@ import { createCricketGameplayAdapter } from './gameplay-adapter.js';
 import { chooseCpuBowling, createCpuBattingAI } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 import '../ui/play.css';
-import cricketPlayfieldUrl from '../../../assets/cricket/theme-v2/playfield.webp?url';
-import fourLaneUrl from '../../../assets/cricket/theme-v2/four-lane.webp?url';
-import sixLaneUrl from '../../../assets/cricket/theme-v2/six-lane.webp?url';
-import wicketPanelUrl from '../../../assets/cricket/theme-v2/wicket.webp?url';
+import cricketPlayfieldUrl from '../../../assets/cricket/world/playfield.png?url';
+import fourLaneUrl from '../../../assets/cricket/world/four-ramp.png?url';
+import sixLaneUrl from '../../../assets/cricket/world/six-ramp.png?url';
+import wicketPanelUrl from '../../../assets/cricket/world/wicket.png?url';
 import pavilionUrl from '../../../assets/cricket/theme-v2/pavilion.webp?url';
 import standUrl from '../../../assets/cricket/theme-v2/stand.webp?url';
 
@@ -254,7 +254,7 @@ async function boot() {
     modelRoot = gltf.scene;
     prepareWorld(modelRoot);
     scene.add(modelRoot);
-    await applyCricketTheme(modelRoot);
+    await applyCricketTheme();
     createMechanics();
     createCoin();
     setupStadiumScoreboard();
@@ -402,7 +402,7 @@ function makeCricketThemePlane(texture, surface) {
   return mesh;
 }
 
-async function applyCricketTheme(root) {
+async function applyCricketTheme() {
   const textures = await loadCricketThemeTextures();
 
   for (const surface of tableConfig.themeSurfaces || []) {
@@ -416,7 +416,7 @@ async function applyCricketTheme(root) {
       ? prepareCricketThemeTexture(source.clone(), true)
       : source;
 
-    root.add(makeCricketThemePlane(texture, surface));
+    scene.add(makeCricketThemePlane(texture, surface));
   }
 }
 
@@ -802,7 +802,7 @@ function prepareDelivery() {
   engine.resetBall();
   cpuBattingAI?.reset();
   resetBallTrail();
-  showDeliveryCue(isHumanBowling() ? 'HOLD TO CHARGE · RELEASE TO BOWL' : 'GET READY TO BAT', 'READY');
+  showDeliveryCue(isHumanBowling() ? 'READY TO BOWL' : 'GET READY TO BAT', 'READY', 700);
   inputsLocked = false;
   updateScoreboards();
   updateRoleControls();
@@ -820,7 +820,7 @@ function launchCpuDelivery() {
   match.beginDelivery(bowling);
   adapter.armDelivery();
   resetBallTrail();
-  showDeliveryCue('BALL LIVE', bowling.line + ' LINE', 800);
+  showDeliveryCue('BALL LIVE', bowling.line + ' LINE', 450);
   engine.releaseLaunch({ charge: bowling.power, line: bowling.line, deliveryType: bowling.type });
   updateRoleControls();
   updateScoreboards();
@@ -841,7 +841,7 @@ function releasePower() {
   if (!match.beginDelivery(bowling)) return;
   adapter.armDelivery();
   resetBallTrail();
-  showDeliveryCue('BALL LIVE', selectedLine + ' LINE', 800);
+  showDeliveryCue('BALL LIVE', selectedLine + ' LINE', 450);
   engine.releaseLaunch({ charge, line: selectedLine, deliveryType: 'PACE' });
   updateRoleControls();
   updateScoreboards();

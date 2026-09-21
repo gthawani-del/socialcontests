@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "product": "CRICKET_PINBALL",
   "world": {
     "glb": "/models/cricket-world-v2.glb",
@@ -203,7 +203,8 @@
         -0.92
       ],
       "radius": 0.25,
-      "terminal": true
+      "terminal": true,
+      "direction": "RETURN"
     },
     {
       "id": "single-right",
@@ -214,7 +215,8 @@
         -0.92
       ],
       "radius": 0.25,
-      "terminal": true
+      "terminal": true,
+      "direction": "RETURN"
     },
     {
       "id": "two-center",
@@ -225,7 +227,8 @@
         -0.62
       ],
       "radius": 0.28,
-      "terminal": true
+      "terminal": true,
+      "direction": "RETURN"
     },
     {
       "id": "four-ramp",
@@ -236,7 +239,8 @@
         -2.12
       ],
       "radius": 0.26,
-      "terminal": true
+      "terminal": true,
+      "direction": "RETURN"
     },
     {
       "id": "six-ramp",
@@ -247,12 +251,14 @@
         -2.12
       ],
       "radius": 0.26,
-      "terminal": true
+      "terminal": true,
+      "direction": "RETURN"
     }
   ],
   "theme": {
     "pack": "cricket-theme-v2",
-    "renderer": "explicit-overlay-surfaces"
+    "renderer": "explicit-overlay-surfaces",
+    "criticalAssets": "verified-cricket-source-art"
   },
   "themeSurfaces": [
     {
@@ -260,12 +266,12 @@
       "asset": "playfield",
       "position": [
         0,
-        0.705,
-        0.1
+        0.715,
+        0.08
       ],
       "size": [
-        3.02,
-        5.18
+        2.92,
+        4.92
       ],
       "rotationDeg": [
         -90,
@@ -280,20 +286,20 @@
       "id": "four-lane",
       "asset": "fourLane",
       "position": [
-        -1.12,
-        0.735,
+        -1.06,
+        0.755,
         -0.35
       ],
       "size": [
-        0.48,
-        2.3
+        0.42,
+        2.05
       ],
       "rotationDeg": [
         -90,
         0,
-        -10
+        -9
       ],
-      "opacity": 1,
+      "opacity": 0.96,
       "depthWrite": false,
       "renderOrder": 3
     },
@@ -301,20 +307,20 @@
       "id": "six-lane",
       "asset": "sixLane",
       "position": [
-        1.12,
-        0.735,
+        1.06,
+        0.755,
         -0.35
       ],
       "size": [
-        0.48,
-        2.3
+        0.42,
+        2.05
       ],
       "rotationDeg": [
         -90,
         0,
-        10
+        9
       ],
-      "opacity": 1,
+      "opacity": 0.96,
       "depthWrite": false,
       "renderOrder": 3
     },
@@ -323,12 +329,12 @@
       "asset": "wicket",
       "position": [
         0,
-        1.45,
-        -2.45
+        1.38,
+        -2.48
       ],
       "size": [
-        0.95,
-        0.72
+        0.82,
+        0.68
       ],
       "rotationDeg": [
         0,
@@ -337,7 +343,7 @@
       ],
       "opacity": 1,
       "depthWrite": false,
-      "renderOrder": 4
+      "renderOrder": 5
     },
     {
       "id": "pavilion",
@@ -345,18 +351,18 @@
       "position": [
         0,
         1.78,
-        -3.05
+        -3.12
       ],
       "size": [
-        3.65,
-        2.05
+        3.35,
+        1.72
       ],
       "rotationDeg": [
         0,
         0,
         0
       ],
-      "opacity": 1,
+      "opacity": 0.94,
       "depthWrite": false,
       "renderOrder": 1
     },
@@ -364,20 +370,20 @@
       "id": "stand-left",
       "asset": "stand",
       "position": [
-        -2.25,
-        1.05,
-        -0.2
+        -2.34,
+        1.08,
+        -0.05
       ],
       "size": [
-        2.1,
-        1.58
+        1.72,
+        1.28
       ],
       "rotationDeg": [
         0,
-        30,
+        24,
         0
       ],
-      "opacity": 1,
+      "opacity": 0.9,
       "depthWrite": false,
       "renderOrder": 1
     },
@@ -385,20 +391,20 @@
       "id": "stand-right",
       "asset": "stand",
       "position": [
-        2.25,
-        1.05,
-        -0.2
+        2.34,
+        1.08,
+        -0.05
       ],
       "size": [
-        2.1,
-        1.58
+        1.72,
+        1.28
       ],
       "rotationDeg": [
         0,
-        -30,
+        -24,
         0
       ],
-      "opacity": 1,
+      "opacity": 0.9,
       "depthWrite": false,
       "renderOrder": 1,
       "flipX": true
