@@ -4,6 +4,27 @@ const root = document.querySelector('#adminApp');
 const DRAFT_KEY = 'infinite-pinball-admin-draft-v1';
 const ADMIN_PREFS_KEY = 'infinite-pinball-admin-display-v1';
 
+const DEFAULT_ADMIN_UI = {
+  fontFace: 'Inter, Arial, Helvetica, sans-serif',
+  sizes: { pageTitle:36, sectionTitle:17, body:14, label:13, helper:12, small:11, control:13 },
+  light: {
+    primary:'#17212b', secondary:'#526174', muted:'#6b7888', value:'#17212b',
+    success:'#147a50', warning:'#9a6100', error:'#b42318',
+    activeText:'#17212b', activeBg:'#e8eef5',
+    buttonText:'#ffffff', buttonBg:'#111b29',
+    disabledText:'#667384', disabledBg:'#e7ebef',
+    badgeText:'#526174', badgeBg:'#eef2f6'
+  },
+  dark: {
+    primary:'#e8edf4', secondary:'#aeb9c8', muted:'#8996a8', value:'#f0cd77',
+    success:'#62d5a0', warning:'#e1b356', error:'#ff7b72',
+    activeText:'#f0cd77', activeBg:'#2a2417',
+    buttonText:'#111820', buttonBg:'#e1b356',
+    disabledText:'#718096', disabledBg:'#202a36',
+    badgeText:'#d7dee8', badgeBg:'#202a36'
+  }
+};
+
 const DEFAULT_DIFFICULTY = {
   easy: {
     label: 'Easy',
@@ -49,6 +70,7 @@ const NAV = [
   ['zones', 'Scoring Zones', '⊙'],
   ['audio', 'Audio', '◖'],
   ['vfx', 'Visual Effects', '✺'],
+  ['admin-ui', 'Admin UI / Text', 'Aa'],
   ['advanced', 'Advanced', '⚙'],
   ['cricket-pinball', 'CRICKET PINBALL · PRODUCT', '◆']
 ];
@@ -83,7 +105,8 @@ async function boot() {
       rules,
       difficulty: clone(DEFAULT_DIFFICULTY),
       cricketTable,
-      cricketRules
+      cricketRules,
+      adminUi: clone(DEFAULT_ADMIN_UI)
     };
 
     const saved = safeParse(localStorage.getItem(DRAFT_KEY));
@@ -92,12 +115,16 @@ async function boot() {
           ...clone(live),
           ...saved,
           cricketTable: saved.cricketTable || clone(cricketTable),
-          cricketRules: saved.cricketRules || clone(cricketRules)
+          cricketRules: saved.cricketRules || clone(cricketRules),
+          adminUi: saved.adminUi || clone(DEFAULT_ADMIN_UI)
         }
       : clone(live);
+    if (!draft.adminUi) draft.adminUi = clone(DEFAULT_ADMIN_UI);
+    applyAdminUiConfig(draft.adminUi);
     savedBaseline = clone(draft);
     dirty = false;
 
+    applyAdminUiConfig(draft.adminUi);
     renderShell();
     renderActive();
     updateDirtyUi();
@@ -294,6 +321,7 @@ function pageMeta(id) {
     zones: ['SCORING', 'Scoring Zones', 'Non-blocking scoring areas with independent re-arm rules.', '1 ZONE'],
     audio: ['FEEDBACK', 'Audio', 'Master sound plus per-mechanic gain controls.', 'WEB AUDIO'],
     vfx: ['FEEDBACK', 'Visual Effects', 'Particles, pulse rings, ball trail, quality and shake intensity.', 'WEBGL'],
+    'admin-ui': ['INTERFACE', 'Admin UI / Text Configuration', 'Central typography and colour tokens for the entire admin interface.', 'DESIGN TOKENS'],
     advanced: ['SYSTEM', 'Advanced', 'Versioning and currently declared compatibility fields.', 'EXPERT'],
     'cricket-pinball': ['PRODUCT-SPECIFIC', 'Cricket Pinball', 'Cricket-only match rules and product systems. These do not replace the general pinball configuration.', 'CRICKET ONLY']
   };
@@ -434,6 +462,7 @@ function renderCategory(id) {
         slider('Camera shake', 'rules.vfx.cameraShake', 0, 2, 0.05)
       ])
     ]);
+    case 'admin-ui': return renderAdminUiConfig();
     case 'advanced': return renderAdvanced();
     case 'cricket-pinball': return renderCricketPinballAdmin();
     default: return renderOverview();
@@ -791,6 +820,51 @@ function renderTargets() {
   ], true);
 }
 
+function renderAdminUiConfig() {
+  const size = (label,key,min,max) => number(label, `adminUi.sizes.${key}`, min, max, 1, 'px');
+  const themeCard = (theme,label) => card(label, `${label} colour tokens used across the entire admin.`, [
+    colorInput('Primary text', `adminUi.${theme}.primary`),
+    colorInput('Secondary text', `adminUi.${theme}.secondary`),
+    colorInput('Muted / helper text', `adminUi.${theme}.muted`),
+    colorInput('KPI / value text', `adminUi.${theme}.value`),
+    colorInput('Success', `adminUi.${theme}.success`),
+    colorInput('Warning', `adminUi.${theme}.warning`),
+    colorInput('Error', `adminUi.${theme}.error`),
+    colorInput('Active navigation text', `adminUi.${theme}.activeText`),
+    colorInput('Active navigation background', `adminUi.${theme}.activeBg`),
+    colorInput('Primary button text', `adminUi.${theme}.buttonText`),
+    colorInput('Primary button background', `adminUi.${theme}.buttonBg`),
+    colorInput('Disabled text', `adminUi.${theme}.disabledText`),
+    colorInput('Disabled background', `adminUi.${theme}.disabledBg`),
+    colorInput('Badge text', `adminUi.${theme}.badgeText`),
+    colorInput('Badge background', `adminUi.${theme}.badgeBg`)
+  ]);
+  return sectionGrid([
+    card('Typography', 'Global font family and baseline type scale. 100% is the designed readable size.', [
+      textInput('Font face', 'adminUi.fontFace', 'CSS font-family stack'),
+      size('Page title', 'pageTitle', 24, 56),
+      size('Section / card title', 'sectionTitle', 14, 28),
+      size('Body text', 'body', 12, 22),
+      size('Control label', 'label', 12, 20),
+      size('Helper text', 'helper', 11, 18),
+      size('Small text', 'small', 10, 16),
+      size('Input / button text', 'control', 12, 20)
+    ]),
+    themeCard('light','Light mode'),
+    themeCard('dark','Dark mode')
+  ]);
+}
+
+function applyAdminUiConfig(config) {
+  if (!config) return;
+  const rootStyle = document.documentElement.style;
+  rootStyle.setProperty('--admin-font-face', config.fontFace || DEFAULT_ADMIN_UI.fontFace);
+  Object.entries(config.sizes || {}).forEach(([key,value]) => rootStyle.setProperty(`--admin-size-${key}`, `${value}px`));
+  for (const [theme,tokens] of Object.entries({light:config.light || {},dark:config.dark || {}})) {
+    for (const [key,value] of Object.entries(tokens)) rootStyle.setProperty(`--admin-${theme}-${key}`, value);
+  }
+}
+
 function renderAdvanced() {
   return sectionGrid([
     card('Versions', 'Schema/version identifiers.', [
@@ -843,6 +917,7 @@ function searchCatalog() {
     ['zones','Scoring Zones','City Light scoring zone','Trigger, re-arm and score'],
     ['audio','Audio','Sound mix','Master and per-mechanic volume'],
     ['vfx','Visual Effects','Particles, trail & shake','Rendering feedback controls'],
+    ['admin-ui','Admin UI / Text','Typography & colour system','Global light/dark admin design tokens'],
     ['advanced','Advanced','Compatibility fields','Declared parameters and versions'],
     ['cricket-pinball','Cricket Pinball','Cricket-only table & match controls','Bowling, bats, result zones, formats, toss and CPU tuning']
   ].map(([category,categoryLabel,title,description]) => ({
@@ -884,6 +959,7 @@ function bindEditors(container) {
       }
 
       setPath(draft, path, value);
+      if (path.startsWith('adminUi.')) applyAdminUiConfig(draft.adminUi);
       markDirty();
 
       const group = input.closest('.control');
@@ -930,6 +1006,7 @@ function saveDraft() {
 function resetLive() {
   if (!confirm('Reset every admin setting back to the current live configuration?')) return;
   draft = clone(live);
+  applyAdminUiConfig(draft.adminUi);
   localStorage.removeItem(DRAFT_KEY);
   savedBaseline = clone(draft);
   dirty = false;
@@ -945,7 +1022,8 @@ function exportDraft() {
     rules: draft.rules,
     difficulty: draft.difficulty,
     cricketTable: draft.cricketTable,
-    cricketRules: draft.cricketRules
+    cricketRules: draft.cricketRules,
+    adminUi: draft.adminUi
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
   const url = URL.createObjectURL(blob);
