@@ -187,7 +187,7 @@ function bindLobby() {
     if (modeButton) {
       lobbyState.mode = modeButton.dataset.mode;
       setActive('[data-mode]', modeButton);
-      goToStep(2);
+      updateStartButton();
       return;
     }
 
@@ -196,7 +196,6 @@ function bindLobby() {
       lobbyState.format = formatButton.dataset.format;
       setActive('[data-format]', formatButton);
       updateStartButton();
-      goToStep(3);
       return;
     }
 
