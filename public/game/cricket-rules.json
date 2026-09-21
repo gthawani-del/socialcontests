@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -238,6 +238,13 @@
         "fontSize": 16,
         "color": "#ffffff"
       }
+    },
+    "layout": {
+      "scoreboardScale": 0.86,
+      "batButtonWidth": 220,
+      "batButtonHeight": 68,
+      "batButtonGap": 14,
+      "batButtonBottom": 18
     }
   }
 }

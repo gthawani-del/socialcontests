@@ -610,6 +610,13 @@ function renderCricketPinballAdmin() {
   const content = sectionGrid([
     card('Global typography', 'One font stack for Cricket Pinball UI.', [
       textInput('Font face', 'cricketRules.content.fontFace', 'CSS font-family stack')
+    ]),
+    card('Gameplay UI sizing', 'Size and placement of the live Cricket HUD and batting controls.', [
+      slider('Scoreboard size', 'cricketRules.content.layout.scoreboardScale', 0.55, 1.25, 0.05),
+      number('Bat button width', 'cricketRules.content.layout.batButtonWidth', 120, 360, 5, 'px'),
+      number('Bat button height', 'cricketRules.content.layout.batButtonHeight', 44, 110, 2, 'px'),
+      number('Gap between bats', 'cricketRules.content.layout.batButtonGap', 4, 80, 2, 'px'),
+      number('Distance from bottom', 'cricketRules.content.layout.batButtonBottom', 6, 120, 2, 'px')
     ])
   ]) + `<div class="repeat-grid dense cricket-section-gap">${Object.entries(draft.cricketRules.content?.items || {}).map(([key,item]) => card(item.label || key,'Displayed copy and typography.',[
     textInput('Text', `cricketRules.content.items.${key}.text`),

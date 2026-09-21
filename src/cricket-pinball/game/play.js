@@ -598,7 +598,14 @@ function applyConfiguredContent(content) {
     node.style.setProperty('font-size', `${Number(item.fontSize) || 16}px`, 'important');
     node.style.setProperty('color', item.color || '#ffffff', 'important');
   };
-  document.querySelector('.cricket-play-shell')?.style.setProperty('font-family', content.fontFace || 'Arial, Helvetica, sans-serif');
+  const shell = document.querySelector('.cricket-play-shell');
+  shell?.style.setProperty('font-family', content.fontFace || 'Arial, Helvetica, sans-serif');
+  const layout = content.layout || {};
+  shell?.style.setProperty('--hud-scale', String(Number(layout.scoreboardScale) || 1));
+  shell?.style.setProperty('--bat-control-width', `${Number(layout.batButtonWidth) || 220}px`);
+  shell?.style.setProperty('--bat-control-height', `${Number(layout.batButtonHeight) || 68}px`);
+  shell?.style.setProperty('--bat-control-gap', `${Number(layout.batButtonGap) || 14}px`);
+  shell?.style.setProperty('--bat-control-bottom', `${Number(layout.batButtonBottom) || 18}px`);
   set('#matchIntro > p','matchIntro'); set('#beginToss','beginToss');
   set('#tossEyebrow','tossEyebrow',true); set('#tossTitle','tossTitle',true); set('#tossInstruction','tossInstruction');
   set('#coinStatus','coinStatus'); set('[data-call="HEADS"]','heads'); set('[data-call="TAILS"]','tails');
@@ -657,8 +664,7 @@ function bindUi() {
   window.addEventListener('keydown', (event) => {
     if (!engine) return;
 
-    const humanBattingLive = isHumanBatting() && match.deliveryOpen && !engine.isAwaitingLaunch();
-    if (humanBattingLive && !event.repeat) {
+    if (canBatNow() && !event.repeat) {
       if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
         event.preventDefault();
         engine.setFlipper('left', true);
@@ -1026,11 +1032,9 @@ function canBowlNow() {
 
 function canBatNow() {
   return Boolean(
-    !inputsLocked &&
     engine &&
     isHumanBatting() &&
-    match.deliveryOpen &&
-    !engine.isAwaitingLaunch()
+    match.deliveryOpen
   );
 }
 

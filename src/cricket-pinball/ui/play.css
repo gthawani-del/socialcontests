@@ -650,3 +650,19 @@ button, a { font: inherit; }
  #hudScore,#hudNeed,#hudBowler{font-size:19px!important}
  #hudInnings,#hudLast,#hudState{font-size:10px!important}
 }
+
+/* Cricket batting HUD layout — centered controls, config driven */
+.match-hud{transform:translateX(-50%) scale(var(--hud-scale,1));transform-origin:top center}
+.batting-controls{
+  left:50%!important;right:auto!important;bottom:var(--bat-control-bottom,18px)!important;
+  transform:translateX(-50%);justify-content:center!important;gap:var(--bat-control-gap,14px)!important;
+  width:auto;pointer-events:none
+}
+.batting-controls button{
+  width:var(--bat-control-width,220px)!important;
+  height:var(--bat-control-height,68px)!important
+}
+@media(max-width:680px){
+  .batting-controls{width:calc(100vw - 24px);gap:8px!important}
+  .batting-controls button{width:min(var(--bat-control-width,220px),46vw)!important}
+}
