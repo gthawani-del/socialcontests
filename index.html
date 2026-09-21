@@ -8,44 +8,62 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/homepage/logos/07_favicon_180.png">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to Main Content</a>
 <main id="landingApp">
 <header class="topbar">
-<a class="brand" href="/" aria-label="Infinite Pinball home"><img src="/homepage/logos/01_logo_horizontal_transparent.webp" alt="Infinite Pinball"></a>
-<nav><a class="active" href="#featured">Play</a><a href="#worlds">Worlds</a><a href="#scores">Leaderboards</a><a href="#coming-soon">Coming Soon</a></nav>
-<div class="top-actions"><label class="search">⌕ <input placeholder="Search worlds…"></label><a href="/admin" class="avatar">A</a></div>
+<a class="brand" href="/" aria-label="Infinite Pinball Home"><img src="/homepage/logos/01_logo_horizontal_transparent.webp" width="600" height="169" alt="Infinite Pinball" fetchpriority="high"></a>
+<nav aria-label="Primary"><a class="active" href="#featured">Play</a><a href="#worlds">Worlds</a><a href="#scores">Leaderboards</a><a href="#coming-soon">Coming Soon</a></nav>
+<div class="top-actions"><label class="search"><span aria-hidden="true">⌕</span><span class="sr-only">Search Worlds</span><input name="world-search" type="search" autocomplete="off" placeholder="Search worlds…" aria-label="Search Worlds"></label><a href="/admin" class="avatar" aria-label="Open Admin">A</a></div>
 </header>
 
-<section class="hero" id="featured">
-<div class="hero-art"></div><div class="hero-shade"></div>
-<div class="hero-copy"><span>FEATURED</span><h1>PIN <em>CRICKET</em></h1><h2>BAT. FLIP. SCORE.</h2><p>Cricket meets pinball.<br>A whole new ball game.</p><a href="/cricket-pinball" class="primary">Play Now →</a></div>
-<div class="hero-dots"><i></i><i></i><i></i><i></i><i></i></div>
+<div id="main-content" tabindex="-1">
+<section class="hero" id="featured" aria-labelledby="page-title">
+<h1 id="page-title" class="sr-only">Infinite Pinball Worlds</h1>
+<img class="hero-art" src="/homepage/pin-cricket-hero.webp" width="1800" height="640" alt="Pin Cricket — cricket meets pinball" fetchpriority="high">
+<div class="hero-shade" aria-hidden="true"></div>
+<div class="hero-action"><a href="/cricket-pinball" class="primary">Play Now <span aria-hidden="true">→</span></a></div>
+<div class="hero-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 </section>
 
-<nav class="categories" aria-label="World categories">
-<button class="active" data-scroll="worlds">▦ <span>All</span></button><button data-scroll="sports">⚽ <span>Sports</span></button><button data-scroll="historical">♜ <span>Historical</span></button><button data-scroll="worlds">▥ <span>Cities</span></button><button data-scroll="night-worlds">◒ <span>Night</span></button><button data-scroll="worlds">★ <span>Classics</span></button><button data-scroll="worlds">⌁ <span>Sci-Fi</span></button><button data-scroll="coming-soon">◷ <span>Upcoming</span></button>
+<nav class="categories" aria-label="World Categories">
+<button class="active" data-scroll="worlds"><span aria-hidden="true">▦</span><span>All</span></button>
+<button data-scroll="sports"><span aria-hidden="true">⚽</span><span>Sports</span></button>
+<button data-scroll="more-worlds"><span aria-hidden="true">♜</span><span>Historical</span></button>
+<button data-scroll="more-worlds"><span aria-hidden="true">▥</span><span>Cities</span></button>
+<button data-scroll="more-worlds"><span aria-hidden="true">◒</span><span>Night</span></button>
+<button data-scroll="worlds"><span aria-hidden="true">★</span><span>Classics</span></button>
+<button data-scroll="worlds"><span aria-hidden="true">⌁</span><span>Sci-Fi</span></button>
+<button data-scroll="coming-soon"><span aria-hidden="true">◷</span><span>Upcoming</span></button>
 </nav>
 
 <div class="content-shell">
-<section class="world-block" id="worlds"><div class="section-title"><h2>Featured Worlds</h2><a href="#more-worlds">View All →</a></div>
+<section class="world-block" id="worlds" aria-labelledby="featured-worlds-title">
+<div class="section-title"><h2 id="featured-worlds-title">Featured Worlds</h2><a href="#more-worlds">View All <span aria-hidden="true">→</span></a></div>
 <div class="feature-layout"><div class="cover-rail">
-<a class="cover cricket" href="/cricket-pinball"><span>SPORTS</span><div><b>PIN<br>CRICKET</b><small>BAT. FLIP. SCORE.</small></div></a>
-<a class="cover bombay" href="/play?theme=bombay-1945"><span>HISTORICAL</span><div><b>BOMBAY<br>1945</b><small>HISTORY IN MOTION.</small></div></a>
-<a class="cover paris" href="/play?theme=paris"><span>NIGHT</span><div><b>PARIS<br>NIGHTS</b><small>ROMANCE. LIGHTS.</small></div></a>
-<a class="cover bollywood" href="/play?theme=bollywood"><span>CLASSICS</span><div><b>BOLLYWOOD<br>LEGENDS</b><small>MUSIC. MYSTERY.</small></div></a>
-<article class="cover space"><span>SCI-FI</span><div><b>SPACE<br>STATION</b><small>BEYOND THE TILT.</small></div></article>
+<a class="cover" href="/cricket-pinball"><img src="/homepage/pin-cricket-cover.webp" width="800" height="1200" loading="lazy" alt="Pin Cricket"><span class="category sports">Sports</span></a>
+<a class="cover" href="/play?theme=bombay-1945"><img src="/homepage/bombay-1945.webp" width="800" height="1200" loading="lazy" alt="Bombay 1945"><span class="category historical">Historical</span></a>
+<a class="cover" href="/play?theme=paris"><img src="/homepage/paris-nights.webp" width="800" height="1200" loading="lazy" alt="Paris Nights"><span class="category night">Night</span></a>
+<a class="cover" href="/play?theme=bollywood"><img src="/homepage/bollywood-legends.webp" width="800" height="1200" loading="lazy" alt="Bollywood Legends"><span class="category classics">Classics</span></a>
+<article class="cover unavailable" aria-label="Space Station — Coming Soon"><img src="/homepage/space-station.webp" width="800" height="1200" loading="lazy" alt=""><span class="category scifi">Sci-Fi</span><span class="status">Coming Soon</span></article>
 </div>
-<aside class="leaderboard" id="scores"><header>🏆 <b>Global Leaderboard</b></header><ol><li><i>1</i><span>PinMaster</span><strong>12,540,320</strong></li><li><i>2</i><span>FlipLegend</span><strong>11,908,441</strong></li><li><i>3</i><span>BallWizard</span><strong>10,775,600</strong></li><li><i>4</i><span>MumbaiTilt</span><strong>9,441,230</strong></li><li><i>5</i><span>NeonNinja</span><strong>8,993,110</strong></li></ol><a href="#scores">View Leaderboard →</a></aside>
+<aside class="leaderboard" id="scores" aria-labelledby="leaderboard-title"><header><span aria-hidden="true">🏆</span> <b id="leaderboard-title">Global Leaderboard</b></header><ol><li><i>1</i><span>PinMaster</span><strong>12,540,320</strong></li><li><i>2</i><span>FlipLegend</span><strong>11,908,441</strong></li><li><i>3</i><span>BallWizard</span><strong>10,775,600</strong></li><li><i>4</i><span>MumbaiTilt</span><strong>9,441,230</strong></li><li><i>5</i><span>NeonNinja</span><strong>8,993,110</strong></li></ol><a href="#scores">View Leaderboard <span aria-hidden="true">→</span></a></aside>
 </div></section>
 
-<section class="world-block" id="more-worlds"><div class="section-title"><h2>More Worlds</h2><a href="#more-worlds">View All →</a></div><div class="small-rail">
-<article class="mini calcutta"><span>HISTORICAL</span><b>CALCUTTA 1930</b></article><article class="mini cairo"><span>HISTORICAL</span><b>CAIRO 1925</b></article><article class="mini tokyo"><span>NIGHT</span><b>TOKYO NEON</b></article><article class="mini monsoon"><span>CITIES</span><b>MUMBAI MONSOON</b></article><article class="mini egypt"><span>HISTORICAL</span><b>ANCIENT EGYPT</b></article><article class="mini foot"><span>SPORTS</span><b>PIN FOOT</b></article>
+<section class="world-block" id="more-worlds" aria-labelledby="more-worlds-title"><div class="section-title"><h2 id="more-worlds-title">More Worlds</h2><span class="section-note">In Development</span></div><div class="small-rail">
+<article class="mini unavailable" aria-label="Calcutta 1930 — Coming Soon"><img src="/homepage/calcutta-1930.webp" width="800" height="1200" loading="lazy" alt=""><span class="category historical">Historical</span><span class="status">Coming Soon</span></article>
+<article class="mini unavailable" aria-label="Cairo 1925 — Coming Soon"><img src="/homepage/cairo-1925.webp" width="800" height="1200" loading="lazy" alt=""><span class="category historical">Historical</span><span class="status">Coming Soon</span></article>
+<article class="mini unavailable" aria-label="Tokyo Neon — Coming Soon"><img src="/homepage/tokyo-neon.webp" width="800" height="1200" loading="lazy" alt=""><span class="category night">Night</span><span class="status">Coming Soon</span></article>
+<article class="mini unavailable" aria-label="Mumbai Monsoon — Coming Soon"><img src="/homepage/mumbai-monsoon.webp" width="800" height="1200" loading="lazy" alt=""><span class="category cities">Cities</span><span class="status">Coming Soon</span></article>
+<article class="mini unavailable" aria-label="Ancient Egypt — Coming Soon"><img src="/homepage/ancient-egypt.webp" width="800" height="1200" loading="lazy" alt=""><span class="category historical">Historical</span><span class="status">Coming Soon</span></article>
+<article class="mini unavailable" aria-label="Pin Foot — Coming Soon"><img src="/homepage/pin-foot.webp" width="800" height="1200" loading="lazy" alt=""><span class="category sports">Sports</span><span class="status">Coming Soon</span></article>
 </div></section>
 
-<section class="sport-banner" id="sports"><div><span>SPORTS WORLD</span><h2>Pin Foot</h2><p>KICK. BUMP. MULTIBALL.</p></div><button>Coming Soon</button></section>
-<section class="coming" id="coming-soon"><div><span>COMING SOON</span><h2>New worlds. New challenges.</h2></div><p>Infinite Pinball keeps expanding.</p></section>
+<section class="sport-banner" id="sports" aria-labelledby="pin-foot-title"><div><span>Sports World</span><h2 id="pin-foot-title">Pin Foot</h2><p>Kick. Bump. Multiball.</p></div><span class="coming-badge">Coming Soon</span></section>
+<section class="coming" id="coming-soon" aria-labelledby="coming-title"><div><span>Coming Soon</span><h2 id="coming-title">New Worlds. New Challenges.</h2></div><p>Infinite Pinball keeps expanding.</p></section>
 </div>
 
-<footer><b>INFINITE <em>PINBALL</em></b><span>REAL WORLDS. ENDLESS PLAY.</span></footer>
-<nav class="mobile-dock"><button class="active" data-scroll="featured">⌂<span>Home</span></button><button data-scroll="worlds">▦<span>Worlds</span></button><a class="play-dock" href="/cricket-pinball">▶</a><button data-scroll="scores">♜<span>Scores</span></button><button data-scroll="coming-soon">•••<span>More</span></button></nav>
+<footer><b>Infinite <em>Pinball</em></b><span>Real Worlds. Endless Play.</span></footer>
+</div>
+<nav class="mobile-dock" aria-label="Mobile Navigation"><button class="active" data-scroll="featured" aria-label="Home"><span aria-hidden="true">⌂</span><span>Home</span></button><button data-scroll="worlds" aria-label="Worlds"><span aria-hidden="true">▦</span><span>Worlds</span></button><a class="play-dock" href="/cricket-pinball" aria-label="Play Pin Cricket"><span aria-hidden="true">▶</span></a><button data-scroll="scores" aria-label="Scores"><span aria-hidden="true">♜</span><span>Scores</span></button><button data-scroll="coming-soon" aria-label="More"><span aria-hidden="true">•••</span><span>More</span></button></nav>
 </main><script type="module" src="/src/landing/landing.js"></script>
 </body></html>
