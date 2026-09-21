@@ -82,7 +82,8 @@ let active = NAV.some(([id]) => id === requestedSection) ? requestedSection : 'o
 let query = '';
 let dirty = false;
 let savedBaseline = null;
-let cricketAdminTab = 'overview';
+const requestedCricketTab = new URLSearchParams(window.location.search).get('cricket');
+let cricketAdminTab = ['overview','match','bowling','batting','scoring','cpu','content','visuals','advanced'].includes(requestedCricketTab) ? requestedCricketTab : 'overview';
 
 const displayPrefs = readAdminDisplayPrefs();
 applyAdminDisplayPrefs(displayPrefs);
@@ -158,6 +159,25 @@ function renderLoading() {
     </main>`;
 }
 
+function renderNavGroup(groupId,label,items,open) {
+  return `
+    <section class="nav-group ${open ? 'open' : ''}" data-nav-group="${groupId}">
+      <button type="button" class="nav-group-trigger" data-nav-group-toggle="${groupId}" aria-expanded="${open}">
+        <span>${label}</span><b aria-hidden="true">⌄</b>
+      </button>
+      <div class="nav-group-content">
+        ${items.map(([id,itemLabel,icon]) => {
+          const cricketChild = id.startsWith('cricket:');
+          const child = cricketChild ? id.split(':')[1] : null;
+          const selected = cricketChild ? (active === 'cricket-pinball' && cricketAdminTab === child) : active === id;
+          return `<button type="button" ${cricketChild ? `data-cricket-nav="${child}"` : `data-nav="${id}"`} class="${selected ? 'active' : ''}">
+            <span class="nav-icon">${icon}</span><span>${itemLabel}</span>
+          </button>`;
+        }).join('')}
+      </div>
+    </section>`;
+}
+
 function renderShell() {
   root.innerHTML = `
     <div class="admin-shell">
@@ -178,21 +198,29 @@ function renderShell() {
           </div>
         </div>
 
-        <nav id="sideNav">
-          <div class="nav-section-label">GENERAL PINBALL</div>
-          ${NAV.filter(([id]) => id !== 'cricket-pinball').map(([id, label, icon]) => `
-            <button type="button" data-nav="${id}" class="${id === active ? 'active' : ''}">
-              <span class="nav-icon">${icon}</span>
-              <span>${label}</span>
-            </button>
-          `).join('')}
-          <div class="nav-section-label product-label">PRODUCT GAMES</div>
-          ${NAV.filter(([id]) => id === 'cricket-pinball').map(([id, label, icon]) => `
-            <button type="button" data-nav="${id}" class="product-nav ${id === active ? 'active' : ''}">
-              <span class="nav-icon">${icon}</span>
-              <span>${label}</span>
-            </button>
-          `).join('')}
+        <nav id="sideNav" class="nav-accordion">
+          ${renderNavGroup('general','GENERAL PINBALL',
+            NAV.filter(([id]) => !['admin-ui','advanced','cricket-pinball'].includes(id)),
+            !['admin-ui','advanced','cricket-pinball'].includes(active)
+          )}
+          ${renderNavGroup('admin','ADMIN',
+            NAV.filter(([id]) => ['admin-ui','advanced'].includes(id)),
+            ['admin-ui','advanced'].includes(active)
+          )}
+          ${renderNavGroup('cricket','CRICKET PINBALL',
+            [
+              ['cricket:overview','Overview','⌂'],
+              ['cricket:match','Match','◎'],
+              ['cricket:bowling','Bowling','↟'],
+              ['cricket:batting','Batting','⌇'],
+              ['cricket:scoring','Scoring','⊙'],
+              ['cricket:cpu','CPU','◫'],
+              ['cricket:content','Content','Aa'],
+              ['cricket:visuals','Visuals','✺'],
+              ['cricket:advanced','Advanced','⚙']
+            ],
+            active === 'cricket-pinball'
+          )}
         </nav>
 
         <div class="sidebar-foot">
@@ -241,12 +269,40 @@ function renderShell() {
   `;
 
   root.querySelector('#sideNav').addEventListener('click', (event) => {
+    const groupToggle = event.target.closest('[data-nav-group-toggle]');
+    if (groupToggle) {
+      const group = groupToggle.closest('.nav-group');
+      const willOpen = !group.classList.contains('open');
+      root.querySelectorAll('.nav-group').forEach(node => {
+        node.classList.toggle('open', node === group && willOpen);
+        node.querySelector('.nav-group-trigger')?.setAttribute('aria-expanded', String(node === group && willOpen));
+      });
+      return;
+    }
+
+    const cricketButton = event.target.closest('[data-cricket-nav]');
+    if (cricketButton) {
+      active = 'cricket-pinball';
+      cricketAdminTab = cricketButton.dataset.cricketNav;
+      const url = new URL(window.location.href);
+      url.searchParams.set('section', 'cricket-pinball');
+      url.searchParams.set('cricket', cricketAdminTab);
+      window.history.replaceState({}, '', url);
+      query = '';
+      const search = root.querySelector('#settingSearch');
+      if (search) search.value = '';
+      root.querySelectorAll('[data-nav],[data-cricket-nav]').forEach(node => node.classList.toggle('active', node === cricketButton));
+      renderActive();
+      return;
+    }
+
     const button = event.target.closest('[data-nav]');
     if (!button) return;
     active = button.dataset.nav;
     const url = new URL(window.location.href);
     if (active === 'overview') url.searchParams.delete('section');
     else url.searchParams.set('section', active);
+    url.searchParams.delete('cricket');
     window.history.replaceState({}, '', url);
     query = '';
     const search = root.querySelector('#settingSearch');
@@ -599,7 +655,6 @@ function renderCricketPinballAdmin() {
       <div><span>PRODUCT CONFIGURATION</span><h2>Cricket Pinball</h2><p>One product workspace. Every existing Cricket setting is preserved and grouped by task.</p></div>
       <div class="product-admin-source"><strong>Draft configuration</strong><code>Table v${draft.cricketTable.version}</code><code>Rules v${draft.cricketRules.version}</code></div>
     </section>
-    ${tabBar}
     <div class="cricket-tab-panel" role="tabpanel">${sections[cricketAdminTab] || sections.overview}</div>`;
 }
 
