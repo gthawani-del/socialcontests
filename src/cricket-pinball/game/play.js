@@ -1178,8 +1178,11 @@ function syncFlipper(object, state, cfg) {
   if (object.userData.cricketAuthoredFlipper) {
     const rest = object.userData.cricketRestAngle ?? (cfg.restAngleDeg * Math.PI / 180);
     const delta = state.angle - rest;
+    // The authored GLB is viewed/mapped with the opposite local Y rotation
+    // handedness to the 2D physics angle convention. Mirror the visual delta;
+    // physics angles/collisions remain unchanged.
     object.quaternion.copy(object.userData.cricketBaseQuaternion);
-    object.rotateY(delta);
+    object.rotateY(-delta);
     return;
   }
 
