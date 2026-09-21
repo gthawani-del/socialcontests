@@ -708,7 +708,7 @@ function bindUi() {
   window.addEventListener('keydown', (event) => {
     if (!engine) return;
 
-    if (canBatNow() && !event.repeat) {
+    if (isHumanBatting()) {
       if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
         event.preventDefault();
         engine.setFlipper('left', true);
@@ -777,7 +777,7 @@ function bindFlippers() {
       button.classList.remove('pressed');
     };
     button.addEventListener('pointerdown', (event) => {
-      if (!canBatNow()) return;
+      if (!isHumanBatting()) return;
       event.preventDefault();
       engine?.setFlipper(id, true);
       button.classList.add('pressed');
