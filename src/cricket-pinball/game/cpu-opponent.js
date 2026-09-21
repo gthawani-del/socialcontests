@@ -32,7 +32,13 @@ export function createCpuBattingAI({
   function update(nowMs, enabled) {
     if (!engine) return;
 
-    if (!enabled || engine.isAwaitingLaunch() || !engine.ball.active) {
+    // When CPU does not own batting, it must not mutate shared flipper state.
+    // Human and CPU use the same engine flippers; calling reset() here was
+    // overwriting human setFlipper(true) on the next animation frame.
+    if (!enabled) return;
+
+    // CPU owns the bats here, so it may safely release them while waiting.
+    if (engine.isAwaitingLaunch() || !engine.ball.active) {
       reset();
       return;
     }
