@@ -594,3 +594,78 @@ html[data-admin-theme="light"] .cricket-tabs button:hover{background:#eef2f6;col
 @media(max-width:1180px){.cricket-overview{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:820px){.cricket-tabs{top:145px}.cricket-overview{grid-template-columns:1fr 1fr}}
 @media(max-width:540px){.cricket-tabs{top:145px}.cricket-overview{grid-template-columns:1fr}}
+
+/* Admin baseline readability + light-theme contrast */
+:root{
+  --admin-text:#e8edf4;
+  --admin-text-secondary:#aeb9c8;
+  --admin-text-muted:#8996a8;
+}
+html[data-admin-theme="light"]{
+  --admin-text:#17212b;
+  --admin-text-secondary:#526174;
+  --admin-text-muted:#6b7888;
+}
+body{font-size:14px;color:var(--admin-text)}
+.eyebrow,.panel-kicker,.product-admin-banner span{font-size:12px!important}
+.page-copy h1{font-size:36px!important;line-height:1.08!important}
+.page-copy p,.product-admin-banner p{font-size:14px!important;line-height:1.45!important;color:var(--admin-text-secondary)!important}
+.stat-card span,.metric-card span{font-size:12px!important;color:var(--admin-text-secondary)!important}
+.stat-card strong,.metric-card strong{font-size:32px!important}
+.stat-card small,.metric-card small{font-size:11px!important;color:var(--admin-text-secondary)!important}
+.panel-head h2,.repeat-head h2,.setting-card h2{font-size:17px!important;line-height:1.2!important;color:var(--admin-text)!important}
+.panel-head p,.repeat-head p,.setting-card p{font-size:12px!important;line-height:1.4!important;color:var(--admin-text-secondary)!important}
+.control-copy label{font-size:13px!important;color:var(--admin-text)!important}
+.control-copy small{font-size:12px!important;line-height:1.35!important;color:var(--admin-text-secondary)!important}
+.select-control,.number-wrap input,.vector-wrap input,input,select,button{font-size:13px}
+.health-row,.score-card,.difficulty-card{font-size:12px}
+.health-row>span:first-child,.score-card span,.difficulty-card span{color:var(--admin-text-secondary)!important}
+.save-copy strong{font-size:13px!important;color:var(--admin-text)!important}
+.save-copy span{font-size:12px!important;color:var(--admin-text-secondary)!important}
+.cricket-tabs button{font-size:12px!important}
+.cricket-tab-panel .control-copy label{font-size:13px!important}
+.cricket-tab-panel .control-copy small{font-size:12px!important}
+.cricket-tab-panel .panel-head h2,.cricket-tab-panel .repeat-head h2{font-size:17px!important}
+.cricket-tab-panel .panel-head p{font-size:12px!important}
+.cricket-tab-panel .select-control,.cricket-tab-panel .number-wrap input,.cricket-tab-panel .vector-wrap input{font-size:13px!important}
+
+html[data-admin-theme="light"] body{color:#17212b}
+html[data-admin-theme="light"] .page-copy h1,
+html[data-admin-theme="light"] .panel-head h2,
+html[data-admin-theme="light"] .repeat-head h2,
+html[data-admin-theme="light"] .setting-card h2,
+html[data-admin-theme="light"] .control-copy label,
+html[data-admin-theme="light"] .save-copy strong{color:#17212b!important}
+html[data-admin-theme="light"] .page-copy p,
+html[data-admin-theme="light"] .panel-head p,
+html[data-admin-theme="light"] .repeat-head p,
+html[data-admin-theme="light"] .control-copy small,
+html[data-admin-theme="light"] .save-copy span,
+html[data-admin-theme="light"] .stat-card span,
+html[data-admin-theme="light"] .stat-card small,
+html[data-admin-theme="light"] .metric-card span,
+html[data-admin-theme="light"] .metric-card small{color:#526174!important}
+html[data-admin-theme="light"] .eyebrow,
+html[data-admin-theme="light"] .panel-kicker,
+html[data-admin-theme="light"] .product-admin-banner span{color:#536b88!important}
+html[data-admin-theme="light"] .panel-head h2 + p,
+html[data-admin-theme="light"] .repeat-head h2 + p{color:#526174!important}
+html[data-admin-theme="light"] .health-row>span:first-child,
+html[data-admin-theme="light"] .difficulty-card span,
+html[data-admin-theme="light"] .score-card span{color:#526174!important}
+html[data-admin-theme="light"] .stat-card strong,
+html[data-admin-theme="light"] .metric-card strong,
+html[data-admin-theme="light"] .difficulty-card strong,
+html[data-admin-theme="light"] .score-card strong{color:#a96700!important}
+html[data-admin-theme="light"] .status-good,
+html[data-admin-theme="light"] .health-row .good{color:#147a50!important}
+html[data-admin-theme="light"] .status-warn,
+html[data-admin-theme="light"] .health-row .warn{color:#9a6100!important}
+html[data-admin-theme="light"] input,
+html[data-admin-theme="light"] select{color:#17212b}
+html[data-admin-theme="light"] input::placeholder{color:#6b7888;opacity:1}
+html[data-admin-theme="light"] button:disabled{color:#667384!important;opacity:.72}
+
+@media(max-width:820px){
+  .page-copy h1{font-size:30px!important}
+}
