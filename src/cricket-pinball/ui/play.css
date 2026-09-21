@@ -605,3 +605,48 @@ button, a { font: inherit; }
   .next-ball-clock{width:92px}
   .next-ball-clock strong{font-size:42px!important}
 }
+
+/* DEBUGGED TYPOGRAPHY: exact selectors matching play.js DOM */
+#matchIntro > p{font-size:18px!important}
+#matchIntro .versus span{font-size:14px!important}
+#matchIntro .versus strong{font-size:24px!important}
+#matchIntro .versus b{font-size:18px!important}
+#matchIntro > small{font-size:16px!important}
+#beginToss{font-size:17px!important;min-width:160px;min-height:50px}
+
+#tossEyebrow{font-size:16px!important}
+#tossTitle{font-size:48px!important;line-height:1!important}
+#tossInstruction{font-size:18px!important}
+#coinStatus{font-size:15px!important}
+#callActions button,#roleActions button{font-size:17px!important;min-width:140px;min-height:52px}
+#roleConfirmation strong{font-size:28px!important}
+#roleConfirmation span{font-size:18px!important}
+
+#matchHud{width:min(900px,calc(100vw - 48px))!important}
+#matchHud>div{min-height:78px!important;padding:12px 18px!important}
+#hudBatter,#hudTarget,#hudRole{font-size:15px!important}
+#hudScore,#hudNeed,#hudBowler{font-size:26px!important}
+#hudInnings,#hudLast,#hudState{font-size:13px!important}
+
+#stadiumScoreboard span{font-size:14px!important}
+#stadiumScoreboard strong{font-size:22px!important}
+
+#inningsIntro>p{font-size:16px!important}
+#inningsBatting{font-size:30px!important}
+#inningsBowling{font-size:18px!important}
+
+#bowlingControls .line-controls button{font-size:16px!important}
+#powerControl span,#powerValue{font-size:14px!important}
+#battingControls button{font-size:18px!important}
+
+#deliveryCueLabel{font-size:14px!important}
+#deliveryCueValue{font-size:24px!important}
+
+@media(max-width:680px){
+ #tossTitle{font-size:34px!important}
+ #tossInstruction{font-size:15px!important}
+ #matchHud{width:calc(100vw - 16px)!important}
+ #hudBatter,#hudTarget,#hudRole{font-size:11px!important}
+ #hudScore,#hudNeed,#hudBowler{font-size:19px!important}
+ #hudInnings,#hudLast,#hudState{font-size:10px!important}
+}
