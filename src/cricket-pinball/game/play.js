@@ -446,11 +446,11 @@ function makeAuthoredBatAssembly(meshes, cfg, side) {
   parts.forEach((mesh) => worldBox.expandByObject(mesh));
   const center = worldBox.getCenter(new THREE.Vector3());
 
-  // The hinge is the inner endpoint of each authored bat assembly: right edge
-  // for the left bat, left edge for the right bat. This is measured from the
-  // actual rendered GLB bounds, not guessed from the physics coordinate system.
+  // Standard pinball geometry: each bat pivots at its OUTER endpoint.
+  // Left bat hinges at its far-left edge; right bat at its far-right edge.
+  // The inner/free tips then swing upward toward the playfield.
   const hingeWorld = new THREE.Vector3(
-    side === 'left' ? worldBox.max.x : worldBox.min.x,
+    side === 'left' ? worldBox.min.x : worldBox.max.x,
     center.y,
     center.z
   );
@@ -1182,9 +1182,11 @@ function syncFlipper(object, state, cfg) {
     const delta = state.angle - physicsRest;
 
     // Always return to the untouched authored GLB pose, then apply only the
-    // relative physics stroke. This keeps the authored V as visual rest.
+    // relative physics stroke around the OUTER hinge. The authored mesh axes
+    // are mirrored, so left/right require opposite visual rotation signs.
     object.quaternion.copy(object.userData.cricketBaseQuaternion);
-    object.rotateY(delta);
+    const visualDelta = object.name.endsWith('_left') ? -delta : delta;
+    object.rotateY(visualDelta);
     return;
   }
 
