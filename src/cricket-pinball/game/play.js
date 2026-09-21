@@ -462,7 +462,9 @@ function makeAuthoredBatAssembly(meshes, cfg, side) {
   parts.forEach((mesh) => pivot.attach(mesh));
 
   pivot.userData.cricketAuthoredFlipper = true;
-  pivot.userData.cricketRestAngle = cfg.restAngleDeg * Math.PI / 180;
+  // The GLB pose at load time is the visual rest pose. Physics degrees are
+  // only used to compute stroke delta; they do not define GLB orientation.
+  pivot.userData.cricketPhysicsRestAngle = cfg.restAngleDeg * Math.PI / 180;
   pivot.userData.cricketBaseQuaternion = pivot.quaternion.clone();
   pivot.userData.cricketParts = parts.map((mesh) => mesh.name);
   return pivot;
@@ -1176,13 +1178,13 @@ function syncFlipper(object, state, cfg) {
   if (!object || !state) return;
 
   if (object.userData.cricketAuthoredFlipper) {
-    const rest = object.userData.cricketRestAngle ?? (cfg.restAngleDeg * Math.PI / 180);
-    const delta = state.angle - rest;
-    // The authored GLB is viewed/mapped with the opposite local Y rotation
-    // handedness to the 2D physics angle convention. Mirror the visual delta;
-    // physics angles/collisions remain unchanged.
+    const physicsRest = object.userData.cricketPhysicsRestAngle ?? (cfg.restAngleDeg * Math.PI / 180);
+    const delta = state.angle - physicsRest;
+
+    // Always return to the untouched authored GLB pose, then apply only the
+    // relative physics stroke. This keeps the authored V as visual rest.
     object.quaternion.copy(object.userData.cricketBaseQuaternion);
-    object.rotateY(-delta);
+    object.rotateY(delta);
     return;
   }
 
