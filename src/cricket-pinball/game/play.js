@@ -427,15 +427,31 @@ function createMechanics() {
   // Deterministic gameplay bats: physics and visible bats share the same
   // configured pivot/angle. The authored GLB flipper meshes are decorative and
   // hidden during gameplay because their authoring origins are not reliable hinges.
-  const authoredLeftBat = getCricketComponent('bat-left')[0];
-  const authoredRightBat = getCricketComponent('bat-right')[0];
+  const authoredLeftBats = getCricketComponent('bat-left');
+  const authoredRightBats = getCricketComponent('bat-right');
   if (!engine.getFlipper('left') || !engine.getFlipper('right')) {
     throw new Error('Cricket flipper configuration is missing left/right engine bats.');
   }
-  if (authoredLeftBat) authoredLeftBat.visible = false;
-  if (authoredRightBat) authoredRightBat.visible = false;
+
+  // A component binding can resolve to several GLB meshes. Hiding only [0]
+  // left the other authored white/red flipper meshes visible on top of the
+  // physics-driven bats, which made the game appear completely stationary.
+  [...authoredLeftBats, ...authoredRightBats].forEach((mesh) => {
+    mesh.visible = false;
+    mesh.userData.hiddenForPhysicsBat = true;
+  });
+
   leftFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[0]);
   rightFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[1]);
+  leftFlipperVisual.name = 'PhysicsBat_Left';
+  rightFlipperVisual.name = 'PhysicsBat_Right';
+
+  console.info('[Cricket bats]', {
+    hiddenAuthoredLeft: authoredLeftBats.map((mesh) => mesh.name),
+    hiddenAuthoredRight: authoredRightBats.map((mesh) => mesh.name),
+    physicsLeft: engine.getFlipper('left'),
+    physicsRight: engine.getFlipper('right')
+  });
 
   createAimGuide();
 }
