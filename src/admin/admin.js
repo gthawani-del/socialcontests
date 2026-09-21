@@ -556,7 +556,8 @@ function renderCricketPinballAdmin() {
       number('Coin animation', 'cricketRules.toss.coinMs', 500, 4000, 50, 'ms'),
       number('Result hold', 'cricketRules.toss.resultHoldMs', 200, 3000, 50, 'ms'),
       number('Role confirmation', 'cricketRules.toss.roleConfirmMs', 200, 3000, 50, 'ms'),
-      number('Innings intro', 'cricketRules.toss.inningsIntroMs', 200, 3000, 50, 'ms')
+      number('Innings intro', 'cricketRules.toss.inningsIntroMs', 200, 3000, 50, 'ms'),
+      number('Innings 2 countdown', 'cricketRules.toss.inningsBreakCountdownSeconds', 1, 15, 1, 'sec')
     ])
   ]);
 

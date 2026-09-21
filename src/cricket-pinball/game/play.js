@@ -951,19 +951,59 @@ function onDeliveryResolved(type) {
     return;
   }
 
-  startNextBallCountdown(async () => {
-    if (match.status === 'INNINGS_BREAK') {
-      setScoreboard('TARGET', String(match.target));
-      inningsIntro.hidden = false;
-      inningsIntro.querySelector('p').textContent = 'INNINGS BREAK';
-      document.querySelector('#inningsBatting').textContent = `TARGET ${match.target}`;
-      document.querySelector('#inningsBowling').textContent = 'ROLES SWITCHING';
-      await delay(1100);
-      inningsIntro.hidden = true;
-      match.startSecondInnings();
-    }
+  if (match.status === 'INNINGS_BREAK') {
+    startSecondInningsTransition();
+    return;
+  }
+
+  startNextBallCountdown(() => {
     prepareDelivery();
   });
+}
+
+async function startSecondInningsTransition() {
+  clearInterval(nextBallCountdownTimer);
+  nextBallClock.hidden = true;
+  inputsLocked = true;
+  bowlingControls.hidden = true;
+  battingControls.hidden = true;
+  engine?.freezeBall();
+
+  const first = match.innings?.[0];
+  const seconds = Math.max(1, Math.round(Number(rulesConfig.toss?.inningsBreakCountdownSeconds) || 5));
+
+  inningsIntro.hidden = false;
+  inningsIntro.querySelector('p').textContent = 'INNINGS BREAK';
+  document.querySelector('#inningsBatting').textContent =
+    `${playerName(first?.battingPlayerId)} ${first?.runs ?? 0}/${first?.wickets ?? 0} · TARGET ${match.target}`;
+  document.querySelector('#inningsBowling').textContent =
+    `NEXT: ${playerName(match.battingPlayerId)} BAT · ${playerName(match.bowlingPlayerId)} BOWL`;
+  setScoreboard('INNINGS BREAK', `TARGET ${match.target}`);
+  await delay(900);
+
+  for (let remaining = seconds; remaining >= 1; remaining -= 1) {
+    if (match.status !== 'INNINGS_BREAK') return;
+    inningsIntro.querySelector('p').textContent = 'INNINGS 2 STARTS IN';
+    document.querySelector('#inningsBatting').textContent = String(remaining);
+    document.querySelector('#inningsBowling').textContent =
+      `${playerName(match.battingPlayerId)} BATTING · ${playerName(match.bowlingPlayerId)} BOWLING`;
+    setScoreboard('INNINGS 2 STARTS IN', String(remaining));
+    await delay(1000);
+  }
+
+  if (!match.startSecondInnings()) return;
+  updateScoreboards();
+  inningsIntro.querySelector('p').textContent = 'INNINGS 2';
+  document.querySelector('#inningsBatting').textContent =
+    `${playerName(match.battingPlayerId)} BATTING · TARGET ${match.target}`;
+  document.querySelector('#inningsBowling').textContent =
+    `${playerName(match.bowlingPlayerId)} BOWLING`;
+  setScoreboard('INNINGS 2', `TARGET ${match.target}`);
+  await delay(650);
+
+  inningsIntro.hidden = true;
+  inputsLocked = false;
+  prepareDelivery();
 }
 
 function startNextBallCountdown(onComplete) {

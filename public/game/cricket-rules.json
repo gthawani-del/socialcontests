@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -25,7 +25,8 @@
     "coinMs": 1600,
     "resultHoldMs": 800,
     "roleConfirmMs": 900,
-    "inningsIntroMs": 900
+    "inningsIntroMs": 900,
+    "inningsBreakCountdownSeconds": 5
   },
   "outcomes": {
     "DOT": 0,
