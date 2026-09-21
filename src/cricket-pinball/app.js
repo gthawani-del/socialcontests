@@ -270,9 +270,10 @@ function goToStep(step) {
 function startMatch() {
   writePreferences({ ...lobbyState, hasPlayed: true });
   const params = new URLSearchParams({
-    mode: lobbyState.mode,
+    mode: 'CPU',
     format: lobbyState.format,
-    difficulty: lobbyState.difficulty
+    difficulty: lobbyState.difficulty,
+    v: String(Date.now())
   });
   window.location.assign(`/cricket-pinball/play?${params.toString()}`);
 }

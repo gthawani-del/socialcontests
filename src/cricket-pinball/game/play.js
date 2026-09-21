@@ -14,6 +14,7 @@ const app = document.querySelector('#cricketPlayApp');
 if (!app) throw new Error('Cricket Pinball play root not found.');
 
 const params = new URLSearchParams(window.location.search);
+const buildNonce = params.get('v') || String(Date.now());
 const pathnameMatch = window.location.pathname.match(/\/cricket-pinball\/match\/([^/]+)/);
 const matchId = pathnameMatch?.[1] || params.get('matchId') || 'local';
 // Cricket Pinball is temporarily locked to the single-player match loop.
