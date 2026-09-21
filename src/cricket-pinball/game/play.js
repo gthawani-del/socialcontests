@@ -589,7 +589,7 @@ function bindUi() {
   });
   document.querySelectorAll('[data-line]').forEach((button) => {
     button.addEventListener('click', () => {
-      if (inputsLocked || !isHumanBowling()) return;
+      if (!canBowlNow()) return;
       selectedLine = button.dataset.line;
       document.querySelectorAll('[data-line]').forEach((node) => node.classList.toggle('active', node === button));
     });
@@ -602,7 +602,7 @@ function bindUi() {
 
   window.addEventListener('keydown', (event) => {
     if (inputsLocked || !engine) return;
-    if (isHumanBowling()) {
+    if (canBowlNow()) {
       if (event.code === 'KeyQ') setLineFromKeyboard('LEFT');
       if (event.code === 'KeyW') setLineFromKeyboard('CENTRE');
       if (event.code === 'KeyE') setLineFromKeyboard('RIGHT');
@@ -610,8 +610,9 @@ function bindUi() {
         event.preventDefault();
         beginPower();
       }
+      return;
     }
-    if (isHumanBatting() && match.deliveryOpen && !engine.isAwaitingLaunch()) {
+    if (canBatNow()) {
       if ((event.code === 'KeyA' || event.code === 'ArrowLeft') && !event.repeat) engine.setFlipper('left', true);
       if ((event.code === 'KeyD' || event.code === 'ArrowRight') && !event.repeat) engine.setFlipper('right', true);
     }
@@ -653,7 +654,7 @@ function bindFlippers() {
       button.classList.remove('pressed');
     };
     button.addEventListener('pointerdown', (event) => {
-      if (inputsLocked || !isHumanBatting() || !match.deliveryOpen || engine?.isAwaitingLaunch()) return;
+      if (!canBatNow()) return;
       event.preventDefault();
       engine?.setFlipper(id, true);
       button.classList.add('pressed');
@@ -769,13 +770,13 @@ function launchCpuDelivery() {
 }
 
 function beginPower() {
-  if (inputsLocked || !engine || !isHumanBowling() || match.deliveryOpen || powerPressed) return;
+  if (!canBowlNow() || powerPressed) return;
   powerPressed = engine.beginLaunch();
   powerControl.classList.toggle('pressed', powerPressed);
 }
 
 function releasePower() {
-  if (!powerPressed || !engine || !isHumanBowling()) return;
+  if (!powerPressed || !engine || !isHumanBowling() || match.deliveryOpen) return;
   powerPressed = false;
   powerControl.classList.remove('pressed');
   const charge = Math.max(engine.getLauncherCharge(), tableConfig.launcher.tapCharge);
@@ -848,13 +849,8 @@ function showResult() {
 function updateRoleControls() {
   const state = match.getState();
   const ballLive = state.deliveryOpen && engine && !engine.isAwaitingLaunch();
-  const deliveryReady = !state.deliveryOpen && engine?.isAwaitingLaunch();
-
-  const bowler = getPlayer(state.bowlingPlayerId);
-  const batter = getPlayer(state.battingPlayerId);
-
-  const showBowling = !inputsLocked && deliveryReady && bowler?.type === 'HUMAN';
-  const showBatting = !inputsLocked && ballLive && batter?.type === 'HUMAN';
+  const showBowling = canBowlNow();
+  const showBatting = canBatNow();
 
   bowlingControls.hidden = !showBowling;
   battingControls.hidden = !showBatting;
@@ -867,9 +863,9 @@ function updateRoleControls() {
   }
 
   const roleText = showBowling
-    ? `${playerName(state.bowlingPlayerId)} · BOWLING`
+    ? `${playerName(state.bowlingPlayerId)} · BOWL NOW`
     : showBatting
-      ? `${playerName(state.battingPlayerId)} · BATTING`
+      ? `${playerName(state.battingPlayerId)} · BAT NOW`
       : ballLive
         ? `${playerName(state.battingPlayerId)} BATTING`
         : 'DELIVERY SETUP';
@@ -912,6 +908,26 @@ function isHumanBowling() {
 
 function isHumanBatting() {
   return getPlayer(match.battingPlayerId)?.type === 'HUMAN';
+}
+
+function canBowlNow() {
+  return Boolean(
+    !inputsLocked &&
+    engine &&
+    isHumanBowling() &&
+    !match.deliveryOpen &&
+    engine.isAwaitingLaunch()
+  );
+}
+
+function canBatNow() {
+  return Boolean(
+    !inputsLocked &&
+    engine &&
+    isHumanBatting() &&
+    match.deliveryOpen &&
+    !engine.isAwaitingLaunch()
+  );
 }
 
 function getPlayer(id) {
