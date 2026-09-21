@@ -1017,13 +1017,6 @@ function updateRoleControls() {
   bowlingControls.hidden = !showBowling;
   battingControls.hidden = !showBatting;
 
-  // Hard lock flippers unless the live ball belongs to a human batter.
-  if (!showBatting) {
-    engine?.setFlipper('left', false);
-    engine?.setFlipper('right', false);
-    document.querySelectorAll('[data-flipper]').forEach((button) => button.classList.remove('pressed'));
-  }
-
   const roleText = showBowling
     ? `${playerName(state.bowlingPlayerId)} · BOWL NOW`
     : showBatting
@@ -1084,10 +1077,12 @@ function canBowlNow() {
 }
 
 function canBatNow() {
+  const state = match.getState();
   return Boolean(
     engine &&
-    isHumanBatting() &&
-    match.deliveryOpen
+    getPlayer(state.battingPlayerId)?.type === 'HUMAN' &&
+    state.deliveryOpen &&
+    !engine.isAwaitingLaunch()
   );
 }
 

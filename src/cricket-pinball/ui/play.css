@@ -622,11 +622,6 @@ button, a { font: inherit; }
 #roleConfirmation strong{font-size:28px!important}
 #roleConfirmation span{font-size:18px!important}
 
-#matchHud{width:min(900px,calc(100vw - 48px))!important}
-#matchHud>div{min-height:78px!important;padding:12px 18px!important}
-#hudBatter,#hudTarget,#hudRole{font-size:15px!important}
-#hudScore,#hudNeed,#hudBowler{font-size:26px!important}
-#hudInnings,#hudLast,#hudState{font-size:13px!important}
 
 #stadiumScoreboard span{font-size:14px!important}
 #stadiumScoreboard strong{font-size:22px!important}
@@ -645,11 +640,8 @@ button, a { font: inherit; }
 @media(max-width:680px){
  #tossTitle{font-size:34px!important}
  #tossInstruction{font-size:15px!important}
- #matchHud{width:calc(100vw - 16px)!important}
- #hudBatter,#hudTarget,#hudRole{font-size:11px!important}
- #hudScore,#hudNeed,#hudBowler{font-size:19px!important}
- #hudInnings,#hudLast,#hudState{font-size:10px!important}
 }
+
 
 /* Cricket batting HUD layout — centered controls, config driven */
 .match-hud{transform:translateX(-50%) scale(var(--hud-scale,1));transform-origin:top center}
@@ -688,33 +680,38 @@ button, a { font: inherit; }
   .batting-controls{height:74px;padding:7px 10px}
 }
 
-/* Contained 3-column Cricket score block */
-.match-hud{
+/* Cricket HUD — single authoritative layout; size is admin-driven via --hud-scale. */
+#matchHud{
   top:18px!important;
-  width:min(760px,calc(100% - 32px))!important;
+  left:50%!important;
+  width:min(760px,calc(100vw - 32px))!important;
+  transform:translateX(-50%) scale(var(--hud-scale,1))!important;
+  transform-origin:top center!important;
   grid-template-columns:1fr 1.08fr 1fr!important;
   gap:0!important;
-  border:1px solid rgba(212,184,91,.28);
-  border-radius:12px;
-  overflow:hidden;
-  background:rgba(3,12,7,.9);
+  border:1px solid rgba(212,184,91,.28)!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+  background:rgba(3,12,7,.9)!important;
 }
-.match-hud>div{
-  min-height:72px;
+#matchHud>div{
+  min-height:72px!important;
   padding:9px 16px!important;
   border:0!important;
   border-right:1px solid rgba(212,184,91,.22)!important;
   background:transparent!important;
-  box-sizing:border-box;
+  box-sizing:border-box!important;
 }
-.match-hud>div:last-child{border-right:0!important}
-.match-hud .hud-chase{text-align:center}
-.match-hud .hud-role{text-align:right}
-.match-hud span,.match-hud small{font-size:12px!important}
-.match-hud strong{font-size:22px!important;line-height:1.08}
+#matchHud>div:last-child{border-right:0!important}
+#matchHud .hud-chase{text-align:center!important}
+#matchHud .hud-role{text-align:right!important}
+#hudBatter,#hudTarget,#hudRole{font-size:12px!important}
+#hudScore,#hudNeed,#hudBowler{font-size:22px!important;line-height:1.08!important}
+#hudInnings,#hudLast,#hudState{font-size:11px!important}
 @media(max-width:680px){
-  .match-hud{top:8px!important;width:calc(100% - 16px)!important}
-  .match-hud>div{min-height:64px;padding:7px 8px!important}
-  .match-hud span,.match-hud small{font-size:9px!important}
-  .match-hud strong{font-size:17px!important}
+  #matchHud{top:8px!important;width:calc(100vw - 16px)!important}
+  #matchHud>div{min-height:64px!important;padding:7px 8px!important}
+  #hudBatter,#hudTarget,#hudRole{font-size:9px!important}
+  #hudScore,#hudNeed,#hudBowler{font-size:17px!important}
+  #hudInnings,#hudLast,#hudState{font-size:9px!important}
 }
