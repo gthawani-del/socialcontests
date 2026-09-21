@@ -7,6 +7,7 @@ import { createCricketGameplayAdapter } from './gameplay-adapter.js';
 import { chooseCpuBowling, createCpuBattingAI } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 import '../ui/play.css';
+import { installHowToPinCricket } from '../ui/how-to-pin-cricket.js';
 
 const WORLD_URL = '/models/cricket-world-v2.glb';
 const WORLD_BYTES = 9271344;
@@ -196,6 +197,7 @@ const deliveryCueLabel = document.querySelector('#deliveryCueLabel');
 const deliveryCueValue = document.querySelector('#deliveryCueValue');
 const nextBallClock = document.querySelector('#nextBallClock');
 const nextBallSeconds = document.querySelector('#nextBallSeconds');
+installHowToPinCricket({ root: app, context: 'gameplay' });
 let nextBallCountdownTimer = null;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import './ui/cricket-pinball.css';
+import { installHowToPinCricket } from './ui/how-to-pin-cricket.js';
 
 const STORAGE_KEY = 'cricket-pinball-preferences-v1';
 const app = document.querySelector('#cricketPinballApp');
@@ -109,6 +110,7 @@ const setupFlow = document.querySelector('#setupFlow');
 const quickMatch = document.querySelector('#quickMatch');
 const quickSummary = document.querySelector('#quickMatchSummary');
 const startButton = document.querySelector('#cricketStart');
+installHowToPinCricket({ root: app, context: 'lobby' });
 
 let currentStep = 1;
 
