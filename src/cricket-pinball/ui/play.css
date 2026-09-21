@@ -687,3 +687,34 @@ button, a { font: inherit; }
   .cricket-play-shell:has(.batting-controls:not([hidden])) #cricketPlayWorld{height:calc(100vh - 74px)!important}
   .batting-controls{height:74px;padding:7px 10px}
 }
+
+/* Contained 3-column Cricket score block */
+.match-hud{
+  top:18px!important;
+  width:min(760px,calc(100% - 32px))!important;
+  grid-template-columns:1fr 1.08fr 1fr!important;
+  gap:0!important;
+  border:1px solid rgba(212,184,91,.28);
+  border-radius:12px;
+  overflow:hidden;
+  background:rgba(3,12,7,.9);
+}
+.match-hud>div{
+  min-height:72px;
+  padding:9px 16px!important;
+  border:0!important;
+  border-right:1px solid rgba(212,184,91,.22)!important;
+  background:transparent!important;
+  box-sizing:border-box;
+}
+.match-hud>div:last-child{border-right:0!important}
+.match-hud .hud-chase{text-align:center}
+.match-hud .hud-role{text-align:right}
+.match-hud span,.match-hud small{font-size:12px!important}
+.match-hud strong{font-size:22px!important;line-height:1.08}
+@media(max-width:680px){
+  .match-hud{top:8px!important;width:calc(100% - 16px)!important}
+  .match-hud>div{min-height:64px;padding:7px 8px!important}
+  .match-hud span,.match-hud small{font-size:9px!important}
+  .match-hud strong{font-size:17px!important}
+}

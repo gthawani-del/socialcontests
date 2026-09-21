@@ -424,70 +424,52 @@ function createMechanics() {
   ballTrail.renderOrder = 10;
   scene.add(ballTrail);
 
-  // Deterministic gameplay bats: physics and visible bats share the same
-  // configured pivot/angle. The authored GLB flipper meshes are decorative and
-  // hidden during gameplay because their authoring origins are not reliable hinges.
+  // Use the original GLB bat assemblies as the visible bats. Physics remains
+  // authoritative; only the physics angle delta is applied to each authored assembly.
   const authoredLeftBats = getCricketComponent('bat-left');
   const authoredRightBats = getCricketComponent('bat-right');
   if (!engine.getFlipper('left') || !engine.getFlipper('right')) {
     throw new Error('Cricket flipper configuration is missing left/right engine bats.');
   }
-
-  // A component binding can resolve to several GLB meshes. Hiding only [0]
-  // left the other authored white/red flipper meshes visible on top of the
-  // physics-driven bats, which made the game appear completely stationary.
-  [...authoredLeftBats, ...authoredRightBats].forEach((mesh) => {
-    mesh.visible = false;
-    mesh.userData.hiddenForPhysicsBat = true;
-  });
-
-  leftFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[0]);
-  rightFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[1]);
-  leftFlipperVisual.name = 'PhysicsBat_Left';
-  rightFlipperVisual.name = 'PhysicsBat_Right';
-
-  console.info('[Cricket bats]', {
-    hiddenAuthoredLeft: authoredLeftBats.map((mesh) => mesh.name),
-    hiddenAuthoredRight: authoredRightBats.map((mesh) => mesh.name),
-    physicsLeft: engine.getFlipper('left'),
-    physicsRight: engine.getFlipper('right')
-  });
-
+  leftFlipperVisual = makeAuthoredBatAssembly(authoredLeftBats, tableConfig.flippers[0], 'left');
+  rightFlipperVisual = makeAuthoredBatAssembly(authoredRightBats, tableConfig.flippers[1], 'right');
   createAimGuide();
 }
 
-function makeAuthoredBatPivot(mesh, cfg) {
-  // RCA: the GLB is recentered after load, so cfg.pivot is in PHYSICS space
-  // while the authored mesh lives under modelRoot in MODEL space. The previous
-  // scene-level wrapper mixed those coordinate spaces and then applied an
-  // absolute physics angle to an authored mesh that already had its own rest
-  // rotation. Input changed engine state, but the visible bat did not follow
-  // that state correctly.
-  //
-  // Keep the authored mesh inside modelRoot's coordinate system and preserve
-  // its exact rest transform. The wrapper only applies the DELTA between the
-  // physics rest angle and the current physics angle.
-  const parent = mesh.parent;
-  if (!parent) return mesh;
+function makeAuthoredBatAssembly(meshes, cfg, side) {
+  const parts = meshes.filter(Boolean);
+  if (!parts.length) return makeCricketBatFlipper(cfg);
 
-  mesh.updateMatrix();
+  parts.forEach((mesh) => {
+    mesh.visible = true;
+    mesh.userData.hiddenForPhysicsBat = false;
+    mesh.updateWorldMatrix(true, false);
+  });
+
+  // All mapped parts are grouped in scene space without changing their world transforms.
+  const worldBox = new THREE.Box3();
+  parts.forEach((mesh) => worldBox.expandByObject(mesh));
+  const center = worldBox.getCenter(new THREE.Vector3());
+
+  // The hinge is the inner endpoint of each authored bat assembly: right edge
+  // for the left bat, left edge for the right bat. This is measured from the
+  // actual rendered GLB bounds, not guessed from the physics coordinate system.
+  const hingeWorld = new THREE.Vector3(
+    side === 'left' ? worldBox.max.x : worldBox.min.x,
+    center.y,
+    center.z
+  );
+
   const pivot = new THREE.Group();
-  pivot.name = `CricketBatPivot_${cfg.id}`;
-  pivot.position.copy(mesh.position);
-  pivot.quaternion.copy(mesh.quaternion);
-  pivot.scale.copy(mesh.scale);
-
-  parent.add(pivot);
-  parent.remove(mesh);
-  mesh.position.set(0, 0, 0);
-  mesh.quaternion.identity();
-  mesh.scale.set(1, 1, 1);
-  pivot.add(mesh);
+  pivot.name = `CricketGLBBat_${side}`;
+  pivot.position.copy(hingeWorld);
+  scene.add(pivot);
+  parts.forEach((mesh) => pivot.attach(mesh));
 
   pivot.userData.cricketAuthoredFlipper = true;
-  pivot.userData.cricketFlipperMesh = mesh;
   pivot.userData.cricketRestAngle = cfg.restAngleDeg * Math.PI / 180;
   pivot.userData.cricketBaseQuaternion = pivot.quaternion.clone();
+  pivot.userData.cricketParts = parts.map((mesh) => mesh.name);
   return pivot;
 }
 
@@ -1057,8 +1039,8 @@ function updateScoreboards() {
   const batting = playerName(state.battingPlayerId);
   const bowling = playerName(state.bowlingPlayerId);
   document.querySelector('#hudBatter').textContent = `${batting} · BATTING`;
-  document.querySelector('#hudRole').textContent = `${bowling} · BOWLING`;
-  document.querySelector('#hudBowler').textContent = bowling;
+  document.querySelector('#hudRole').textContent = bowling;
+  document.querySelector('#hudBowler').textContent = 'BOWLING';
   document.querySelector('#hudScore').textContent = `${state.score.runs}/${state.score.wickets}`;
   document.querySelector('#hudInnings').textContent = `INNINGS ${Math.max(1, state.innings)}`;
   document.querySelector('#hudTarget').textContent = state.target === null ? 'TARGET —' : `TARGET ${state.target}`;
