@@ -273,6 +273,11 @@ async function boot() {
     intro.hidden = false;
     inputsLocked = false;
     updateScoreboards();
+
+    if (caller.type === 'CPU') {
+      beginToss.hidden = true;
+      window.setTimeout(() => startTossFlow(), 700);
+    }
   } catch (error) {
     console.error('Cricket Pinball boot failed:', error);
     loadingPercent.textContent = 'ERROR';
@@ -605,27 +610,30 @@ function applyConfiguredContent(content) {
   set('#deliveryCueLabel','delivery'); set('#deliveryCueValue','ready',true); set('#resultEyebrow','matchResult');
 }
 
+async function startTossFlow() {
+  if (inputsLocked) return;
+  intro.hidden = true;
+  tossPanel.hidden = false;
+
+  if (caller.type === 'CPU') {
+    callActions.hidden = true;
+    roleActions.hidden = true;
+    tossTitle.textContent = 'CPU CALLS';
+    tossInstruction.textContent = 'CPU is choosing Heads or Tails…';
+    inputsLocked = true;
+    await delay(650);
+    inputsLocked = false;
+    await resolveToss(Math.random() < 0.5 ? 'HEADS' : 'TAILS');
+    return;
+  }
+
+  callActions.hidden = false;
+  tossTitle.textContent = 'PLAYER 1 CALLS';
+  tossInstruction.textContent = 'Choose Heads or Tails';
+}
+
 function bindUi() {
-  beginToss.addEventListener('click', async () => {
-    if (inputsLocked) return;
-    intro.hidden = true;
-    tossPanel.hidden = false;
-
-    if (caller.type === 'CPU') {
-      callActions.hidden = true;
-      tossTitle.textContent = 'CPU CALLS';
-      tossInstruction.textContent = 'CPU is choosing Heads or Tails…';
-      inputsLocked = true;
-      await delay(500);
-      inputsLocked = false;
-      resolveToss(Math.random() < 0.5 ? 'HEADS' : 'TAILS');
-      return;
-    }
-
-    callActions.hidden = false;
-    tossTitle.textContent = 'PLAYER 1 CALLS';
-    tossInstruction.textContent = 'Choose Heads or Tails';
-  });
+  beginToss.addEventListener('click', startTossFlow);
 
   document.querySelectorAll('[data-call]').forEach((button) => {
     button.addEventListener('click', () => resolveToss(button.dataset.call));
