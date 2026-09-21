@@ -1010,7 +1010,7 @@ function showResult() {
 
 function updateRoleControls() {
   const state = match.getState();
-  const ballLive = state.deliveryOpen && engine && !engine.isAwaitingLaunch();
+  const ballLive = Boolean(state.deliveryOpen && engine);
   const showBowling = canBowlNow();
   const showBatting = canBatNow();
 
@@ -1078,11 +1078,14 @@ function canBowlNow() {
 
 function canBatNow() {
   const state = match.getState();
+  // deliveryOpen is the authoritative batting gate. The launcher remains in
+  // its lane/awaiting state while the released ball travels toward the table,
+  // so using isAwaitingLaunch() here incorrectly disabled HUMAN flippers.
+  // CPU batting never used this gate, which is why CPU flippers worked.
   return Boolean(
     engine &&
     getPlayer(state.battingPlayerId)?.type === 'HUMAN' &&
-    state.deliveryOpen &&
-    !engine.isAwaitingLaunch()
+    state.deliveryOpen
   );
 }
 
