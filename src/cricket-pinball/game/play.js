@@ -128,8 +128,6 @@ app.innerHTML = `
       </div>
     </section>
 
-    <section class="stadium-scoreboard" id="stadiumScoreboard" hidden aria-hidden="true"></section>
-
     <section class="innings-intro" id="inningsIntro" hidden>
       <p>INNINGS 1</p>
       <strong id="inningsBatting"></strong>
@@ -187,7 +185,6 @@ const tossTitle = document.querySelector('#tossTitle');
 const tossInstruction = document.querySelector('#tossInstruction');
 const tossCoin = document.querySelector('#tossCoin');
 const coinStatus = document.querySelector('#coinStatus');
-const scoreboard = document.querySelector('#stadiumScoreboard');
 const inningsIntro = document.querySelector('#inningsIntro');
 const matchHud = document.querySelector('#matchHud');
 const bowlingControls = document.querySelector('#bowlingControls');
@@ -1043,7 +1040,7 @@ function updateScoreboards() {
 }
 
 function setScoreboard(label, value) {
-  scoreboard.innerHTML = `<span>${label}</span><strong>${value}</strong>`;
+  // No duplicate DOM scoreboard. Keep only the authored in-world GLB screen updated.
   drawStadiumScoreboard(label, value);
 }
 
