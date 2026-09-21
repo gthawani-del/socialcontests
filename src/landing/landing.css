@@ -56,3 +56,9 @@
 
 /* Production Infinite Pinball header logo */
 .brand{display:flex;align-items:center;width:auto;line-height:0}.brand img{display:block;width:168px;height:auto;object-fit:contain}.brand .ball,.brand>span{display:none}@media(max-width:900px){.brand img{width:136px}}
+
+/* Hero viewport sizing: cinematic desktop, useful mobile height */
+@media (min-width:901px){.hero{width:calc(100% - 52px);height:clamp(400px,32vw,500px);aspect-ratio:auto}.hero-art{background-position:center center}}
+@media (max-width:900px){.hero{width:100%;height:clamp(230px,62vw,340px);aspect-ratio:auto}.hero-art{background-position:center center}}
+@media (max-width:520px){.hero{height:240px;aspect-ratio:auto}}
+@media (max-width:380px){.hero{height:225px;aspect-ratio:auto}}
