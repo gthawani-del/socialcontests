@@ -16,19 +16,15 @@ if (!app) throw new Error('Cricket Pinball play root not found.');
 const params = new URLSearchParams(window.location.search);
 const pathnameMatch = window.location.pathname.match(/\/cricket-pinball\/match\/([^/]+)/);
 const matchId = pathnameMatch?.[1] || params.get('matchId') || 'local';
-const mode = params.get('mode') === 'LOCAL' ? 'LOCAL' : 'CPU';
+// Cricket Pinball is temporarily locked to the single-player match loop.
+const mode = 'CPU';
 const format = ['LAST_3', 'ONE_OVER', 'TWO_OVER'].includes(params.get('format')) ? params.get('format') : 'ONE_OVER';
 const difficulty = ['EASY', 'MEDIUM', 'HARD'].includes(params.get('difficulty')) ? params.get('difficulty') : 'MEDIUM';
 
-const players = mode === 'LOCAL'
-  ? [
-      { id: 'p1', name: 'PLAYER 1', type: 'HUMAN' },
-      { id: 'p2', name: 'PLAYER 2', type: 'HUMAN' }
-    ]
-  : [
-      { id: 'p1', name: 'YOU', type: 'HUMAN' },
-      { id: 'cpu', name: 'CPU', type: 'CPU' }
-    ];
+const players = [
+  { id: 'p1', name: 'PLAYER 1', type: 'HUMAN' },
+  { id: 'cpu', name: 'CPU', type: 'CPU' }
+];
 
 const tossController = createTossController();
 const caller = tossController.pickCaller(players);

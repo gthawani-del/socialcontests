@@ -622,7 +622,11 @@ export class PinballEngine {
       }
 
       this.limitBallSpeed();
-      this.emit('flipper-hit', { id: cfg.id, impact: Math.abs(relativeNormal) });
+      this.emit('flipper-hit', {
+        id: cfg.id,
+        impact: Math.abs(relativeNormal),
+        pressed: Boolean(flipper.pressed)
+      });
     }
   }
 

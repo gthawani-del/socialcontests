@@ -12,7 +12,7 @@ document.documentElement.dataset.product = 'cricket-pinball';
 
 const saved = readPreferences();
 const lobbyState = {
-  mode: saved.mode || 'CPU',
+  mode: 'CPU',
   format: saved.format || 'ONE_OVER',
   difficulty: saved.difficulty || 'MEDIUM'
 };
@@ -53,11 +53,8 @@ app.innerHTML = `
               <button type="button" class="cricket-mode" data-mode="CPU">
                 <span>01</span><strong>PLAY VS CPU</strong><small>Solo competitive match</small>
               </button>
-              <button type="button" class="cricket-mode" data-mode="LOCAL">
-                <span>02</span><strong>LOCAL 2 PLAYER</strong><small>Two players, one device</small>
-              </button>
               <a class="cricket-mode cricket-mode-link" href="/cricket-pinball/watch/demo">
-                <span>03</span><strong>WATCH MATCHES</strong><small>Spectator mode</small>
+                <span>02</span><strong>WATCH MATCHES</strong><small>Spectator mode</small>
               </a>
             </div>
           </section>
@@ -298,8 +295,7 @@ function summaryLabel() {
     TWO_OVER: '2 OVERS'
   }[lobbyState.format];
 
-  const modeLabel = lobbyState.mode === 'LOCAL' ? 'LOCAL 2 PLAYER' : 'VS CPU';
-  return `${formatLabel} · ${lobbyState.difficulty} · ${modeLabel}`;
+  return `${formatLabel} · ${lobbyState.difficulty} · PLAYER 1 VS CPU`;
 }
 
 function readPreferences() {

@@ -8,6 +8,7 @@ export function createCricketGameplayAdapter({
   let resolved = true;
   let liveStartedAt = 0;
   let stalledSince = null;
+  let battingContact = false;
   const zones = (tableConfig.deliveryZones || []).filter((zone) => zone.terminal);
   const unsubs = [];
 
@@ -15,6 +16,7 @@ export function createCricketGameplayAdapter({
     resolved = false;
     liveStartedAt = performanceNow();
     stalledSince = null;
+    battingContact = false;
   }
 
   function resolve(type, metadata = {}) {
@@ -39,6 +41,10 @@ export function createCricketGameplayAdapter({
     ) {
       return;
     }
+
+    // Cricket runs can only exist after the batter has actually played the ball.
+    // The outbound bowling path is never a scoring path.
+    if (!battingContact) return;
 
     for (const zone of zones) {
       if (zone.direction === 'RETURN' && engine.ball.velocity.z >= -0.05) continue;
@@ -78,6 +84,10 @@ export function createCricketGameplayAdapter({
       resolve('DOT', { reason: 'TIMEOUT' });
     }
   }
+
+  unsubs.push(engine.on('flipper-hit', ({ pressed = false } = {}) => {
+    if (!resolved && matchEngine.getState().deliveryOpen && pressed) battingContact = true;
+  }));
 
   unsubs.push(engine.on('drain', ({ safetyReset = false } = {}) => {
     resolve('WICKET', { reason: safetyReset ? 'SAFETY_DRAIN' : 'DRAIN' });
