@@ -1,9 +1,139 @@
 {
-  "version": 6,
+  "version": 7,
   "product": "CRICKET_PINBALL",
   "world": {
     "glb": "/models/cricket-world-v2.glb",
-    "embeddedTextures": true
+    "embeddedTextures": true,
+    "componentBindingMode": "GLB_MESH",
+    "componentBindings": [
+      {
+        "id": "playfield",
+        "treatment": "SKIN",
+        "role": "PLAYFIELD",
+        "matchTokens": [
+          "playfield",
+          "pitch",
+          "field",
+          "ground"
+        ]
+      },
+      {
+        "id": "bowler",
+        "treatment": "KEEP",
+        "role": "BOWLER_VISUAL",
+        "matchTokens": [
+          "bowler"
+        ]
+      },
+      {
+        "id": "wicket",
+        "treatment": "FUNCTIONAL",
+        "role": "WICKET",
+        "matchTokens": [
+          "wicket",
+          "stump"
+        ]
+      },
+      {
+        "id": "four-ramp",
+        "treatment": "FUNCTIONAL",
+        "role": "FOUR",
+        "matchTokens": [
+          "four",
+          "4_ramp",
+          "4-ramp"
+        ]
+      },
+      {
+        "id": "six-ramp",
+        "treatment": "FUNCTIONAL",
+        "role": "SIX",
+        "matchTokens": [
+          "six",
+          "6_ramp",
+          "6-ramp"
+        ]
+      },
+      {
+        "id": "single-target",
+        "treatment": "FUNCTIONAL",
+        "role": "ONE",
+        "matchTokens": [
+          "single",
+          "one",
+          "target_1",
+          "target1"
+        ]
+      },
+      {
+        "id": "two-target",
+        "treatment": "FUNCTIONAL",
+        "role": "TWO",
+        "matchTokens": [
+          "double",
+          "two",
+          "target_2",
+          "target2"
+        ]
+      },
+      {
+        "id": "bat-left",
+        "treatment": "FUNCTIONAL",
+        "role": "BAT_LEFT",
+        "meshNames": [
+          "Flipper_Left"
+        ],
+        "matchTokens": [
+          "flipper_left",
+          "left_bat",
+          "bat_left"
+        ]
+      },
+      {
+        "id": "bat-right",
+        "treatment": "FUNCTIONAL",
+        "role": "BAT_RIGHT",
+        "meshNames": [
+          "Flipper_Right"
+        ],
+        "matchTokens": [
+          "flipper_right",
+          "right_bat",
+          "bat_right"
+        ]
+      },
+      {
+        "id": "pavilion",
+        "treatment": "SKIN",
+        "role": "DISPLAY",
+        "matchTokens": [
+          "pavilion",
+          "scoreboard"
+        ]
+      },
+      {
+        "id": "stands",
+        "treatment": "SKIN",
+        "role": "ENVIRONMENT",
+        "matchTokens": [
+          "stand",
+          "crowd",
+          "stadium"
+        ]
+      },
+      {
+        "id": "structure",
+        "treatment": "KEEP",
+        "role": "STRUCTURE",
+        "matchTokens": [
+          "rail",
+          "frame",
+          "light",
+          "lamp",
+          "support"
+        ]
+      }
+    ]
   },
   "physics": {
     "fixedStep": 0.008333333333333333,
@@ -256,158 +386,8 @@
     }
   ],
   "theme": {
-    "pack": "cricket-theme-v2",
-    "renderer": "explicit-overlay-surfaces",
-    "criticalAssets": "verified-cricket-source-art"
-  },
-  "themeSurfaces": [
-    {
-      "id": "playfield",
-      "asset": "playfield",
-      "position": [
-        0,
-        0.715,
-        0.08
-      ],
-      "size": [
-        2.92,
-        4.92
-      ],
-      "rotationDeg": [
-        -90,
-        0,
-        0
-      ],
-      "opacity": 1,
-      "depthWrite": false,
-      "renderOrder": 2
-    },
-    {
-      "id": "four-lane",
-      "asset": "fourLane",
-      "position": [
-        -1.06,
-        0.755,
-        -0.35
-      ],
-      "size": [
-        0.42,
-        2.05
-      ],
-      "rotationDeg": [
-        -90,
-        0,
-        -9
-      ],
-      "opacity": 0.96,
-      "depthWrite": false,
-      "renderOrder": 3
-    },
-    {
-      "id": "six-lane",
-      "asset": "sixLane",
-      "position": [
-        1.06,
-        0.755,
-        -0.35
-      ],
-      "size": [
-        0.42,
-        2.05
-      ],
-      "rotationDeg": [
-        -90,
-        0,
-        9
-      ],
-      "opacity": 0.96,
-      "depthWrite": false,
-      "renderOrder": 3
-    },
-    {
-      "id": "wicket",
-      "asset": "wicket",
-      "position": [
-        0,
-        1.38,
-        -2.48
-      ],
-      "size": [
-        0.82,
-        0.68
-      ],
-      "rotationDeg": [
-        0,
-        0,
-        0
-      ],
-      "opacity": 1,
-      "depthWrite": false,
-      "renderOrder": 5
-    },
-    {
-      "id": "pavilion",
-      "asset": "pavilion",
-      "position": [
-        0,
-        1.78,
-        -3.12
-      ],
-      "size": [
-        3.35,
-        1.72
-      ],
-      "rotationDeg": [
-        0,
-        0,
-        0
-      ],
-      "opacity": 0.94,
-      "depthWrite": false,
-      "renderOrder": 1
-    },
-    {
-      "id": "stand-left",
-      "asset": "stand",
-      "position": [
-        -2.34,
-        1.08,
-        -0.05
-      ],
-      "size": [
-        1.72,
-        1.28
-      ],
-      "rotationDeg": [
-        0,
-        24,
-        0
-      ],
-      "opacity": 0.9,
-      "depthWrite": false,
-      "renderOrder": 1
-    },
-    {
-      "id": "stand-right",
-      "asset": "stand",
-      "position": [
-        2.34,
-        1.08,
-        -0.05
-      ],
-      "size": [
-        1.72,
-        1.28
-      ],
-      "rotationDeg": [
-        0,
-        -24,
-        0
-      ],
-      "opacity": 0.9,
-      "depthWrite": false,
-      "renderOrder": 1,
-      "flipX": true
-    }
-  ]
+    "pack": "cricket-glb-native",
+    "renderer": "glb-component-bindings",
+    "criticalAssets": "embedded-glb-materials"
+  }
 }

@@ -7,12 +7,6 @@ import { createCricketGameplayAdapter } from './gameplay-adapter.js';
 import { chooseCpuBowling, createCpuBattingAI } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 import '../ui/play.css';
-import cricketPlayfieldUrl from '../../../assets/cricket/world/playfield.png?url';
-import fourLaneUrl from '../../../assets/cricket/world/four-ramp.png?url';
-import sixLaneUrl from '../../../assets/cricket/world/six-ramp.png?url';
-import wicketPanelUrl from '../../../assets/cricket/world/wicket.png?url';
-import pavilionUrl from '../../../assets/cricket/theme-v2/pavilion.webp?url';
-import standUrl from '../../../assets/cricket/theme-v2/stand.webp?url';
 
 const WORLD_URL = '/models/cricket-world-v2.glb';
 const WORLD_BYTES = 9271344;
@@ -225,15 +219,6 @@ scene.add(pitchGlow);
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
 const clock = new THREE.Clock();
-const textureLoader = new THREE.TextureLoader();
-const cricketThemeUrls = {
-  playfield: cricketPlayfieldUrl,
-  fourLane: fourLaneUrl,
-  sixLane: sixLaneUrl,
-  wicket: wicketPanelUrl,
-  pavilion: pavilionUrl,
-  stand: standUrl
-};
 
 bindUi();
 boot();
@@ -254,7 +239,7 @@ async function boot() {
     modelRoot = gltf.scene;
     prepareWorld(modelRoot);
     scene.add(modelRoot);
-    await applyCricketTheme();
+    bindCricketWorldComponents(modelRoot);
     createMechanics();
     createCoin();
     setupStadiumScoreboard();
@@ -341,83 +326,43 @@ function normalizeEmbeddedMaterials(object, maxAnisotropy) {
   }
 }
 
-function prepareCricketThemeTexture(texture, flipX = false) {
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-  texture.wrapS = flipX ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
-  texture.wrapT = THREE.ClampToEdgeWrapping;
+function findMappedMeshes(root, binding) {
+  const names = new Set((binding.meshNames || []).map((name) => String(name).toLowerCase()));
+  const tokens = (binding.matchTokens || []).map((token) => String(token).toLowerCase());
+  const matches = [];
 
-  if (flipX) {
-    texture.repeat.x = -1;
-    texture.offset.x = 1;
-  }
-
-  texture.needsUpdate = true;
-  return texture;
-}
-
-async function loadCricketThemeTextures() {
-  const entries = await Promise.all(
-    Object.entries(cricketThemeUrls).map(async ([name, url]) => {
-      const texture = await textureLoader.loadAsync(url);
-      return [name, prepareCricketThemeTexture(texture)];
-    })
-  );
-  return Object.fromEntries(entries);
-}
-
-function makeCricketThemePlane(texture, surface) {
-  const material = new THREE.MeshBasicMaterial({
-    map: texture,
-    transparent: Number(surface.opacity ?? 1) < 1,
-    opacity: Number(surface.opacity ?? 1),
-    depthWrite: surface.depthWrite ?? false,
-    side: THREE.DoubleSide,
-    toneMapped: false,
-    polygonOffset: true,
-    polygonOffsetFactor: -3,
-    polygonOffsetUnits: -3
+  root.traverse((object) => {
+    if (!object.isMesh) return;
+    const meshName = String(object.name || '').toLowerCase();
+    const materialNames = (Array.isArray(object.material) ? object.material : [object.material])
+      .map((material) => String(material?.name || '').toLowerCase());
+    const haystack = [meshName, ...materialNames].join(' ');
+    if (names.has(meshName) || tokens.some((token) => haystack.includes(token))) matches.push(object);
   });
 
-  const width = Number(surface.size?.[0] ?? 1);
-  const height = Number(surface.size?.[1] ?? 1);
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
-
-  mesh.position.set(
-    Number(surface.position?.[0] ?? 0),
-    Number(surface.position?.[1] ?? 0),
-    Number(surface.position?.[2] ?? 0)
-  );
-
-  const rotation = surface.rotationDeg || [0, 0, 0];
-  mesh.rotation.set(
-    THREE.MathUtils.degToRad(Number(rotation[0] || 0)),
-    THREE.MathUtils.degToRad(Number(rotation[1] || 0)),
-    THREE.MathUtils.degToRad(Number(rotation[2] || 0))
-  );
-
-  mesh.renderOrder = Number(surface.renderOrder ?? 2);
-  mesh.name = `CricketTheme_${surface.id}`;
-  mesh.frustumCulled = false;
-  return mesh;
+  return [...new Set(matches)];
 }
 
-async function applyCricketTheme() {
-  const textures = await loadCricketThemeTextures();
+function bindCricketWorldComponents(root) {
+  const bindings = tableConfig.world?.componentBindings || [];
+  const registry = {};
 
-  for (const surface of tableConfig.themeSurfaces || []) {
-    const source = textures[surface.asset];
-    if (!source) {
-      console.warn('[Cricket Theme] Missing asset', surface.asset, 'for', surface.id);
-      continue;
-    }
-
-    const texture = surface.flipX
-      ? prepareCricketThemeTexture(source.clone(), true)
-      : source;
-
-    scene.add(makeCricketThemePlane(texture, surface));
+  for (const binding of bindings) {
+    const meshes = findMappedMeshes(root, binding);
+    registry[binding.id] = meshes;
+    meshes.forEach((mesh) => {
+      mesh.userData.cricketComponent = binding.id;
+      mesh.userData.cricketTreatment = binding.treatment;
+      mesh.userData.cricketRole = binding.role || null;
+    });
+    console.info('[Cricket GLB]', binding.id, '→', meshes.map((mesh) => mesh.name));
   }
+
+  modelRoot.userData.cricketComponents = registry;
+}
+
+function getCricketComponent(id) {
+  return modelRoot?.userData?.cricketComponents?.[id] || [];
 }
 
 function createMechanics() {
@@ -463,13 +408,10 @@ function createMechanics() {
   ballTrail.renderOrder = 10;
   scene.add(ballTrail);
 
-  // The GLB contains pale placeholder flipper meshes. Hide them and use cricket-bat paddles.
-  ['Flipper_Left', 'Flipper_Right'].forEach((name) => {
-    const object = modelRoot.getObjectByName(name);
-    if (object) object.visible = false;
-  });
-  leftFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[0]);
-  rightFlipperVisual = makeCricketBatFlipper(tableConfig.flippers[1]);
+  // Use the authored GLB flipper/bat meshes as the visible controls.
+  // Only create a fallback bat if a mapped GLB mesh is genuinely absent.
+  leftFlipperVisual = getCricketComponent('bat-left')[0] || makeCricketBatFlipper(tableConfig.flippers[0]);
+  rightFlipperVisual = getCricketComponent('bat-right')[0] || makeCricketBatFlipper(tableConfig.flippers[1]);
 
   createAimGuide();
 }
