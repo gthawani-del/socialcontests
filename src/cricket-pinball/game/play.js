@@ -248,10 +248,13 @@ async function boot() {
     prepareWorld(modelRoot);
     scene.add(modelRoot);
     bindCricketWorldComponents(modelRoot);
+
+    // Physics must exist before mechanics bind authored GLB bats to flipper state.
+    engine = new PinballEngine(tableConfig);
     createMechanics();
     createCoin();
     setupStadiumScoreboard();
-    engine = new PinballEngine(tableConfig);
+
     cpuBattingAI = createCpuBattingAI({
       engine,
       tableConfig,
