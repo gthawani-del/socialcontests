@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "product": "CRICKET_PINBALL",
   "world": {
     "glb": "/models/cricket-world-v2.glb",
@@ -296,16 +296,22 @@
     "tapCharge": 0.34,
     "bowlingLines": {
       "LEFT": {
-        "directionOffsetX": -0.055,
-        "exitKickX": -0.42
+        "target": [
+          -0.62,
+          1.55
+        ]
       },
       "CENTRE": {
-        "directionOffsetX": 0,
-        "exitKickX": -0.18
+        "target": [
+          0,
+          1.55
+        ]
       },
       "RIGHT": {
-        "directionOffsetX": 0.055,
-        "exitKickX": 0.1
+        "target": [
+          0.62,
+          1.55
+        ]
       }
     }
   },

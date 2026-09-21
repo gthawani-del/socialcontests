@@ -118,8 +118,9 @@ export class PinballEngine {
       : Math.max(this.getLauncherCharge(), cfg.tapCharge);
     const line = String(options?.line || 'CENTRE').toUpperCase();
     const lineConfig = cfg.bowlingLines?.[line] || null;
+    const usesTargetLine = Array.isArray(lineConfig?.target);
     const direction = normalize2(
-      cfg.direction[0] + Number(lineConfig?.directionOffsetX || 0),
+      cfg.direction[0] + (usesTargetLine ? 0 : Number(lineConfig?.directionOffsetX || 0)),
       cfg.direction[1]
     );
     const power = cfg.minPower + (cfg.maxPower - cfg.minPower) * charge;
@@ -437,12 +438,33 @@ export class PinballEngine {
 
     if (exitReached) {
       this.launcher.inLane = false;
-      const exitKick = this.launcher.exitKick || cfg.exitKick;
-      this.ball.velocity.x += exitKick[0];
-      this.ball.velocity.z += exitKick[1];
+      const lineConfig = cfg.bowlingLines?.[this.launcher.deliveryLine] || null;
+      const target = lineConfig?.target;
+
+      if (Array.isArray(target) && target.length >= 2) {
+        // Cricket target-based delivery: preserve launch speed, but aim the
+        // ball from the physical lane exit toward the selected batting line.
+        const speed = Math.max(
+          Math.hypot(this.ball.velocity.x, this.ball.velocity.z),
+          cfg.minPower || 0
+        );
+        const aimed = normalize2(
+          Number(target[0]) - this.ball.position.x,
+          Number(target[1]) - this.ball.position.z
+        );
+        this.ball.velocity.x = aimed.x * speed;
+        this.ball.velocity.z = aimed.z * speed;
+      } else {
+        // Backward-compatible generic pinball behaviour.
+        const exitKick = this.launcher.exitKick || cfg.exitKick;
+        this.ball.velocity.x += exitKick[0];
+        this.ball.velocity.z += exitKick[1];
+      }
+
       this.emit('launcher-exit', {
         line: this.launcher.deliveryLine,
-        deliveryType: this.launcher.deliveryType
+        deliveryType: this.launcher.deliveryType,
+        target: Array.isArray(target) ? [...target] : null
       });
     }
   }

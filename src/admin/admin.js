@@ -576,9 +576,8 @@ function renderCricketPinballAdmin() {
       slider('Linear damping', 'cricketTable.physics.linearDamping', 0, 1, 0.01),
       slider('Rolling friction', 'cricketTable.physics.rollingFriction', 0, 0.5, 0.005)
     ])
-  ]) + `<div class="repeat-grid cricket-section-gap">${['LEFT','CENTRE','RIGHT'].map(line => card(`${line} bowling line`,'Line-specific trajectory tuning.',[
-    slider('Direction offset X', `cricketTable.launcher.bowlingLines.${line}.directionOffsetX`, -0.6, 0.6, 0.01),
-    slider('Exit kick X', `cricketTable.launcher.bowlingLines.${line}.exitKickX`, -3, 3, 0.05)
+  ]) + `<div class="repeat-grid cricket-section-gap">${['LEFT','CENTRE','RIGHT'].map(line => card(`${line} bowling line`,'Aim point after the ball exits the physical launcher lane.',[
+    vector('Target point', `cricketTable.launcher.bowlingLines.${line}.target`, -4, 4, 0.01, ['X','Z'])
   ],true)).join('')}</div>`;
 
   const batting = repeatedCards('cricketTable.flippers', 'Cricket bat', [
