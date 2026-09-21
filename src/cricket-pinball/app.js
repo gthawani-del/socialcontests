@@ -21,85 +21,77 @@ const lobbyState = {
 app.innerHTML = `
   <main class="cricket-pinball-shell">
     <canvas id="cricketWorld"></canvas>
+    <div class="world-vignette" aria-hidden="true"></div>
+
+    <header class="cricket-sitebar">
+      <a class="infinite-brand" href="/" aria-label="Infinite Pinball home">
+        <img src="/homepage/logos/01_logo_horizontal_transparent.webp" alt="Infinite Pinball" />
+      </a>
+      <nav aria-label="Cricket Pinball navigation">
+        <a href="/">Worlds</a>
+        <span>Cricket Pinball</span>
+      </nav>
+    </header>
 
     <section class="cricket-lobby" id="cricketLobby" aria-labelledby="cricketLobbyTitle" hidden>
-      <div class="cricket-lobby-panel">
-        <div class="cricket-lobby-brand">
-          <p>CRICKET PINBALL</p>
-          <h1 id="cricketLobbyTitle">BAT WITH FLIPPERS. BOWL THE DELIVERY.</h1>
-          <span>Short-format cricket. One pinball = one cricket ball.</span>
-        </div>
+      <div class="cricket-identity">
+        <p>SPORTS WORLD</p>
+        <h1 id="cricketLobbyTitle">CRICKET<br>PINBALL</h1>
+        <span>Bat with flippers. Bowl the delivery.</span>
+      </div>
+
+      <aside class="cricket-lobby-panel" aria-label="Match setup">
+        <div class="panel-kicker"><span>QUICK MATCH</span><b>SET YOUR MATCH</b></div>
 
         <section class="quick-match" id="quickMatch" hidden>
-          <span>WELCOME BACK</span>
-          <strong>QUICK MATCH</strong>
-          <p id="quickMatchSummary"></p>
-          <button type="button" id="quickPlay">PLAY</button>
+          <div class="quick-summary">
+            <span>READY TO PLAY</span>
+            <strong id="quickMatchSummary"></strong>
+          </div>
+          <button type="button" id="quickPlay" class="cricket-start">▶ PLAY MATCH</button>
           <button type="button" class="text-button" id="changeMatch">CHANGE MATCH</button>
         </section>
 
         <section class="setup-flow" id="setupFlow">
-          <div class="setup-progress" aria-label="Match setup progress">
-            <span class="active" data-step-dot="1">1 MODE</span>
-            <span data-step-dot="2">2 FORMAT</span>
-            <span data-step-dot="3">3 DIFFICULTY</span>
+          <div class="setup-step" data-step="1">
+            <div class="control-row">
+              <span class="control-label">MODE</span>
+              <div class="cricket-segmented mode-segmented">
+                <button type="button" class="active" data-mode="CPU">PLAYER VS CPU</button>
+                <button type="button" class="is-locked" disabled title="Local Player vs Player gameplay is not enabled yet">PLAYER VS PLAYER <small>SOON</small></button>
+              </div>
+            </div>
+            <div class="control-row">
+              <span class="control-label">OVERS</span>
+              <div class="cricket-segmented">
+                <button type="button" data-format="LAST_3">3 BALLS</button>
+                <button type="button" data-format="ONE_OVER">1 OVER</button>
+                <button type="button" data-format="TWO_OVER">2 OVERS</button>
+              </div>
+            </div>
+            <div class="control-row">
+              <span class="control-label">DIFFICULTY</span>
+              <div class="cricket-segmented">
+                <button type="button" data-difficulty="EASY">EASY</button>
+                <button type="button" data-difficulty="MEDIUM">NORMAL</button>
+                <button type="button" data-difficulty="HARD">HARD</button>
+              </div>
+            </div>
+            <button type="button" class="cricket-start" id="cricketStart">▶ PLAY MATCH<span></span></button>
           </div>
-
-          <section class="setup-step" data-step="1">
-            <div class="cricket-selector-heading">
-              <span>CHOOSE MODE</span>
-              <small>How do you want to play?</small>
-            </div>
-            <div class="cricket-mode-grid" aria-label="Choose match mode">
-              <button type="button" class="cricket-mode" data-mode="CPU">
-                <span>01</span><strong>PLAY VS CPU</strong><small>Solo competitive match</small>
-              </button>
-              <a class="cricket-mode cricket-mode-link" href="/cricket-pinball/watch/demo">
-                <span>02</span><strong>WATCH MATCHES</strong><small>Spectator mode</small>
-              </a>
-            </div>
-          </section>
-
-          <section class="setup-step" data-step="2" hidden>
-            <div class="cricket-selector-heading">
-              <span>CHOOSE FORMAT</span>
-              <small>How long should the innings be?</small>
-            </div>
-            <div class="cricket-segmented">
-              <button type="button" data-format="LAST_3">LAST 3 BALLS</button>
-              <button type="button" data-format="ONE_OVER">1 OVER</button>
-              <button type="button" data-format="TWO_OVER">2 OVERS</button>
-            </div>
-            <button type="button" class="text-button setup-back" data-back="1">← BACK</button>
-          </section>
-
-          <section class="setup-step" data-step="3" hidden>
-            <div class="cricket-selector-heading">
-              <span>CHOOSE DIFFICULTY</span>
-              <small>Independent from match length</small>
-            </div>
-            <div class="cricket-segmented">
-              <button type="button" data-difficulty="EASY">EASY</button>
-              <button type="button" data-difficulty="MEDIUM">MEDIUM</button>
-              <button type="button" data-difficulty="HARD">HARD</button>
-            </div>
-            <button type="button" class="cricket-start" id="cricketStart">
-              START MATCH
-              <span></span>
-            </button>
-            <button type="button" class="text-button setup-back" data-back="2">← BACK</button>
-          </section>
         </section>
-      </div>
+        <div class="panel-footer"><span>SKILL</span><i></i><span>TIMING</span><i></i><span>CRICKET</span></div>
+      </aside>
     </section>
 
     <section class="cricket-loading" id="cricketLoading" aria-live="polite">
+      <img src="/homepage/logos/01_logo_horizontal_transparent.webp" alt="" />
       <p>CRICKET PINBALL</p>
       <strong id="cricketLoadingPercent">0%</strong>
       <span id="cricketLoadingStatus">Preparing stadium…</span>
     </section>
   </main>
-`;
+`
 
 const canvas = document.querySelector('#cricketWorld');
 const lobby = document.querySelector('#cricketLobby');
