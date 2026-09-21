@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "product": "CRICKET_PINBALL",
   "world": {
     "glb": "/models/cricket-world-v2.glb",
@@ -246,7 +246,7 @@
       "length": 0.94,
       "radius": 0.13,
       "restAngleDeg": 18,
-      "activeAngleDeg": 55,
+      "activeAngleDeg": -19,
       "speedDegPerSec": 720,
       "returnSpeedDegPerSec": 520,
       "restitution": 0.68,
@@ -262,7 +262,7 @@
       "length": 0.94,
       "radius": 0.13,
       "restAngleDeg": 162,
-      "activeAngleDeg": 125,
+      "activeAngleDeg": 199,
       "speedDegPerSec": 720,
       "returnSpeedDegPerSec": 520,
       "restitution": 0.68,
