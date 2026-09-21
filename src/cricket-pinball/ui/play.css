@@ -718,3 +718,21 @@ button, a { font: inherit; }
 }
 
 #matchHud + .scoreboard{display:none!important}
+
+/* Unified Cricket scoreboard: one container, three information columns. */
+#matchHud{
+  display:grid!important;
+  overflow:hidden!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.28)!important;
+}
+#matchHud>div{
+  border-radius:0!important;
+  box-shadow:none!important;
+  margin:0!important;
+}
+#matchHud .hud-score,
+#matchHud .hud-chase,
+#matchHud .hud-role{
+  position:relative!important;
+}
+#stadiumScoreboard{display:none!important}

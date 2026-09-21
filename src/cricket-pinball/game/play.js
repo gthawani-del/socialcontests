@@ -128,9 +128,7 @@ app.innerHTML = `
       </div>
     </section>
 
-    <section class="stadium-scoreboard" id="stadiumScoreboard">
-      <span>CRICKET PINBALL</span><strong>READY</strong>
-    </section>
+    <section class="stadium-scoreboard" id="stadiumScoreboard" hidden aria-hidden="true"></section>
 
     <section class="innings-intro" id="inningsIntro" hidden>
       <p>INNINGS 1</p>
