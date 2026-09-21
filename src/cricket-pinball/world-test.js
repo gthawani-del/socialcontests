@@ -11,7 +11,7 @@ app.innerHTML = `
       GLB ONLY · cricket-world-v2.glb
     </div>
     <div id="status" style="position:fixed;right:16px;top:16px;z-index:2;color:white;font:600 12px system-ui">Loading…</div>
-    <aside id="meshPanel"><h2>GLB MESH INVENTORY</h2><div id="meshSummary">Loading mesh hierarchy…</div><div id="meshRows"></div></aside>
+    <aside id="meshPanel"><h2>GLB COMPONENT MAP</h2><div id="meshSummary">Loading mesh hierarchy…</div><button id="copyMap" style="margin:0 0 8px;padding:6px 9px;font:700 10px system-ui;background:#d5a52b;color:#07110c;border:0;border-radius:5px;cursor:pointer">COPY MAP JSON</button><div id="meshRows"></div></aside>
   </main>
 `;
 
@@ -19,6 +19,26 @@ const canvas = document.querySelector('#world');
 const status = document.querySelector('#status');
 const meshSummary = document.querySelector('#meshSummary');
 const meshRows = document.querySelector('#meshRows');
+const copyMap = document.querySelector('#copyMap');
+
+function classifyCricketMesh(name = '', material = '') {
+  const value = `${name} ${material}`.toLowerCase();
+  const has = (...tokens) => tokens.some((token) => value.includes(token));
+
+  if (has('bowler', 'bowling')) return { component: 'bowler', treatment: 'KEEP', role: 'BOWLER_VISUAL' };
+  if (has('flipper', 'bat_left', 'left_bat')) return { component: 'bat', treatment: 'FUNCTIONAL', role: 'BAT' };
+  if (has('bat_right', 'right_bat')) return { component: 'bat', treatment: 'FUNCTIONAL', role: 'BAT' };
+  if (has('wicket', 'stump')) return { component: 'wicket', treatment: 'FUNCTIONAL', role: 'WICKET' };
+  if (has('four', '4_', '4-', 'boundary4')) return { component: 'four-ramp', treatment: 'FUNCTIONAL', role: 'FOUR' };
+  if (has('six', '6_', '6-', 'boundary6')) return { component: 'six-ramp', treatment: 'FUNCTIONAL', role: 'SIX' };
+  if (has('pitch', 'playfield', 'field', 'ground', 'base')) return { component: 'playfield', treatment: 'SKIN', role: 'PLAYFIELD' };
+  if (has('pavilion', 'scoreboard')) return { component: 'pavilion', treatment: 'SKIN', role: 'DISPLAY' };
+  if (has('stand', 'crowd', 'stadium')) return { component: 'stands', treatment: 'SKIN', role: 'ENVIRONMENT' };
+  if (has('rail', 'wall', 'frame', 'post', 'light', 'lamp', 'support')) return { component: 'structure', treatment: 'KEEP', role: 'STRUCTURE' };
+  if (has('target', 'one', 'single')) return { component: 'single-target', treatment: 'FUNCTIONAL', role: 'ONE' };
+  if (has('two', 'double')) return { component: 'two-target', treatment: 'FUNCTIONAL', role: 'TWO' };
+  return { component: 'unclassified', treatment: 'REVIEW', role: null };
+}
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -68,14 +88,17 @@ loader.load(
       const localBox = new THREE.Box3().setFromObject(object);
       const localSize = localBox.getSize(new THREE.Vector3());
       const localCenter = localBox.getCenter(new THREE.Vector3());
+      const name = object.name || '(unnamed mesh)';
+      const material = Array.isArray(object.material)
+        ? object.material.map((m) => m?.name || '(unnamed)').join(', ')
+        : object.material?.name || '(unnamed)';
       inventory.push({
         object,
-        name: object.name || '(unnamed mesh)',
-        material: Array.isArray(object.material)
-          ? object.material.map((m) => m?.name || '(unnamed)').join(', ')
-          : object.material?.name || '(unnamed)',
+        name,
+        material,
         size: localSize,
-        center: localCenter
+        center: localCenter,
+        ...classifyCricketMesh(name, material)
       });
     });
 
@@ -83,7 +106,7 @@ loader.load(
     meshRows.innerHTML = inventory.map((item, index) => `
       <div class="mesh-row">
         <small>${index + 1}</small>
-        <div><strong>${item.name}</strong><br><small>mat: ${item.material} · size: ${item.size.x.toFixed(2)} × ${item.size.y.toFixed(2)} × ${item.size.z.toFixed(2)} · center: ${item.center.x.toFixed(2)}, ${item.center.y.toFixed(2)}, ${item.center.z.toFixed(2)}</small></div>
+        <div><strong>${item.name}</strong> <small>[${item.treatment} · ${item.component}]</small><br><small>mat: ${item.material} · size: ${item.size.x.toFixed(2)} × ${item.size.y.toFixed(2)} × ${item.size.z.toFixed(2)} · center: ${item.center.x.toFixed(2)}, ${item.center.y.toFixed(2)}, ${item.center.z.toFixed(2)}</small></div>
         <button data-mesh-index="${index}" data-on="false">ISOLATE</button>
       </div>
     `).join('');
@@ -104,6 +127,29 @@ loader.load(
       }
     });
 
+    window.__CRICKET_GLB_COMPONENT_MAP__ = inventory.map((item, index) => ({
+      index: index + 1,
+      mesh: item.name,
+      material: item.material,
+      component: item.component,
+      treatment: item.treatment,
+      role: item.role,
+      size: [item.size.x, item.size.y, item.size.z].map((n) => Number(n.toFixed(4))),
+      center: [item.center.x, item.center.y, item.center.z].map((n) => Number(n.toFixed(4)))
+    }));
+
+    copyMap.onclick = async () => {
+      const json = JSON.stringify(window.__CRICKET_GLB_COMPONENT_MAP__, null, 2);
+      try {
+        await navigator.clipboard.writeText(json);
+        copyMap.textContent = 'COPIED';
+      } catch {
+        console.log(json);
+        copyMap.textContent = 'MAP IN CONSOLE';
+      }
+      setTimeout(() => { copyMap.textContent = 'COPY MAP JSON'; }, 1200);
+    };
+
     console.table(inventory.map((item, index) => ({
       index: index + 1,
       mesh: item.name,
@@ -113,7 +159,10 @@ loader.load(
       sizeZ: item.size.z.toFixed(3),
       centerX: item.center.x.toFixed(3),
       centerY: item.center.y.toFixed(3),
-      centerZ: item.center.z.toFixed(3)
+      centerZ: item.center.z.toFixed(3),
+      component: item.component,
+      treatment: item.treatment,
+      role: item.role || ''
     })));
 
     const box = new THREE.Box3().setFromObject(root);
