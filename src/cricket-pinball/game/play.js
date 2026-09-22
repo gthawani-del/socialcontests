@@ -314,6 +314,15 @@ function prepareWorld(root) {
 
   root.traverse((object) => {
     if (object.isMesh) {
+      const meshName = String(object.name || '');
+      const materialNames = (Array.isArray(object.material) ? object.material : [object.material])
+        .map((material) => String(material?.name || ''))
+        .join(' ');
+      if (/^FielderV2_/i.test(meshName) || /MAT_Fielder/i.test(materialNames)) {
+        object.visible = false;
+        object.userData.cricketHiddenReason = 'FIELDERV2_VISUAL_REMOVED';
+        return;
+      }
       object.castShadow = true;
       object.receiveShadow = true;
       normalizeEmbeddedMaterials(object, maxAnisotropy);
