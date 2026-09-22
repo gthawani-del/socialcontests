@@ -104,36 +104,61 @@ loader.load(
 
     meshSummary.textContent = `${inventory.length} meshes · click ISOLATE to inspect geometry`;
 
-    // Bowler-only structural audit. Read geometry/material metadata; do not mutate GLB.
-    const bowlerDetails = inventory
-      .filter((item) => item.component === 'bowler')
-      .map((item) => {
-        const geometry = item.object.geometry;
-        const materials = (Array.isArray(item.object.material) ? item.object.material : [item.object.material])
-          .filter(Boolean)
-          .map((material) => ({
-            name: material.name || '(unnamed)',
-            type: material.type,
-            hasMap: Boolean(material.map),
-            mapName: material.map?.name || null
-          }));
-        return {
-          mesh: item.name,
-          vertices: geometry?.attributes?.position?.count || 0,
-          uvCount: geometry?.attributes?.uv?.count || 0,
-          hasUV: Boolean(geometry?.attributes?.uv),
-          groups: geometry?.groups?.length || 0,
-          materials
-        };
-      });
+    // Bowler-only structural audit. Prefer semantic names; if the GLB uses generic
+    // names, locate the character as a compact cluster around the visible bowler zone.
+    const namedBowler = inventory.filter((item) => item.component === 'bowler');
+    const playfieldItems = inventory.filter((item) => item.component === 'playfield');
+    const playfieldBox = playfieldItems.length
+      ? playfieldItems.reduce((box, item) => box.union(new THREE.Box3().setFromObject(item.object)), new THREE.Box3())
+      : new THREE.Box3().setFromObject(root);
+    const fieldSize = playfieldBox.getSize(new THREE.Vector3());
+    const fieldCenter = playfieldBox.getCenter(new THREE.Vector3());
+
+    const geometricCandidates = inventory.filter((item) => {
+      if (item.component !== 'unclassified') return false;
+      const dx = Math.abs(item.center.x - fieldCenter.x);
+      const dz = item.center.z - fieldCenter.z;
+      const compact = item.size.x < fieldSize.x * 0.24 && item.size.z < fieldSize.z * 0.18;
+      const characterHeight = item.size.y > 0.05 && item.size.y < Math.max(1.4, fieldSize.y * 2.5);
+      const centralLane = dx < fieldSize.x * 0.22;
+      const upperHalf = dz < fieldSize.z * 0.18 && dz > -fieldSize.z * 0.48;
+      return compact && characterHeight && centralLane && upperHalf;
+    });
+
+    const candidateSource = namedBowler.length ? namedBowler : geometricCandidates;
+    const bowlerDetails = candidateSource.map((item) => {
+      const geometry = item.object.geometry;
+      const materials = (Array.isArray(item.object.material) ? item.object.material : [item.object.material])
+        .filter(Boolean)
+        .map((material) => ({
+          name: material.name || '(unnamed)',
+          type: material.type,
+          hasMap: Boolean(material.map),
+          mapName: material.map?.name || null
+        }));
+      return {
+        mesh: item.name,
+        inventoryIndex: inventory.indexOf(item) + 1,
+        center: [item.center.x, item.center.y, item.center.z].map((n) => Number(n.toFixed(4))),
+        size: [item.size.x, item.size.y, item.size.z].map((n) => Number(n.toFixed(4))),
+        vertices: geometry?.attributes?.position?.count || 0,
+        uvCount: geometry?.attributes?.uv?.count || 0,
+        hasUV: Boolean(geometry?.attributes?.uv),
+        groups: geometry?.groups?.length || 0,
+        materials
+      };
+    });
     const fullUV = bowlerDetails.length > 0 && bowlerDetails.every((item) => item.hasUV);
     const materialCount = bowlerDetails.reduce((sum, item) => sum + item.materials.length, 0);
     const mappedCount = bowlerDetails.reduce((sum, item) => sum + item.materials.filter((m) => m.hasMap).length, 0);
-    const decision = fullUV
-      ? 'TEXTURE_SKIN'
-      : materialCount > 1 ? 'MATERIAL_STYLING' : 'VISUAL_REPLACEMENT';
+    const detection = namedBowler.length ? 'NAME' : bowlerDetails.length ? 'GEOMETRY_CANDIDATES' : 'NOT_FOUND';
+    const decision = detection === 'NAME'
+      ? (fullUV ? 'TEXTURE_SKIN' : materialCount > 1 ? 'MATERIAL_STYLING' : 'VISUAL_REPLACEMENT')
+      : detection === 'GEOMETRY_CANDIDATES' ? 'ISOLATE_CANDIDATES' : 'NOT_FOUND';
+
     window.__CRICKET_BOWLER_AUDIT__ = {
-      meshCount: bowlerDetails.length,
+      detection,
+      candidateCount: bowlerDetails.length,
       fullUV,
       materialCount,
       mappedCount,
@@ -141,11 +166,17 @@ loader.load(
       meshes: bowlerDetails
     };
     console.info('[Cricket GLB] Bowler structural audit', window.__CRICKET_BOWLER_AUDIT__);
-    meshSummary.textContent += ` · Bowler: ${bowlerDetails.length} mesh(es), UV ${fullUV ? 'YES' : 'NO'}, ${materialCount} material(s) → ${decision}`;
+    meshSummary.textContent += detection === 'NAME'
+      ? ` · Bowler: ${bowlerDetails.length} named mesh(es), UV ${fullUV ? 'YES' : 'NO'} → ${decision}`
+      : detection === 'GEOMETRY_CANDIDATES'
+        ? ` · Bowler name absent · ${bowlerDetails.length} geometric candidate(s) found → isolate highlighted candidates`
+        : ' · Bowler name absent · no safe geometric candidates found';
+
+    const candidateIndices = new Set(bowlerDetails.map((item) => item.inventoryIndex));
     meshRows.innerHTML = inventory.map((item, index) => `
-      <div class="mesh-row">
+      <div class="mesh-row" style="${candidateIndices.has(index + 1) ? 'outline:1px solid #d5a52b;background:rgba(213,165,43,.08)' : ''}">
         <small>${index + 1}</small>
-        <div><strong>${item.name}</strong> <small>[${item.treatment} · ${item.component}]</small><br><small>mat: ${item.material} · size: ${item.size.x.toFixed(2)} × ${item.size.y.toFixed(2)} × ${item.size.z.toFixed(2)} · center: ${item.center.x.toFixed(2)}, ${item.center.y.toFixed(2)}, ${item.center.z.toFixed(2)}</small></div>
+        <div><strong>${candidateIndices.has(index + 1) ? 'BOWLER? · ' : ''}${item.name}</strong> <small>[${item.treatment} · ${item.component}]</small><br><small>mat: ${item.material} · size: ${item.size.x.toFixed(2)} × ${item.size.y.toFixed(2)} × ${item.size.z.toFixed(2)} · center: ${item.center.x.toFixed(2)}, ${item.center.y.toFixed(2)}, ${item.center.z.toFixed(2)}</small></div>
         <button data-mesh-index="${index}" data-on="false">ISOLATE</button>
       </div>
     `).join('');
