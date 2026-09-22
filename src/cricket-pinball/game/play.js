@@ -428,25 +428,25 @@ function upgradeStadiumFloodlights(root) {
     const frame = new THREE.Mesh(
       new THREE.BoxGeometry(1.08, 0.64, 0.075),
       new THREE.MeshStandardMaterial({
-        color: 0x172019,
-        metalness: 0.72,
-        roughness: 0.3
+        color: 0x66716c,
+        metalness: 0.68,
+        roughness: 0.24
       })
     );
     frame.castShadow = true;
     rig.add(frame);
 
     const lampMaterial = new THREE.MeshStandardMaterial({
-      color: 0xfff7dc,
-      emissive: 0xfff1bf,
-      emissiveIntensity: 4.5,
-      roughness: 0.18,
+      color: 0xffffff,
+      emissive: 0xfff4d2,
+      emissiveIntensity: 7.5,
+      roughness: 0.12,
       metalness: 0.08
     });
     const reflectorMaterial = new THREE.MeshStandardMaterial({
-      color: 0xb9c2bc,
-      metalness: 0.82,
-      roughness: 0.22
+      color: 0xe1e6e3,
+      metalness: 0.62,
+      roughness: 0.16
     });
 
     const cols = 4;
@@ -473,14 +473,14 @@ function upgradeStadiumFloodlights(root) {
       }
     }
 
-    const beam = new THREE.SpotLight(0xfff2cf, 28, 18, Math.PI / 5.5, 0.58, 1.45);
+    const beam = new THREE.SpotLight(0xfff5dc, 36, 18, Math.PI / 5.5, 0.58, 1.45);
     beam.position.set(0, 0, 0.16);
     beam.castShadow = false;
     rig.add(beam);
     scene.add(beam.target);
     beam.target.position.copy(target);
 
-    const halo = new THREE.PointLight(0xffe9b3, 2.6, 4.2, 2);
+    const halo = new THREE.PointLight(0xffefd0, 4.2, 4.8, 2);
     halo.position.set(0, 0, 0.24);
     rig.add(halo);
   });
