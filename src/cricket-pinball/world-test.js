@@ -103,6 +103,45 @@ loader.load(
     });
 
     meshSummary.textContent = `${inventory.length} meshes · click ISOLATE to inspect geometry`;
+
+    // Bowler-only structural audit. Read geometry/material metadata; do not mutate GLB.
+    const bowlerDetails = inventory
+      .filter((item) => item.component === 'bowler')
+      .map((item) => {
+        const geometry = item.object.geometry;
+        const materials = (Array.isArray(item.object.material) ? item.object.material : [item.object.material])
+          .filter(Boolean)
+          .map((material) => ({
+            name: material.name || '(unnamed)',
+            type: material.type,
+            hasMap: Boolean(material.map),
+            mapName: material.map?.name || null
+          }));
+        return {
+          mesh: item.name,
+          vertices: geometry?.attributes?.position?.count || 0,
+          uvCount: geometry?.attributes?.uv?.count || 0,
+          hasUV: Boolean(geometry?.attributes?.uv),
+          groups: geometry?.groups?.length || 0,
+          materials
+        };
+      });
+    const fullUV = bowlerDetails.length > 0 && bowlerDetails.every((item) => item.hasUV);
+    const materialCount = bowlerDetails.reduce((sum, item) => sum + item.materials.length, 0);
+    const mappedCount = bowlerDetails.reduce((sum, item) => sum + item.materials.filter((m) => m.hasMap).length, 0);
+    const decision = fullUV
+      ? 'TEXTURE_SKIN'
+      : materialCount > 1 ? 'MATERIAL_STYLING' : 'VISUAL_REPLACEMENT';
+    window.__CRICKET_BOWLER_AUDIT__ = {
+      meshCount: bowlerDetails.length,
+      fullUV,
+      materialCount,
+      mappedCount,
+      decision,
+      meshes: bowlerDetails
+    };
+    console.info('[Cricket GLB] Bowler structural audit', window.__CRICKET_BOWLER_AUDIT__);
+    meshSummary.textContent += ` · Bowler: ${bowlerDetails.length} mesh(es), UV ${fullUV ? 'YES' : 'NO'}, ${materialCount} material(s) → ${decision}`;
     meshRows.innerHTML = inventory.map((item, index) => `
       <div class="mesh-row">
         <small>${index + 1}</small>
