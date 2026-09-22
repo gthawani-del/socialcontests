@@ -380,8 +380,10 @@ function getCricketComponent(id) {
 }
 
 function upgradeStadiumFloodlights(root) {
-  // Keep the authored poles, hide only their crude lamp heads, and mount a
-  // camera-readable stadium array whose luminous face is aimed into the table.
+  // Preserve the authored poles. Replace only their crude heads with a readable
+  // stadium-light assembly. Visual panel orientation and light-beam direction
+  // are deliberately independent: the lamps must read from the gameplay camera
+  // while their beams still illuminate the pitch.
   const candidates = [];
   root.traverse((object) => {
     if (!object.isMesh) return;
@@ -415,24 +417,19 @@ function upgradeStadiumFloodlights(root) {
     return;
   }
 
-  const playfieldTarget = new THREE.Vector3(0, 0.55, 0);
-  const faceMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf2f4ee,
-    metalness: 0.35,
-    roughness: 0.24
-  });
-  const backMaterial = new THREE.MeshStandardMaterial({
-    color: 0x48514d,
-    metalness: 0.72,
+  const pitchTarget = new THREE.Vector3(0, 0.45, 0);
+  const panelMaterial = new THREE.MeshStandardMaterial({
+    color: 0x8c9691,
+    metalness: 0.55,
     roughness: 0.3
   });
   const reflectorMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf6f7f2,
-    metalness: 0.42,
-    roughness: 0.12
+    color: 0xe7ebe7,
+    metalness: 0.55,
+    roughness: 0.16
   });
   const lampMaterial = new THREE.MeshBasicMaterial({
-    color: 0xfff8dc,
+    color: 0xfff4c7,
     toneMapped: false
   });
 
@@ -444,53 +441,62 @@ function upgradeStadiumFloodlights(root) {
     rig.position.copy(center);
     scene.add(rig);
 
-    // THREE.Object3D.lookAt aims local +Z at the target. Every visible lamp
-    // surface below therefore faces the pitch rather than exposing the casing.
-    rig.lookAt(playfieldTarget);
+    // Face the array toward the gameplay camera, then retain a modest downward
+    // pitch. This makes the lamps readable instead of presenting a blank back.
+    const cameraTarget = camera.position.clone();
+    cameraTarget.y = Math.min(cameraTarget.y, center.y - 0.35);
+    rig.lookAt(cameraTarget);
+    rig.rotateX(-0.16);
 
-    const back = new THREE.Mesh(new THREE.BoxGeometry(1.12, 0.68, 0.07), backMaterial);
-    back.position.z = -0.045;
-    back.castShadow = true;
-    rig.add(back);
+    const panel = new THREE.Mesh(
+      new THREE.BoxGeometry(1.18, 0.58, 0.045),
+      panelMaterial
+    );
+    panel.position.z = -0.018;
+    panel.castShadow = true;
+    rig.add(panel);
 
-    const face = new THREE.Mesh(new THREE.BoxGeometry(1.04, 0.60, 0.025), faceMaterial);
-    face.position.z = 0.008;
-    rig.add(face);
-
-    for (let row = 0; row < 3; row += 1) {
+    // 4x4 large reflector bowls. The circles are slightly proud of the panel so
+    // they remain visible at the oblique gameplay-camera angle.
+    for (let row = 0; row < 4; row += 1) {
       for (let col = 0; col < 4; col += 1) {
-        const x = (col - 1.5) * 0.235;
-        const y = (1 - row) * 0.19;
+        const x = (col - 1.5) * 0.255;
+        const y = (1.5 - row) * 0.13;
 
-        // Rings lie in XY and face local +Z. The old version rotated cylinders
-        // onto the wrong plane, which is why the screenshot showed black slabs.
-        const reflector = new THREE.Mesh(
-          new THREE.RingGeometry(0.064, 0.098, 24),
+        const bowl = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.083, 0.105, 0.055, 20, 1, true),
           reflectorMaterial
         );
-        reflector.position.set(x, y, 0.027);
-        rig.add(reflector);
+        bowl.rotation.x = Math.PI / 2;
+        bowl.position.set(x, y, 0.035);
+        rig.add(bowl);
 
-        const lamp = new THREE.Mesh(new THREE.CircleGeometry(0.061, 24), lampMaterial);
-        lamp.position.set(x, y, 0.031);
+        const lamp = new THREE.Mesh(
+          new THREE.CircleGeometry(0.072, 24),
+          lampMaterial
+        );
+        lamp.position.set(x, y, 0.066);
         rig.add(lamp);
       }
     }
 
-    // The light itself follows the same +Z axis as the visible lamp face.
-    const beam = new THREE.SpotLight(0xfff2d0, 34, 18, Math.PI / 5.2, 0.62, 1.4);
-    beam.position.set(0, 0, 0.12);
+    // Beam direction is independent from the visual array orientation.
+    const beam = new THREE.SpotLight(0xfff1cf, 32, 18, Math.PI / 5.2, 0.62, 1.45);
+    const beamWorldPosition = center.clone();
+    beam.position.copy(beamWorldPosition);
     beam.castShadow = false;
-    rig.add(beam);
+    scene.add(beam);
     scene.add(beam.target);
-    beam.target.position.copy(playfieldTarget);
+    beam.target.position.copy(pitchTarget);
 
-    const halo = new THREE.PointLight(0xffefd0, 3.2, 4.2, 2);
-    halo.position.set(0, 0, 0.16);
-    rig.add(halo);
+    // Small face glow keeps the individual lamps legible without washing out
+    // the table.
+    const glow = new THREE.PointLight(0xffe9b0, 2.2, 3.2, 2);
+    glow.position.set(0, 0, 0.22);
+    rig.add(glow);
   });
 
-  console.info('[Cricket GLB] Corrected stadium floodlight faces:', heads.map(({ mesh }) => mesh.name));
+  console.info('[Cricket GLB] Installed camera-readable stadium floodlights:', heads.map(({ mesh }) => mesh.name));
 }
 
 function createMechanics() {
