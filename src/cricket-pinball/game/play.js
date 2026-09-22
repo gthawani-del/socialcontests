@@ -245,6 +245,7 @@ async function boot() {
     prepareWorld(modelRoot);
     scene.add(modelRoot);
     bindCricketWorldComponents(modelRoot);
+    upgradeStadiumFloodlights(modelRoot);
 
     // Physics must exist before mechanics bind authored GLB bats to flipper state.
     engine = new PinballEngine(tableConfig);
@@ -376,6 +377,115 @@ function bindCricketWorldComponents(root) {
 
 function getCricketComponent(id) {
   return modelRoot?.userData?.cricketComponents?.[id] || [];
+}
+
+function upgradeStadiumFloodlights(root) {
+  // Preserve the authored poles, but replace the crude white GLB lamp boxes
+  // with proper multi-lamp stadium arrays. This is visual-only: no gameplay geometry changes.
+  const candidates = [];
+  root.traverse((object) => {
+    if (!object.isMesh) return;
+    const name = String(object.name || '').toLowerCase();
+    const mats = (Array.isArray(object.material) ? object.material : [object.material])
+      .map((material) => String(material?.name || '').toLowerCase())
+      .join(' ');
+    if (/light|lamp|flood/.test(name + ' ' + mats)) candidates.push(object);
+  });
+
+  const heads = candidates
+    .map((mesh) => {
+      mesh.updateWorldMatrix(true, false);
+      const box = new THREE.Box3().setFromObject(mesh);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+      return { mesh, size, center };
+    })
+    .filter(({ size, center }) =>
+      center.y > 1.4 &&
+      Math.max(size.x, size.z) > 0.22 &&
+      size.y < Math.max(size.x, size.z) * 1.25
+    )
+    .sort((a, b) => b.center.y - a.center.y)
+    .slice(0, 4);
+
+  if (!heads.length) {
+    console.warn('[Cricket GLB] No floodlight heads detected; leaving authored lighting intact.');
+    return;
+  }
+
+  const target = new THREE.Vector3(0, 0.55, 0);
+  heads.forEach(({ mesh, center }, index) => {
+    mesh.visible = false;
+
+    const rig = new THREE.Group();
+    rig.name = `CricketFloodlightRig_${index + 1}`;
+    scene.add(rig);
+    rig.position.copy(center);
+
+    // Orient the panel face (+Z) toward the center of the playfield.
+    rig.lookAt(target);
+
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(1.08, 0.64, 0.075),
+      new THREE.MeshStandardMaterial({
+        color: 0x172019,
+        metalness: 0.72,
+        roughness: 0.3
+      })
+    );
+    frame.castShadow = true;
+    rig.add(frame);
+
+    const lampMaterial = new THREE.MeshStandardMaterial({
+      color: 0xfff7dc,
+      emissive: 0xfff1bf,
+      emissiveIntensity: 4.5,
+      roughness: 0.18,
+      metalness: 0.08
+    });
+    const reflectorMaterial = new THREE.MeshStandardMaterial({
+      color: 0xb9c2bc,
+      metalness: 0.82,
+      roughness: 0.22
+    });
+
+    const cols = 4;
+    const rows = 3;
+    for (let row = 0; row < rows; row += 1) {
+      for (let col = 0; col < cols; col += 1) {
+        const x = (col - (cols - 1) / 2) * 0.235;
+        const y = ((rows - 1) / 2 - row) * 0.19;
+
+        const reflector = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.082, 0.105, 0.055, 18, 1, false),
+          reflectorMaterial
+        );
+        reflector.rotation.x = Math.PI / 2;
+        reflector.position.set(x, y, 0.072);
+        rig.add(reflector);
+
+        const lamp = new THREE.Mesh(
+          new THREE.CircleGeometry(0.068, 18),
+          lampMaterial
+        );
+        lamp.position.set(x, y, 0.104);
+        rig.add(lamp);
+      }
+    }
+
+    const beam = new THREE.SpotLight(0xfff2cf, 28, 18, Math.PI / 5.5, 0.58, 1.45);
+    beam.position.set(0, 0, 0.16);
+    beam.castShadow = false;
+    rig.add(beam);
+    scene.add(beam.target);
+    beam.target.position.copy(target);
+
+    const halo = new THREE.PointLight(0xffe9b3, 2.6, 4.2, 2);
+    halo.position.set(0, 0, 0.24);
+    rig.add(halo);
+  });
+
+  console.info('[Cricket GLB] Upgraded stadium floodlights:', heads.map(({ mesh }) => mesh.name));
 }
 
 function createMechanics() {
