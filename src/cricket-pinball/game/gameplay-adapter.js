@@ -52,9 +52,17 @@ export function createCricketGameplayAdapter({
     // controlled rescue pop back into play; a repeated/trapped gutter is DOT.
     const gutterCfg = cricketRules.delivery || {};
     const gutterThreshold = (tableConfig.playfield?.drain?.maxX ?? 0.46) + 0.12;
+    // The physical launcher lane occupies the same right-side coordinates as
+    // the batting gutter. Never apply gutter rescue until resolveLauncherLane()
+    // has confirmed the ball crossed the configured lane exit.
     const inBattingGutter =
+      !engine.launcher.inLane &&
       engine.ball.position.z >= 1.72 &&
       Math.abs(engine.ball.position.x) >= gutterThreshold;
+
+    if (engine.launcher.inLane) {
+      gutterEnteredAt = null;
+    }
 
     if (inBattingGutter) {
       if (gutterEnteredAt === null) gutterEnteredAt = now;
