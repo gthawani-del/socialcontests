@@ -103,6 +103,22 @@ export class CricketMatchEngine {
     return true;
   }
 
+  abortDelivery(reason = 'DEAD_BALL', metadata = {}) {
+    if (!this.deliveryOpen) return false;
+    this.deliveryOpen = false;
+    const aborted = {
+      innings: this.currentInnings?.number ?? this.inningsNumber,
+      bowling: { ...this.currentBowling },
+      reason,
+      ...metadata
+    };
+    this.currentBowling = null;
+    this.status = 'DELIVERY_SETUP';
+    this.emit('delivery:aborted', { delivery: aborted });
+    this.emit('delivery:ready', { deadBall: true });
+    return true;
+  }
+
   resolveDelivery(outcome, metadata = {}) {
     if (!this.deliveryOpen) return false;
     const normalized = String(outcome || '').toUpperCase();

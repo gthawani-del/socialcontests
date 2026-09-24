@@ -276,7 +276,8 @@ async function boot() {
       matchEngine: match,
       tableConfig,
       cricketRules: rulesConfig,
-      onResolved: onDeliveryResolved
+      onResolved: onDeliveryResolved,
+      onDeadBall: onDeadBall
     });
 
     loadingPercent.textContent = '100%';
@@ -1158,6 +1159,22 @@ function releasePower() {
   showDeliveryCue('BALL LIVE', selectedLine + ' LINE', 450);
   updateRoleControls();
   updateScoreboards();
+}
+
+function onDeadBall(reason) {
+  cpuDeliveryCountdownToken += 1;
+  cpuBattingAI?.reset();
+  inputsLocked = true;
+  engine?.setFlipper('left', false);
+  engine?.setFlipper('right', false);
+  updateRoleControls();
+  updateScoreboards();
+  showDeliveryCue('DEAD BALL', 'RE-BOWL', 1200);
+  setScoreboard('DEAD BALL', 'RE-BOWL');
+
+  clearTimeout(deliveryResetTimer);
+  clearInterval(nextBallCountdownTimer);
+  startNextBallCountdown(() => prepareDelivery());
 }
 
 function onDeliveryResolved(type) {

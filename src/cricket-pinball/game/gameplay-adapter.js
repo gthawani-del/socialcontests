@@ -3,13 +3,13 @@ export function createCricketGameplayAdapter({
   matchEngine,
   tableConfig,
   cricketRules,
-  onResolved = () => {}
+  onResolved = () => {},
+  onDeadBall = () => {}
 }) {
   let resolved = true;
   let liveStartedAt = 0;
   let stalledSince = null;
   let battingContact = false;
-  let gutterRescues = 0;
   let gutterEnteredAt = null;
   const zones = (tableConfig.deliveryZones || []).filter((zone) => zone.terminal);
   const unsubs = [];
@@ -19,7 +19,6 @@ export function createCricketGameplayAdapter({
     liveStartedAt = performanceNow();
     stalledSince = null;
     battingContact = false;
-    gutterRescues = 0;
     gutterEnteredAt = null;
   }
 
@@ -48,40 +47,29 @@ export function createCricketGameplayAdapter({
 
     const now = performanceNow();
 
-    // Side gutters are not free/dead balls. Before bat contact, allow one
-    // controlled rescue pop back into play; a repeated/trapped gutter is DOT.
-    const gutterCfg = cricketRules.delivery || {};
+    // A pre-bat side gutter is a dead delivery: it must not consume a ball.
+    // Launcher and controlled-delivery phases are excluded from gutter detection.
     const gutterThreshold = (tableConfig.playfield?.drain?.maxX ?? 0.46) + 0.12;
-    // The physical launcher lane occupies the same right-side coordinates as
-    // the batting gutter. Never apply gutter rescue until resolveLauncherLane()
-    // has confirmed the ball crossed the configured lane exit.
     const inBattingGutter =
       !engine.launcher.inLane &&
+      !engine.launcher.deliveryGuideActive &&
       engine.ball.position.z >= 1.72 &&
       Math.abs(engine.ball.position.x) >= gutterThreshold;
 
-    if (engine.launcher.inLane) {
+    if (engine.launcher.inLane || engine.launcher.deliveryGuideActive) {
       gutterEnteredAt = null;
-    }
-
-    if (inBattingGutter) {
+    } else if (inBattingGutter && !battingContact) {
       if (gutterEnteredAt === null) gutterEnteredAt = now;
-
-      if (
-        !battingContact &&
-        gutterCfg.gutterRescueEnabled !== false &&
-        gutterRescues < (gutterCfg.gutterRescueMax ?? 1)
-      ) {
-        const side = Math.sign(engine.ball.position.x) || 1;
-        engine.ball.velocity.x = -side * (gutterCfg.gutterRescueImpulseX ?? 2.4);
-        engine.ball.velocity.z = -(gutterCfg.gutterRescueImpulseZ ?? 2.2);
-        gutterRescues += 1;
-        gutterEnteredAt = null;
-      } else if (now - gutterEnteredAt >= (gutterCfg.gutterTrapMs ?? 1200)) {
-        resolve('DOT', {
-          reason: battingContact ? 'POST_BAT_GUTTER' : 'GUTTER_TRAPPED',
-          gutterRescues
-        });
+      const deadBallDelayMs = cricketRules.delivery?.deadBallGutterMs ?? 120;
+      if (now - gutterEnteredAt >= deadBallDelayMs) {
+        resolved = true;
+        engine.freezeBall?.();
+        if (matchEngine.abortDelivery?.('PRE_BAT_GUTTER', {
+          x: engine.ball.position.x,
+          z: engine.ball.position.z
+        })) {
+          onDeadBall('PRE_BAT_GUTTER');
+        }
         return;
       }
     } else {
@@ -141,6 +129,14 @@ export function createCricketGameplayAdapter({
   }));
 
   unsubs.push(engine.on('drain', ({ safetyReset = false } = {}) => {
+    if (!battingContact && matchEngine.getState().deliveryOpen) {
+      resolved = true;
+      engine.freezeBall?.();
+      if (matchEngine.abortDelivery?.(safetyReset ? 'PRE_BAT_SAFETY_DRAIN' : 'PRE_BAT_DRAIN')) {
+        onDeadBall(safetyReset ? 'PRE_BAT_SAFETY_DRAIN' : 'PRE_BAT_DRAIN');
+      }
+      return;
+    }
     if (safetyReset) {
       resolve('DOT', { reason: 'SAFETY_DRAIN' });
       return;

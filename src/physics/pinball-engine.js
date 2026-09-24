@@ -45,7 +45,9 @@ export class PinballEngine {
       awaitingLaunch: true,
       charging: false,
       chargeSeconds: 0,
-      inLane: true
+      inLane: true,
+      deliveryGuideActive: false,
+      deliveryTarget: null
     };
 
     this.nudgeTimes = [];
@@ -130,6 +132,8 @@ export class PinballEngine {
     this.launcher.awaitingLaunch = false;
     this.launcher.charging = false;
     this.launcher.inLane = true;
+    this.launcher.deliveryGuideActive = false;
+    this.launcher.deliveryTarget = null;
     this.launcher.chargeSeconds = 0;
     this.launcher.deliveryLine = line;
     this.launcher.deliveryType = String(options?.deliveryType || 'PACE').toUpperCase();
@@ -195,6 +199,8 @@ export class PinballEngine {
     this.launcher.charging = false;
     this.launcher.chargeSeconds = 0;
     this.launcher.inLane = true;
+    this.launcher.deliveryGuideActive = false;
+    this.launcher.deliveryTarget = null;
     this.launcher.deliveryLine = 'CENTRE';
     this.launcher.deliveryType = 'PACE';
     this.launcher.exitKick = [...cfg.exitKick];
@@ -277,6 +283,7 @@ export class PinballEngine {
     this.ball.position.z += this.ball.velocity.z * dt;
 
     this.resolveLauncherLane();
+    this.resolveDeliveryGuide();
 
     for (const wall of this.config.walls) {
       const hit = this.resolveSegmentCollision(
@@ -442,15 +449,18 @@ export class PinballEngine {
       const target = lineConfig?.target;
 
       if (Array.isArray(target) && target.length >= 2) {
-        // Cricket target-based delivery: preserve launch speed, but aim the
-        // ball from the physical lane exit toward the selected batting line.
+        // Cricket delivery guide: after the plunger lane, keep the legal
+        // delivery inside a narrow corridor until it reaches the batting zone.
+        // The guide switches off before bat contact; post-contact play is fully physical.
+        this.launcher.deliveryTarget = [Number(target[0]), Number(target[1])];
+        this.launcher.deliveryGuideActive = true;
         const speed = Math.max(
           Math.hypot(this.ball.velocity.x, this.ball.velocity.z),
           cfg.minPower || 0
         );
         const aimed = normalize2(
-          Number(target[0]) - this.ball.position.x,
-          Number(target[1]) - this.ball.position.z
+          this.launcher.deliveryTarget[0] - this.ball.position.x,
+          this.launcher.deliveryTarget[1] - this.ball.position.z
         );
         this.ball.velocity.x = aimed.x * speed;
         this.ball.velocity.z = aimed.z * speed;
@@ -466,6 +476,42 @@ export class PinballEngine {
         deliveryType: this.launcher.deliveryType,
         target: Array.isArray(target) ? [...target] : null
       });
+    }
+  }
+
+  resolveDeliveryGuide() {
+    if (!this.launcher.deliveryGuideActive || this.launcher.inLane) return;
+
+    const cfg = this.config.launcher.deliveryGuide || {};
+    const target = this.launcher.deliveryTarget;
+    if (!Array.isArray(target)) {
+      this.launcher.deliveryGuideActive = false;
+      return;
+    }
+
+    const releaseZ = Number(cfg.releaseZ ?? target[1]);
+    if (this.ball.position.z >= releaseZ) {
+      this.launcher.deliveryGuideActive = false;
+      return;
+    }
+
+    const halfWidth = Math.max(0.12, Number(cfg.halfWidth ?? 0.48));
+    const targetX = clamp(Number(target[0]), -halfWidth, halfWidth);
+    const speed = Math.max(Math.hypot(this.ball.velocity.x, this.ball.velocity.z), 0.01);
+    const aimed = normalize2(targetX - this.ball.position.x, Number(target[1]) - this.ball.position.z);
+    const steering = clamp(Number(cfg.steering ?? 0.16), 0, 1);
+
+    this.ball.velocity.x = this.ball.velocity.x * (1 - steering) + aimed.x * speed * steering;
+    this.ball.velocity.z = this.ball.velocity.z * (1 - steering) + aimed.z * speed * steering;
+
+    // Hard safety boundary for the guided delivery only. It prevents a legal
+    // bowl from becoming an outlane ball before the batter has a chance.
+    if (this.ball.position.x < -halfWidth) {
+      this.ball.position.x = -halfWidth;
+      this.ball.velocity.x = Math.abs(this.ball.velocity.x);
+    } else if (this.ball.position.x > halfWidth) {
+      this.ball.position.x = halfWidth;
+      this.ball.velocity.x = -Math.abs(this.ball.velocity.x);
     }
   }
 

@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -20,11 +20,7 @@
     "stalledSpeed": 0.18,
     "stalledForMs": 1300,
     "betweenBallsMs": 5000,
-    "gutterRescueEnabled": true,
-    "gutterRescueMax": 1,
-    "gutterRescueImpulseX": 2.4,
-    "gutterRescueImpulseZ": -2.2,
-    "gutterTrapMs": 1200
+    "deadBallGutterMs": 120
   },
   "toss": {
     "coinMs": 1600,

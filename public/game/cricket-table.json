@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "product": "CRICKET_PINBALL",
   "world": {
     "glb": "/models/cricket-world-v2.glb",
@@ -297,22 +297,27 @@
     "bowlingLines": {
       "LEFT": {
         "target": [
-          -0.62,
-          1.55
+          -0.3,
+          1.62
         ]
       },
       "CENTRE": {
         "target": [
           0,
-          1.55
+          1.62
         ]
       },
       "RIGHT": {
         "target": [
-          0.62,
-          1.55
+          0.3,
+          1.62
         ]
       }
+    },
+    "deliveryGuide": {
+      "halfWidth": 0.48,
+      "releaseZ": 1.62,
+      "steering": 0.22
     }
   },
   "nudge": {
