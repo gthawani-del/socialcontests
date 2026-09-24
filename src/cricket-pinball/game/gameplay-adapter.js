@@ -10,6 +10,7 @@ export function createCricketGameplayAdapter({
   let liveStartedAt = 0;
   let stalledSince = null;
   let shotLive = false;
+  let legalDelivery = false;
   let gutterEnteredAt = null;
   const zones = (tableConfig.deliveryZones || []).filter((zone) => zone.terminal);
   const unsubs = [];
@@ -19,6 +20,7 @@ export function createCricketGameplayAdapter({
     liveStartedAt = performanceNow();
     stalledSince = null;
     shotLive = false;
+    legalDelivery = false;
     gutterEnteredAt = null;
   }
 
@@ -49,6 +51,20 @@ export function createCricketGameplayAdapter({
     }
 
     const now = performanceNow();
+
+    // A delivery becomes countable only after the physical ball reaches the
+    // batting corridor. This is independent of whether the batter hits it.
+    const battingZoneZ = Number(cricketRules.delivery?.battingZoneZ ?? 1.72);
+    const battingZoneHalfWidth = Number(cricketRules.delivery?.battingZoneHalfWidth ?? 1.08);
+    if (
+      !legalDelivery &&
+      !engine.launcher.inLane &&
+      !engine.launcher.deliveryGuideActive &&
+      engine.ball.position.z >= battingZoneZ &&
+      Math.abs(engine.ball.position.x) <= battingZoneHalfWidth
+    ) {
+      legalDelivery = true;
+    }
 
     // A pre-bat side gutter is a dead delivery: it must not consume a ball.
     // Launcher and controlled-delivery phases are excluded from gutter detection.
@@ -107,7 +123,11 @@ export function createCricketGameplayAdapter({
       if (stalledSince === null) stalledSince = now;
 
       if (now - stalledSince >= stalledForMs) {
-        resolve('DOT', { reason: 'STALLED' });
+        if (legalDelivery) {
+          resolve('DOT', { reason: 'STALLED' });
+        } else {
+          abortDeadBall('PRE_BAT_STALLED');
+        }
         return;
       }
     } else {
@@ -116,8 +136,21 @@ export function createCricketGameplayAdapter({
 
     const maxLiveMs = cricketRules.delivery?.maxLiveMs ?? 10000;
     if (liveStartedAt && now - liveStartedAt >= maxLiveMs) {
-      resolve('DOT', { reason: 'TIMEOUT' });
+      if (legalDelivery) {
+        resolve('DOT', { reason: 'TIMEOUT' });
+      } else {
+        abortDeadBall('PRE_BAT_TIMEOUT');
+      }
     }
+  }
+
+  function abortDeadBall(reason, metadata = {}) {
+    if (resolved || !matchEngine.getState().deliveryOpen) return false;
+    resolved = true;
+    engine.freezeBall?.();
+    const accepted = matchEngine.abortDelivery?.(reason, metadata);
+    if (accepted) onDeadBall(reason);
+    return Boolean(accepted);
   }
 
   unsubs.push(engine.on('flipper-hit', ({ pressed = false, impact = 0 } = {}) => {
@@ -125,6 +158,7 @@ export function createCricketGameplayAdapter({
     // insufficient: the moving/active flipper must physically collide with the ball.
     if (
       !shotLive &&
+      legalDelivery &&
       !resolved &&
       matchEngine.getState().deliveryOpen &&
       pressed &&
@@ -136,7 +170,7 @@ export function createCricketGameplayAdapter({
   }));
 
   unsubs.push(engine.on('drain', ({ safetyReset = false } = {}) => {
-    if (!shotLive && matchEngine.getState().deliveryOpen) {
+    if (!legalDelivery && matchEngine.getState().deliveryOpen) {
       resolved = true;
       engine.freezeBall?.();
       if (matchEngine.abortDelivery?.(safetyReset ? 'PRE_BAT_SAFETY_DRAIN' : 'PRE_BAT_DRAIN')) {

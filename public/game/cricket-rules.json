@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -20,7 +20,9 @@
     "stalledSpeed": 0.18,
     "stalledForMs": 1300,
     "betweenBallsMs": 5000,
-    "deadBallGutterMs": 120
+    "deadBallGutterMs": 120,
+    "battingZoneZ": 1.72,
+    "battingZoneHalfWidth": 1.08
   },
   "toss": {
     "coinMs": 1600,
