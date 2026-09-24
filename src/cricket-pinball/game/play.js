@@ -1085,7 +1085,7 @@ function prepareDelivery() {
   showDeliveryCue('READY TO BOWL', 'YOUR DELIVERY', 700);
 }
 
-async async function startCpuBowlingCountdown() {
+async function startCpuBowlingCountdown() {
   const token = ++cpuDeliveryCountdownToken;
   inputsLocked = true;
   updateRoleControls();
