@@ -758,3 +758,150 @@ html[data-admin-theme="dark"] .page-badge{color:var(--admin-dark-badgeText)!impo
 .nav-group-content>button.active{color:var(--admin-light-activeText,var(--text));background:var(--admin-light-activeBg,rgba(225,179,86,.12))}
 html[data-admin-theme="dark"] .nav-group-content>button.active{color:var(--admin-dark-activeText,var(--text));background:var(--admin-dark-activeBg,rgba(225,179,86,.12))}
 .nav-group-trigger:focus-visible,.nav-group-content>button:focus-visible{outline:2px solid #7089a8;outline-offset:1px}
+
+
+/* Gaming operations design system v1 */
+:root{
+  --font-ui:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:12px;
+}
+html,body,button,input,select,textarea{font-family:var(--font-ui)}
+body{font-size:14px;line-height:1.45}
+button,input,select,textarea{font-size:14px}
+.admin-shell{font-variant-numeric:tabular-nums}
+
+/* Neutral operational surfaces */
+.sidebar{background:var(--surface);box-shadow:none}
+.panel,
+.metric-grid article,
+.search-results button,
+.warning-panel{background:var(--surface);box-shadow:none;border-radius:var(--radius-lg)}
+.environment-card,
+.preset-summary>div,
+.score-economy>div,
+.preset-tabs{background:var(--surface-2)}
+.product-mark,.loader-mark{background:var(--surface-2);box-shadow:none}
+
+/* Typography hierarchy */
+.product strong{font-size:14px;font-weight:600}
+.product span{font-size:12px;letter-spacing:0}
+.environment-card strong{font-size:12px;font-weight:600}
+.environment-card span{font-size:12px}
+.sidebar nav button{height:40px;font-size:13px;font-weight:500;border-radius:8px}
+.sidebar-foot a{font-size:12px;font-weight:600}
+.sidebar-foot span{font-size:12px}
+.search input{font-size:14px}
+.search kbd{font:500 11px/1 var(--font-mono)}
+.draft-status{font-size:12px}
+button.ghost,button.primary{height:38px;font-size:13px;font-weight:600;letter-spacing:0}
+.page-head{padding-top:28px}
+.eyebrow,.card-kicker{
+  font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--muted)
+}
+.page-head h1{font-size:26px;font-weight:700;line-height:1.2;letter-spacing:-.02em}
+.page-head p{font-size:14px;line-height:1.5}
+.page-badge,.health-pill,.default-pill{
+  font-size:12px;font-weight:600;letter-spacing:0
+}
+.panel-head h2,.repeat-head h2{font-size:15px;font-weight:600;letter-spacing:0;color:var(--text)}
+.panel-head p{font-size:12px;line-height:1.45}
+.control{min-height:64px}
+.control-copy label{font-size:14px;font-weight:500;color:var(--text)}
+.control-copy small{font-size:12px;line-height:1.4;color:var(--muted)}
+.control.inactive .control-copy label:after{
+  content:"Inactive";font-size:10px;font-weight:500;letter-spacing:0;text-transform:none
+}
+.value-box input,.value-box span,
+.number-wrap input,.vector-wrap input,.readout,.repeat-head code{
+  font-family:var(--font-mono);font-variant-numeric:tabular-nums
+}
+.value-box input,.value-box span{font-size:13px}
+.number-wrap{height:36px}
+.number-wrap input{font-size:13px}
+.number-wrap span{font-size:12px}
+.vector-wrap label{height:36px}
+.vector-wrap label span{font-size:11px;font-weight:600}
+.vector-wrap input{font-size:13px}
+.select-control{height:38px;font-size:13px}
+.readout{font-size:12px}
+.repeat-head code{font-size:11px;font-weight:500}
+.metric-grid span{font-size:12px}
+.metric-grid strong{
+  font-size:28px;font-weight:600;letter-spacing:-.025em;color:var(--text);
+  font-variant-numeric:tabular-nums
+}
+.metric-grid small{font-size:12px}
+.coverage-list>div{min-height:40px;font-size:12px}
+.coverage-list strong{font-size:12px;font-weight:600}
+.preset-summary span{font-size:12px;font-weight:500;text-transform:none;letter-spacing:0}
+.preset-summary strong{font-size:22px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+.preset-summary small,.preset-summary em{font-size:11px}
+.score-economy span{font-size:12px}
+.score-economy strong{font-size:15px;color:var(--text);font-variant-numeric:tabular-nums}
+.score-economy small{font-size:11px}
+.preset-tabs button{font-size:12px;font-weight:600}
+.preset-tabs span{font-size:12px}
+.difficulty-panel .setting-card>.panel-head h2{font-size:14px}
+.warning-panel h2{font-size:15px}
+.warning-panel p{font-size:12px}
+.search-results span{font-size:11px;font-weight:600;letter-spacing:0;text-transform:none}
+.search-results strong{font-size:14px;font-weight:600}
+.search-results small{font-size:12px}
+.empty-state strong{font-size:15px}
+.empty-state span{font-size:12px}
+
+/* Restrained brand treatment */
+.sidebar nav button.active{
+  background:var(--surface-3);color:var(--text);box-shadow:inset 2px 0 var(--gold)
+}
+.sidebar nav button.active .nav-icon{color:var(--text)}
+button.primary{border-color:var(--text);background:var(--text);color:var(--surface);box-shadow:none}
+button.primary:hover{filter:brightness(.94)}
+.metric-grid strong,
+.preset-summary strong,
+.score-economy strong{color:var(--text)}
+
+/* Navigation group labels: functional, not decorative */
+.nav-group-trigger,
+.nav-section-label{
+  color:var(--muted);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none
+}
+
+/* Light mode is the operational baseline */
+html[data-admin-theme="light"]{
+  --bg:#f6f7f9;
+  --surface:#ffffff;
+  --surface-2:#f8f9fb;
+  --surface-3:#eef1f4;
+  --line:#d8dee6;
+  --line-soft:#e5e9ef;
+  --text:#17212b;
+  --muted:#5f6c7b;
+  --muted-2:#7b8795;
+  --gold:#9a6a16;
+  --gold-soft:rgba(154,106,22,.08);
+  --green:#137a50;
+  --green-soft:rgba(19,122,80,.09);
+  --blue:#2468c9;
+  --danger:#b42318;
+}
+html[data-admin-theme="light"] .sidebar{background:#fff}
+html[data-admin-theme="light"] .sidebar nav button.active{
+  background:#eef1f4;color:#17212b;box-shadow:inset 2px 0 #9a6a16
+}
+html[data-admin-theme="light"] .product-mark,
+html[data-admin-theme="light"] .loader-mark{background:#f6f7f9;color:#6f4c12}
+html[data-admin-theme="light"] .topbar,
+html[data-admin-theme="light"] .savebar{background:rgba(255,255,255,.96)}
+html[data-admin-theme="light"] button.primary{
+  background:#17212b;color:#fff;border-color:#17212b
+}
+
+/* Numeric/config fields always scan consistently */
+.value-box,.number-wrap,.vector-wrap,.readout,
+.metric-grid strong,.preset-summary strong,.score-economy strong{
+  font-variant-numeric:tabular-nums
+}
