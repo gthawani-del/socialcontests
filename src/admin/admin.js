@@ -6,7 +6,7 @@ const ADMIN_PREFS_KEY = 'infinite-pinball-admin-display-v1';
 
 const DEFAULT_ADMIN_UI = {
   fontFace: 'Inter, Arial, Helvetica, sans-serif',
-  sizes: { pageTitle:36, sectionTitle:17, body:14, label:13, helper:12, small:11, control:13 },
+  sizes: { pageTitle:26, sectionTitle:18, body:14, label:13, helper:12, small:12, control:14 },
   light: {
     primary:'#17212b', secondary:'#526174', muted:'#6b7888', value:'#17212b',
     success:'#147a50', warning:'#9a6100', error:'#b42318',
@@ -16,10 +16,10 @@ const DEFAULT_ADMIN_UI = {
     badgeText:'#526174', badgeBg:'#eef2f6'
   },
   dark: {
-    primary:'#e8edf4', secondary:'#aeb9c8', muted:'#8996a8', value:'#f0cd77',
+    primary:'#e8edf4', secondary:'#aeb9c8', muted:'#8996a8', value:'#e8edf4',
     success:'#62d5a0', warning:'#e1b356', error:'#ff7b72',
-    activeText:'#f0cd77', activeBg:'#2a2417',
-    buttonText:'#111820', buttonBg:'#e1b356',
+    activeText:'#e8edf4', activeBg:'#202a36',
+    buttonText:'#ffffff', buttonBg:'#17212b',
     disabledText:'#718096', disabledBg:'#202a36',
     badgeText:'#d7dee8', badgeBg:'#202a36'
   }
@@ -199,15 +199,15 @@ function renderShell() {
         </div>
 
         <nav id="sideNav" class="nav-accordion">
-          ${renderNavGroup('general','GENERAL PINBALL',
+          ${renderNavGroup('general','General pinball',
             NAV.filter(([id]) => !['admin-ui','advanced','cricket-pinball'].includes(id)),
             !['admin-ui','advanced','cricket-pinball'].includes(active)
           )}
-          ${renderNavGroup('admin','ADMIN',
+          ${renderNavGroup('admin','Admin',
             NAV.filter(([id]) => ['admin-ui','advanced'].includes(id)),
             ['admin-ui','advanced'].includes(active)
           )}
-          ${renderNavGroup('cricket','CRICKET PINBALL',
+          ${renderNavGroup('cricket','Cricket Pinball',
             [
               ['cricket:overview','Overview','⌂'],
               ['cricket:match','Match','◎'],
@@ -686,11 +686,11 @@ function readAdminDisplayPrefs() {
   try {
     const parsed = JSON.parse(localStorage.getItem(ADMIN_PREFS_KEY) || '{}');
     return {
-      theme: parsed.theme === 'light' ? 'light' : 'dark',
+      theme: parsed.theme === 'dark' ? 'dark' : 'light',
       textScale: Math.min(125, Math.max(85, Number(parsed.textScale) || 100))
     };
   } catch {
-    return { theme: 'dark', textScale: 100 };
+    return { theme: 'light', textScale: 100 };
   }
 }
 
