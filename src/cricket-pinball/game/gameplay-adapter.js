@@ -9,7 +9,7 @@ export function createCricketGameplayAdapter({
   let resolved = true;
   let liveStartedAt = 0;
   let stalledSince = null;
-  let battingContact = false;
+  let shotLive = false;
   let gutterEnteredAt = null;
   const zones = (tableConfig.deliveryZones || []).filter((zone) => zone.terminal);
   const unsubs = [];
@@ -18,12 +18,15 @@ export function createCricketGameplayAdapter({
     resolved = false;
     liveStartedAt = performanceNow();
     stalledSince = null;
-    battingContact = false;
+    shotLive = false;
     gutterEnteredAt = null;
   }
 
   function resolve(type, metadata = {}) {
     if (resolved || !matchEngine.getState().deliveryOpen) return false;
+    const normalized = String(type || '').toUpperCase();
+    const runOutcome = ['ONE', 'TWO', 'FOUR', 'SIX'].includes(normalized);
+    if (runOutcome && !shotLive) return false;
 
     resolved = true;
     engine.freezeBall?.();
@@ -58,7 +61,7 @@ export function createCricketGameplayAdapter({
 
     if (engine.launcher.inLane || engine.launcher.deliveryGuideActive) {
       gutterEnteredAt = null;
-    } else if (inBattingGutter && !battingContact) {
+    } else if (inBattingGutter && !shotLive) {
       if (gutterEnteredAt === null) gutterEnteredAt = now;
       const deadBallDelayMs = cricketRules.delivery?.deadBallGutterMs ?? 120;
       if (now - gutterEnteredAt >= deadBallDelayMs) {
@@ -78,7 +81,7 @@ export function createCricketGameplayAdapter({
 
     // Cricket runs can only exist after actual bat contact. Stall/timeout and
     // gutter handling still run before contact so a delivery can never hang.
-    if (battingContact) {
+    if (shotLive) {
       for (const zone of zones) {
         if (zone.direction === 'RETURN' && engine.ball.velocity.z >= -0.05) continue;
         if (zone.direction === 'DELIVERY' && engine.ball.velocity.z <= 0.05) continue;
@@ -117,19 +120,23 @@ export function createCricketGameplayAdapter({
     }
   }
 
-  unsubs.push(engine.on('flipper-hit', ({ pressed = false } = {}) => {
+  unsubs.push(engine.on('flipper-hit', ({ pressed = false, impact = 0 } = {}) => {
+    // SHOT_LIVE is the single cricket scoring gate. Merely pressing a bat is
+    // insufficient: the moving/active flipper must physically collide with the ball.
     if (
+      !shotLive &&
       !resolved &&
       matchEngine.getState().deliveryOpen &&
       pressed &&
+      impact > 0 &&
       engine.ball.position.z >= 1.72
     ) {
-      battingContact = true;
+      shotLive = true;
     }
   }));
 
   unsubs.push(engine.on('drain', ({ safetyReset = false } = {}) => {
-    if (!battingContact && matchEngine.getState().deliveryOpen) {
+    if (!shotLive && matchEngine.getState().deliveryOpen) {
       resolved = true;
       engine.freezeBall?.();
       if (matchEngine.abortDelivery?.(safetyReset ? 'PRE_BAT_SAFETY_DRAIN' : 'PRE_BAT_DRAIN')) {
