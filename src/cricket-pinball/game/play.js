@@ -11,6 +11,9 @@ import { installHowToPinCricket } from '../ui/how-to-pin-cricket.js';
 
 const WORLD_URL = '/models/cricket-world-v2.glb';
 const WORLD_BYTES = 9271344;
+const CRICKET_ASSET_BASE = '/assets/cricket/world';
+const cricketTextureLoader = new THREE.TextureLoader();
+const cricketTextureCache = new Map();
 const app = document.querySelector('#cricketPlayApp');
 if (!app) throw new Error('Cricket Pinball play root not found.');
 
@@ -245,6 +248,7 @@ async function boot() {
     prepareWorld(modelRoot);
     scene.add(modelRoot);
     bindCricketWorldComponents(modelRoot);
+    applyCricketWorldSkins(modelRoot);
     upgradeStadiumFloodlights(modelRoot);
 
     // Physics must exist before mechanics bind authored GLB bats to flipper state.
@@ -388,6 +392,69 @@ function getCricketComponent(id) {
   return modelRoot?.userData?.cricketComponents?.[id] || [];
 }
 
+function loadCricketTexture(fileName) {
+  if (cricketTextureCache.has(fileName)) return cricketTextureCache.get(fileName);
+  const texture = cricketTextureLoader.load(`${CRICKET_ASSET_BASE}/${fileName}`);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  texture.wrapS = THREE.ClampToEdgeWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  texture.needsUpdate = true;
+  cricketTextureCache.set(fileName, texture);
+  return texture;
+}
+
+function skinMesh(mesh, fileName, options = {}) {
+  if (!mesh?.isMesh || !mesh.geometry?.attributes?.uv) {
+    if (mesh?.isMesh) console.warn('[Cricket skin] Mesh has no UVs:', mesh.name);
+    return false;
+  }
+  const texture = loadCricketTexture(fileName);
+  const sourceMaterials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+  const materials = sourceMaterials.map((source) => {
+    const material = source?.clone?.() || new THREE.MeshStandardMaterial();
+    material.map = texture;
+    material.color?.set?.(0xffffff);
+    if ('roughness' in material && options.roughness != null) material.roughness = options.roughness;
+    if ('metalness' in material && options.metalness != null) material.metalness = options.metalness;
+    material.needsUpdate = true;
+    return material;
+  });
+  mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+  mesh.userData.cricketSkin = fileName;
+  return true;
+}
+
+function skinNamedMeshes(root, matcher, fileName, options) {
+  const applied = [];
+  root.traverse((mesh) => {
+    if (!mesh.isMesh || !matcher(mesh.name)) return;
+    if (skinMesh(mesh, fileName, options)) applied.push(mesh.name);
+  });
+  console.info('[Cricket skin]', fileName, '→', applied);
+}
+
+function applyCricketWorldSkins(root) {
+  // Dedicated authored skin surfaces first: never add flat overlay planes.
+  skinNamedMeshes(root, (name) => name === 'Skin_Playfield_Surface', 'playfield.png', { roughness: 0.92, metalness: 0 });
+  skinNamedMeshes(root, (name) => name === 'Skin_Pitch_Surface', 'pitch-skin.webp', { roughness: 0.94, metalness: 0 });
+
+  // Functional cricket destinations retain their GLB geometry and colliders.
+  // Dedicated text meshes are intentionally excluded so FOUR/SIX/WICKET labels stay crisp.
+  skinNamedMeshes(root, (name) => /^Cricket_Ramp_Four_/i.test(name), 'four-ramp.png', { roughness: 0.62, metalness: 0.04 });
+  skinNamedMeshes(root, (name) => /^Cricket_Ramp_Six_/i.test(name), 'six-ramp.png', { roughness: 0.62, metalness: 0.04 });
+  skinNamedMeshes(root, (name) => /^Cricket_Wicket_/i.test(name), 'wicket.png', { roughness: 0.58, metalness: 0.02 });
+
+  // Environment skins use only the matching authored meshes.
+  skinNamedMeshes(root, (name) => name === 'Cricket_Pavilion', 'pavilion.png', { roughness: 0.72, metalness: 0.02 });
+  skinNamedMeshes(root, (name) => name === 'Cricket_Player_Tunnel', 'tunnel.png', { roughness: 0.72, metalness: 0.02 });
+  skinNamedMeshes(root, (name) => /^Cricket_Stand_/i.test(name), 'stands-crowd.webp', { roughness: 0.9, metalness: 0 });
+
+  // Bat artwork covers the actual authored GLB flipper assemblies. Physics and pivots are unchanged.
+  getCricketComponent('bat-left').forEach((mesh) => skinMesh(mesh, 'flipper-left-bat.webp', { roughness: 0.5, metalness: 0.02 }));
+  getCricketComponent('bat-right').forEach((mesh) => skinMesh(mesh, 'flipper-right-bat.webp', { roughness: 0.5, metalness: 0.02 }));
+}
+
 function upgradeStadiumFloodlights(root) {
   // Preserve the authored poles. Replace only their crude heads with a readable
   // stadium-light assembly. Visual panel orientation and light-beam direction
@@ -513,11 +580,12 @@ function createMechanics() {
   ballVisual = new THREE.Mesh(
     new THREE.SphereGeometry(ballRadius, 32, 22),
     new THREE.MeshStandardMaterial({
-      color: 0xc82131,
-      emissive: 0x5a0810,
-      emissiveIntensity: 1.0,
-      roughness: 0.28,
-      metalness: 0.04
+      color: 0xffffff,
+      map: loadCricketTexture('cricket-ball.webp'),
+      emissive: 0x3b050a,
+      emissiveIntensity: 0.35,
+      roughness: 0.38,
+      metalness: 0.02
     })
   );
   ballVisual.renderOrder = 12;

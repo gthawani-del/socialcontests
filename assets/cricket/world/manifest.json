@@ -3,7 +3,7 @@
   "sourceRevision": 6,
   "glb": "/models/cricket-world-v2.glb",
   "embeddedTextures": true,
-  "fielderAnimation": true,
+  "fielderAnimation": false,
   "scoreHudExternal": true,
   "sourceTextures": {
     "playfield": "playfield.png",
@@ -11,6 +11,11 @@
     "sixRamp": "six-ramp.png",
     "pavilion": "pavilion.png",
     "tunnel": "tunnel.png",
-    "wicket": "wicket.png"
+    "wicket": "wicket.png",
+    "pitch": "pitch-skin.webp",
+    "batLeft": "flipper-left-bat.webp",
+    "batRight": "flipper-right-bat.webp",
+    "stands": "stands-crowd.webp",
+    "ball": "cricket-ball.webp"
   }
 }
