@@ -241,7 +241,14 @@ async function boot() {
 
     tableConfig = structuredClone(table);
     rulesConfig = cricketRules;
-    tableConfig.launcher.bowlingLines = cricketRules.bowlingLines;
+    // Keep the Cricket table's target-based bowling geometry authoritative.
+    // Rules may tune delivery behaviour, but must not replace physical launcher targets.
+    tableConfig.launcher.bowlingLines = Object.fromEntries(
+      Object.entries(table.launcher.bowlingLines || {}).map(([line, geometry]) => [
+        line,
+        { ...geometry, ...(cricketRules.bowlingLines?.[line] || {}) }
+      ])
+    );
     applyConfiguredContent(cricketRules.content);
 
     modelRoot = gltf.scene;
