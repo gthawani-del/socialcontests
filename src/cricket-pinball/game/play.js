@@ -255,7 +255,8 @@ async function boot() {
     prepareWorld(modelRoot);
     scene.add(modelRoot);
     bindCricketWorldComponents(modelRoot);
-    applyCricketWorldSkins(modelRoot);
+    // Generated artwork stays in the repo, but unvalidated blanket UV skinning is disabled.
+    // The authored GLB materials remain the visual source of truth until each mesh is UV-audited.
     upgradeStadiumFloodlights(modelRoot);
 
     // Physics must exist before mechanics bind authored GLB bats to flipper state.
@@ -587,12 +588,11 @@ function createMechanics() {
   ballVisual = new THREE.Mesh(
     new THREE.SphereGeometry(ballRadius, 32, 22),
     new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      map: loadCricketTexture('cricket-ball.webp'),
-      emissive: 0x3b050a,
-      emissiveIntensity: 0.35,
-      roughness: 0.38,
-      metalness: 0.02
+      color: 0xc82131,
+      emissive: 0x5a0810,
+      emissiveIntensity: 1.0,
+      roughness: 0.28,
+      metalness: 0.04
     })
   );
   ballVisual.renderOrder = 12;
@@ -1085,7 +1085,7 @@ function prepareDelivery() {
   showDeliveryCue('READY TO BOWL', 'YOUR DELIVERY', 700);
 }
 
-async function startCpuBowlingCountdown() {
+async async function startCpuBowlingCountdown() {
   const token = ++cpuDeliveryCountdownToken;
   inputsLocked = true;
   updateRoleControls();
@@ -1102,16 +1102,27 @@ async function startCpuBowlingCountdown() {
 }
 
 function launchCpuDelivery() {
-  if (!engine || match.deliveryOpen || match.currentInnings?.complete) return;
+  if (!engine || match.deliveryOpen || match.currentInnings?.complete || !engine.isAwaitingLaunch()) return;
   const bowling = chooseCpuBowling(difficulty, rulesConfig.cpu);
   selectedLine = bowling.line;
-  if (!match.beginDelivery(bowling)) return;
+
+  const released = engine.releaseLaunch({ charge: bowling.power, line: bowling.line, deliveryType: bowling.type });
+  if (!released) {
+    inputsLocked = false;
+    prepareDelivery();
+    return;
+  }
+  if (!match.beginDelivery(bowling)) {
+    engine.resetBall();
+    inputsLocked = false;
+    prepareDelivery();
+    return;
+  }
+
   adapter.armDelivery();
   resetBallTrail();
-
-  // Transfer control to the human batter before the physical release.
+  // Transfer control to the human batter after the physical ball is live.
   inputsLocked = false;
-  engine.releaseLaunch({ charge: bowling.power, line: bowling.line, deliveryType: bowling.type });
   showDeliveryCue('BAT NOW · ← / →', 'BALL LIVE', 650);
   updateRoleControls();
   updateScoreboards();
@@ -1129,14 +1140,24 @@ function releasePower() {
   powerControl.classList.remove('pressed');
   const charge = Math.max(engine.getLauncherCharge(), tableConfig.launcher.tapCharge);
   const bowling = { line: selectedLine, power: charge, type: 'PACE' };
-  if (!match.beginDelivery(bowling)) return;
+
+  const released = engine.releaseLaunch({ charge, line: selectedLine, deliveryType: 'PACE' });
+  if (!released) {
+    showDeliveryCue('READY TO BOWL', 'TRY AGAIN', 700);
+    updateRoleControls();
+    return;
+  }
+  if (!match.beginDelivery(bowling)) {
+    engine.resetBall();
+    updateRoleControls();
+    return;
+  }
+
   adapter.armDelivery();
   resetBallTrail();
   showDeliveryCue('BALL LIVE', selectedLine + ' LINE', 450);
-  engine.releaseLaunch({ charge, line: selectedLine, deliveryType: 'PACE' });
   updateRoleControls();
   updateScoreboards();
-
 }
 
 function onDeliveryResolved(type) {
