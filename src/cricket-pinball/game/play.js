@@ -1114,12 +1114,30 @@ function styleCricketTargets(root) {
       texturePath,
       (texture) => {
         texture.colorSpace = THREE.SRGBColorSpace;
-        texture.flipY = false;
         texture.wrapS = THREE.ClampToEdgeWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
         texture.magFilter = THREE.LinearFilter;
         texture.generateMipmaps = true;
+
+        // The authored ramp UV islands are not laid out as one continuous long strip.
+        // Project a clean UV set from the ramp's local X/Z bounds so the production
+        // artwork reads continuously along the full curved power lane.
+        const geometry = rampBed.geometry.clone();
+        geometry.computeBoundingBox();
+        const box = geometry.boundingBox;
+        const width = Math.max(1e-6, box.max.x - box.min.x);
+        const length = Math.max(1e-6, box.max.z - box.min.z);
+        const positions = geometry.attributes.position;
+        const projectedUv = new Float32Array(positions.count * 2);
+
+        for (let i = 0; i < positions.count; i += 1) {
+          projectedUv[i * 2] = (positions.getX(i) - box.min.x) / width;
+          projectedUv[i * 2 + 1] = (positions.getZ(i) - box.min.z) / length;
+        }
+
+        geometry.setAttribute('uv', new THREE.BufferAttribute(projectedUv, 2));
+        rampBed.geometry = geometry;
 
         const source = Array.isArray(rampBed.material) ? rampBed.material : [rampBed.material];
         const materials = source.map((base) => {
@@ -1129,7 +1147,7 @@ function styleCricketTargets(root) {
           material.emissive?.set?.(0x000000);
           material.emissiveMap = null;
           material.emissiveIntensity = 0;
-          if ('roughness' in material) material.roughness = 0.48;
+          if ('roughness' in material) material.roughness = 0.42;
           if ('metalness' in material) material.metalness = 0.02;
           material.needsUpdate = true;
           return material;
@@ -1138,7 +1156,7 @@ function styleCricketTargets(root) {
         rampBed.material = Array.isArray(rampBed.material) ? materials : materials[0];
         rampBed.userData.cricketSkin = skinName;
 
-        console.info(`[Cricket power ramp] ${skinName} applied to ${meshName}`);
+        console.info(`[Cricket power ramp] projected ${skinName} applied to ${meshName}`);
       },
       undefined,
       () => {
