@@ -266,7 +266,7 @@ async function boot() {
     engine = new PinballEngine(tableConfig);
     createMechanics();
     createCoin();
-    setupStadiumScoreboard();
+    disableInWorldScoreboard(modelRoot);
 
     cpuBattingAI = createCpuBattingAI({
       engine,
@@ -1125,93 +1125,26 @@ function createCoin() {
   scene.add(coinMesh);
 }
 
-function setupStadiumScoreboard() {
-  const screen = modelRoot.getObjectByName('Cricket_Scoreboard_Screen');
-  const placeholder = modelRoot.getObjectByName('Scoreboard_Placeholder');
+function disableInWorldScoreboard(root) {
+  const names = [
+    'Cricket_Scoreboard_Frame',
+    'Cricket_Scoreboard_Screen',
+    'Scoreboard_Placeholder'
+  ];
 
-  if (placeholder) {
-    placeholder.visible = false;
-    placeholder.userData.cricketHiddenReason = 'LIVE_SCOREBOARD_ACTIVE';
-  }
+  names.forEach((name) => {
+    const object = root.getObjectByName(name);
+    if (!object) return;
+    object.visible = false;
+    object.userData.cricketHiddenReason = 'TOP_HUD_IS_PRIMARY_SCOREBOARD';
+  });
 
-  if (!screen?.isMesh) {
-    console.warn('[Cricket scoreboard] Screen mesh not found');
-    return;
-  }
-
-  // The authored screen UVs are not a clean 0..1 display surface. Mount a
-  // dedicated live plane onto the exact GLB screen so the full canvas is visible.
-  screen.geometry.computeBoundingBox();
-  const box = screen.geometry.boundingBox;
-  const size = box.getSize(new THREE.Vector3());
-  const center = box.getCenter(new THREE.Vector3());
-
-  const boardCanvas = document.createElement('canvas');
-  boardCanvas.width = 1024;
-  boardCanvas.height = 512;
-  scoreboardTexture = new THREE.CanvasTexture(boardCanvas);
-  scoreboardTexture.colorSpace = THREE.SRGBColorSpace;
-  scoreboardTexture.minFilter = THREE.LinearFilter;
-  scoreboardTexture.magFilter = THREE.LinearFilter;
-  scoreboardTexture.generateMipmaps = false;
-  scoreboardTexture.userData.canvas = boardCanvas;
-
-  const original = Array.isArray(screen.material) ? screen.material[0] : screen.material;
-  const backing = original?.clone?.() || new THREE.MeshBasicMaterial();
-  backing.map = null;
-  backing.color?.set?.(0x030907);
-  if ('roughness' in backing) backing.roughness = 0.8;
-  if ('metalness' in backing) backing.metalness = 0.08;
-  backing.needsUpdate = true;
-  screen.material = backing;
-
-  const existing = screen.getObjectByName('Cricket_LiveScoreboard_Display');
-  if (existing) screen.remove(existing);
-
-  const display = new THREE.Mesh(
-    new THREE.PlaneGeometry(size.x * 0.96, size.y * 0.9),
-    new THREE.MeshBasicMaterial({
-      map: scoreboardTexture,
-      toneMapped: false,
-      side: THREE.DoubleSide
-    })
-  );
-  display.name = 'Cricket_LiveScoreboard_Display';
-  display.position.set(center.x, center.y, box.max.z + 0.012);
-  display.renderOrder = 30;
-  display.frustumCulled = false;
-  screen.add(display);
-
-  drawStadiumScoreboard('CRICKET PINBALL', 'READY');
-  updateScoreboards();
+  scoreboardTexture = null;
+  console.info('[Cricket scoreboard] In-world scoreboard disabled; top HUD is authoritative');
 }
 
-function drawStadiumScoreboard(label, value) {
-  if (!scoreboardTexture) return;
-  const boardCanvas = scoreboardTexture.userData.canvas;
-  const ctx = boardCanvas.getContext('2d');
-
-  const gradient = ctx.createLinearGradient(0, 0, boardCanvas.width, boardCanvas.height);
-  gradient.addColorStop(0, '#06120c');
-  gradient.addColorStop(1, '#0b1d16');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
-
-  ctx.strokeStyle = '#7e6a35';
-  ctx.lineWidth = 10;
-  ctx.strokeRect(20, 20, boardCanvas.width - 40, boardCanvas.height - 40);
-
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#8fb49e';
-  ctx.font = '700 52px system-ui';
-  ctx.fillText(String(label || '').toUpperCase(), 512, 165);
-
-  ctx.fillStyle = '#fff0b8';
-  ctx.font = '900 104px system-ui';
-  ctx.fillText(String(value || '—'), 512, 320);
-
-  scoreboardTexture.needsUpdate = true;
+function drawStadiumScoreboard() {
+  // Intentionally disabled: the top HUD is the single authoritative scoreboard.
 }
 
 function applyConfiguredContent(content) {
@@ -1704,9 +1637,8 @@ function updateScoreboards() {
   if (state.innings > 0) setScoreboard(`INNINGS ${state.innings}`, `${state.score.runs}/${state.score.wickets}`);
 }
 
-function setScoreboard(label, value) {
-  // No duplicate DOM scoreboard. Keep only the authored in-world GLB screen updated.
-  drawStadiumScoreboard(label, value);
+function setScoreboard() {
+  // Top HUD only. No duplicate in-world scoreboard.
 }
 
 function setLineFromKeyboard(line) {
