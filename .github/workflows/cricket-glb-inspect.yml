@@ -8,14 +8,24 @@ on:
       - '.github/workflows/cricket-glb-inspect.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Inspect cricket GLB
+        run: node scripts/inspect-cricket-glb.mjs
+      - name: Commit inspection report
         run: |
-          node scripts/inspect-cricket-glb.mjs
-          echo "=== CRICKET_GLB_REPORT_START ==="
-          cat public/game/cricket-glb-inspection.json
-          echo "=== CRICKET_GLB_REPORT_END ==="
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/game/cricket-glb-inspection.json
+          if git diff --cached --quiet; then
+            echo "Inspection report unchanged"
+          else
+            git commit -m "Update Cricket GLB inspection report"
+            git push
+          fi
