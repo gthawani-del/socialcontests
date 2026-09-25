@@ -207,19 +207,23 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.08;
+renderer.toneMappingExposure = 0.92;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07110c);
 const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.05, 100);
 camera.position.set(0, 6, 8.5);
 camera.lookAt(0, 0.7, 0);
-scene.add(new THREE.HemisphereLight(0xe4f0e8, 0x07110c, 2.3));
-const key = new THREE.DirectionalLight(0xffffff, 3.5);
-key.position.set(-3, 7, 5);
+scene.fog = new THREE.FogExp2(0x07110c, 0.018);
+scene.add(new THREE.HemisphereLight(0xdce8e0, 0x06100b, 1.55));
+const key = new THREE.DirectionalLight(0xfff5dc, 2.45);
+key.position.set(-3.5, 7.5, 5.5);
 scene.add(key);
-const pitchGlow = new THREE.PointLight(0x64b883, 10, 18, 2);
-pitchGlow.position.set(0, 3, 0);
+const fill = new THREE.DirectionalLight(0x91c6ad, 1.15);
+fill.position.set(4.5, 4.2, 1.5);
+scene.add(fill);
+const pitchGlow = new THREE.PointLight(0x4d9d72, 4.8, 13, 2);
+pitchGlow.position.set(0, 2.8, 0.25);
 scene.add(pitchGlow);
 
 const loader = new GLTFLoader();
@@ -259,7 +263,9 @@ async function boot() {
     applySafePitchAndTurfSkin(modelRoot);
     applyProductionStadiumMaterials(modelRoot);
     styleCricketBats(modelRoot);
+    styleCricketTargets(modelRoot);
     upgradeStadiumFloodlights(modelRoot);
+    addArenaAtmosphere(modelRoot);
 
     // Physics must exist before mechanics bind authored GLB bats to flipper state.
     engine = new PinballEngine(tableConfig);
@@ -555,9 +561,9 @@ function applyProductionStadiumMaterials(root) {
       metalness: 0.02
     },
     MAT_Gold: {
-      color: 0x78602f,
-      roughness: 0.5,
-      metalness: 0.34
+      color: 0x51452d,
+      roughness: 0.58,
+      metalness: 0.26
     },
     MAT_BlackMetal: {
       color: 0x0a1210,
@@ -574,15 +580,15 @@ function applyProductionStadiumMaterials(root) {
   const namedOverrides = [
     {
       match: (name) => /^StandFascia_/i.test(name),
-      color: 0x5d4a27,
-      roughness: 0.58,
-      metalness: 0.28
+      color: 0x3d493f,
+      roughness: 0.66,
+      metalness: 0.16
     },
     {
       match: (name) => /^Pavilion_Column_/i.test(name) || name === 'Cricket_Pavilion_Balcony',
-      color: 0x6b552b,
-      roughness: 0.52,
-      metalness: 0.3
+      color: 0x46564b,
+      roughness: 0.56,
+      metalness: 0.18
     },
     {
       match: (name) => /^Pavilion_Mullion_/i.test(name),
@@ -592,15 +598,15 @@ function applyProductionStadiumMaterials(root) {
     },
     {
       match: (name) => /^Tunnel_(Lintel|Pillar_)/i.test(name),
-      color: 0x665127,
-      roughness: 0.56,
-      metalness: 0.28
+      color: 0x415149,
+      roughness: 0.6,
+      metalness: 0.16
     },
     {
       match: (name) => /Cricket_Ramp_(Four|Six)_InnerRail/i.test(name),
-      color: 0x8b7438,
-      roughness: 0.42,
-      metalness: 0.4
+      color: 0x6c5c3a,
+      roughness: 0.5,
+      metalness: 0.28
     }
   ];
 
@@ -756,21 +762,21 @@ function buildPavilionBrandHeader(root) {
 
   const gradient = ctx.createLinearGradient(0, 0, 1024, 220);
   gradient.addColorStop(0, '#07130e');
-  gradient.addColorStop(0.5, '#10271d');
+  gradient.addColorStop(0.5, '#18392b');
   gradient.addColorStop(1, '#07130e');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 1024, 220);
 
-  ctx.strokeStyle = '#7d6834';
+  ctx.strokeStyle = '#65766d';
   ctx.lineWidth = 10;
   ctx.strokeRect(12, 12, 1000, 196);
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#f3e6b2';
+  ctx.fillStyle = '#f5ecc8';
   ctx.font = '900 82px system-ui';
   ctx.fillText('CRICKET PINBALL', 512, 104);
-  ctx.fillStyle = '#8db19b';
+  ctx.fillStyle = '#a3c7b2';
   ctx.font = '700 28px system-ui';
   ctx.fillText('BAT · SCORE · CHASE', 512, 164);
 
@@ -813,13 +819,13 @@ function styleCricketBats(root) {
       const material = base?.clone?.() || new THREE.MeshStandardMaterial();
       material.map = null;
       if (mainNames.has(name)) {
-        material.color?.set?.(0xd8b775);
+        material.color?.set?.(0xe6ca8f);
         if ('roughness' in material) material.roughness = 0.52;
         if ('metalness' in material) material.metalness = 0.02;
-        material.emissive?.set?.(0x24170a);
-        material.emissiveIntensity = 0.06;
+        material.emissive?.set?.(0x100b05);
+        material.emissiveIntensity = 0.025;
       } else {
-        material.color?.set?.(0x3b2117);
+        material.color?.set?.(0x24211c);
         if ('roughness' in material) material.roughness = 0.78;
         if ('metalness' in material) material.metalness = 0;
         material.emissive?.set?.(0x000000);
@@ -831,7 +837,72 @@ function styleCricketBats(root) {
     mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
   });
 
-  console.info('[Cricket bats] wood/grip treatment applied');
+  console.info('[Cricket bats] willow/grip treatment applied');
+}
+
+function styleCricketTargets(root) {
+  const treatments = [
+    ['four-ramp', 0x7ccf8e, 0x143a20],
+    ['six-ramp', 0xe78a67, 0x47180d],
+    ['wicket', 0xe5c46c, 0x4b3508],
+    ['single-target', 0x7fbd93, 0x173826],
+    ['two-target', 0xd0af69, 0x43320f]
+  ];
+
+  treatments.forEach(([id, color, emissive]) => {
+    getCricketComponent(id).forEach((mesh) => {
+      if (!mesh?.isMesh) return;
+      const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      const materials = source.map((base) => {
+        const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+        if (!material.map) material.color?.set?.(color);
+        material.emissive?.set?.(emissive);
+        material.emissiveIntensity = 0.22;
+        if ('roughness' in material) material.roughness = Math.max(0.45, material.roughness ?? 0.5);
+        if ('metalness' in material) material.metalness = Math.min(0.12, material.metalness ?? 0);
+        material.needsUpdate = true;
+        return material;
+      });
+      mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+    });
+  });
+
+  console.info('[Cricket targets] unified target palette applied');
+}
+
+function addArenaAtmosphere(root) {
+  if (scene.getObjectByName('CricketArenaAtmosphere')) return;
+
+  const group = new THREE.Group();
+  group.name = 'CricketArenaAtmosphere';
+  scene.add(group);
+
+  const rimLeft = new THREE.PointLight(0x4b9a73, 2.1, 8, 2);
+  rimLeft.position.set(-3.7, 2.4, -1.4);
+  group.add(rimLeft);
+
+  const rimRight = new THREE.PointLight(0xd4a24d, 1.5, 7, 2);
+  rimRight.position.set(3.6, 2.2, -1.5);
+  group.add(rimRight);
+
+  const backGlow = new THREE.PointLight(0x2f6f55, 1.8, 8, 2);
+  backGlow.position.set(0, 2.3, -3.2);
+  group.add(backGlow);
+
+  // Thin LED accents give the arena depth without introducing new gameplay geometry.
+  const ledMaterial = new THREE.MeshBasicMaterial({
+    color: 0x4f8b6e,
+    transparent: true,
+    opacity: 0.38,
+    toneMapped: false
+  });
+  [-2.45, 2.45].forEach((x) => {
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.025, 5.2), ledMaterial);
+    strip.position.set(x, 0.82, -0.25);
+    group.add(strip);
+  });
+
+  console.info('[Cricket arena] subtle atmosphere and LED accents installed');
 }
 
 function upgradeStadiumFloodlights(root) {
@@ -936,7 +1007,7 @@ function upgradeStadiumFloodlights(root) {
     }
 
     // Beam direction is independent from the visual array orientation.
-    const beam = new THREE.SpotLight(0xfff1cf, 32, 18, Math.PI / 5.2, 0.62, 1.45);
+    const beam = new THREE.SpotLight(0xfff1cf, 18, 16, Math.PI / 5.4, 0.7, 1.5);
     const beamWorldPosition = center.clone();
     beam.position.copy(beamWorldPosition);
     beam.castShadow = false;
@@ -946,7 +1017,7 @@ function upgradeStadiumFloodlights(root) {
 
     // Small face glow keeps the individual lamps legible without washing out
     // the table.
-    const glow = new THREE.PointLight(0xffe9b0, 2.2, 3.2, 2);
+    const glow = new THREE.PointLight(0xffe9b0, 1.2, 2.8, 2);
     glow.position.set(0, 0, 0.22);
     rig.add(glow);
   });
@@ -1842,9 +1913,13 @@ function frameWorld(size) {
   const span = Math.max(size.x, size.z, 1);
   const aspect = window.innerWidth / window.innerHeight;
   camera.aspect = aspect;
-  camera.fov = aspect < 0.85 ? 48 : 42;
-  camera.position.set(0, Math.max(size.y * 1.08, span * 0.61), Math.max(span * 1.08, 6.1));
-  camera.lookAt(0, Math.max(size.y * 0.23, 0.42), 0);
+  camera.fov = aspect < 0.85 ? 47 : 40;
+  camera.position.set(
+    0,
+    Math.max(size.y * 1.0, span * 0.56),
+    Math.max(span * 0.96, 5.7)
+  );
+  camera.lookAt(0, Math.max(size.y * 0.24, 0.48), -0.08);
   camera.updateProjectionMatrix();
 }
 
