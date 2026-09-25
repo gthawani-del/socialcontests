@@ -1106,6 +1106,59 @@ function styleCricketTargets(root) {
     });
   });
 
+  const applyPowerRampArtwork = (meshName, texturePath, skinName) => {
+    const rampBed = root.getObjectByName(meshName);
+    if (!rampBed?.isMesh) return;
+
+    cricketTextureLoader.load(
+      texturePath,
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.flipY = false;
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = true;
+
+        const source = Array.isArray(rampBed.material) ? rampBed.material : [rampBed.material];
+        const materials = source.map((base) => {
+          const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+          material.map = texture;
+          material.color?.set?.(0xffffff);
+          material.emissive?.set?.(0x000000);
+          material.emissiveMap = null;
+          material.emissiveIntensity = 0;
+          if ('roughness' in material) material.roughness = 0.48;
+          if ('metalness' in material) material.metalness = 0.02;
+          material.needsUpdate = true;
+          return material;
+        });
+
+        rampBed.material = Array.isArray(rampBed.material) ? materials : materials[0];
+        rampBed.userData.cricketSkin = skinName;
+
+        console.info(`[Cricket power ramp] ${skinName} applied to ${meshName}`);
+      },
+      undefined,
+      () => {
+        console.warn(`[Cricket power ramp] ${skinName} failed; authored ramp retained`);
+      }
+    );
+  };
+
+  applyPowerRampArtwork(
+    'Cricket_Ramp_Four_Bed',
+    '/assets/cricket/world/cricket-pinball-four-power-ramp.webp',
+    'cricket-pinball-four-power-ramp.webp'
+  );
+
+  applyPowerRampArtwork(
+    'Cricket_Ramp_Six_Bed',
+    '/assets/cricket/world/cricket-pinball-six-power-ramp.webp',
+    'cricket-pinball-six-power-ramp.webp'
+  );
+
   const fourSign = root.getObjectByName('Cricket_Ramp_Four_Sign');
   if (fourSign?.isMesh) {
     cricketTextureLoader.load(
