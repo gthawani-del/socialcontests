@@ -829,11 +829,16 @@ function simplifyStadiumStands(root) {
     }
   });
 
+  const fasciaMeshes = [];
   root.traverse((mesh) => {
     if (!mesh.isMesh || !/^StandFascia_/i.test(String(mesh.name || ''))) return;
+    fasciaMeshes.push(mesh);
+
+    // Dark premium fallback while the production fascia texture loads.
     const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
     const materials = source.map((base) => {
       const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+      material.map = null;
       material.color?.set?.(0x27362f);
       material.emissive?.set?.(0x000000);
       material.emissiveIntensity = 0;
@@ -844,6 +849,43 @@ function simplifyStadiumStands(root) {
     });
     mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
   });
+
+  if (fasciaMeshes.length) {
+    cricketTextureLoader.load(
+      '/assets/cricket/world/cricket-pinball-stand-fascia-strip.webp',
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = true;
+
+        fasciaMeshes.forEach((mesh) => {
+          const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+          const materials = source.map((base) => {
+            const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+            material.map = texture;
+            material.color?.set?.(0xffffff);
+            material.emissive?.set?.(0x000000);
+            material.emissiveIntensity = 0;
+            if ('roughness' in material) material.roughness = 0.68;
+            if ('metalness' in material) material.metalness = 0.03;
+            material.needsUpdate = true;
+            return material;
+          });
+          mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+          mesh.userData.cricketSkin = 'cricket-pinball-stand-fascia-strip.webp';
+        });
+
+        console.info('[Cricket stands] production fascia texture applied');
+      },
+      undefined,
+      () => {
+        console.warn('[Cricket stands] fascia texture failed; dark fallback retained');
+      }
+    );
+  }
 
   console.info('[Cricket stands] premium tier depth/aisles/fascia applied');
 }
