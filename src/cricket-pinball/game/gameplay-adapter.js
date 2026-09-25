@@ -10,7 +10,7 @@ export function createCricketGameplayAdapter({
   let liveStartedAt = null;
   let stalledSince = null;
   let shotLive = false;
-  let legalDelivery = false;
+  let becameHittable = false;
   let gutterEnteredAt = null;
   const zones = (tableConfig.deliveryZones || []).filter((zone) => zone.terminal);
   const unsubs = [];
@@ -20,7 +20,7 @@ export function createCricketGameplayAdapter({
     liveStartedAt = performanceNow();
     stalledSince = null;
     shotLive = false;
-    legalDelivery = false;
+    becameHittable = false;
     gutterEnteredAt = null;
   }
 
@@ -52,18 +52,18 @@ export function createCricketGameplayAdapter({
 
     const now = performanceNow();
 
-    // A delivery becomes countable only after the physical ball reaches the
-    // batting corridor. This is independent of whether the batter hits it.
-    const battingZoneZ = Number(cricketRules.delivery?.battingZoneZ ?? 1.72);
-    const battingZoneHalfWidth = Number(cricketRules.delivery?.battingZoneHalfWidth ?? 1.08);
+    // A delivery is countable only once it reaches the real playable bat gate.
+    // The earlier bowling corridor is guidance only; entering it does not consume a ball.
+    const playableBatZoneZ = Number(cricketRules.delivery?.playableBatZoneZ ?? 1.9);
+    const playableBatZoneHalfWidth = Number(cricketRules.delivery?.playableBatZoneHalfWidth ?? 1.05);
     if (
-      !legalDelivery &&
+      !becameHittable &&
       !engine.launcher.inLane &&
       !engine.launcher.deliveryGuideActive &&
-      engine.ball.position.z >= battingZoneZ &&
-      Math.abs(engine.ball.position.x) <= battingZoneHalfWidth
+      engine.ball.position.z >= playableBatZoneZ &&
+      Math.abs(engine.ball.position.x) <= playableBatZoneHalfWidth
     ) {
-      legalDelivery = true;
+      becameHittable = true;
     }
 
     // A pre-bat side gutter is a dead delivery: it must not consume a ball.
@@ -77,7 +77,7 @@ export function createCricketGameplayAdapter({
 
     if (engine.launcher.inLane || engine.launcher.deliveryGuideActive) {
       gutterEnteredAt = null;
-    } else if (inBattingGutter && !shotLive && !legalDelivery) {
+    } else if (inBattingGutter && !shotLive && !becameHittable) {
       if (gutterEnteredAt === null) gutterEnteredAt = now;
       const deadBallDelayMs = cricketRules.delivery?.deadBallGutterMs ?? 120;
       if (now - gutterEnteredAt >= deadBallDelayMs) {
@@ -123,7 +123,7 @@ export function createCricketGameplayAdapter({
       if (stalledSince === null) stalledSince = now;
 
       if (now - stalledSince >= stalledForMs) {
-        if (legalDelivery) {
+        if (becameHittable) {
           resolve('DOT', { reason: 'STALLED' });
         } else {
           abortDeadBall('PRE_BAT_STALLED');
@@ -136,7 +136,7 @@ export function createCricketGameplayAdapter({
 
     const maxLiveMs = cricketRules.delivery?.maxLiveMs ?? 10000;
     if (liveStartedAt !== null && now - liveStartedAt >= maxLiveMs) {
-      if (legalDelivery) {
+      if (becameHittable) {
         resolve('DOT', { reason: 'TIMEOUT' });
       } else {
         abortDeadBall('PRE_BAT_TIMEOUT');
@@ -154,23 +154,22 @@ export function createCricketGameplayAdapter({
   }
 
   unsubs.push(engine.on('flipper-hit', ({ pressed = false, impact = 0 } = {}) => {
-    // SHOT_LIVE is the single cricket scoring gate. Merely pressing a bat is
-    // insufficient: the moving/active flipper must physically collide with the ball.
+    // Actual bat contact is always proof that the delivery became playable,
+    // including contact made slightly before the configured bat-gate z line.
     if (
       !shotLive &&
-      legalDelivery &&
       !resolved &&
       matchEngine.getState().deliveryOpen &&
       pressed &&
-      impact > 0 &&
-      engine.ball.position.z >= 1.72
+      impact > 0
     ) {
+      becameHittable = true;
       shotLive = true;
     }
   }));
 
   unsubs.push(engine.on('drain', ({ safetyReset = false } = {}) => {
-    if (!legalDelivery && matchEngine.getState().deliveryOpen) {
+    if (!becameHittable && matchEngine.getState().deliveryOpen) {
       resolved = true;
       engine.freezeBall?.();
       if (matchEngine.abortDelivery?.(safetyReset ? 'PRE_BAT_SAFETY_DRAIN' : 'PRE_BAT_DRAIN')) {
