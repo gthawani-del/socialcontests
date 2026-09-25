@@ -258,6 +258,8 @@ async function boot() {
     // Safe production skin pass: only the two dedicated 2-triangle UV planes are overridden.
     // Complex pavilion/stands/ramps/wicket materials remain authored by the GLB.
     applySafePitchAndTurfSkin(modelRoot);
+    applyProductionStadiumMaterials(modelRoot);
+    styleCricketBats(modelRoot);
     upgradeStadiumFloodlights(modelRoot);
 
     // Physics must exist before mechanics bind authored GLB bats to flipper state.
@@ -537,6 +539,95 @@ function applySafePitchAndTurfSkin(root) {
     playfield: playfield?.name || null,
     pitch: pitch?.name || null
   });
+}
+
+function applyProductionStadiumMaterials(root) {
+  const materialTreatments = {
+    MAT_Crowd: {
+      color: 0x17241f,
+      roughness: 0.96,
+      metalness: 0,
+      emissive: 0x07100d,
+      emissiveIntensity: 0.08
+    },
+    MAT_Seat: {
+      color: 0x203a33,
+      roughness: 0.62,
+      metalness: 0.04
+    },
+    MAT_Gold: {
+      color: 0xb18a35,
+      roughness: 0.34,
+      metalness: 0.58
+    },
+    MAT_BlackMetal: {
+      color: 0x0d1715,
+      roughness: 0.3,
+      metalness: 0.68
+    },
+    MAT_Chrome: {
+      color: 0x8f9b98,
+      roughness: 0.18,
+      metalness: 0.9
+    }
+  };
+
+  root.traverse((mesh) => {
+    if (!mesh.isMesh) return;
+    const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    let changed = false;
+    const materials = source.map((base) => {
+      const treatment = materialTreatments[base?.name];
+      if (!base || !treatment) return base;
+      const material = base.clone();
+      material.color?.set?.(treatment.color);
+      if (material.emissive && treatment.emissive != null) material.emissive.set(treatment.emissive);
+      if (treatment.emissiveIntensity != null) material.emissiveIntensity = treatment.emissiveIntensity;
+      if ('roughness' in material && treatment.roughness != null) material.roughness = treatment.roughness;
+      if ('metalness' in material && treatment.metalness != null) material.metalness = treatment.metalness;
+      material.needsUpdate = true;
+      changed = true;
+      return material;
+    });
+    if (changed) mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+  });
+
+  console.info('[Cricket materials] production stadium palette applied');
+}
+
+function styleCricketBats(root) {
+  const mainNames = new Set(['Flipper_Left', 'Flipper_Right']);
+  const accentNames = new Set(['Flipper_Left_Red', 'Flipper_Right_Red']);
+
+  root.traverse((mesh) => {
+    if (!mesh.isMesh) return;
+    const name = String(mesh.name || '');
+    if (!mainNames.has(name) && !accentNames.has(name)) return;
+
+    const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    const materials = source.map((base) => {
+      const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+      material.map = null;
+      if (mainNames.has(name)) {
+        material.color?.set?.(0xd8b775);
+        if ('roughness' in material) material.roughness = 0.52;
+        if ('metalness' in material) material.metalness = 0.02;
+        material.emissive?.set?.(0x24170a);
+        material.emissiveIntensity = 0.06;
+      } else {
+        material.color?.set?.(0x3b2117);
+        if ('roughness' in material) material.roughness = 0.78;
+        if ('metalness' in material) material.metalness = 0;
+        material.emissive?.set?.(0x000000);
+        material.emissiveIntensity = 0;
+      }
+      material.needsUpdate = true;
+      return material;
+    });
+    mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+  });
+
+  console.info('[Cricket bats] wood/grip treatment applied');
 }
 
 function upgradeStadiumFloodlights(root) {
@@ -882,13 +973,32 @@ function createCoin() {
 
 function setupStadiumScoreboard() {
   const screen = modelRoot.getObjectByName('Cricket_Scoreboard_Screen');
-  if (!screen?.isMesh) return;
+  const placeholder = modelRoot.getObjectByName('Scoreboard_Placeholder');
+
+  if (placeholder) {
+    placeholder.visible = false;
+    placeholder.userData.cricketHiddenReason = 'LIVE_SCOREBOARD_ACTIVE';
+  }
+
+  if (!screen?.isMesh) {
+    console.warn('[Cricket scoreboard] Screen mesh not found');
+    return;
+  }
+
   const boardCanvas = document.createElement('canvas');
   boardCanvas.width = 1024;
   boardCanvas.height = 512;
   scoreboardTexture = new THREE.CanvasTexture(boardCanvas);
   scoreboardTexture.colorSpace = THREE.SRGBColorSpace;
-  screen.material = new THREE.MeshBasicMaterial({ map: scoreboardTexture, toneMapped: false });
+  scoreboardTexture.minFilter = THREE.LinearFilter;
+  scoreboardTexture.magFilter = THREE.LinearFilter;
+
+  screen.material = new THREE.MeshBasicMaterial({
+    map: scoreboardTexture,
+    toneMapped: false,
+    side: THREE.DoubleSide
+  });
+  screen.renderOrder = 20;
   scoreboardTexture.userData.canvas = boardCanvas;
   updateScoreboards();
 }
