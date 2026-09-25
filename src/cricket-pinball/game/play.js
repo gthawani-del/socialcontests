@@ -1214,6 +1214,78 @@ function styleCricketTargets(root) {
     );
   }
 
+  const applyGateArtwork = (gateName, glowName, overlayName, texturePath, skinName) => {
+    const gate = root.getObjectByName(gateName);
+    if (!gate?.isMesh) return;
+
+    cricketTextureLoader.load(
+      texturePath,
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = true;
+
+        gate.geometry.computeBoundingBox();
+        const box = gate.geometry.boundingBox;
+        const size = box.getSize(new THREE.Vector3());
+
+        root.getObjectByName(overlayName)?.removeFromParent();
+
+        const overlay = new THREE.Mesh(
+          new THREE.PlaneGeometry(size.x * 0.985, size.z * 0.985),
+          new THREE.MeshBasicMaterial({
+            map: texture,
+            toneMapped: false,
+            side: THREE.DoubleSide
+          })
+        );
+
+        overlay.name = overlayName;
+        overlay.rotation.x = -Math.PI / 2;
+        overlay.position.set(
+          gate.position.x,
+          gate.position.y + size.y * 0.5 + 0.01,
+          gate.position.z
+        );
+        overlay.renderOrder = 9;
+        overlay.castShadow = false;
+        overlay.receiveShadow = false;
+        overlay.userData.cricketSkin = skinName;
+        root.add(overlay);
+
+        // The authored glow slab sits directly above this face and would obscure
+        // the production artwork. Hide it only after the replacement texture loads.
+        const glow = root.getObjectByName(glowName);
+        if (glow) glow.visible = false;
+
+        console.info(`[Cricket gate] ${skinName} overlay applied`);
+      },
+      undefined,
+      () => {
+        console.warn(`[Cricket gate] ${skinName} failed; authored gate retained`);
+      }
+    );
+  };
+
+  applyGateArtwork(
+    'Cricket_Gate_One',
+    'Cricket_Gate_One_Glow',
+    'CricketGateOneOverlay',
+    '/assets/cricket/world/cricket-pinball-one-sign.webp',
+    'cricket-pinball-one-sign.webp'
+  );
+
+  applyGateArtwork(
+    'Cricket_Gate_Two',
+    'Cricket_Gate_Two_Glow',
+    'CricketGateTwoOverlay',
+    '/assets/cricket/world/cricket-pinball-two-sign.webp',
+    'cricket-pinball-two-sign.webp'
+  );
+
   console.info('[Cricket targets] dark high-contrast signage applied');
 }
 
