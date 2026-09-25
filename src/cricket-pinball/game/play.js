@@ -862,23 +862,40 @@ function simplifyStadiumStands(root) {
         texture.generateMipmaps = true;
 
         fasciaMeshes.forEach((mesh) => {
-          const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          const materials = source.map((base) => {
-            const material = base?.clone?.() || new THREE.MeshStandardMaterial();
-            material.map = texture;
-            material.color?.set?.(0xffffff);
-            material.emissive?.set?.(0x000000);
-            material.emissiveIntensity = 0;
-            if ('roughness' in material) material.roughness = 0.68;
-            if ('metalness' in material) material.metalness = 0.03;
-            material.needsUpdate = true;
-            return material;
-          });
-          mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
-          mesh.userData.cricketSkin = 'cricket-pinball-stand-fascia-strip.webp';
+          const overlayName = `CricketStandFasciaOverlay_${mesh.name}`;
+          root.getObjectByName(overlayName)?.removeFromParent();
+
+          mesh.geometry.computeBoundingBox();
+          const box = mesh.geometry.boundingBox;
+          const size = box.getSize(new THREE.Vector3());
+          const side = mesh.position.x >= 0 ? 1 : -1;
+
+          // The GLB fascia is a long thin box. Put the artwork on a dedicated
+          // camera-facing plane over the inner long face instead of spreading
+          // the texture across all box faces via its authored UVs.
+          const overlay = new THREE.Mesh(
+            new THREE.PlaneGeometry(size.z * 0.985, size.y * 0.94),
+            new THREE.MeshBasicMaterial({
+              map: texture,
+              toneMapped: false,
+              side: THREE.DoubleSide
+            })
+          );
+          overlay.name = overlayName;
+          overlay.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
+          overlay.position.set(
+            mesh.position.x - side * (size.x * 0.5 + 0.006),
+            mesh.position.y,
+            mesh.position.z
+          );
+          overlay.renderOrder = 7;
+          overlay.castShadow = false;
+          overlay.receiveShadow = false;
+          overlay.userData.cricketSkin = 'cricket-pinball-stand-fascia-strip.webp';
+          root.add(overlay);
         });
 
-        console.info('[Cricket stands] production fascia texture applied');
+        console.info('[Cricket stands] fascia artwork overlays installed');
       },
       undefined,
       () => {
@@ -932,7 +949,7 @@ function buildPavilionBrandHeader(root) {
   });
 
   const sign = new THREE.Mesh(
-    new THREE.PlaneGeometry(3.2, 0.8),
+    new THREE.PlaneGeometry(4.6, 1.15),
     material
   );
   sign.name = 'CricketPavilionBrandHeader';
