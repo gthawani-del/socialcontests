@@ -7,7 +7,7 @@ export function createCricketGameplayAdapter({
   onDeadBall = () => {}
 }) {
   let resolved = true;
-  let liveStartedAt = 0;
+  let liveStartedAt = null;
   let stalledSince = null;
   let shotLive = false;
   let legalDelivery = false;
@@ -77,7 +77,7 @@ export function createCricketGameplayAdapter({
 
     if (engine.launcher.inLane || engine.launcher.deliveryGuideActive) {
       gutterEnteredAt = null;
-    } else if (inBattingGutter && !shotLive) {
+    } else if (inBattingGutter && !shotLive && !legalDelivery) {
       if (gutterEnteredAt === null) gutterEnteredAt = now;
       const deadBallDelayMs = cricketRules.delivery?.deadBallGutterMs ?? 120;
       if (now - gutterEnteredAt >= deadBallDelayMs) {
@@ -135,7 +135,7 @@ export function createCricketGameplayAdapter({
     }
 
     const maxLiveMs = cricketRules.delivery?.maxLiveMs ?? 10000;
-    if (liveStartedAt && now - liveStartedAt >= maxLiveMs) {
+    if (liveStartedAt !== null && now - liveStartedAt >= maxLiveMs) {
       if (legalDelivery) {
         resolve('DOT', { reason: 'TIMEOUT' });
       } else {
