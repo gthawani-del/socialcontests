@@ -1214,6 +1214,48 @@ function styleCricketTargets(root) {
     );
   }
 
+  const slingDotBalls = [
+    root.getObjectByName('Cricket_SlingBall_L'),
+    root.getObjectByName('Cricket_SlingBall_R')
+  ].filter((mesh) => mesh?.isMesh);
+
+  if (slingDotBalls.length) {
+    cricketTextureLoader.load(
+      '/assets/cricket/world/cricket-pinball-dot-ball.webp',
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = true;
+
+        slingDotBalls.forEach((mesh) => {
+          const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+          const materials = source.map((base) => {
+            const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+            material.map = texture;
+            material.color?.set?.(0xffffff);
+            material.emissive?.set?.(0x000000);
+            material.emissiveIntensity = 0;
+            if ('roughness' in material) material.roughness = 0.42;
+            if ('metalness' in material) material.metalness = 0.02;
+            material.needsUpdate = true;
+            return material;
+          });
+          mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+          mesh.userData.cricketSkin = 'cricket-pinball-dot-ball.webp';
+        });
+
+        console.info('[Cricket DOT balls] shared production texture applied to left/right sling balls');
+      },
+      undefined,
+      () => {
+        console.warn('[Cricket DOT balls] production texture failed; authored red balls retained');
+      }
+    );
+  }
+
   const straightDriveTarget = root.getObjectByName('Cricket_DotPocket');
   if (straightDriveTarget?.isMesh) {
     cricketTextureLoader.load(
