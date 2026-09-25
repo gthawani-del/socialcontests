@@ -1214,6 +1214,56 @@ function styleCricketTargets(root) {
     );
   }
 
+  const wicketBackboard = root.getObjectByName('Cricket_Wicket_Backboard');
+  if (wicketBackboard?.isMesh) {
+    cricketTextureLoader.load(
+      '/assets/cricket/world/cricket-pinball-wicket-backboard.webp',
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = true;
+
+        wicketBackboard.geometry.computeBoundingBox();
+        const box = wicketBackboard.geometry.boundingBox;
+        const size = box.getSize(new THREE.Vector3());
+
+        root.getObjectByName('CricketWicketBackboardOverlay')?.removeFromParent();
+
+        const overlay = new THREE.Mesh(
+          new THREE.PlaneGeometry(size.x * 0.985, size.y * 0.965),
+          new THREE.MeshBasicMaterial({
+            map: texture,
+            toneMapped: false,
+            side: THREE.DoubleSide
+          })
+        );
+        overlay.name = 'CricketWicketBackboardOverlay';
+        overlay.position.set(
+          wicketBackboard.position.x,
+          wicketBackboard.position.y,
+          wicketBackboard.position.z + size.z * 0.5 + 0.006
+        );
+        overlay.renderOrder = 8;
+        overlay.castShadow = false;
+        overlay.receiveShadow = false;
+        overlay.userData.cricketSkin = 'cricket-pinball-wicket-backboard.webp';
+        root.add(overlay);
+
+        const authoredLabel = root.getObjectByName('Skin_Label_WICKET');
+        if (authoredLabel) authoredLabel.visible = false;
+
+        console.info('[Cricket WICKET] production backboard overlay applied');
+      },
+      undefined,
+      () => {
+        console.warn('[Cricket WICKET] production backboard texture failed; authored backboard retained');
+      }
+    );
+  }
+
   const applyGateArtwork = (gateName, glowName, overlayName, texturePath, skinName) => {
     const gate = root.getObjectByName(gateName);
     if (!gate?.isMesh) return;
