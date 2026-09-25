@@ -544,41 +544,80 @@ function applySafePitchAndTurfSkin(root) {
 function applyProductionStadiumMaterials(root) {
   const materialTreatments = {
     MAT_Crowd: {
-      color: 0x17241f,
-      roughness: 0.96,
+      color: 0x111b18,
+      roughness: 0.98,
       metalness: 0,
-      emissive: 0x07100d,
-      emissiveIntensity: 0.08
+      emissive: 0x050b09,
+      emissiveIntensity: 0.04
     },
     MAT_Seat: {
-      color: 0x203a33,
-      roughness: 0.62,
-      metalness: 0.04
+      color: 0x18352e,
+      roughness: 0.72,
+      metalness: 0.02
     },
     MAT_Gold: {
-      color: 0xb18a35,
-      roughness: 0.34,
-      metalness: 0.58
+      color: 0x78602f,
+      roughness: 0.5,
+      metalness: 0.34
     },
     MAT_BlackMetal: {
-      color: 0x0d1715,
-      roughness: 0.3,
-      metalness: 0.68
+      color: 0x0a1210,
+      roughness: 0.4,
+      metalness: 0.52
     },
     MAT_Chrome: {
-      color: 0x8f9b98,
-      roughness: 0.18,
-      metalness: 0.9
+      color: 0x687673,
+      roughness: 0.3,
+      metalness: 0.68
     }
   };
 
+  const namedOverrides = [
+    {
+      match: (name) => /^StandFascia_/i.test(name),
+      color: 0x5d4a27,
+      roughness: 0.58,
+      metalness: 0.28
+    },
+    {
+      match: (name) => /^Pavilion_Column_/i.test(name) || name === 'Cricket_Pavilion_Balcony',
+      color: 0x6b552b,
+      roughness: 0.52,
+      metalness: 0.3
+    },
+    {
+      match: (name) => /^Pavilion_Mullion_/i.test(name),
+      color: 0x52625f,
+      roughness: 0.32,
+      metalness: 0.62
+    },
+    {
+      match: (name) => /^Tunnel_(Lintel|Pillar_)/i.test(name),
+      color: 0x665127,
+      roughness: 0.56,
+      metalness: 0.28
+    },
+    {
+      match: (name) => /Cricket_Ramp_(Four|Six)_InnerRail/i.test(name),
+      color: 0x8b7438,
+      roughness: 0.42,
+      metalness: 0.4
+    }
+  ];
+
   root.traverse((mesh) => {
     if (!mesh.isMesh) return;
+    const meshName = String(mesh.name || '');
     const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
     let changed = false;
+
     const materials = source.map((base) => {
-      const treatment = materialTreatments[base?.name];
-      if (!base || !treatment) return base;
+      if (!base) return base;
+      const baseTreatment = materialTreatments[base.name];
+      const named = namedOverrides.find((item) => item.match(meshName));
+      if (!baseTreatment && !named) return base;
+
+      const treatment = { ...(baseTreatment || {}), ...(named || {}) };
       const material = base.clone();
       material.color?.set?.(treatment.color);
       if (material.emissive && treatment.emissive != null) material.emissive.set(treatment.emissive);
@@ -589,10 +628,125 @@ function applyProductionStadiumMaterials(root) {
       changed = true;
       return material;
     });
+
     if (changed) mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
   });
 
-  console.info('[Cricket materials] production stadium palette applied');
+  refinePavilionAndTunnel(root);
+  decorateStandsWithCrowd(root);
+  console.info('[Cricket materials] bundled stadium visual pass applied');
+}
+
+function refinePavilionAndTunnel(root) {
+  const canopyNames = ['Cricket_Pavilion_Roof', 'Pavilion_Canopy'];
+  canopyNames.forEach((name) => {
+    const mesh = root.getObjectByName(name);
+    if (!mesh?.isMesh) return;
+    const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    const materials = source.map((base) => {
+      const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+      material.color?.set?.(0x07100d);
+      if ('roughness' in material) material.roughness = 0.48;
+      if ('metalness' in material) material.metalness = 0.48;
+      material.needsUpdate = true;
+      return material;
+    });
+    mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+  });
+
+  const glass = root.getObjectByName('Pavilion_GlassBand');
+  if (glass?.isMesh) {
+    const material = (Array.isArray(glass.material) ? glass.material[0] : glass.material)?.clone?.()
+      || new THREE.MeshStandardMaterial();
+    material.color?.set?.(0x183f39);
+    material.transparent = true;
+    material.opacity = 0.58;
+    material.roughness = 0.2;
+    material.metalness = 0.18;
+    material.emissive?.set?.(0x06231d);
+    material.emissiveIntensity = 0.18;
+    material.needsUpdate = true;
+    glass.material = material;
+  }
+
+  const tunnelGlow = root.getObjectByName('Tunnel_FloorGlow');
+  if (tunnelGlow?.isMesh) {
+    const material = (Array.isArray(tunnelGlow.material) ? tunnelGlow.material[0] : tunnelGlow.material)?.clone?.()
+      || new THREE.MeshStandardMaterial();
+    material.color?.set?.(0x2e8f64);
+    material.emissive?.set?.(0x176844);
+    material.emissiveIntensity = 1.1;
+    material.roughness = 0.38;
+    material.metalness = 0.05;
+    material.needsUpdate = true;
+    tunnelGlow.material = material;
+  }
+}
+
+function decorateStandsWithCrowd(root) {
+  if (root.getObjectByName('CricketCrowdDecor')) return;
+
+  const group = new THREE.Group();
+  group.name = 'CricketCrowdDecor';
+  root.add(group);
+
+  const baseTexture = loadCricketTexture('stands-crowd.webp');
+  const standNames = [
+    'Cricket_Stand_1_0', 'Cricket_Stand_1_1', 'Cricket_Stand_1_2',
+    'Cricket_Stand_-1_0', 'Cricket_Stand_-1_1', 'Cricket_Stand_-1_2'
+  ];
+
+  standNames.forEach((name) => {
+    const stand = root.getObjectByName(name);
+    if (!stand?.isMesh) return;
+
+    stand.updateWorldMatrix(true, false);
+    const box = new THREE.Box3().setFromObject(stand);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+
+    const texture = baseTexture.clone();
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.repeat.set(Math.max(2, Math.round(size.z / 1.2)), 1);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.needsUpdate = true;
+
+    const panel = new THREE.Mesh(
+      new THREE.PlaneGeometry(Math.max(0.8, size.z * 0.94), 0.46),
+      new THREE.MeshStandardMaterial({
+        map: texture,
+        color: 0xd6ded8,
+        roughness: 0.82,
+        metalness: 0,
+        emissive: 0x09110e,
+        emissiveIntensity: 0.12,
+        side: THREE.DoubleSide
+      })
+    );
+
+    const rightSide = center.x > 0;
+    panel.name = `CrowdRibbon_${name}`;
+    panel.position.set(
+      rightSide ? box.min.x - 0.025 : box.max.x + 0.025,
+      box.max.y + 0.24,
+      center.z
+    );
+    panel.rotation.y = rightSide ? -Math.PI / 2 : Math.PI / 2;
+    panel.castShadow = false;
+    panel.receiveShadow = false;
+    panel.renderOrder = 4;
+
+    // Convert world placement into the GLB root's local space before parenting.
+    root.worldToLocal(panel.position);
+    const worldQuat = new THREE.Quaternion();
+    root.getWorldQuaternion(worldQuat);
+    panel.quaternion.premultiply(worldQuat.invert());
+
+    group.add(panel);
+  });
+
+  console.info('[Cricket stands] crowd ribbons installed');
 }
 
 function styleCricketBats(root) {
@@ -985,6 +1139,13 @@ function setupStadiumScoreboard() {
     return;
   }
 
+  // The authored screen UVs are not a clean 0..1 display surface. Mount a
+  // dedicated live plane onto the exact GLB screen so the full canvas is visible.
+  screen.geometry.computeBoundingBox();
+  const box = screen.geometry.boundingBox;
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+
   const boardCanvas = document.createElement('canvas');
   boardCanvas.width = 1024;
   boardCanvas.height = 512;
@@ -992,14 +1153,36 @@ function setupStadiumScoreboard() {
   scoreboardTexture.colorSpace = THREE.SRGBColorSpace;
   scoreboardTexture.minFilter = THREE.LinearFilter;
   scoreboardTexture.magFilter = THREE.LinearFilter;
-
-  screen.material = new THREE.MeshBasicMaterial({
-    map: scoreboardTexture,
-    toneMapped: false,
-    side: THREE.DoubleSide
-  });
-  screen.renderOrder = 20;
+  scoreboardTexture.generateMipmaps = false;
   scoreboardTexture.userData.canvas = boardCanvas;
+
+  const original = Array.isArray(screen.material) ? screen.material[0] : screen.material;
+  const backing = original?.clone?.() || new THREE.MeshBasicMaterial();
+  backing.map = null;
+  backing.color?.set?.(0x030907);
+  if ('roughness' in backing) backing.roughness = 0.8;
+  if ('metalness' in backing) backing.metalness = 0.08;
+  backing.needsUpdate = true;
+  screen.material = backing;
+
+  const existing = screen.getObjectByName('Cricket_LiveScoreboard_Display');
+  if (existing) screen.remove(existing);
+
+  const display = new THREE.Mesh(
+    new THREE.PlaneGeometry(size.x * 0.96, size.y * 0.9),
+    new THREE.MeshBasicMaterial({
+      map: scoreboardTexture,
+      toneMapped: false,
+      side: THREE.DoubleSide
+    })
+  );
+  display.name = 'Cricket_LiveScoreboard_Display';
+  display.position.set(center.x, center.y, box.max.z + 0.012);
+  display.renderOrder = 30;
+  display.frustumCulled = false;
+  screen.add(display);
+
+  drawStadiumScoreboard('CRICKET PINBALL', 'READY');
   updateScoreboards();
 }
 
@@ -1007,18 +1190,27 @@ function drawStadiumScoreboard(label, value) {
   if (!scoreboardTexture) return;
   const boardCanvas = scoreboardTexture.userData.canvas;
   const ctx = boardCanvas.getContext('2d');
-  ctx.fillStyle = '#06120c';
+
+  const gradient = ctx.createLinearGradient(0, 0, boardCanvas.width, boardCanvas.height);
+  gradient.addColorStop(0, '#06120c');
+  gradient.addColorStop(1, '#0b1d16');
+  ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
-  ctx.strokeStyle = '#d6b65b';
-  ctx.lineWidth = 12;
-  ctx.strokeRect(18, 18, boardCanvas.width - 36, boardCanvas.height - 36);
-  ctx.fillStyle = '#91b99f';
-  ctx.font = '700 48px system-ui';
+
+  ctx.strokeStyle = '#7e6a35';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(20, 20, boardCanvas.width - 40, boardCanvas.height - 40);
+
   ctx.textAlign = 'center';
-  ctx.fillText(label, 512, 170);
-  ctx.fillStyle = '#fff4cf';
-  ctx.font = '900 76px system-ui';
-  ctx.fillText(value, 512, 300);
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#8fb49e';
+  ctx.font = '700 52px system-ui';
+  ctx.fillText(String(label || '').toUpperCase(), 512, 165);
+
+  ctx.fillStyle = '#fff0b8';
+  ctx.font = '900 104px system-ui';
+  ctx.fillText(String(value || '—'), 512, 320);
+
   scoreboardTexture.needsUpdate = true;
 }
 
