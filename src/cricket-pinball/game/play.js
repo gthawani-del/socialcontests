@@ -1106,6 +1106,56 @@ function styleCricketTargets(root) {
     });
   });
 
+  const fourSign = root.getObjectByName('Cricket_Ramp_Four_Sign');
+  if (fourSign?.isMesh) {
+    cricketTextureLoader.load(
+      '/assets/cricket/world/cricket-pinball-four-sign.webp',
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = true;
+
+        fourSign.geometry.computeBoundingBox();
+        const box = fourSign.geometry.boundingBox;
+        const size = box.getSize(new THREE.Vector3());
+
+        root.getObjectByName('CricketFourSignOverlay')?.removeFromParent();
+
+        const overlay = new THREE.Mesh(
+          new THREE.PlaneGeometry(size.x * 0.985, size.y * 0.94),
+          new THREE.MeshBasicMaterial({
+            map: texture,
+            toneMapped: false,
+            side: THREE.DoubleSide
+          })
+        );
+        overlay.name = 'CricketFourSignOverlay';
+        overlay.position.set(
+          fourSign.position.x,
+          fourSign.position.y,
+          fourSign.position.z + size.z * 0.5 + 0.006
+        );
+        overlay.renderOrder = 8;
+        overlay.castShadow = false;
+        overlay.receiveShadow = false;
+        overlay.userData.cricketSkin = 'cricket-pinball-four-sign.webp';
+        root.add(overlay);
+
+        const authoredLabel = root.getObjectByName('Skin_Label_FOUR');
+        if (authoredLabel) authoredLabel.visible = false;
+
+        console.info('[Cricket FOUR] production sign overlay applied');
+      },
+      undefined,
+      () => {
+        console.warn('[Cricket FOUR] production sign texture failed; authored sign retained');
+      }
+    );
+  }
+
   console.info('[Cricket targets] dark high-contrast signage applied');
 }
 
