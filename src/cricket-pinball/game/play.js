@@ -1120,9 +1120,6 @@ function styleCricketTargets(root) {
         texture.magFilter = THREE.LinearFilter;
         texture.generateMipmaps = true;
 
-        // The authored ramp UV islands are not laid out as one continuous long strip.
-        // Project a clean UV set from the ramp's local X/Z bounds so the production
-        // artwork reads continuously along the full curved power lane.
         const geometry = rampBed.geometry.clone();
         geometry.computeBoundingBox();
         const box = geometry.boundingBox;
@@ -1137,22 +1134,32 @@ function styleCricketTargets(root) {
         }
 
         geometry.setAttribute('uv', new THREE.BufferAttribute(projectedUv, 2));
-        rampBed.geometry = geometry;
 
-        const source = Array.isArray(rampBed.material) ? rampBed.material : [rampBed.material];
-        const materials = source.map(() => new THREE.MeshBasicMaterial({
+        const overlayName = `${meshName}_PowerArtworkOverlay`;
+        rampBed.parent?.getObjectByName(overlayName)?.removeFromParent();
+
+        const material = new THREE.MeshBasicMaterial({
           map: texture,
           color: 0xffffff,
           toneMapped: false,
-          side: THREE.DoubleSide
-        }));
+          side: THREE.DoubleSide,
+          polygonOffset: true,
+          polygonOffsetFactor: -2,
+          polygonOffsetUnits: -2
+        });
 
-        // Power-ramp artwork should read exactly as authored. MeshBasicMaterial
-        // keeps the lane free from scene-light bloom/highlights.
-        rampBed.material = Array.isArray(rampBed.material) ? materials : materials[0];
-        rampBed.userData.cricketSkin = skinName;
+        const overlay = new THREE.Mesh(geometry, material);
+        overlay.name = overlayName;
+        overlay.position.copy(rampBed.position);
+        overlay.quaternion.copy(rampBed.quaternion);
+        overlay.scale.copy(rampBed.scale);
+        overlay.renderOrder = 12;
+        overlay.castShadow = false;
+        overlay.receiveShadow = false;
+        overlay.userData.cricketSkin = skinName;
+        rampBed.parent?.add(overlay);
 
-        console.info(`[Cricket power ramp] projected ${skinName} applied to ${meshName}`);
+        console.info(`[Cricket power ramp] unlit artwork overlay applied to ${meshName}`);
       },
       undefined,
       () => {
@@ -1160,7 +1167,6 @@ function styleCricketTargets(root) {
       }
     );
   };
-
   applyPowerRampArtwork(
     'Cricket_Ramp_Four_Bed',
     '/assets/cricket/world/cricket-pinball-four-power-ramp.webp',
