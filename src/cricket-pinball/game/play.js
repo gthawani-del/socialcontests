@@ -852,52 +852,73 @@ function buildPavilionBrandHeader(root) {
   const existing = root.getObjectByName('CricketPavilionBrandHeader');
   if (existing) root.remove(existing);
 
-  const canvas = document.createElement('canvas');
-  canvas.width = 1024;
-  canvas.height = 220;
-  const ctx = canvas.getContext('2d');
+  const buildFallbackTexture = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
 
-  const gradient = ctx.createLinearGradient(0, 0, 1024, 220);
-  gradient.addColorStop(0, '#07130e');
-  gradient.addColorStop(0.5, '#18392b');
-  gradient.addColorStop(1, '#07130e');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 1024, 220);
+    const gradient = ctx.createLinearGradient(0, 0, 1024, 256);
+    gradient.addColorStop(0, '#07130e');
+    gradient.addColorStop(0.5, '#18392b');
+    gradient.addColorStop(1, '#07130e');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1024, 256);
 
-  ctx.strokeStyle = '#65766d';
-  ctx.lineWidth = 10;
-  ctx.strokeRect(12, 12, 1000, 196);
+    ctx.strokeStyle = '#65766d';
+    ctx.lineWidth = 10;
+    ctx.strokeRect(12, 12, 1000, 232);
 
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#f5ecc8';
-  ctx.font = '900 82px system-ui';
-  ctx.fillText('CRICKET PINBALL', 512, 104);
-  ctx.fillStyle = '#a3c7b2';
-  ctx.font = '700 28px system-ui';
-  ctx.fillText('BAT · SCORE · CHASE', 512, 164);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#f5ecc8';
+    ctx.font = '900 82px system-ui';
+    ctx.fillText('CRICKET PINBALL', 512, 112);
+    ctx.fillStyle = '#a3c7b2';
+    ctx.font = '700 28px system-ui';
+    ctx.fillText('BAT · SCORE · CHASE', 512, 178);
 
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-  texture.generateMipmaps = false;
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  };
+
+  const material = new THREE.MeshBasicMaterial({
+    map: buildFallbackTexture(),
+    toneMapped: false,
+    side: THREE.DoubleSide
+  });
 
   const sign = new THREE.Mesh(
-    new THREE.PlaneGeometry(3.05, 0.66),
-    new THREE.MeshBasicMaterial({
-      map: texture,
-      toneMapped: false,
-      transparent: false,
-      side: THREE.DoubleSide
-    })
+    new THREE.PlaneGeometry(3.2, 0.8),
+    material
   );
   sign.name = 'CricketPavilionBrandHeader';
-  sign.position.set(0, 2.05, -3.12);
+  sign.position.set(0, 2.1, -3.10);
   sign.renderOrder = 6;
   sign.castShadow = false;
   sign.receiveShadow = false;
   root.add(sign);
+
+  cricketTextureLoader.load(
+    '/assets/cricket/world/cricket-pinball-pavilion-header.webp',
+    (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = true;
+      material.map = texture;
+      material.needsUpdate = true;
+      sign.userData.cricketSkin = 'cricket-pinball-pavilion-header.webp';
+      console.info('[Cricket pavilion] production header texture applied');
+    },
+    undefined,
+    () => {
+      console.warn('[Cricket pavilion] production header texture failed; canvas fallback retained');
+    }
+  );
 
   if (!root.getObjectByName('CricketPavilionBackdrop')) {
     const backdrop = new THREE.Mesh(
@@ -916,9 +937,6 @@ function buildPavilionBrandHeader(root) {
     backdrop.renderOrder = 1;
     root.add(backdrop);
   }
-
-  const brandHeader = root.getObjectByName('CricketPavilionBrandHeader');
-  if (brandHeader) brandHeader.position.set(0, 2.1, -3.10);
 
   console.info('[Cricket pavilion] premium backdrop/header composition installed');
 }
