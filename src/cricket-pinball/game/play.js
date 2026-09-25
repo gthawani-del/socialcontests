@@ -255,9 +255,9 @@ async function boot() {
     prepareWorld(modelRoot);
     scene.add(modelRoot);
     bindCricketWorldComponents(modelRoot);
-    // Production cricket skinning is applied directly to authored GLB meshes.
-    // Geometry, colliders, pivots and physics remain untouched.
-    applyCricketWorldSkins(modelRoot);
+    // The production GLB already contains UV-authored FINAL materials/textures.
+    // Do not overwrite them at runtime with generic generated images.
+    // Runtime texture assignment previously caused stretching/repetition across UV islands.
     upgradeStadiumFloodlights(modelRoot);
 
     // Physics must exist before mechanics bind authored GLB bats to flipper state.
