@@ -1,0 +1,282 @@
+{
+  "source": "public/models/cricket-world-v2.glb",
+  "generatedAt": "2026-09-25T04:24:13.669Z",
+  "rule": "Do not assign generated artwork directly unless authored against the listed UV template.",
+  "extractedImages": [
+    {
+      "imageIndex": 0,
+      "name": "FINAL_Pavilion",
+      "mimeType": "image/png",
+      "file": "embedded_00_FINAL_Pavilion.png",
+      "bytes": 1448472
+    },
+    {
+      "imageIndex": 1,
+      "name": "FINAL_Tunnel",
+      "mimeType": "image/png",
+      "file": "embedded_01_FINAL_Tunnel.png",
+      "bytes": 24229
+    },
+    {
+      "imageIndex": 2,
+      "name": "FINAL_FourRamp",
+      "mimeType": "image/png",
+      "file": "embedded_02_FINAL_FourRamp.png",
+      "bytes": 36802
+    },
+    {
+      "imageIndex": 3,
+      "name": "FINAL_SixRamp",
+      "mimeType": "image/png",
+      "file": "embedded_03_FINAL_SixRamp.png",
+      "bytes": 36844
+    },
+    {
+      "imageIndex": 4,
+      "name": "FINAL_Wicket",
+      "mimeType": "image/png",
+      "file": "embedded_04_FINAL_Wicket.png",
+      "bytes": 43605
+    },
+    {
+      "imageIndex": 5,
+      "name": "FINAL_Pitch",
+      "mimeType": "image/png",
+      "file": "embedded_05_FINAL_Pitch.png",
+      "bytes": 745151
+    },
+    {
+      "imageIndex": 6,
+      "name": "FINAL_Turf",
+      "mimeType": "image/png",
+      "file": "embedded_06_FINAL_Turf.png",
+      "bytes": 1633311
+    }
+  ],
+  "authoringTargets": [
+    {
+      "meshIndex": 45,
+      "meshName": "Cube.024",
+      "nodeNames": [
+        "Cricket_Pavilion"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 14,
+      "materialName": "FINAL_MAT_Pavilion",
+      "sourceImageIndex": 0,
+      "uvTemplate": "uv_045_Cricket_Pavilion.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 49,
+      "meshName": "Cube.033",
+      "nodeNames": [
+        "Cricket_Player_Tunnel"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 16,
+      "materialName": "FINAL_MAT_Tunnel",
+      "sourceImageIndex": 1,
+      "uvTemplate": "uv_049_Cricket_Player_Tunnel.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 52,
+      "meshName": "Cricket_Ramp_Four_Bed_Mesh",
+      "nodeNames": [
+        "Cricket_Ramp_Four_Bed"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 18,
+      "materialName": "FINAL_MAT_FourRamp",
+      "sourceImageIndex": 2,
+      "uvTemplate": "uv_052_Cricket_Ramp_Four_Bed.svg",
+      "vertexCount": 360,
+      "triangleCount": 180
+    },
+    {
+      "meshIndex": 57,
+      "meshName": "Cricket_Ramp_Six_Bed_Mesh",
+      "nodeNames": [
+        "Cricket_Ramp_Six_Bed"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 19,
+      "materialName": "FINAL_MAT_SixRamp",
+      "sourceImageIndex": 3,
+      "uvTemplate": "uv_057_Cricket_Ramp_Six_Bed.svg",
+      "vertexCount": 360,
+      "triangleCount": 180
+    },
+    {
+      "meshIndex": 70,
+      "meshName": "Cube.030",
+      "nodeNames": [
+        "Cricket_Stand_1_0"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 21,
+      "materialName": "MAT_Crowd",
+      "sourceImageIndex": null,
+      "uvTemplate": "uv_070_Cricket_Stand_1_0.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 71,
+      "meshName": "Cube.031",
+      "nodeNames": [
+        "Cricket_Stand_1_1"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 21,
+      "materialName": "MAT_Crowd",
+      "sourceImageIndex": null,
+      "uvTemplate": "uv_071_Cricket_Stand_1_1.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 72,
+      "meshName": "Cube.032",
+      "nodeNames": [
+        "Cricket_Stand_1_2"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 21,
+      "materialName": "MAT_Crowd",
+      "sourceImageIndex": null,
+      "uvTemplate": "uv_072_Cricket_Stand_1_2.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 73,
+      "meshName": "Cube.027",
+      "nodeNames": [
+        "Cricket_Stand_-1_0"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 21,
+      "materialName": "MAT_Crowd",
+      "sourceImageIndex": null,
+      "uvTemplate": "uv_073_Cricket_Stand_-1_0.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 74,
+      "meshName": "Cube.028",
+      "nodeNames": [
+        "Cricket_Stand_-1_1"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 21,
+      "materialName": "MAT_Crowd",
+      "sourceImageIndex": null,
+      "uvTemplate": "uv_074_Cricket_Stand_-1_1.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 75,
+      "meshName": "Cube.029",
+      "nodeNames": [
+        "Cricket_Stand_-1_2"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 21,
+      "materialName": "MAT_Crowd",
+      "sourceImageIndex": null,
+      "uvTemplate": "uv_075_Cricket_Stand_-1_2.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 76,
+      "meshName": "Cube.019",
+      "nodeNames": [
+        "Cricket_Wicket_Backboard"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 22,
+      "materialName": "FINAL_MAT_Wicket",
+      "sourceImageIndex": 4,
+      "uvTemplate": "uv_076_Cricket_Wicket_Backboard.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 83,
+      "meshName": "Cylinder.009",
+      "nodeNames": [
+        "Cricket_Wicket_Main"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 22,
+      "materialName": "FINAL_MAT_Wicket",
+      "sourceImageIndex": 4,
+      "uvTemplate": "uv_083_Cricket_Wicket_Main.svg",
+      "vertexCount": 288,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 93,
+      "meshName": "Cube.006",
+      "nodeNames": [
+        "Flipper_Left"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 3,
+      "materialName": "MAT_White",
+      "sourceImageIndex": null,
+      "uvTemplate": "uv_093_Flipper_Left.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 95,
+      "meshName": "Cube.008",
+      "nodeNames": [
+        "Flipper_Right"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 3,
+      "materialName": "MAT_White",
+      "sourceImageIndex": null,
+      "uvTemplate": "uv_095_Flipper_Right.svg",
+      "vertexCount": 384,
+      "triangleCount": 188
+    },
+    {
+      "meshIndex": 184,
+      "meshName": "Skin_Pitch_Surface_Mesh.001",
+      "nodeNames": [
+        "Skin_Pitch_Surface"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 25,
+      "materialName": "FINAL_MAT_Pitch",
+      "sourceImageIndex": 5,
+      "uvTemplate": "uv_184_Skin_Pitch_Surface.svg",
+      "vertexCount": 4,
+      "triangleCount": 2
+    },
+    {
+      "meshIndex": 185,
+      "meshName": "Skin_Playfield_Surface_Mesh.001",
+      "nodeNames": [
+        "Skin_Playfield_Surface"
+      ],
+      "primitiveIndex": 0,
+      "materialIndex": 26,
+      "materialName": "FINAL_MAT_Turf",
+      "sourceImageIndex": 6,
+      "uvTemplate": "uv_185_Skin_Playfield_Surface.svg",
+      "vertexCount": 4,
+      "triangleCount": 2
+    }
+  ]
+}

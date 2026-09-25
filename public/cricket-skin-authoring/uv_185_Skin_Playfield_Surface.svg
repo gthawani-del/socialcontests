@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<rect width="100%" height="100%" fill="#111"/>
+<g fill="none" stroke="#fff" stroke-width="1" opacity=".75"><path d="M 24.00 24.00 L 1000.00 24.00 L 1000.00 1000.00 Z"/><path d="M 24.00 24.00 L 1000.00 1000.00 L 24.00 1000.00 Z"/></g>
+<text x="24" y="32" fill="#ffdf70" font-family="monospace" font-size="18">Skin_Playfield_Surface | FINAL_MAT_Turf</text>
+</svg>
