@@ -255,9 +255,9 @@ async function boot() {
     prepareWorld(modelRoot);
     scene.add(modelRoot);
     bindCricketWorldComponents(modelRoot);
-    // The production GLB already contains UV-authored FINAL materials/textures.
-    // Do not overwrite them at runtime with generic generated images.
-    // Runtime texture assignment previously caused stretching/repetition across UV islands.
+    // Safe production skin pass: only the two dedicated 2-triangle UV planes are overridden.
+    // Complex pavilion/stands/ramps/wicket materials remain authored by the GLB.
+    applySafePitchAndTurfSkin(modelRoot);
     upgradeStadiumFloodlights(modelRoot);
 
     // Physics must exist before mechanics bind authored GLB bats to flipper state.
@@ -498,6 +498,45 @@ function applyCricketWorldSkins(root) {
   // Bat artwork covers the authored flipper assemblies. Physics and pivots are unchanged.
   skinComponent('bat-left', 'flipper-left-bat.webp', { roughness: 0.5, metalness: 0.02 });
   skinComponent('bat-right', 'flipper-right-bat.webp', { roughness: 0.5, metalness: 0.02 });
+}
+
+function applySafePitchAndTurfSkin(root) {
+  const playfield = root.getObjectByName('Skin_Playfield_Surface');
+  const pitch = root.getObjectByName('Skin_Pitch_Surface');
+
+  const apply = (mesh, fileName, options = {}) => {
+    if (!mesh?.isMesh || !mesh.geometry?.attributes?.uv) {
+      console.warn('[Cricket skin safe] Missing dedicated UV surface:', mesh?.name || fileName);
+      return false;
+    }
+    const texture = loadCricketTexture(fileName);
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.repeat.set(1, 1);
+    texture.offset.set(0, 0);
+    texture.center.set(0.5, 0.5);
+    texture.rotation = 0;
+    texture.needsUpdate = true;
+
+    const base = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+    const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+    material.map = texture;
+    material.color?.set?.(0xffffff);
+    if ('roughness' in material && options.roughness != null) material.roughness = options.roughness;
+    if ('metalness' in material && options.metalness != null) material.metalness = options.metalness;
+    material.needsUpdate = true;
+    mesh.material = material;
+    mesh.userData.cricketSkin = fileName;
+    return true;
+  };
+
+  apply(playfield, 'playfield.png', { roughness: 0.92, metalness: 0 });
+  apply(pitch, 'pitch-skin.webp', { roughness: 0.94, metalness: 0 });
+
+  console.info('[Cricket skin safe] pitch/turf applied', {
+    playfield: playfield?.name || null,
+    pitch: pitch?.name || null
+  });
 }
 
 function upgradeStadiumFloodlights(root) {
