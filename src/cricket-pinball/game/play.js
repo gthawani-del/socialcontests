@@ -1945,9 +1945,17 @@ function updateRoleControls() {
   const ballLive = Boolean(state.deliveryOpen && engine);
   const showBowling = canBowlNow();
   const showBatting = canBatNow();
+  const showBattingControls = Boolean(
+    engine &&
+    isHumanBatting() &&
+    !['MATCH_OVER', 'SUPER_OVER', 'INNINGS_BREAK'].includes(state.status)
+  );
 
   bowlingControls.hidden = !showBowling;
-  battingControls.hidden = !showBatting;
+  battingControls.hidden = !showBattingControls;
+  battingControls.querySelectorAll('[data-flipper]').forEach((button) => {
+    button.disabled = !showBatting;
+  });
 
   const roleText = showBowling
     ? `${playerName(state.bowlingPlayerId)} · BOWL NOW`
