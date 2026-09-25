@@ -1,0 +1,21 @@
+name: Cricket GLB Inspect
+
+on:
+  push:
+    paths:
+      - 'public/models/cricket-world-v2.glb'
+      - 'scripts/inspect-cricket-glb.mjs'
+      - '.github/workflows/cricket-glb-inspect.yml'
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect cricket GLB
+        run: |
+          node scripts/inspect-cricket-glb.mjs
+          echo "=== CRICKET_GLB_REPORT_START ==="
+          cat public/game/cricket-glb-inspection.json
+          echo "=== CRICKET_GLB_REPORT_END ==="
