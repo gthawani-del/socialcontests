@@ -255,8 +255,9 @@ async function boot() {
     prepareWorld(modelRoot);
     scene.add(modelRoot);
     bindCricketWorldComponents(modelRoot);
-    // Generated artwork stays in the repo, but unvalidated blanket UV skinning is disabled.
-    // The authored GLB materials remain the visual source of truth until each mesh is UV-audited.
+    // Production cricket skinning is applied directly to authored GLB meshes.
+    // Geometry, colliders, pivots and physics remain untouched.
+    applyCricketWorldSkins(modelRoot);
     upgradeStadiumFloodlights(modelRoot);
 
     // Physics must exist before mechanics bind authored GLB bats to flipper state.
@@ -443,25 +444,60 @@ function skinNamedMeshes(root, matcher, fileName, options) {
   console.info('[Cricket skin]', fileName, '→', applied);
 }
 
+function skinComponent(id, fileName, options = {}, exclude = () => false) {
+  const applied = [];
+  getCricketComponent(id).forEach((mesh) => {
+    if (!mesh?.isMesh || exclude(mesh)) return;
+    if (skinMesh(mesh, fileName, options)) applied.push(mesh.name);
+  });
+  console.info('[Cricket skin component]', id, fileName, '→', applied);
+  return applied;
+}
+
+function tintComponent(id, { color, emissive = 0x000000, emissiveIntensity = 0, roughness = 0.7, metalness = 0.02 }) {
+  getCricketComponent(id).forEach((mesh) => {
+    if (!mesh?.isMesh) return;
+    const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    const materials = source.map((base) => {
+      const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+      material.map = null;
+      material.color?.set?.(color);
+      material.emissive?.set?.(emissive);
+      material.emissiveIntensity = emissiveIntensity;
+      if ('roughness' in material) material.roughness = roughness;
+      if ('metalness' in material) material.metalness = metalness;
+      material.needsUpdate = true;
+      return material;
+    });
+    mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+    mesh.userData.cricketSkin = `material:${id}`;
+  });
+}
+
 function applyCricketWorldSkins(root) {
-  // Dedicated authored skin surfaces first: never add flat overlay planes.
+  const isTextOrLabel = (mesh) => /text|label|word|letter/i.test(String(mesh.name || ''));
+
+  // Dedicated authored surfaces: texture the GLB itself, never floating planes.
   skinNamedMeshes(root, (name) => name === 'Skin_Playfield_Surface', 'playfield.png', { roughness: 0.92, metalness: 0 });
   skinNamedMeshes(root, (name) => name === 'Skin_Pitch_Surface', 'pitch-skin.webp', { roughness: 0.94, metalness: 0 });
 
-  // Functional cricket destinations retain their GLB geometry and colliders.
-  // Dedicated text meshes are intentionally excluded so FOUR/SIX/WICKET labels stay crisp.
-  skinNamedMeshes(root, (name) => /^Cricket_Ramp_Four_/i.test(name), 'four-ramp.png', { roughness: 0.62, metalness: 0.04 });
-  skinNamedMeshes(root, (name) => /^Cricket_Ramp_Six_/i.test(name), 'six-ramp.png', { roughness: 0.62, metalness: 0.04 });
-  skinNamedMeshes(root, (name) => /^Cricket_Wicket_/i.test(name), 'wicket.png', { roughness: 0.58, metalness: 0.02 });
+  // Functional destinations use component bindings so the live production geometry is skinned.
+  skinComponent('four-ramp', 'four-ramp.png', { roughness: 0.62, metalness: 0.04 }, isTextOrLabel);
+  skinComponent('six-ramp', 'six-ramp.png', { roughness: 0.62, metalness: 0.04 }, isTextOrLabel);
+  skinComponent('wicket', 'wicket.png', { roughness: 0.58, metalness: 0.02 }, isTextOrLabel);
 
-  // Environment skins use only the matching authored meshes.
-  skinNamedMeshes(root, (name) => name === 'Cricket_Pavilion', 'pavilion.png', { roughness: 0.72, metalness: 0.02 });
+  // Environment.
+  skinComponent('pavilion', 'pavilion.png', { roughness: 0.72, metalness: 0.02 }, isTextOrLabel);
   skinNamedMeshes(root, (name) => name === 'Cricket_Player_Tunnel', 'tunnel.png', { roughness: 0.72, metalness: 0.02 });
-  skinNamedMeshes(root, (name) => /^Cricket_Stand_/i.test(name), 'stands-crowd.webp', { roughness: 0.9, metalness: 0 });
+  skinComponent('stands', 'stands-crowd.webp', { roughness: 0.9, metalness: 0 }, isTextOrLabel);
 
-  // Bat artwork covers the actual authored GLB flipper assemblies. Physics and pivots are unchanged.
-  getCricketComponent('bat-left').forEach((mesh) => skinMesh(mesh, 'flipper-left-bat.webp', { roughness: 0.5, metalness: 0.02 }));
-  getCricketComponent('bat-right').forEach((mesh) => skinMesh(mesh, 'flipper-right-bat.webp', { roughness: 0.5, metalness: 0.02 }));
+  // Run targets get a deliberate cricket material treatment on their actual GLB meshes.
+  tintComponent('single-target', { color: 0x2f9f68, emissive: 0x0e3b28, emissiveIntensity: 0.35, roughness: 0.55 });
+  tintComponent('two-target', { color: 0xd7b456, emissive: 0x49370d, emissiveIntensity: 0.28, roughness: 0.5 });
+
+  // Bat artwork covers the authored flipper assemblies. Physics and pivots are unchanged.
+  skinComponent('bat-left', 'flipper-left-bat.webp', { roughness: 0.5, metalness: 0.02 });
+  skinComponent('bat-right', 'flipper-right-bat.webp', { roughness: 0.5, metalness: 0.02 });
 }
 
 function upgradeStadiumFloodlights(root) {
@@ -589,11 +625,12 @@ function createMechanics() {
   ballVisual = new THREE.Mesh(
     new THREE.SphereGeometry(ballRadius, 32, 22),
     new THREE.MeshStandardMaterial({
-      color: 0xc82131,
-      emissive: 0x5a0810,
-      emissiveIntensity: 1.0,
-      roughness: 0.28,
-      metalness: 0.04
+      map: loadCricketTexture('cricket-ball.webp'),
+      color: 0xffffff,
+      emissive: 0x35050a,
+      emissiveIntensity: 0.45,
+      roughness: 0.34,
+      metalness: 0.02
     })
   );
   ballVisual.renderOrder = 12;
