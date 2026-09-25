@@ -1,0 +1,31 @@
+name: Cricket Skin Authoring
+
+on:
+  push:
+    paths:
+      - 'public/models/cricket-world-v2.glb'
+      - 'scripts/build-cricket-skin-authoring.mjs'
+      - '.github/workflows/cricket-skin-authoring.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-authoring-pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate skin authoring pack
+        run: node scripts/build-cricket-skin-authoring.mjs
+      - name: Commit authoring pack
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/cricket-skin-authoring
+          if git diff --cached --quiet; then
+            echo "Authoring pack unchanged"
+          else
+            git commit -m "Update Cricket skin authoring pack"
+            git push
+          fi
