@@ -736,3 +736,35 @@ button, a { font: inherit; }
   position:relative!important;
 }
 #stadiumScoreboard{display:none!important}
+
+
+/* Final gameplay cue placement: keep status away from pavilion/wicket hero area. */
+.delivery-cue{
+  top:132px!important;
+  max-width:min(300px,calc(100vw - 32px))!important;
+  padding:7px 11px!important;
+  border-radius:9px!important;
+}
+.delivery-cue small{
+  font-size:11px!important;
+}
+.delivery-cue strong{
+  font-size:19px!important;
+}
+.delivery-cue.is-result{
+  top:132px!important;
+  min-width:0!important;
+  max-width:min(320px,calc(100vw - 32px))!important;
+  padding:9px 13px!important;
+}
+.delivery-cue.is-result strong{
+  font-size:28px!important;
+}
+@media(max-width:680px){
+  .delivery-cue,
+  .delivery-cue.is-result{
+    top:116px!important;
+    max-width:calc(100vw - 24px)!important;
+  }
+  .delivery-cue.is-result strong{font-size:24px!important}
+}
