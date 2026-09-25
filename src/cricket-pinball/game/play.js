@@ -207,7 +207,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.92;
+renderer.toneMappingExposure = 0.86;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x07110c);
@@ -222,7 +222,7 @@ scene.add(key);
 const fill = new THREE.DirectionalLight(0x91c6ad, 1.15);
 fill.position.set(4.5, 4.2, 1.5);
 scene.add(fill);
-const pitchGlow = new THREE.PointLight(0x4d9d72, 4.8, 13, 2);
+const pitchGlow = new THREE.PointLight(0x4d9d72, 2.8, 11, 2);
 pitchGlow.position.set(0, 2.8, 0.25);
 scene.add(pitchGlow);
 
@@ -431,7 +431,7 @@ function skinMesh(mesh, fileName, options = {}) {
   const materials = sourceMaterials.map((source) => {
     const material = source?.clone?.() || new THREE.MeshStandardMaterial();
     material.map = texture;
-    material.color?.set?.(0xffffff);
+    material.color?.set?.(options.tint ?? 0xffffff);
     if ('roughness' in material && options.roughness != null) material.roughness = options.roughness;
     if ('metalness' in material && options.metalness != null) material.metalness = options.metalness;
     material.needsUpdate = true;
@@ -537,8 +537,8 @@ function applySafePitchAndTurfSkin(root) {
     return true;
   };
 
-  apply(playfield, 'playfield.png', { roughness: 0.92, metalness: 0 });
-  apply(pitch, 'pitch-skin.webp', { roughness: 0.94, metalness: 0 });
+  apply(playfield, 'playfield.png', { roughness: 0.96, metalness: 0, tint: 0xb8cfae });
+  apply(pitch, 'pitch-skin.webp', { roughness: 0.97, metalness: 0, tint: 0xd9c89b });
 
   console.info('[Cricket skin safe] pitch/turf applied', {
     playfield: playfield?.name || null,
@@ -666,11 +666,11 @@ function refinePavilionAndTunnel(root) {
       || new THREE.MeshStandardMaterial();
     material.color?.set?.(0x183f39);
     material.transparent = true;
-    material.opacity = 0.58;
+    material.opacity = 0.38;
     material.roughness = 0.2;
     material.metalness = 0.18;
     material.emissive?.set?.(0x06231d);
-    material.emissiveIntensity = 0.18;
+    material.emissiveIntensity = 0.06;
     material.needsUpdate = true;
     glass.material = material;
   }
@@ -722,7 +722,7 @@ function refinePavilionAndTunnel(root) {
       || new THREE.MeshStandardMaterial();
     material.color?.set?.(0x2e8f64);
     material.emissive?.set?.(0x176844);
-    material.emissiveIntensity = 1.1;
+    material.emissiveIntensity = 0.28;
     material.roughness = 0.38;
     material.metalness = 0.05;
     material.needsUpdate = true;
@@ -736,32 +736,51 @@ function simplifyStadiumStands(root) {
     ['Cricket_Stand_1_1', 'Cricket_Stand_-1_1'],
     ['Cricket_Stand_1_2', 'Cricket_Stand_-1_2']
   ];
-  const backingColors = [0x111d19, 0x13231e, 0x162a24];
-  const seatColors = [0x2b5549, 0x356557, 0x254a40];
+  const backingColors = [0x0b1411, 0x0d1814, 0x101d18];
+  const seatColors = [0x376a5a, 0x2f5d50, 0x264c42];
 
   tiers.forEach((pair, tier) => {
     pair.forEach((name) => {
       const stand = root.getObjectByName(name);
       if (!stand?.isMesh) return;
 
-      // These are environment-only tiers, so reduce the oversized slab footprint
-      // without touching gameplay geometry.
-      stand.scale.x = 0.48;
-      stand.scale.y = 0.42;
+      // Visual-only slimming: make each tier read like seating structure, not a slab.
+      stand.scale.x = 0.40;
+      stand.scale.y = 0.32;
 
       const source = Array.isArray(stand.material) ? stand.material : [stand.material];
       const materials = source.map((base) => {
         const material = base?.clone?.() || new THREE.MeshStandardMaterial();
         material.map = null;
         material.color?.set?.(backingColors[tier]);
-        material.emissive?.set?.(0x040907);
-        material.emissiveIntensity = 0.03;
-        if ('roughness' in material) material.roughness = 0.94;
-        if ('metalness' in material) material.metalness = 0.02;
+        material.emissive?.set?.(0x020705);
+        material.emissiveIntensity = 0.01;
+        if ('roughness' in material) material.roughness = 0.98;
+        if ('metalness' in material) material.metalness = 0.01;
         material.needsUpdate = true;
         return material;
       });
       stand.material = Array.isArray(stand.material) ? materials : materials[0];
+
+      // Dark recess under each tier creates depth without changing gameplay geometry.
+      if (!stand.getObjectByName('TierShadowRecess')) {
+        stand.geometry.computeBoundingBox();
+        const box = stand.geometry.boundingBox;
+        const size = box.getSize(new THREE.Vector3());
+        const recess = new THREE.Mesh(
+          new THREE.BoxGeometry(Math.max(0.2, size.x * 0.94), Math.max(0.025, size.y * 0.12), Math.max(0.2, size.z * 0.92)),
+          new THREE.MeshStandardMaterial({
+            color: 0x030706,
+            roughness: 1,
+            metalness: 0
+          })
+        );
+        recess.name = 'TierShadowRecess';
+        recess.position.set(0, box.min.y - size.y * 0.05, 0);
+        recess.castShadow = false;
+        recess.receiveShadow = true;
+        stand.add(recess);
+      }
     });
   });
 
@@ -772,24 +791,61 @@ function simplifyStadiumStands(root) {
     const tier = Math.max(0, Math.min(2, Number(match[2]) || 0));
     const slot = Number(match[3]) || 0;
 
+    // Compress the visible seat band so the seating reads denser and less blocky.
+    mesh.scale.y *= 0.72;
+    mesh.scale.z *= 0.94;
+
     const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
     const materials = source.map((base) => {
       const material = base?.clone?.() || new THREE.MeshStandardMaterial();
       material.map = null;
       const baseColor = new THREE.Color(seatColors[tier]);
-      if (slot % 2 === 1) baseColor.offsetHSL(0, -0.03, 0.045);
+      if (slot % 2 === 1) baseColor.offsetHSL(0, -0.02, 0.035);
       material.color?.copy?.(baseColor);
-      material.emissive?.set?.(0x07130f);
-      material.emissiveIntensity = 0.04;
-      if ('roughness' in material) material.roughness = 0.7;
-      if ('metalness' in material) material.metalness = 0.02;
+      material.emissive?.set?.(0x030a07);
+      material.emissiveIntensity = 0.015;
+      if ('roughness' in material) material.roughness = 0.82;
+      if ('metalness' in material) material.metalness = 0.01;
+      material.needsUpdate = true;
+      return material;
+    });
+    mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+
+    // Every third band becomes a darker aisle separator.
+    if (slot === 2) {
+      mesh.material = Array.isArray(mesh.material)
+        ? mesh.material.map((material) => {
+            const aisle = material.clone();
+            aisle.color?.set?.(0x111916);
+            aisle.needsUpdate = true;
+            return aisle;
+          })
+        : (() => {
+            const aisle = mesh.material.clone();
+            aisle.color?.set?.(0x111916);
+            aisle.needsUpdate = true;
+            return aisle;
+          })();
+    }
+  });
+
+  root.traverse((mesh) => {
+    if (!mesh.isMesh || !/^StandFascia_/i.test(String(mesh.name || ''))) return;
+    const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    const materials = source.map((base) => {
+      const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+      material.color?.set?.(0x27362f);
+      material.emissive?.set?.(0x000000);
+      material.emissiveIntensity = 0;
+      if ('roughness' in material) material.roughness = 0.86;
+      if ('metalness' in material) material.metalness = 0.08;
       material.needsUpdate = true;
       return material;
     });
     mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
   });
 
-  console.info('[Cricket stands] oversized slabs reduced; segmented seating retained');
+  console.info('[Cricket stands] premium tier depth/aisles/fascia applied');
 }
 
 function buildPavilionBrandHeader(root) {
@@ -843,7 +899,28 @@ function buildPavilionBrandHeader(root) {
   sign.receiveShadow = false;
   root.add(sign);
 
-  console.info('[Cricket pavilion] static brand header installed');
+  if (!root.getObjectByName('CricketPavilionBackdrop')) {
+    const backdrop = new THREE.Mesh(
+      new THREE.PlaneGeometry(4.55, 1.55),
+      new THREE.MeshStandardMaterial({
+        color: 0x050b08,
+        roughness: 0.88,
+        metalness: 0.04,
+        emissive: 0x010302,
+        emissiveIntensity: 0.015,
+        side: THREE.DoubleSide
+      })
+    );
+    backdrop.name = 'CricketPavilionBackdrop';
+    backdrop.position.set(0, 1.34, -3.18);
+    backdrop.renderOrder = 1;
+    root.add(backdrop);
+  }
+
+  const brandHeader = root.getObjectByName('CricketPavilionBrandHeader');
+  if (brandHeader) brandHeader.position.set(0, 2.1, -3.10);
+
+  console.info('[Cricket pavilion] premium backdrop/header composition installed');
 }
 
 function styleCricketBats(root) {
@@ -885,24 +962,50 @@ function styleCricketBats(root) {
     const box = bat.geometry.boundingBox;
     const size = box.getSize(new THREE.Vector3());
     const grip = new THREE.Mesh(
-      new THREE.BoxGeometry(Math.max(0.12, size.x * 0.18), Math.max(0.05, size.y * 1.08), Math.max(0.08, size.z * 1.04)),
+      new THREE.BoxGeometry(Math.max(0.08, size.x * 0.10), Math.max(0.045, size.y * 1.02), Math.max(0.07, size.z * 1.02)),
       new THREE.MeshStandardMaterial({ color: 0x171717, roughness: 0.92, metalness: 0 })
     );
     grip.name = `CricketBatGrip_${side}`;
-    grip.position.set(side === 'left' ? box.min.x + size.x * 0.09 : box.max.x - size.x * 0.09, 0, 0);
+    grip.position.set(side === 'left' ? box.min.x + size.x * 0.05 : box.max.x - size.x * 0.05, 0, 0);
     bat.add(grip);
+
+    if (!bat.getObjectByName(`CricketBatFace_${side}`)) {
+      const face = new THREE.Mesh(
+        new THREE.BoxGeometry(Math.max(0.22, size.x * 0.66), Math.max(0.018, size.y * 0.18), Math.max(0.025, size.z * 1.025)),
+        new THREE.MeshStandardMaterial({
+          color: 0xf1dfb5,
+          roughness: 0.7,
+          metalness: 0,
+          emissive: 0x0a0703,
+          emissiveIntensity: 0.01
+        })
+      );
+      face.name = `CricketBatFace_${side}`;
+      face.position.set(side === 'left' ? size.x * 0.07 : -size.x * 0.07, size.y * 0.18, 0);
+      bat.add(face);
+    }
+
+    if (!bat.getObjectByName(`CricketBatEdge_${side}`)) {
+      const edge = new THREE.Mesh(
+        new THREE.BoxGeometry(Math.max(0.18, size.x * 0.62), Math.max(0.014, size.y * 0.10), Math.max(0.02, size.z * 1.05)),
+        new THREE.MeshStandardMaterial({ color: 0xb9955d, roughness: 0.8, metalness: 0 })
+      );
+      edge.name = `CricketBatEdge_${side}`;
+      edge.position.set(side === 'left' ? size.x * 0.07 : -size.x * 0.07, -size.y * 0.18, 0);
+      bat.add(edge);
+    }
   });
 
-  console.info('[Cricket bats] willow/grip treatment applied');
+  console.info('[Cricket bats] refined willow face/grip/edge treatment applied');
 }
 
 function styleCricketTargets(root) {
   const treatments = [
-    ['four-ramp', 0x7ccf8e, 0x143a20],
-    ['six-ramp', 0xe78a67, 0x47180d],
-    ['wicket', 0xe5c46c, 0x4b3508],
-    ['single-target', 0x7fbd93, 0x173826],
-    ['two-target', 0xd0af69, 0x43320f]
+    ['four-ramp', 0x3d6f4c, 0x07130a],
+    ['six-ramp', 0x7d3d2d, 0x170704],
+    ['wicket', 0x8b652a, 0x160f03],
+    ['single-target', 0x4d765b, 0x08140c],
+    ['two-target', 0x8a6d31, 0x171003]
   ];
 
   treatments.forEach(([id, color, emissive]) => {
@@ -911,11 +1014,14 @@ function styleCricketTargets(root) {
       const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       const materials = source.map((base) => {
         const material = base?.clone?.() || new THREE.MeshStandardMaterial();
-        if (!material.map) material.color?.set?.(color);
+
+        // Tint mapped signs too: this preserves authored lettering while removing white bloom.
+        material.color?.set?.(color);
         material.emissive?.set?.(emissive);
-        material.emissiveIntensity = 0.08;
-        if ('roughness' in material) material.roughness = Math.max(0.45, material.roughness ?? 0.5);
-        if ('metalness' in material) material.metalness = Math.min(0.12, material.metalness ?? 0);
+        material.emissiveIntensity = 0.025;
+
+        if ('roughness' in material) material.roughness = Math.max(0.62, material.roughness ?? 0.62);
+        if ('metalness' in material) material.metalness = Math.min(0.06, material.metalness ?? 0);
         material.needsUpdate = true;
         return material;
       });
@@ -923,7 +1029,7 @@ function styleCricketTargets(root) {
     });
   });
 
-  console.info('[Cricket targets] unified target palette applied');
+  console.info('[Cricket targets] dark high-contrast signage applied');
 }
 
 function addArenaAtmosphere(root) {
