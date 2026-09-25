@@ -1135,6 +1135,21 @@ function styleCricketTargets(root) {
 
         geometry.setAttribute('uv', new THREE.BufferAttribute(projectedUv, 2));
 
+        // Lift the artwork slightly off the authored ramp surface so it cannot
+        // z-fight or disappear behind the original GLB material.
+        const normals = geometry.attributes.normal;
+        if (normals) {
+          for (let i = 0; i < positions.count; i += 1) {
+            positions.setXYZ(
+              i,
+              positions.getX(i) + normals.getX(i) * 0.008,
+              positions.getY(i) + normals.getY(i) * 0.008,
+              positions.getZ(i) + normals.getZ(i) * 0.008
+            );
+          }
+          positions.needsUpdate = true;
+        }
+
         const overlayName = `${meshName}_PowerArtworkOverlay`;
         rampBed.parent?.getObjectByName(overlayName)?.removeFromParent();
 
@@ -1143,9 +1158,10 @@ function styleCricketTargets(root) {
           color: 0xffffff,
           toneMapped: false,
           side: THREE.DoubleSide,
+          depthWrite: false,
           polygonOffset: true,
-          polygonOffsetFactor: -2,
-          polygonOffsetUnits: -2
+          polygonOffsetFactor: -4,
+          polygonOffsetUnits: -4
         });
 
         const overlay = new THREE.Mesh(geometry, material);
