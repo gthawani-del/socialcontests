@@ -1156,6 +1156,64 @@ function styleCricketTargets(root) {
     );
   }
 
+  const sixSign = root.getObjectByName('Cricket_Ramp_Six_Sign');
+  if (sixSign?.isMesh) {
+    cricketTextureLoader.load(
+      '/assets/cricket/world/cricket-pinball-six-sign.webp',
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = true;
+
+        sixSign.geometry.computeBoundingBox();
+        const box = sixSign.geometry.boundingBox;
+        const size = box.getSize(new THREE.Vector3());
+
+        // Uploaded SIX artwork is wider than the physical sign.
+        // Center-crop in UV space so the artwork keeps its proportions instead of squashing.
+        const meshAspect = size.x / size.y;
+        const textureAspect = 1971 / 441;
+        const cropX = Math.min(1, meshAspect / textureAspect);
+        texture.repeat.set(cropX, 1);
+        texture.offset.set((1 - cropX) * 0.5, 0);
+
+        root.getObjectByName('CricketSixSignOverlay')?.removeFromParent();
+
+        const overlay = new THREE.Mesh(
+          new THREE.PlaneGeometry(size.x * 0.985, size.y * 0.94),
+          new THREE.MeshBasicMaterial({
+            map: texture,
+            toneMapped: false,
+            side: THREE.DoubleSide
+          })
+        );
+        overlay.name = 'CricketSixSignOverlay';
+        overlay.position.set(
+          sixSign.position.x,
+          sixSign.position.y,
+          sixSign.position.z + size.z * 0.5 + 0.006
+        );
+        overlay.renderOrder = 8;
+        overlay.castShadow = false;
+        overlay.receiveShadow = false;
+        overlay.userData.cricketSkin = 'cricket-pinball-six-sign.webp';
+        root.add(overlay);
+
+        const authoredLabel = root.getObjectByName('Skin_Label_SIX');
+        if (authoredLabel) authoredLabel.visible = false;
+
+        console.info('[Cricket SIX] production sign overlay applied');
+      },
+      undefined,
+      () => {
+        console.warn('[Cricket SIX] production sign texture failed; authored sign retained');
+      }
+    );
+  }
+
   console.info('[Cricket targets] dark high-contrast signage applied');
 }
 
