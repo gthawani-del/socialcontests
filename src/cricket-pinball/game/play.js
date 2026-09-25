@@ -1140,19 +1140,15 @@ function styleCricketTargets(root) {
         rampBed.geometry = geometry;
 
         const source = Array.isArray(rampBed.material) ? rampBed.material : [rampBed.material];
-        const materials = source.map((base) => {
-          const material = base?.clone?.() || new THREE.MeshStandardMaterial();
-          material.map = texture;
-          material.color?.set?.(0xffffff);
-          material.emissive?.set?.(0x000000);
-          material.emissiveMap = null;
-          material.emissiveIntensity = 0;
-          if ('roughness' in material) material.roughness = 0.42;
-          if ('metalness' in material) material.metalness = 0.02;
-          material.needsUpdate = true;
-          return material;
-        });
+        const materials = source.map(() => new THREE.MeshBasicMaterial({
+          map: texture,
+          color: 0xffffff,
+          toneMapped: false,
+          side: THREE.DoubleSide
+        }));
 
+        // Power-ramp artwork should read exactly as authored. MeshBasicMaterial
+        // keeps the lane free from scene-light bloom/highlights.
         rampBed.material = Array.isArray(rampBed.material) ? materials : materials[0];
         rampBed.userData.cricketSkin = skinName;
 
