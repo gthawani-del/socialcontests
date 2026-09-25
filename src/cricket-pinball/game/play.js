@@ -72,7 +72,6 @@ app.innerHTML = `
 
     <header class="match-topbar">
       <a href="/cricket-pinball">← LOBBY</a>
-      <div><span>${formatLabel(format)}</span><strong>${difficulty}</strong></div>
       <small>MATCH ${matchId.toUpperCase()}</small>
     </header>
 
@@ -633,7 +632,8 @@ function applyProductionStadiumMaterials(root) {
   });
 
   refinePavilionAndTunnel(root);
-  decorateStandsWithCrowd(root);
+  simplifyStadiumStands(root);
+  buildPavilionBrandHeader(root);
   console.info('[Cricket materials] bundled stadium visual pass applied');
 }
 
@@ -683,70 +683,120 @@ function refinePavilionAndTunnel(root) {
   }
 }
 
-function decorateStandsWithCrowd(root) {
-  if (root.getObjectByName('CricketCrowdDecor')) return;
-
-  const group = new THREE.Group();
-  group.name = 'CricketCrowdDecor';
-  root.add(group);
-
-  const baseTexture = loadCricketTexture('stands-crowd.webp');
-  const standNames = [
-    'Cricket_Stand_1_0', 'Cricket_Stand_1_1', 'Cricket_Stand_1_2',
-    'Cricket_Stand_-1_0', 'Cricket_Stand_-1_1', 'Cricket_Stand_-1_2'
+function simplifyStadiumStands(root) {
+  const tiers = [
+    ['Cricket_Stand_1_0', 'Cricket_Stand_-1_0'],
+    ['Cricket_Stand_1_1', 'Cricket_Stand_-1_1'],
+    ['Cricket_Stand_1_2', 'Cricket_Stand_-1_2']
   ];
+  const backingColors = [0x111d19, 0x13231e, 0x162a24];
+  const seatColors = [0x2b5549, 0x356557, 0x254a40];
 
-  standNames.forEach((name) => {
-    const stand = root.getObjectByName(name);
-    if (!stand?.isMesh) return;
+  tiers.forEach((pair, tier) => {
+    pair.forEach((name) => {
+      const stand = root.getObjectByName(name);
+      if (!stand?.isMesh) return;
 
-    stand.updateWorldMatrix(true, false);
-    const box = new THREE.Box3().setFromObject(stand);
-    const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
+      // These are environment-only tiers, so reduce the oversized slab footprint
+      // without touching gameplay geometry.
+      stand.scale.x = 0.62;
+      stand.scale.y = 0.55;
 
-    const texture = baseTexture.clone();
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.repeat.set(Math.max(2, Math.round(size.z / 1.2)), 1);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.needsUpdate = true;
-
-    const panel = new THREE.Mesh(
-      new THREE.PlaneGeometry(Math.max(0.8, size.z * 0.94), 0.46),
-      new THREE.MeshStandardMaterial({
-        map: texture,
-        color: 0xd6ded8,
-        roughness: 0.82,
-        metalness: 0,
-        emissive: 0x09110e,
-        emissiveIntensity: 0.12,
-        side: THREE.DoubleSide
-      })
-    );
-
-    const rightSide = center.x > 0;
-    panel.name = `CrowdRibbon_${name}`;
-    panel.position.set(
-      rightSide ? box.min.x - 0.025 : box.max.x + 0.025,
-      box.max.y + 0.24,
-      center.z
-    );
-    panel.rotation.y = rightSide ? -Math.PI / 2 : Math.PI / 2;
-    panel.castShadow = false;
-    panel.receiveShadow = false;
-    panel.renderOrder = 4;
-
-    // Convert world placement into the GLB root's local space before parenting.
-    root.worldToLocal(panel.position);
-    const worldQuat = new THREE.Quaternion();
-    root.getWorldQuaternion(worldQuat);
-    panel.quaternion.premultiply(worldQuat.invert());
-
-    group.add(panel);
+      const source = Array.isArray(stand.material) ? stand.material : [stand.material];
+      const materials = source.map((base) => {
+        const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+        material.map = null;
+        material.color?.set?.(backingColors[tier]);
+        material.emissive?.set?.(0x040907);
+        material.emissiveIntensity = 0.03;
+        if ('roughness' in material) material.roughness = 0.94;
+        if ('metalness' in material) material.metalness = 0.02;
+        material.needsUpdate = true;
+        return material;
+      });
+      stand.material = Array.isArray(stand.material) ? materials : materials[0];
+    });
   });
 
-  console.info('[Cricket stands] crowd ribbons installed');
+  root.traverse((mesh) => {
+    if (!mesh.isMesh) return;
+    const match = String(mesh.name || '').match(/^SeatBand_(-?1)_(\d)_(\d)$/i);
+    if (!match) return;
+    const tier = Math.max(0, Math.min(2, Number(match[2]) || 0));
+    const slot = Number(match[3]) || 0;
+
+    const source = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    const materials = source.map((base) => {
+      const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+      material.map = null;
+      const baseColor = new THREE.Color(seatColors[tier]);
+      if (slot % 2 === 1) baseColor.offsetHSL(0, -0.03, 0.045);
+      material.color?.copy?.(baseColor);
+      material.emissive?.set?.(0x07130f);
+      material.emissiveIntensity = 0.04;
+      if ('roughness' in material) material.roughness = 0.7;
+      if ('metalness' in material) material.metalness = 0.02;
+      material.needsUpdate = true;
+      return material;
+    });
+    mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+  });
+
+  console.info('[Cricket stands] oversized slabs reduced; segmented seating retained');
+}
+
+function buildPavilionBrandHeader(root) {
+  const existing = root.getObjectByName('CricketPavilionBrandHeader');
+  if (existing) root.remove(existing);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 220;
+  const ctx = canvas.getContext('2d');
+
+  const gradient = ctx.createLinearGradient(0, 0, 1024, 220);
+  gradient.addColorStop(0, '#07130e');
+  gradient.addColorStop(0.5, '#10271d');
+  gradient.addColorStop(1, '#07130e');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 1024, 220);
+
+  ctx.strokeStyle = '#7d6834';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(12, 12, 1000, 196);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#f3e6b2';
+  ctx.font = '900 82px system-ui';
+  ctx.fillText('CRICKET PINBALL', 512, 104);
+  ctx.fillStyle = '#8db19b';
+  ctx.font = '700 28px system-ui';
+  ctx.fillText('BAT · SCORE · CHASE', 512, 164);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+
+  const sign = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.05, 0.66),
+    new THREE.MeshBasicMaterial({
+      map: texture,
+      toneMapped: false,
+      transparent: false,
+      side: THREE.DoubleSide
+    })
+  );
+  sign.name = 'CricketPavilionBrandHeader';
+  sign.position.set(0, 2.05, -3.12);
+  sign.renderOrder = 6;
+  sign.castShadow = false;
+  sign.receiveShadow = false;
+  root.add(sign);
+
+  console.info('[Cricket pavilion] static brand header installed');
 }
 
 function styleCricketBats(root) {
@@ -1126,21 +1176,17 @@ function createCoin() {
 }
 
 function disableInWorldScoreboard(root) {
-  const names = [
-    'Cricket_Scoreboard_Frame',
-    'Cricket_Scoreboard_Screen',
-    'Scoreboard_Placeholder'
-  ];
-
-  names.forEach((name) => {
-    const object = root.getObjectByName(name);
-    if (!object) return;
+  const hidden = [];
+  root.traverse((object) => {
+    const name = String(object.name || '');
+    if (!/scoreboard/i.test(name)) return;
     object.visible = false;
     object.userData.cricketHiddenReason = 'TOP_HUD_IS_PRIMARY_SCOREBOARD';
+    hidden.push(name);
   });
 
   scoreboardTexture = null;
-  console.info('[Cricket scoreboard] In-world scoreboard disabled; top HUD is authoritative');
+  console.info('[Cricket scoreboard] All in-world scoreboard meshes disabled:', hidden);
 }
 
 function drawStadiumScoreboard() {
