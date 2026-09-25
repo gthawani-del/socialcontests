@@ -675,6 +675,47 @@ function refinePavilionAndTunnel(root) {
     glass.material = material;
   }
 
+  const tunnel = root.getObjectByName('Cricket_Player_Tunnel');
+  if (tunnel?.isMesh) {
+    const source = Array.isArray(tunnel.material) ? tunnel.material : [tunnel.material];
+    const materials = source.map((base) => {
+      const material = base?.clone?.() || new THREE.MeshStandardMaterial();
+      if ('roughness' in material) material.roughness = 0.62;
+      if ('metalness' in material) material.metalness = 0.08;
+      material.emissive?.set?.(0x04140f);
+      material.emissiveIntensity = 0.06;
+      material.needsUpdate = true;
+      return material;
+    });
+    tunnel.material = Array.isArray(tunnel.material) ? materials : materials[0];
+  }
+
+  const oldTunnelLabel = root.getObjectByName('Skin_Label_PLAYERS_TUNNEL');
+  if (oldTunnelLabel) oldTunnelLabel.visible = false;
+
+  if (!root.getObjectByName('CricketTunnelLabel')) {
+    const labelCanvas = document.createElement('canvas');
+    labelCanvas.width = 640;
+    labelCanvas.height = 128;
+    const labelCtx = labelCanvas.getContext('2d');
+    labelCtx.fillStyle = '#08130f';
+    labelCtx.fillRect(0, 0, 640, 128);
+    labelCtx.fillStyle = '#d9e7dc';
+    labelCtx.font = '800 44px system-ui';
+    labelCtx.textAlign = 'center';
+    labelCtx.textBaseline = 'middle';
+    labelCtx.fillText('PLAYERS TUNNEL', 320, 64);
+    const labelTexture = new THREE.CanvasTexture(labelCanvas);
+    labelTexture.colorSpace = THREE.SRGBColorSpace;
+    const label = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.2, 0.24),
+      new THREE.MeshBasicMaterial({ map: labelTexture, toneMapped: false, side: THREE.DoubleSide })
+    );
+    label.name = 'CricketTunnelLabel';
+    label.position.set(2.3, 1.48, -3.0);
+    root.add(label);
+  }
+
   const tunnelGlow = root.getObjectByName('Tunnel_FloorGlow');
   if (tunnelGlow?.isMesh) {
     const material = (Array.isArray(tunnelGlow.material) ? tunnelGlow.material[0] : tunnelGlow.material)?.clone?.()
@@ -705,8 +746,8 @@ function simplifyStadiumStands(root) {
 
       // These are environment-only tiers, so reduce the oversized slab footprint
       // without touching gameplay geometry.
-      stand.scale.x = 0.62;
-      stand.scale.y = 0.55;
+      stand.scale.x = 0.48;
+      stand.scale.y = 0.42;
 
       const source = Array.isArray(stand.material) ? stand.material : [stand.material];
       const materials = source.map((base) => {
@@ -819,13 +860,13 @@ function styleCricketBats(root) {
       const material = base?.clone?.() || new THREE.MeshStandardMaterial();
       material.map = null;
       if (mainNames.has(name)) {
-        material.color?.set?.(0xe6ca8f);
-        if ('roughness' in material) material.roughness = 0.52;
+        material.color?.set?.(0xead8aa);
+        if ('roughness' in material) material.roughness = 0.58;
         if ('metalness' in material) material.metalness = 0.02;
         material.emissive?.set?.(0x100b05);
         material.emissiveIntensity = 0.025;
       } else {
-        material.color?.set?.(0x24211c);
+        material.color?.set?.(0x1b1a18);
         if ('roughness' in material) material.roughness = 0.78;
         if ('metalness' in material) material.metalness = 0;
         material.emissive?.set?.(0x000000);
@@ -835,6 +876,21 @@ function styleCricketBats(root) {
       return material;
     });
     mesh.material = Array.isArray(mesh.material) ? materials : materials[0];
+  });
+
+  ['left', 'right'].forEach((side) => {
+    const bat = root.getObjectByName(side === 'left' ? 'Flipper_Left' : 'Flipper_Right');
+    if (!bat?.isMesh || bat.getObjectByName(`CricketBatGrip_${side}`)) return;
+    bat.geometry.computeBoundingBox();
+    const box = bat.geometry.boundingBox;
+    const size = box.getSize(new THREE.Vector3());
+    const grip = new THREE.Mesh(
+      new THREE.BoxGeometry(Math.max(0.12, size.x * 0.18), Math.max(0.05, size.y * 1.08), Math.max(0.08, size.z * 1.04)),
+      new THREE.MeshStandardMaterial({ color: 0x171717, roughness: 0.92, metalness: 0 })
+    );
+    grip.name = `CricketBatGrip_${side}`;
+    grip.position.set(side === 'left' ? box.min.x + size.x * 0.09 : box.max.x - size.x * 0.09, 0, 0);
+    bat.add(grip);
   });
 
   console.info('[Cricket bats] willow/grip treatment applied');
@@ -857,7 +913,7 @@ function styleCricketTargets(root) {
         const material = base?.clone?.() || new THREE.MeshStandardMaterial();
         if (!material.map) material.color?.set?.(color);
         material.emissive?.set?.(emissive);
-        material.emissiveIntensity = 0.22;
+        material.emissiveIntensity = 0.08;
         if ('roughness' in material) material.roughness = Math.max(0.45, material.roughness ?? 0.5);
         if ('metalness' in material) material.metalness = Math.min(0.12, material.metalness ?? 0);
         material.needsUpdate = true;
@@ -877,15 +933,15 @@ function addArenaAtmosphere(root) {
   group.name = 'CricketArenaAtmosphere';
   scene.add(group);
 
-  const rimLeft = new THREE.PointLight(0x4b9a73, 2.1, 8, 2);
+  const rimLeft = new THREE.PointLight(0x4b9a73, 1.35, 7, 2);
   rimLeft.position.set(-3.7, 2.4, -1.4);
   group.add(rimLeft);
 
-  const rimRight = new THREE.PointLight(0xd4a24d, 1.5, 7, 2);
+  const rimRight = new THREE.PointLight(0xd4a24d, 0.9, 6.5, 2);
   rimRight.position.set(3.6, 2.2, -1.5);
   group.add(rimRight);
 
-  const backGlow = new THREE.PointLight(0x2f6f55, 1.8, 8, 2);
+  const backGlow = new THREE.PointLight(0x2f6f55, 1.15, 7, 2);
   backGlow.position.set(0, 2.3, -3.2);
   group.add(backGlow);
 
