@@ -1214,6 +1214,60 @@ function styleCricketTargets(root) {
     );
   }
 
+  const straightDriveTarget = root.getObjectByName('Cricket_DotPocket');
+  if (straightDriveTarget?.isMesh) {
+    cricketTextureLoader.load(
+      '/assets/cricket/world/cricket-pinball-straight-drive-4.webp',
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = true;
+
+        straightDriveTarget.geometry.computeBoundingBox();
+        const box = straightDriveTarget.geometry.boundingBox;
+        const size = box.getSize(new THREE.Vector3());
+
+        root.getObjectByName('CricketStraightDriveFourOverlay')?.removeFromParent();
+
+        const overlay = new THREE.Mesh(
+          new THREE.PlaneGeometry(size.x * 0.985, size.z * 0.985),
+          new THREE.MeshBasicMaterial({
+            map: texture,
+            toneMapped: false,
+            side: THREE.DoubleSide
+          })
+        );
+        overlay.name = 'CricketStraightDriveFourOverlay';
+        overlay.rotation.x = -Math.PI / 2;
+        overlay.position.set(
+          straightDriveTarget.position.x,
+          straightDriveTarget.position.y + size.y * 0.5 + 0.012,
+          straightDriveTarget.position.z
+        );
+        overlay.renderOrder = 10;
+        overlay.castShadow = false;
+        overlay.receiveShadow = false;
+        overlay.userData.cricketSkin = 'cricket-pinball-straight-drive-4.webp';
+        root.add(overlay);
+
+        const authoredLabel = root.getObjectByName('Skin_Label_DOT');
+        if (authoredLabel) authoredLabel.visible = false;
+
+        const dotLight = root.getObjectByName('Cricket_DotLight');
+        if (dotLight) dotLight.visible = false;
+
+        console.info('[Cricket straight drive] production 4 target overlay applied');
+      },
+      undefined,
+      () => {
+        console.warn('[Cricket straight drive] production 4 target failed; authored DOT target retained');
+      }
+    );
+  }
+
   const wicketBackboard = root.getObjectByName('Cricket_Wicket_Backboard');
   if (wicketBackboard?.isMesh) {
     cricketTextureLoader.load(
