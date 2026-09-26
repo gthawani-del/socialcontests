@@ -1147,7 +1147,9 @@ function styleCricketTargets(root) {
           const source = Array.isArray(rail.material) ? rail.material : [rail.material];
           const materials = source.map(() => new THREE.MeshBasicMaterial({
             map: texture,
-            color: 0xffffff,
+            // Darken the authored power-unit artwork slightly so it reads as
+            // embedded machinery instead of a self-lit neon tube.
+            color: 0x7a7a7a,
             toneMapped: false,
             side: THREE.DoubleSide
           }));
