@@ -1106,9 +1106,9 @@ function styleCricketTargets(root) {
     });
   });
 
-  const applyPowerRampArtwork = (meshName, texturePath, skinName) => {
-    const rampBed = root.getObjectByName(meshName);
-    if (!rampBed?.isMesh) return;
+  const applyPowerRailArtwork = (meshNames, texturePath, skinName) => {
+    const rails = meshNames.map((name) => root.getObjectByName(name)).filter((mesh) => mesh?.isMesh);
+    if (!rails.length) return;
 
     cricketTextureLoader.load(
       texturePath,
@@ -1120,77 +1120,67 @@ function styleCricketTargets(root) {
         texture.magFilter = THREE.LinearFilter;
         texture.generateMipmaps = true;
 
-        const geometry = rampBed.geometry.clone();
-        geometry.computeBoundingBox();
-        const box = geometry.boundingBox;
-        const width = Math.max(1e-6, box.max.x - box.min.x);
-        const length = Math.max(1e-6, box.max.z - box.min.z);
-        const positions = geometry.attributes.position;
-        const projectedUv = new Float32Array(positions.count * 2);
+        // Treat the three visible curved rails as one power-generation artwork.
+        // Their GLB vertex coordinates are authored in the same space, so one
+        // shared X/Z projection slices a single continuous image across them.
+        const bounds = rails.reduce((box, rail) => {
+          rail.geometry.computeBoundingBox();
+          return box.union(rail.geometry.boundingBox);
+        }, new THREE.Box3());
 
-        for (let i = 0; i < positions.count; i += 1) {
-          projectedUv[i * 2] = (positions.getX(i) - box.min.x) / width;
-          projectedUv[i * 2 + 1] = (positions.getZ(i) - box.min.z) / length;
-        }
+        const width = Math.max(1e-6, bounds.max.x - bounds.min.x);
+        const length = Math.max(1e-6, bounds.max.z - bounds.min.z);
 
-        geometry.setAttribute('uv', new THREE.BufferAttribute(projectedUv, 2));
+        rails.forEach((rail) => {
+          const geometry = rail.geometry.clone();
+          const positions = geometry.attributes.position;
+          const uv = new Float32Array(positions.count * 2);
 
-        // Lift the artwork slightly off the authored ramp surface so it cannot
-        // z-fight or disappear behind the original GLB material.
-        const normals = geometry.attributes.normal;
-        if (normals) {
           for (let i = 0; i < positions.count; i += 1) {
-            positions.setXYZ(
-              i,
-              positions.getX(i) + normals.getX(i) * 0.008,
-              positions.getY(i) + normals.getY(i) * 0.008,
-              positions.getZ(i) + normals.getZ(i) * 0.008
-            );
+            uv[i * 2] = (positions.getX(i) - bounds.min.x) / width;
+            uv[i * 2 + 1] = (positions.getZ(i) - bounds.min.z) / length;
           }
-          positions.needsUpdate = true;
-        }
 
-        const overlayName = `${meshName}_PowerArtworkOverlay`;
-        rampBed.parent?.getObjectByName(overlayName)?.removeFromParent();
+          geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+          rail.geometry = geometry;
 
-        const material = new THREE.MeshBasicMaterial({
-          map: texture,
-          color: 0xffffff,
-          toneMapped: false,
-          side: THREE.DoubleSide,
-          depthWrite: false,
-          polygonOffset: true,
-          polygonOffsetFactor: -4,
-          polygonOffsetUnits: -4
+          const source = Array.isArray(rail.material) ? rail.material : [rail.material];
+          const materials = source.map(() => new THREE.MeshBasicMaterial({
+            map: texture,
+            color: 0xffffff,
+            toneMapped: false,
+            side: THREE.DoubleSide
+          }));
+
+          rail.material = Array.isArray(rail.material) ? materials : materials[0];
+          rail.userData.cricketSkin = skinName;
         });
 
-        const overlay = new THREE.Mesh(geometry, material);
-        overlay.name = overlayName;
-        overlay.position.copy(rampBed.position);
-        overlay.quaternion.copy(rampBed.quaternion);
-        overlay.scale.copy(rampBed.scale);
-        overlay.renderOrder = 12;
-        overlay.castShadow = false;
-        overlay.receiveShadow = false;
-        overlay.userData.cricketSkin = skinName;
-        rampBed.parent?.add(overlay);
-
-        console.info(`[Cricket power ramp] unlit artwork overlay applied to ${meshName}`);
+        console.info(`[Cricket power rails] ${skinName} applied across ${meshNames.join(', ')}`);
       },
       undefined,
       () => {
-        console.warn(`[Cricket power ramp] ${skinName} failed; authored ramp retained`);
+        console.warn(`[Cricket power rails] ${skinName} failed; authored rails retained`);
       }
     );
   };
-  applyPowerRampArtwork(
-    'Cricket_Ramp_Four_Bed',
+
+  applyPowerRailArtwork(
+    [
+      'Cricket_Ramp_Four_InnerRail',
+      'Cricket_Ramp_Four_RailA',
+      'Cricket_Ramp_Four_RailB'
+    ],
     '/assets/cricket/world/cricket-pinball-four-power-ramp.webp',
     'cricket-pinball-four-power-ramp.webp'
   );
 
-  applyPowerRampArtwork(
-    'Cricket_Ramp_Six_Bed',
+  applyPowerRailArtwork(
+    [
+      'Cricket_Ramp_Six_InnerRail',
+      'Cricket_Ramp_Six_RailA',
+      'Cricket_Ramp_Six_RailB'
+    ],
     '/assets/cricket/world/cricket-pinball-six-power-ramp.webp',
     'cricket-pinball-six-power-ramp.webp'
   );
