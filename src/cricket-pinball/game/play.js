@@ -784,6 +784,100 @@ function simplifyStadiumStands(root) {
     });
   });
 
+  const crowdTierMeshes = tiers.flatMap((pair) =>
+    pair.map((name) => root.getObjectByName(name)).filter((mesh) => mesh?.isMesh)
+  );
+
+  if (crowdTierMeshes.length) {
+    cricketTextureLoader.load(
+      '/assets/cricket/world/cricket-crowd-stand-strip.webp',
+      (sourceTexture) => {
+        const image = sourceTexture.image;
+        if (!image?.width || !image?.height) return;
+
+        crowdTierMeshes.forEach((stand, index) => {
+          const side = stand.position.x >= 0 ? 1 : -1;
+          const tier = Math.max(0, Math.min(2, Number(String(stand.name).split('_').pop()) || 0));
+
+          stand.geometry.computeBoundingBox();
+          const box = stand.geometry.boundingBox;
+          const size = box.getSize(new THREE.Vector3());
+
+          // Build a wide crowd ribbon from varied square crops of the portrait
+          // crowd source. This keeps every spectator upright and avoids obvious
+          // repetition across the six stand tiers.
+          const canvas = document.createElement('canvas');
+          canvas.width = 3072;
+          canvas.height = 320;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#08100d';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          const cells = 12;
+          const cellW = canvas.width / cells;
+          const cropSize = Math.min(image.width, Math.max(220, Math.floor(image.height / 7)));
+
+          for (let cell = 0; cell < cells; cell += 1) {
+            const maxX = Math.max(0, image.width - cropSize);
+            const maxY = Math.max(0, image.height - cropSize);
+            const seed = index * 5 + cell * 3 + tier * 7;
+            const sx = maxX ? (seed * 97) % maxX : 0;
+            const sy = maxY ? (seed * 211) % maxY : 0;
+
+            ctx.save();
+            if ((cell + index) % 2 === 1) {
+              ctx.translate((cell + 1) * cellW, 0);
+              ctx.scale(-1, 1);
+              ctx.drawImage(image, sx, sy, cropSize, cropSize, 0, 0, cellW + 1, canvas.height);
+            } else {
+              ctx.drawImage(image, sx, sy, cropSize, cropSize, cell * cellW, 0, cellW + 1, canvas.height);
+            }
+            ctx.restore();
+          }
+
+          const crowdTexture = new THREE.CanvasTexture(canvas);
+          crowdTexture.colorSpace = THREE.SRGBColorSpace;
+          crowdTexture.wrapS = THREE.ClampToEdgeWrapping;
+          crowdTexture.wrapT = THREE.ClampToEdgeWrapping;
+          crowdTexture.minFilter = THREE.LinearMipmapLinearFilter;
+          crowdTexture.magFilter = THREE.LinearFilter;
+          crowdTexture.generateMipmaps = true;
+
+          const overlayName = `CricketCrowdOverlay_${stand.name}`;
+          root.getObjectByName(overlayName)?.removeFromParent();
+
+          // Camera-visible inner face: long axis follows Z, height follows Y.
+          const overlay = new THREE.Mesh(
+            new THREE.PlaneGeometry(size.z * 0.96, Math.max(0.30, size.y * 1.35)),
+            new THREE.MeshBasicMaterial({
+              map: crowdTexture,
+              toneMapped: false,
+              side: THREE.DoubleSide
+            })
+          );
+          overlay.name = overlayName;
+          overlay.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
+          overlay.position.set(
+            stand.position.x - side * (size.x * stand.scale.x * 0.5 + 0.018),
+            stand.position.y + 0.12,
+            stand.position.z
+          );
+          overlay.renderOrder = 6;
+          overlay.castShadow = false;
+          overlay.receiveShadow = false;
+          overlay.userData.cricketSkin = 'cricket-crowd-stand-strip.webp';
+          root.add(overlay);
+        });
+
+        console.info('[Cricket stands] Indian crowd artwork installed across six tiers');
+      },
+      undefined,
+      () => {
+        console.warn('[Cricket stands] crowd texture failed; authored stand treatment retained');
+      }
+    );
+  }
+
   root.traverse((mesh) => {
     if (!mesh.isMesh) return;
     const match = String(mesh.name || '').match(/^SeatBand_(-?1)_(\d)_(\d)$/i);
