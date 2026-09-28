@@ -1182,7 +1182,7 @@ body,
     transform: translateY(-30px) rotateY(1980deg) rotateX(720deg) scale(1.02);
   }
   100% {
-    transform: translateY(0) rotateY(var(--coin-final-y, 2520deg)) rotateX(900deg) scale(1);
+    transform: translateY(0) rotateY(var(--coin-final-y, 2520deg)) rotateX(1080deg) scale(1);
   }
 }
 
