@@ -336,38 +336,38 @@
   "scoringZones": [],
   "deliveryZones": [
     {
-      "id": "single-left",
+      "id": "one-gate",
       "outcome": "ONE",
       "runs": 1,
       "position": [
-        -1.04,
-        -0.92
+        -0.58,
+        -0.12
       ],
-      "radius": 0.25,
+      "radius": 0.22,
       "terminal": true,
       "direction": "RETURN"
     },
     {
-      "id": "single-right",
-      "outcome": "ONE",
-      "runs": 1,
-      "position": [
-        1.04,
-        -0.92
-      ],
-      "radius": 0.25,
-      "terminal": true,
-      "direction": "RETURN"
-    },
-    {
-      "id": "two-center",
+      "id": "two-gate",
       "outcome": "TWO",
       "runs": 2,
       "position": [
-        0,
-        -0.62
+        0.58,
+        -0.12
       ],
-      "radius": 0.28,
+      "radius": 0.22,
+      "terminal": true,
+      "direction": "RETURN"
+    },
+    {
+      "id": "straight-drive-four",
+      "outcome": "FOUR",
+      "runs": 4,
+      "position": [
+        0,
+        -0.72
+      ],
+      "radius": 0.22,
       "terminal": true,
       "direction": "RETURN"
     },

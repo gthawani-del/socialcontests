@@ -528,7 +528,7 @@ function applySafePitchAndTurfSkin(root) {
     const base = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
     const material = base?.clone?.() || new THREE.MeshStandardMaterial();
     material.map = texture;
-    material.color?.set?.(0xffffff);
+    material.color?.set?.(options.tint ?? 0xffffff);
     if ('roughness' in material && options.roughness != null) material.roughness = options.roughness;
     if ('metalness' in material && options.metalness != null) material.metalness = options.metalness;
     material.needsUpdate = true;
@@ -537,8 +537,8 @@ function applySafePitchAndTurfSkin(root) {
     return true;
   };
 
-  apply(playfield, 'playfield.png', { roughness: 0.96, metalness: 0, tint: 0xb8cfae });
-  apply(pitch, 'pitch-skin.webp', { roughness: 0.97, metalness: 0, tint: 0xd9c89b });
+  apply(playfield, 'playfield.png', { roughness: 0.96, metalness: 0, tint: 0xaec6a6 });
+  apply(pitch, 'pitch-skin.webp', { roughness: 0.97, metalness: 0, tint: 0xb09a68 });
 
   console.info('[Cricket skin safe] pitch/turf applied', {
     playfield: playfield?.name || null,
@@ -1171,6 +1171,26 @@ function styleCricketBats(root) {
 }
 
 function styleCricketTargets(root) {
+  // Remove the raised wicket pedestal and plant the stumps into the pitch.
+  ['Cricket_Wicket_Main', 'Cricket_Wicket_ImpactRing'].forEach((name) => {
+    const mesh = root.getObjectByName(name);
+    if (mesh) mesh.visible = false;
+  });
+  for (let i = 0; i < 10; i += 1) {
+    const led = root.getObjectByName(`WicketLED_${String(i).padStart(2, '0')}`);
+    if (led) led.visible = false;
+  }
+  ['Cricket_Wicket_Stump_L', 'Cricket_Wicket_Stump_C', 'Cricket_Wicket_Stump_R'].forEach((name) => {
+    const stump = root.getObjectByName(name);
+    if (stump) stump.position.y = 0.68;
+  });
+
+  // Production ONE/TWO artwork supersedes the authored floating run labels.
+  ['Skin_Label_1RUN', 'Skin_Label_2RUNS'].forEach((name) => {
+    const label = root.getObjectByName(name);
+    if (label) label.visible = false;
+  });
+
   const treatments = [
     ['four-ramp', 0x3d6f4c, 0x07130a],
     ['six-ramp', 0x7d3d2d, 0x170704],
@@ -1730,26 +1750,17 @@ function createMechanics() {
     new THREE.MeshStandardMaterial({
       map: loadCricketTexture('cricket-ball.webp'),
       color: 0xffffff,
-      emissive: 0x35050a,
-      emissiveIntensity: 0.45,
-      roughness: 0.34,
-      metalness: 0.02
+      emissive: 0x000000,
+      emissiveIntensity: 0,
+      roughness: 0.48,
+      metalness: 0
     })
   );
   ballVisual.renderOrder = 12;
   scene.add(ballVisual);
 
-  ballGlow = new THREE.Mesh(
-    new THREE.SphereGeometry(ballRadius * 1.8, 24, 16),
-    new THREE.MeshBasicMaterial({
-      color: 0xffd56a,
-      transparent: true,
-      opacity: 0.26,
-      depthWrite: false
-    })
-  );
-  ballGlow.renderOrder = 11;
-  scene.add(ballGlow);
+  // Keep the ball itself readable; no oversized outer halo.
+  ballGlow = null;
 
   const trailGeometry = new THREE.BufferGeometry();
   trailGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(30 * 3), 3));
