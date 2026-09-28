@@ -78,7 +78,10 @@ app.innerHTML = `
 
     <section class="match-hud" id="matchHud" hidden>
       <div class="hud-score">
-        <span id="hudBatter">— BATTING</span>
+        <div class="hud-score-head">
+          <a class="hud-back" href="/cricket-pinball" aria-label="Back to lobby">←</a>
+          <span id="hudBatter">— BATTING</span>
+        </div>
         <strong id="hudScore">0/0</strong>
         <small id="hudInnings">INNINGS 1</small>
       </div>
@@ -1189,8 +1192,7 @@ function styleCricketTargets(root) {
 
   // Production ONE/TWO artwork supersedes the authored floating run labels.
   ['Skin_Label_1RUN', 'Skin_Label_2RUNS'].forEach((name) => {
-    const label = root.getObjectByName(name);
-    if (label) label.visible = false;
+    root.getObjectByName(name)?.removeFromParent();
   });
 
   const treatments = [
@@ -1746,7 +1748,7 @@ function upgradeStadiumFloodlights(root) {
 }
 
 function createMechanics() {
-  const ballRadius = tableConfig.ball.radius * 1.6;
+  const ballRadius = tableConfig.ball.radius;
   ballVisual = new THREE.Mesh(
     new THREE.SphereGeometry(ballRadius, 32, 22),
     new THREE.MeshStandardMaterial({
@@ -2658,7 +2660,9 @@ function syncFlipper(object, state, cfg) {
 
 function frameWorld(size) {
   const span = Math.max(size.x, size.z, 1);
-  const aspect = window.innerWidth / window.innerHeight;
+  const viewportWidth = window.visualViewport?.width || window.innerWidth;
+  const viewportHeight = window.visualViewport?.height || window.innerHeight;
+  const aspect = viewportWidth / viewportHeight;
   const portrait = aspect < 0.85;
 
   camera.aspect = aspect;
@@ -2666,10 +2670,10 @@ function frameWorld(size) {
   camera.position.set(
     0,
     portrait
-      ? Math.max(size.y * 1.12, span * 0.68)
+      ? Math.max(size.y * 1.16, span * 0.72)
       : Math.max(size.y * 1.0, span * 0.56),
     portrait
-      ? Math.max(span * 1.23, 7.1)
+      ? Math.max(span * 1.30, 7.5)
       : Math.max(span * 0.96, 5.7)
   );
   camera.lookAt(
@@ -2680,16 +2684,21 @@ function frameWorld(size) {
   camera.updateProjectionMatrix();
 }
 
-window.addEventListener('resize', () => {
+const reframeViewport = () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight, false);
   if (worldFrameSize) {
     frameWorld(worldFrameSize);
   } else {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const viewportWidth = window.visualViewport?.width || window.innerWidth;
+    const viewportHeight = window.visualViewport?.height || window.innerHeight;
+    camera.aspect = viewportWidth / viewportHeight;
     camera.updateProjectionMatrix();
   }
-}, { passive: true });
+};
+
+window.addEventListener('resize', reframeViewport, { passive: true });
+window.visualViewport?.addEventListener('resize', reframeViewport, { passive: true });
 
 function delay(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
