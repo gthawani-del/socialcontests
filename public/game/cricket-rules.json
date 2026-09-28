@@ -27,16 +27,22 @@
     "playableBatZoneHalfWidth": 1.42
   },
   "toss": {
-    "coinMs": 2200,
+    "coinMs": 2600,
     "resultHoldMs": 1600,
     "roleConfirmMs": 1400,
-    "inningsIntroMs": 1600,
+    "inningsIntroMs": 1200,
     "inningsBreakCountdownSeconds": 5,
     "stageMs": 650,
-    "callLockMs": 450,
+    "callLockMs": 600,
     "cpuCallMs": 900,
-    "settleMs": 500,
-    "cpuChoiceMs": 900
+    "settleMs": 700,
+    "cpuChoiceMs": 900,
+    "callHoldMs": 700,
+    "resultRevealMs": 1400,
+    "winnerHoldMs": 1600,
+    "cpuDecisionMs": 800,
+    "choiceHoldMs": 1500,
+    "rolesHoldMs": 1400
   },
   "outcomes": {
     "DOT": 0,

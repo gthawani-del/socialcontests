@@ -1140,3 +1140,54 @@ body,
     height: 100% !important;
   }
 }
+
+
+/* Authoritative staged toss animation */
+.toss-panel.stage-change .toss-copy,
+.toss-panel.stage-change #coinStatus {
+  animation: toss-stage-in 320ms ease both;
+}
+
+@keyframes toss-stage-in {
+  from { opacity: .35; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.coin-face img {
+  object-fit: contain !important;
+}
+
+.coin.is-flipping {
+  animation-name: cricket-coin-flip !important;
+  animation-duration: var(--coin-flip-ms, 2600ms) !important;
+  animation-timing-function: cubic-bezier(.18,.72,.16,1) !important;
+  animation-fill-mode: forwards !important;
+}
+
+.coin.is-settled {
+  animation: cricket-coin-settle 420ms cubic-bezier(.22,.8,.24,1) both;
+}
+
+@keyframes cricket-coin-flip {
+  0% {
+    transform: translateY(12px) rotateY(0deg) rotateX(0deg) scale(.96);
+  }
+  16% {
+    transform: translateY(-36px) rotateY(360deg) rotateX(180deg) scale(1.02);
+  }
+  52% {
+    transform: translateY(-118px) rotateY(1260deg) rotateX(540deg) scale(1.09);
+  }
+  82% {
+    transform: translateY(-30px) rotateY(1980deg) rotateX(720deg) scale(1.02);
+  }
+  100% {
+    transform: translateY(0) rotateY(var(--coin-final-y, 2520deg)) rotateX(900deg) scale(1);
+  }
+}
+
+@keyframes cricket-coin-settle {
+  0% { transform: translateY(-5px) scale(1.025); }
+  58% { transform: translateY(2px) scale(.99); }
+  100% { transform: translateY(0) scale(1); }
+}

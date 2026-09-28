@@ -2016,6 +2016,16 @@ function applyConfiguredContent(content) {
   set('#deliveryCueLabel','delivery'); set('#deliveryCueValue','ready',true); set('#resultEyebrow','matchResult');
 }
 
+function setTossStage({ eyebrow, title, instruction, status }) {
+  if (eyebrow != null) tossEyebrow.textContent = eyebrow;
+  if (title != null) tossTitle.textContent = title;
+  if (instruction != null) tossInstruction.textContent = instruction;
+  if (status != null) coinStatus.textContent = status;
+  tossPanel.classList.remove('stage-change');
+  void tossPanel.offsetWidth;
+  tossPanel.classList.add('stage-change');
+}
+
 async function startTossFlow() {
   if (inputsLocked) return;
   inputsLocked = true;
@@ -2024,24 +2034,35 @@ async function startTossFlow() {
   callActions.hidden = true;
   roleActions.hidden = true;
   roleConfirmation.hidden = true;
-  tossCoin.classList.remove('is-flipping', 'show-tails');
+  tossCoin.classList.remove('is-flipping', 'is-settled', 'show-tails');
 
-  tossTitle.textContent = 'MATCH TOSS';
-  tossInstruction.textContent = 'Coin ready';
-  coinStatus.textContent = 'TOSS READY';
+  setTossStage({
+    eyebrow: 'MATCH TOSS',
+    title: 'TOSS READY',
+    instruction: 'The coin decides who starts',
+    status: 'READY'
+  });
   await delay(rulesConfig.toss?.stageMs ?? 650);
 
   if (caller.type === 'CPU') {
-    tossTitle.textContent = 'CPU CALLS';
-    tossInstruction.textContent = 'CPU is choosing…';
+    setTossStage({
+      eyebrow: 'TOSS · CPU CALLING',
+      title: 'CPU IS CALLING',
+      instruction: 'Heads or Pinball?',
+      status: 'CPU DECIDING'
+    });
     await delay(rulesConfig.toss?.cpuCallMs ?? 900);
     inputsLocked = false;
     await resolveToss(Math.random() < 0.5 ? 'HEADS' : 'TAILS');
     return;
   }
 
-  tossTitle.textContent = 'PLAYER 1 CALLS';
-  tossInstruction.textContent = 'Choose Heads or Pinball';
+  setTossStage({
+    eyebrow: 'TOSS · PLAYER 1 CALLING',
+    title: 'MAKE YOUR CALL',
+    instruction: 'Choose Heads or Pinball',
+    status: 'WAITING FOR CALL'
+  });
   callActions.hidden = false;
   inputsLocked = false;
   disableTossInputs(false);
@@ -2161,41 +2182,85 @@ async function resolveToss(call) {
   const toss = tossController.perform(call, caller.id, opponent.id);
   match.setToss(toss);
   callActions.hidden = true;
+  roleActions.hidden = true;
+  roleConfirmation.hidden = true;
 
   const calledFace = call === 'TAILS' ? 'PINBALL' : 'HEADS';
   const resultFace = toss.result === 'TAILS' ? 'PINBALL' : 'HEADS';
+  const winnerName = playerName(toss.winnerId);
 
-  tossTitle.textContent = `${caller.name} CALLS ${calledFace}`;
-  tossInstruction.textContent = 'Call locked';
-  coinStatus.textContent = 'CALL LOCKED';
+  setTossStage({
+    eyebrow: 'TOSS · CALL LOCKED',
+    title: `${caller.name} CALLS ${calledFace}`,
+    instruction: 'Call confirmed',
+    status: `${calledFace} CALLED`
+  });
   setScoreboard('TOSS', `${calledFace} CALLED`);
-  await delay(rulesConfig.toss?.callLockMs ?? 450);
+  await delay(rulesConfig.toss?.callLockMs ?? 600);
 
-  tossInstruction.textContent = 'Coin in the air…';
+  setTossStage({
+    eyebrow: 'TOSS · READY',
+    title: `${calledFace} IS LOCKED`,
+    instruction: 'Watch the coin',
+    status: 'TOSSING NEXT'
+  });
+  await delay(rulesConfig.toss?.callHoldMs ?? 700);
+
+  setTossStage({
+    eyebrow: 'TOSS · IN THE AIR',
+    title: 'COIN IN THE AIR',
+    instruction: 'Heads or Pinball…',
+    status: 'FLIPPING'
+  });
   setScoreboard('TOSS', 'COIN IN AIR');
   await animateCoin(toss.result);
 
-  coinStatus.textContent = resultFace;
-  tossTitle.textContent = resultFace;
-  tossInstruction.textContent = 'Coin settled';
-  await delay(rulesConfig.toss?.settleMs ?? 500);
+  tossCoin.classList.add('is-settled');
+  setTossStage({
+    eyebrow: 'TOSS · COIN SETTLED',
+    title: resultFace,
+    instruction: 'Coin settled',
+    status: resultFace
+  });
+  await delay(rulesConfig.toss?.settleMs ?? 700);
 
-  tossInstruction.textContent = `${playerName(toss.winnerId)} WON THE TOSS`;
-  setScoreboard('TOSS RESULT', `${resultFace} · ${playerName(toss.winnerId)} WINS`);
-  await delay(rulesConfig.toss?.resultHoldMs ?? 1600);
+  setTossStage({
+    eyebrow: 'TOSS · RESULT',
+    title: resultFace,
+    instruction: `${winnerName} wins the call`,
+    status: `${resultFace} · RESULT`
+  });
+  setScoreboard('TOSS RESULT', `${resultFace} · ${winnerName} WINS`);
+  await delay(rulesConfig.toss?.resultRevealMs ?? 1400);
+
+  setTossStage({
+    eyebrow: 'TOSS · WINNER',
+    title: `${winnerName} WON THE TOSS`,
+    instruction: 'Bat or bowl comes next',
+    status: 'TOSS COMPLETE'
+  });
+  await delay(rulesConfig.toss?.winnerHoldMs ?? 1600);
 
   const winner = getPlayer(toss.winnerId);
   if (winner.type === 'CPU') {
-    tossTitle.textContent = 'CPU WON THE TOSS';
-    tossInstruction.textContent = 'CPU is choosing bat or bowl…';
-    await delay(rulesConfig.toss?.cpuChoiceMs ?? 900);
+    setTossStage({
+      eyebrow: 'TOSS · DECISION',
+      title: 'CPU DECIDING…',
+      instruction: 'Bat or bowl?',
+      status: 'DECIDING'
+    });
+    await delay(rulesConfig.toss?.cpuDecisionMs ?? 800);
     inputsLocked = false;
-    chooseRole(Math.random() < 0.5 ? 'BAT' : 'BOWL');
+    await chooseRole(Math.random() < 0.5 ? 'BAT' : 'BOWL');
     return;
   }
 
-  tossTitle.textContent = `${winner.name}: BAT OR BOWL?`;
-  tossInstruction.textContent = 'Choose your innings role';
+  setTossStage({
+    eyebrow: 'TOSS · DECISION',
+    title: `${winner.name}: BAT OR BOWL?`,
+    instruction: 'Choose your innings role',
+    status: 'YOUR DECISION'
+  });
   roleActions.hidden = false;
   inputsLocked = false;
   disableTossInputs(false);
@@ -2206,6 +2271,7 @@ async function chooseRole(choice) {
   inputsLocked = true;
   disableTossInputs(true);
   roleActions.hidden = true;
+  roleConfirmation.hidden = true;
 
   const winnerId = match.toss.winnerId;
   const loserId = players.find((player) => player.id !== winnerId).id;
@@ -2213,16 +2279,31 @@ async function chooseRole(choice) {
   const bowlingPlayerId = choice === 'BAT' ? loserId : winnerId;
   match.assignRoles({ battingPlayerId, bowlingPlayerId, choice });
 
+  const winnerName = playerName(winnerId);
   const battingName = playerName(battingPlayerId);
   const bowlingName = playerName(bowlingPlayerId);
-  tossTitle.textContent = `${playerName(winnerId)} CHOOSES ${choice}`;
-  tossInstruction.textContent = 'Roles confirmed';
+
+  setTossStage({
+    eyebrow: 'TOSS · DECISION MADE',
+    title: `${winnerName} CHOOSES ${choice}`,
+    instruction: 'Decision confirmed',
+    status: `${choice} SELECTED`
+  });
+  setScoreboard('TOSS', `${winnerName} CHOOSES ${choice}`);
+  await delay(rulesConfig.toss?.choiceHoldMs ?? 1500);
+
   document.querySelector('#battingRole').textContent = `${battingName} BATTING`;
   document.querySelector('#bowlingRole').textContent = `${bowlingName} BOWLING`;
   roleConfirmation.hidden = false;
+  setTossStage({
+    eyebrow: 'TOSS · ROLES CONFIRMED',
+    title: 'MATCH ROLES SET',
+    instruction: 'Ready for the first innings',
+    status: 'READY TO PLAY'
+  });
   setScoreboard('TOSS', `${battingName} BAT · ${bowlingName} BOWL`);
+  await delay(rulesConfig.toss?.rolesHoldMs ?? 1400);
 
-  await delay(rulesConfig.toss?.roleConfirmMs ?? 900);
   tossPanel.hidden = true;
   await beginInnings();
 }
@@ -2234,7 +2315,7 @@ async function beginInnings() {
   document.querySelector('#inningsBatting').textContent = `${playerName(match.battingPlayerId)} BATTING`;
   document.querySelector('#inningsBowling').textContent = `${playerName(match.bowlingPlayerId)} BOWLING`;
   inningsIntro.querySelector('p').textContent = `INNINGS ${match.inningsNumber}`;
-  await delay(rulesConfig.toss?.inningsIntroMs ?? 900);
+  await delay(rulesConfig.toss?.inningsIntroMs ?? 1200);
   inningsIntro.hidden = true;
   matchHud.hidden = false;
   inputsLocked = false;
@@ -2569,43 +2650,29 @@ function displayOutcome(type) {
 
 function animateCoin(result) {
   return new Promise((resolve) => {
-    const duration = rulesConfig?.toss?.coinMs ?? 2200;
+    const duration = rulesConfig?.toss?.coinMs ?? 2600;
+    const resultFace = result === 'TAILS' ? 'PINBALL' : 'HEADS';
 
-    coinStatus.textContent = 'COIN IN THE AIR';
-    tossCoin.classList.remove('is-flipping', 'show-tails');
+    if (coinMesh) coinMesh.visible = false;
+    tossCoin.style.setProperty('--coin-flip-ms', `${duration}ms`);
+    tossCoin.style.setProperty('--coin-final-y', result === 'TAILS' ? '2700deg' : '2520deg');
+    tossCoin.classList.remove('is-flipping', 'is-settled', 'show-tails');
     void tossCoin.offsetWidth;
     tossCoin.classList.add('is-flipping');
+    coinStatus.textContent = 'COIN IN THE AIR';
 
-    coinAnimation = {
-      start: performance.now(),
-      duration,
-      result,
-      resolve: () => {
-        tossCoin.classList.remove('is-flipping');
-        tossCoin.classList.toggle('show-tails', result === 'TAILS');
-        coinStatus.textContent = result;
-        resolve();
-      }
-    };
-
-    coinMesh.visible = true;
+    window.setTimeout(() => {
+      tossCoin.classList.remove('is-flipping');
+      tossCoin.classList.toggle('show-tails', result === 'TAILS');
+      coinStatus.textContent = resultFace;
+      resolve();
+    }, duration);
   });
 }
-function updateCoin(now) {
-  if (!coinAnimation || !coinMesh) return;
-  const t = Math.min(1, (now - coinAnimation.start) / coinAnimation.duration);
-  coinMesh.position.y = 1.35 + Math.sin(t * Math.PI) * 2.1;
-  coinMesh.rotation.x = t * Math.PI * 12;
-  coinMesh.rotation.z = Math.PI / 2 + t * Math.PI * 8;
-  if (t >= 1) {
-    coinMesh.rotation.x = coinAnimation.result === 'HEADS' ? 0 : Math.PI;
-    const done = coinAnimation.resolve;
-    coinAnimation = null;
-    window.setTimeout(() => { coinMesh.visible = false; }, 650);
-    done();
-  }
-}
 
+function updateCoin() {
+  // The DOM medallion is the single authoritative toss visual.
+}
 function syncMechanics() {
   if (!engine || !ballVisual) return;
   ballVisual.visible = engine.ball.active;
