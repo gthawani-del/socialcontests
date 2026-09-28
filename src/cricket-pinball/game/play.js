@@ -2190,7 +2190,7 @@ async function resolveToss(call) {
   roleConfirmation.hidden = true;
 
   const calledFace = call === 'TAILS' ? 'PINBALL' : 'HEADS';
-  const resultFace = toss.result === 'HEADS' ? 'PINBALL' : 'HEADS';
+  const resultFace = toss.result === 'TAILS' ? 'PINBALL' : 'HEADS';
   const winnerName = playerName(toss.winnerId);
 
   setTossStage({
@@ -2676,7 +2676,7 @@ function animateCoin(result) {
 
     window.setTimeout(() => {
       tossCoin.classList.remove('is-flipping');
-      tossCoin.classList.toggle('show-heads', result === 'TAILS');
+      tossCoin.classList.toggle('show-heads', result === 'HEADS');
       coinStatus.textContent = resultFace;
       resolve();
     }, duration);
