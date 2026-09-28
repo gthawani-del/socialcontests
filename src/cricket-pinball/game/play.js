@@ -1985,12 +1985,16 @@ function drawStadiumScoreboard() {
 function applyConfiguredContent(content) {
   if (!content) return;
   const items = content.items || {};
+  const compactMobile = window.matchMedia('(max-width: 680px)').matches;
+  const mobileUiScale = compactMobile ? 0.65 : 1;
   const set = (selector,key,fallbackDynamic=false) => {
     const node = document.querySelector(selector);
     const item = items[key];
     if (!node || !item) return;
     if (!fallbackDynamic && item.text != null) node.textContent = item.text;
-    node.style.setProperty('font-size', `${Number(item.fontSize) || 16}px`, 'important');
+    const configuredSize = Number(item.fontSize) || 16;
+    const scaledSize = Math.max(8, Math.round(configuredSize * mobileUiScale));
+    node.style.setProperty('font-size', `${scaledSize}px`, 'important');
     node.style.setProperty('color', item.color || '#ffffff', 'important');
   };
   const shell = document.querySelector('.cricket-play-shell');
