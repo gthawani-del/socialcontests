@@ -112,14 +112,14 @@ app.innerHTML = `
       </div>
       <div class="coin-stage" id="coinStage" aria-live="polite">
         <div class="coin" id="tossCoin" aria-hidden="true">
-          <div class="coin-face coin-heads">H</div>
-          <div class="coin-face coin-tails">T</div>
+          <div class="coin-face coin-heads"><span>H</span></div>
+          <div class="coin-face coin-tails"><img src="/assets/cricket/world/cricket-pinball-toss-coin.svg" alt=""></div>
         </div>
         <small id="coinStatus">READY FOR TOSS</small>
       </div>
       <div class="toss-actions" id="callActions">
         <button type="button" data-call="HEADS">HEADS</button>
-        <button type="button" data-call="TAILS">TAILS</button>
+        <button type="button" data-call="TAILS">PINBALL</button>
       </div>
       <div class="toss-actions" id="roleActions" hidden>
         <button type="button" data-role="BAT">BAT</button>
@@ -1943,12 +1943,17 @@ function showDeliveryCue(value, label = 'DELIVERY', holdMs = 0) {
 
 
 function createCoin() {
+  const logoTexture = cricketTextureLoader.load('/assets/cricket/world/cricket-pinball-toss-coin.svg');
+  logoTexture.colorSpace = THREE.SRGBColorSpace;
+  logoTexture.minFilter = THREE.LinearFilter;
+  logoTexture.magFilter = THREE.LinearFilter;
+
   const material = [
-    new THREE.MeshStandardMaterial({ color: 0xc69a38, metalness: 0.85, roughness: 0.22 }),
-    new THREE.MeshStandardMaterial({ color: 0xf2ca62, metalness: 0.76, roughness: 0.2 }),
-    new THREE.MeshStandardMaterial({ color: 0xd6aa44, metalness: 0.82, roughness: 0.2 })
+    new THREE.MeshStandardMaterial({ color: 0xb77f18, metalness: 0.92, roughness: 0.18 }),
+    new THREE.MeshStandardMaterial({ map: logoTexture, color: 0xffffff, metalness: 0.78, roughness: 0.2 }),
+    new THREE.MeshStandardMaterial({ color: 0xe8bb50, metalness: 0.82, roughness: 0.18 })
   ];
-  coinMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.055, 48), material);
+  coinMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.065, 64), material);
   coinMesh.rotation.z = Math.PI / 2;
   coinMesh.position.set(0, 2.2, 0);
   coinMesh.visible = false;
@@ -2005,24 +2010,33 @@ function applyConfiguredContent(content) {
 
 async function startTossFlow() {
   if (inputsLocked) return;
+  inputsLocked = true;
   intro.hidden = true;
   tossPanel.hidden = false;
+  callActions.hidden = true;
+  roleActions.hidden = true;
+  roleConfirmation.hidden = true;
+  tossCoin.classList.remove('is-flipping', 'show-tails');
+
+  tossTitle.textContent = 'MATCH TOSS';
+  tossInstruction.textContent = 'Coin ready';
+  coinStatus.textContent = 'TOSS READY';
+  await delay(rulesConfig.toss?.stageMs ?? 650);
 
   if (caller.type === 'CPU') {
-    callActions.hidden = true;
-    roleActions.hidden = true;
     tossTitle.textContent = 'CPU CALLS';
-    tossInstruction.textContent = 'CPU is choosing Heads or Tails…';
-    inputsLocked = true;
-    await delay(650);
+    tossInstruction.textContent = 'CPU is choosing…';
+    await delay(rulesConfig.toss?.cpuCallMs ?? 900);
     inputsLocked = false;
     await resolveToss(Math.random() < 0.5 ? 'HEADS' : 'TAILS');
     return;
   }
 
-  callActions.hidden = false;
   tossTitle.textContent = 'PLAYER 1 CALLS';
-  tossInstruction.textContent = 'Choose Heads or Tails';
+  tossInstruction.textContent = 'Choose Heads or Pinball';
+  callActions.hidden = false;
+  inputsLocked = false;
+  disableTossInputs(false);
 }
 
 function bindUi() {
@@ -2139,27 +2153,41 @@ async function resolveToss(call) {
   const toss = tossController.perform(call, caller.id, opponent.id);
   match.setToss(toss);
   callActions.hidden = true;
-  tossTitle.textContent = `${caller.name} CALLED ${call}`;
+
+  const calledFace = call === 'TAILS' ? 'PINBALL' : 'HEADS';
+  const resultFace = toss.result === 'TAILS' ? 'PINBALL' : 'HEADS';
+
+  tossTitle.textContent = `${caller.name} CALLS ${calledFace}`;
+  tossInstruction.textContent = 'Call locked';
+  coinStatus.textContent = 'CALL LOCKED';
+  setScoreboard('TOSS', `${calledFace} CALLED`);
+  await delay(rulesConfig.toss?.callLockMs ?? 450);
+
   tossInstruction.textContent = 'Coin in the air…';
   setScoreboard('TOSS', 'COIN IN AIR');
   await animateCoin(toss.result);
 
-  tossTitle.textContent = toss.result;
+  coinStatus.textContent = resultFace;
+  tossTitle.textContent = resultFace;
+  tossInstruction.textContent = 'Coin settled';
+  await delay(rulesConfig.toss?.settleMs ?? 500);
+
   tossInstruction.textContent = `${playerName(toss.winnerId)} WON THE TOSS`;
-  setScoreboard('TOSS RESULT', `${toss.result} · ${playerName(toss.winnerId)} WINS`);
-  await delay(rulesConfig.toss?.resultHoldMs ?? 800);
+  setScoreboard('TOSS RESULT', `${resultFace} · ${playerName(toss.winnerId)} WINS`);
+  await delay(rulesConfig.toss?.resultHoldMs ?? 1600);
 
   const winner = getPlayer(toss.winnerId);
   if (winner.type === 'CPU') {
-    tossInstruction.textContent = 'CPU is choosing…';
-    await delay(500);
+    tossTitle.textContent = 'CPU WON THE TOSS';
+    tossInstruction.textContent = 'CPU is choosing bat or bowl…';
+    await delay(rulesConfig.toss?.cpuChoiceMs ?? 900);
     inputsLocked = false;
     chooseRole(Math.random() < 0.5 ? 'BAT' : 'BOWL');
     return;
   }
 
   tossTitle.textContent = `${winner.name}: BAT OR BOWL?`;
-  tossInstruction.textContent = 'Toss winner chooses';
+  tossInstruction.textContent = 'Choose your innings role';
   roleActions.hidden = false;
   inputsLocked = false;
   disableTossInputs(false);
@@ -2533,7 +2561,7 @@ function displayOutcome(type) {
 
 function animateCoin(result) {
   return new Promise((resolve) => {
-    const duration = rulesConfig?.toss?.coinMs ?? 1600;
+    const duration = rulesConfig?.toss?.coinMs ?? 2200;
 
     coinStatus.textContent = 'COIN IN THE AIR';
     tossCoin.classList.remove('is-flipping', 'show-tails');

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+<defs><radialGradient id="g" cx="34%" cy="28%" r="72%"><stop offset="0" stop-color="#fff2a8"/><stop offset=".32" stop-color="#e6b84e"/><stop offset=".7" stop-color="#a66d12"/><stop offset="1" stop-color="#533006"/></radialGradient><radialGradient id="d" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#4a381d"/><stop offset=".75" stop-color="#16110a"/><stop offset="1" stop-color="#090704"/></radialGradient></defs>
+<circle cx="512" cy="512" r="486" fill="url(#g)"/><circle cx="512" cy="512" r="446" fill="none" stroke="#ffe081" stroke-width="18"/><circle cx="512" cy="512" r="402" fill="url(#d)" stroke="#d99b28" stroke-width="12"/><circle cx="512" cy="512" r="354" fill="none" stroke="#e7b547" stroke-width="7"/>
+<g transform="translate(512 300)"><circle r="72" fill="#dca33a" stroke="#ffdf79" stroke-width="8"/><path d="M-27-66c18 18 32 39 41 64M-10-72c19 20 33 43 42 69M8-70c18 19 31 40 40 64" fill="none" stroke="#5d3605" stroke-width="8"/><path d="M-152 16c58-10 107-33 142-73-12 38-35 72-71 102-25 21-49 36-71 45 18-20 35-44 49-74z" fill="#dba43b" stroke="#f7cc65" stroke-width="5"/></g>
+<text x="512" y="520" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="122" font-weight="900" fill="#e5b143" stroke="#5b3206" stroke-width="8" paint-order="stroke">CRICKET</text>
+<text x="512" y="620" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="86" font-weight="900" fill="#f0c668" stroke="#5b3206" stroke-width="7" paint-order="stroke">PINBALL</text>
+<path d="M352 685h320" stroke="#d9a23b" stroke-width="5"/><text x="512" y="748" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="48" font-weight="800" letter-spacing="8" fill="#e7bd62">TOSS COIN</text><path d="M383 780h258" stroke="#d9a23b" stroke-width="5"/>
+</svg>

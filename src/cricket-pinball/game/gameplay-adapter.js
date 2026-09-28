@@ -54,8 +54,11 @@ export function createCricketGameplayAdapter({
 
     // A delivery is countable only once it reaches the real playable bat gate.
     // The earlier bowling corridor is guidance only; entering it does not consume a ball.
-    const playableBatZoneZ = Number(cricketRules.delivery?.playableBatZoneZ ?? 1.9);
-    const playableBatZoneHalfWidth = Number(cricketRules.delivery?.playableBatZoneHalfWidth ?? 1.05);
+    const playableBatZoneZ = Number(cricketRules.delivery?.battingZoneZ ?? 1.72);
+    const playableBatZoneHalfWidth = Math.max(
+      Number(cricketRules.delivery?.playableBatZoneHalfWidth ?? 1.42),
+      1.42
+    );
     if (
       !becameHittable &&
       !engine.launcher.inLane &&
