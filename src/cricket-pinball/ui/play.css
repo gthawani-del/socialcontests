@@ -807,3 +807,127 @@ button, a { font: inherit; }
   .match-hud span,.match-hud small{font-size:9px}
   .match-hud strong{font-size:15px}
 }
+
+
+/* Mobile gameplay alignment pass */
+html, body, #cricketPlayApp, .cricket-play-shell {
+  min-height: 100dvh;
+}
+body,
+.cricket-play-shell,
+.match-hud,
+.match-topbar,
+.bowling-controls,
+.batting-controls,
+.line-controls,
+.power-control {
+  -webkit-user-select: none;
+  user-select: none;
+}
+#cricketPlayWorld {
+  height: 100dvh;
+}
+
+@media (max-width: 680px) {
+  .match-topbar {
+    top: max(8px, env(safe-area-inset-top));
+    padding: 6px 12px;
+    height: 38px;
+    align-items: center;
+    background: transparent;
+  }
+  .match-topbar a {
+    width: 42px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 0;
+  }
+  .match-topbar a::before {
+    content: '←';
+    font-size: 20px;
+    line-height: 1;
+  }
+  .match-topbar small {
+    display: none !important;
+  }
+
+  #matchHud {
+    top: calc(max(8px, env(safe-area-inset-top)) + 42px) !important;
+    left: 50% !important;
+    width: calc(100vw - 24px) !important;
+    min-height: 92px !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+    border-radius: 16px !important;
+  }
+  #matchHud > div {
+    min-width: 0 !important;
+    min-height: 92px !important;
+    padding: 10px 12px !important;
+    align-content: center !important;
+  }
+  #matchHud .hud-score {
+    padding-left: 16px !important;
+    text-align: left !important;
+  }
+  #matchHud .hud-chase {
+    text-align: center !important;
+  }
+  #matchHud .hud-role {
+    grid-column: auto !important;
+    padding-right: 16px !important;
+    text-align: right !important;
+  }
+  #hudBatter,
+  #hudTarget,
+  #hudRole {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+  }
+  #hudScore,
+  #hudNeed,
+  #hudBowler {
+    font-size: clamp(16px, 4.8vw, 21px) !important;
+    line-height: 1.02 !important;
+    overflow-wrap: anywhere;
+  }
+  #hudInnings,
+  #hudLast,
+  #hudState {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+  }
+
+  .bowling-controls {
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+    width: calc(100vw - 28px) !important;
+    gap: 8px !important;
+    padding-bottom: 0 !important;
+  }
+  .line-controls {
+    gap: 8px !important;
+  }
+  .line-controls button {
+    min-height: 48px !important;
+    padding: 10px 8px !important;
+  }
+  .power-control {
+    min-height: 58px !important;
+    padding: 10px 14px 12px !important;
+    overflow: visible !important;
+  }
+  .power-control i {
+    position: relative;
+    height: 8px !important;
+    overflow: hidden !important;
+    align-self: center;
+  }
+  .power-control b {
+    height: 100% !important;
+  }
+
+  .batting-controls {
+    bottom: calc(28px + env(safe-area-inset-bottom)) !important;
+  }
+}

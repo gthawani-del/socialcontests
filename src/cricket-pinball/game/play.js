@@ -42,6 +42,7 @@ let adapter = null;
 let tableConfig = null;
 let rulesConfig = null;
 let modelRoot = null;
+let worldFrameSize = null;
 let ballVisual = null;
 let leftFlipperVisual = null;
 let rightFlipperVisual = null;
@@ -352,9 +353,10 @@ function prepareWorld(root) {
   const box = new THREE.Box3().setFromObject(root);
   const center = box.getCenter(new THREE.Vector3());
   const size = box.getSize(new THREE.Vector3());
+  worldFrameSize = size.clone();
   root.position.sub(center);
   root.position.y += size.y * 0.5;
-  frameWorld(size);
+  frameWorld(worldFrameSize);
 }
 
 function normalizeEmbeddedMaterials(object, maxAnisotropy) {
@@ -2681,8 +2683,12 @@ function frameWorld(size) {
 window.addEventListener('resize', () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight, false);
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
+  if (worldFrameSize) {
+    frameWorld(worldFrameSize);
+  } else {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  }
 }, { passive: true });
 
 function delay(ms) {
