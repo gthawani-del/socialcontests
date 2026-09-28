@@ -113,7 +113,7 @@ app.innerHTML = `
       <div class="coin-stage" id="coinStage" aria-live="polite">
         <div class="coin" id="tossCoin" aria-hidden="true">
           <div class="coin-face coin-heads"><span>H</span></div>
-          <div class="coin-face coin-tails"><img src="/assets/cricket/world/cricket-pinball-toss-coin.svg" alt=""></div>
+          <div class="coin-face coin-tails"><img src="/assets/cricket/world/cricket-pinball-toss-coin.webp" alt=""></div>
         </div>
         <small id="coinStatus">READY FOR TOSS</small>
       </div>
@@ -1943,7 +1943,7 @@ function showDeliveryCue(value, label = 'DELIVERY', holdMs = 0) {
 
 
 function createCoin() {
-  const logoTexture = cricketTextureLoader.load('/assets/cricket/world/cricket-pinball-toss-coin.svg');
+  const logoTexture = cricketTextureLoader.load('/assets/cricket/world/cricket-pinball-toss-coin.webp');
   logoTexture.colorSpace = THREE.SRGBColorSpace;
   logoTexture.minFilter = THREE.LinearFilter;
   logoTexture.magFilter = THREE.LinearFilter;
@@ -2657,14 +2657,24 @@ function syncFlipper(object, state, cfg) {
 function frameWorld(size) {
   const span = Math.max(size.x, size.z, 1);
   const aspect = window.innerWidth / window.innerHeight;
+  const portrait = aspect < 0.85;
+
   camera.aspect = aspect;
-  camera.fov = aspect < 0.85 ? 47 : 40;
+  camera.fov = portrait ? 50 : 40;
   camera.position.set(
     0,
-    Math.max(size.y * 1.0, span * 0.56),
-    Math.max(span * 0.96, 5.7)
+    portrait
+      ? Math.max(size.y * 1.12, span * 0.68)
+      : Math.max(size.y * 1.0, span * 0.56),
+    portrait
+      ? Math.max(span * 1.23, 7.1)
+      : Math.max(span * 0.96, 5.7)
   );
-  camera.lookAt(0, Math.max(size.y * 0.24, 0.48), -0.08);
+  camera.lookAt(
+    0,
+    portrait ? Math.max(size.y * 0.30, 0.56) : Math.max(size.y * 0.24, 0.48),
+    portrait ? -0.18 : -0.08
+  );
   camera.updateProjectionMatrix();
 }
 
