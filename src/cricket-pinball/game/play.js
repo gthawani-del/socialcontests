@@ -117,7 +117,7 @@ app.innerHTML = `
       <div class="coin-stage" id="coinStage" aria-live="polite">
         <div class="coin" id="tossCoin" aria-hidden="true">
           <div class="coin-face coin-heads"><span>H</span></div>
-          <div class="coin-face coin-tails"><img src="/assets/cricket/world/cricket-pinball-toss-coin.webp" alt=""></div>
+          <div class="coin-face coin-tails"><img src="/assets/cricket/world/cricket-pinball-toss-coin-v2.webp" alt=""></div>
         </div>
         <small id="coinStatus">READY FOR TOSS</small>
       </div>
@@ -1947,7 +1947,7 @@ function showDeliveryCue(value, label = 'DELIVERY', holdMs = 0) {
 
 
 function createCoin() {
-  const logoTexture = cricketTextureLoader.load('/assets/cricket/world/cricket-pinball-toss-coin.webp');
+  const logoTexture = cricketTextureLoader.load('/assets/cricket/world/cricket-pinball-toss-coin-v2.webp');
   logoTexture.colorSpace = THREE.SRGBColorSpace;
   logoTexture.minFilter = THREE.LinearFilter;
   logoTexture.magFilter = THREE.LinearFilter;
@@ -2016,7 +2016,8 @@ function applyConfiguredContent(content) {
   set('#deliveryCueLabel','delivery'); set('#deliveryCueValue','ready',true); set('#resultEyebrow','matchResult');
 }
 
-function setTossStage({ eyebrow, title, instruction, status }) {
+function setTossStage({ stage = 'default', eyebrow, title, instruction, status }) {
+  tossPanel.dataset.stage = stage;
   if (eyebrow != null) tossEyebrow.textContent = eyebrow;
   if (title != null) tossTitle.textContent = title;
   if (instruction != null) tossInstruction.textContent = instruction;
@@ -2037,6 +2038,7 @@ async function startTossFlow() {
   tossCoin.classList.remove('is-flipping', 'is-settled', 'show-tails');
 
   setTossStage({
+    stage: 'ready',
     eyebrow: 'MATCH TOSS',
     title: 'TOSS READY',
     instruction: 'The coin decides who starts',
@@ -2046,6 +2048,7 @@ async function startTossFlow() {
 
   if (caller.type === 'CPU') {
     setTossStage({
+      stage: 'calling',
       eyebrow: 'TOSS · CPU CALLING',
       title: 'CPU IS CALLING',
       instruction: 'Heads or Pinball?',
@@ -2058,6 +2061,7 @@ async function startTossFlow() {
   }
 
   setTossStage({
+    stage: 'calling',
     eyebrow: 'TOSS · PLAYER 1 CALLING',
     title: 'MAKE YOUR CALL',
     instruction: 'Choose Heads or Pinball',
@@ -2190,6 +2194,7 @@ async function resolveToss(call) {
   const winnerName = playerName(toss.winnerId);
 
   setTossStage({
+    stage: 'locked',
     eyebrow: 'TOSS · CALL LOCKED',
     title: `${caller.name} CALLS ${calledFace}`,
     instruction: 'Call confirmed',
@@ -2199,6 +2204,7 @@ async function resolveToss(call) {
   await delay(rulesConfig.toss?.callLockMs ?? 600);
 
   setTossStage({
+    stage: 'preflight',
     eyebrow: 'TOSS · READY',
     title: `${calledFace} IS LOCKED`,
     instruction: 'Watch the coin',
@@ -2207,6 +2213,7 @@ async function resolveToss(call) {
   await delay(rulesConfig.toss?.callHoldMs ?? 700);
 
   setTossStage({
+    stage: 'air',
     eyebrow: 'TOSS · IN THE AIR',
     title: 'COIN IN THE AIR',
     instruction: 'Heads or Pinball…',
@@ -2217,6 +2224,7 @@ async function resolveToss(call) {
 
   tossCoin.classList.add('is-settled');
   setTossStage({
+    stage: 'settled',
     eyebrow: 'TOSS · COIN SETTLED',
     title: resultFace,
     instruction: 'Coin settled',
@@ -2225,6 +2233,7 @@ async function resolveToss(call) {
   await delay(rulesConfig.toss?.settleMs ?? 700);
 
   setTossStage({
+    stage: 'result',
     eyebrow: 'TOSS · RESULT',
     title: resultFace,
     instruction: `${winnerName} wins the call`,
@@ -2234,6 +2243,7 @@ async function resolveToss(call) {
   await delay(rulesConfig.toss?.resultRevealMs ?? 1400);
 
   setTossStage({
+    stage: 'winner',
     eyebrow: 'TOSS · WINNER',
     title: `${winnerName} WON THE TOSS`,
     instruction: 'Bat or bowl comes next',
@@ -2244,6 +2254,7 @@ async function resolveToss(call) {
   const winner = getPlayer(toss.winnerId);
   if (winner.type === 'CPU') {
     setTossStage({
+      stage: 'decision',
       eyebrow: 'TOSS · DECISION',
       title: 'CPU DECIDING…',
       instruction: 'Bat or bowl?',
@@ -2284,6 +2295,7 @@ async function chooseRole(choice) {
   const bowlingName = playerName(bowlingPlayerId);
 
   setTossStage({
+    stage: 'choice',
     eyebrow: 'TOSS · DECISION MADE',
     title: `${winnerName} CHOOSES ${choice}`,
     instruction: 'Decision confirmed',
@@ -2296,6 +2308,7 @@ async function chooseRole(choice) {
   document.querySelector('#bowlingRole').textContent = `${bowlingName} BOWLING`;
   roleConfirmation.hidden = false;
   setTossStage({
+    stage: 'roles',
     eyebrow: 'TOSS · ROLES CONFIRMED',
     title: 'MATCH ROLES SET',
     instruction: 'Ready for the first innings',

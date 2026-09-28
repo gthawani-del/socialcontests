@@ -1191,3 +1191,58 @@ body,
   58% { transform: translateY(2px) scale(.99); }
   100% { transform: translateY(0) scale(1); }
 }
+
+
+/* Toss workflow visibility correction */
+#matchHud[hidden]{display:none!important}
+
+.toss-panel[data-stage="ready"],
+.toss-panel[data-stage="calling"],
+.toss-panel[data-stage="locked"],
+.toss-panel[data-stage="preflight"]{
+  background:
+    radial-gradient(circle at 50% 44%,rgba(37,93,58,.30),transparent 34%),
+    rgba(2,8,5,.90)!important;
+}
+
+.toss-panel[data-stage="air"]{
+  background:
+    radial-gradient(circle at 50% 48%,rgba(222,178,62,.18),transparent 28%),
+    rgba(2,7,5,.93)!important;
+}
+
+.toss-panel[data-stage="settled"],
+.toss-panel[data-stage="result"],
+.toss-panel[data-stage="winner"]{
+  background:
+    radial-gradient(circle at 50% 46%,rgba(222,178,62,.28),transparent 30%),
+    rgba(3,8,5,.94)!important;
+}
+
+.toss-panel[data-stage="decision"],
+.toss-panel[data-stage="choice"],
+.toss-panel[data-stage="roles"]{
+  background:
+    radial-gradient(circle at 50% 46%,rgba(29,113,66,.30),transparent 32%),
+    rgba(2,8,5,.93)!important;
+}
+
+.toss-panel[data-stage="result"] #tossTitle,
+.toss-panel[data-stage="winner"] #tossTitle,
+.toss-panel[data-stage="choice"] #tossTitle{
+  color:#f3d16b!important;
+  transform:scale(1.03);
+}
+
+.coin-face img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  display:block;
+}
+
+@media(max-width:680px){
+  .coin{width:132px!important;height:132px!important}
+  #tossTitle{font-size:30px!important}
+  #tossInstruction{font-size:12px!important}
+}
