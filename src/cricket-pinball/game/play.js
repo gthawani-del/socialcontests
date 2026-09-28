@@ -116,8 +116,8 @@ app.innerHTML = `
       </div>
       <div class="coin-stage" id="coinStage" aria-live="polite">
         <div class="coin" id="tossCoin" aria-hidden="true">
-          <div class="coin-face coin-heads"><span>H</span></div>
-          <div class="coin-face coin-tails"><img src="/assets/cricket/world/cricket-pinball-toss-coin-v2.webp" alt=""></div>
+          <div class="coin-face coin-pinball"><img src="/assets/cricket/world/cricket-pinball-toss-coin-v3.webp" alt=""></div>
+          <div class="coin-face coin-heads"><span>H</span><small>HEADS</small></div>
         </div>
         <small id="coinStatus">READY FOR TOSS</small>
       </div>
@@ -2035,7 +2035,7 @@ async function startTossFlow() {
   callActions.hidden = true;
   roleActions.hidden = true;
   roleConfirmation.hidden = true;
-  tossCoin.classList.remove('is-flipping', 'is-settled', 'show-tails');
+  tossCoin.classList.remove('is-flipping', 'is-settled', 'show-heads');
 
   setTossStage({
     stage: 'ready',
@@ -2190,7 +2190,7 @@ async function resolveToss(call) {
   roleConfirmation.hidden = true;
 
   const calledFace = call === 'TAILS' ? 'PINBALL' : 'HEADS';
-  const resultFace = toss.result === 'TAILS' ? 'PINBALL' : 'HEADS';
+  const resultFace = toss.result === 'HEADS' ? 'PINBALL' : 'HEADS';
   const winnerName = playerName(toss.winnerId);
 
   setTossStage({
@@ -2668,15 +2668,15 @@ function animateCoin(result) {
 
     if (coinMesh) coinMesh.visible = false;
     tossCoin.style.setProperty('--coin-flip-ms', `${duration}ms`);
-    tossCoin.style.setProperty('--coin-final-y', result === 'TAILS' ? '2700deg' : '2520deg');
-    tossCoin.classList.remove('is-flipping', 'is-settled', 'show-tails');
+    tossCoin.style.setProperty('--coin-final-y', result === 'HEADS' ? '2700deg' : '2520deg');
+    tossCoin.classList.remove('is-flipping', 'is-settled', 'show-heads');
     void tossCoin.offsetWidth;
     tossCoin.classList.add('is-flipping');
     coinStatus.textContent = 'COIN IN THE AIR';
 
     window.setTimeout(() => {
       tossCoin.classList.remove('is-flipping');
-      tossCoin.classList.toggle('show-tails', result === 'TAILS');
+      tossCoin.classList.toggle('show-heads', result === 'TAILS');
       coinStatus.textContent = resultFace;
       resolve();
     }, duration);

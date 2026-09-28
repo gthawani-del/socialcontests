@@ -1246,3 +1246,59 @@ body,
   #tossTitle{font-size:30px!important}
   #tossInstruction{font-size:12px!important}
 }
+
+
+/* Toss coin v3 — use the exact approved Cricket Pinball medallion as the resting face. */
+.coin.show-heads { transform: rotateY(180deg) !important; }
+
+.coin-pinball {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.coin-pinball img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  display: block;
+}
+
+.coin-heads {
+  transform: rotateY(180deg);
+  border: 5px solid #e9bd52 !important;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(48,29,4,.88) 0 31%, transparent 32%),
+    radial-gradient(circle at 50% 50%, transparent 0 41%, rgba(255,225,121,.72) 42% 44%, transparent 45%),
+    radial-gradient(circle at 34% 28%, #fff0a2 0, #d8a12f 36%, #8f5a0c 72%, #5e3705 100%) !important;
+  box-shadow:
+    inset 0 0 0 4px #f3c75c,
+    inset 0 0 0 10px rgba(93,55,6,.42),
+    inset 0 0 0 14px rgba(255,225,121,.35),
+    inset 0 0 34px rgba(53,27,2,.44),
+    0 20px 56px rgba(0,0,0,.48) !important;
+}
+
+.coin-heads span {
+  display: grid;
+  place-items: center;
+  width: 48%;
+  height: 48%;
+  border-radius: 50%;
+  color: #f1c85f;
+  font-family: Georgia, serif;
+  font-size: 54px;
+  font-weight: 900;
+  text-shadow: 0 2px 0 rgba(60,32,2,.9);
+}
+
+.coin-heads small {
+  position: absolute;
+  bottom: 16px;
+  color: #f1c85f;
+  font-size: 8px;
+  letter-spacing: .18em;
+  font-weight: 800;
+}
