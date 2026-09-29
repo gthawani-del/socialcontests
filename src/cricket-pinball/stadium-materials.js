@@ -52,5 +52,5 @@ export async function applyStadiumMaterials(model) {
       g.setAttribute('color', new THREE.BufferAttribute(colors, 3)); mesh.material = fieldMaterial;
     }
   });
-  return { terraces, texture: crowd.image.src, grass: grass.image.src, model: 'colosseum-r11-runtime-polish' };
+  return { terraces, texture: crowd.image.src, grass: grass.image.src, model: 'colosseum-r12-final' };
 }
