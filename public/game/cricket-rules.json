@@ -1,5 +1,5 @@
 {
-  "version": 22,
+  "version": 23,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -25,7 +25,7 @@
     "battingZoneHalfWidth": 1.08,
     "playableBatZoneZ": 1.72,
     "playableBatZoneHalfWidth": 1.42,
-    "cpuDeliveryDelayMs": 850,
+    "cpuDeliveryDelayMs": 300,
     "resultHoldMs": {
       "DOT": 700,
       "ONE": 780,
@@ -47,7 +47,10 @@
         "MEDIUM": 0.03,
         "HARD": 0.08
       }
-    }
+    },
+    "countdownStepMs": 650,
+    "deadBallHoldMs": 1050,
+    "cpuPlungerMs": 920
   },
   "toss": {
     "coinMs": 2600,
@@ -91,8 +94,8 @@
   },
   "cpu": {
     "EASY": {
-      "bowlingPowerMin": 0.45,
-      "bowlingPowerMax": 0.72,
+      "bowlingPowerMin": 0.35,
+      "bowlingPowerMax": 0.58,
       "wicketRisk": 0.22,
       "boundaryBias": 0.12,
       "battingTriggerZ": 1.68,
@@ -100,21 +103,21 @@
       "battingCentreBand": 0.16,
       "battingHoldMs": 90,
       "battingCooldownMs": 260,
-      "battingMissChance": 0.28,
+      "battingMissChance": 0.38,
       "deliveryMix": {
-        "PACE": 0.78,
-        "SWING_LEFT": 0.08,
-        "SWING_RIGHT": 0.08,
-        "CUTTER_LEFT": 0.03,
-        "CUTTER_RIGHT": 0.03
+        "PACE": 0.86,
+        "SWING_LEFT": 0.05,
+        "SWING_RIGHT": 0.05,
+        "CUTTER_LEFT": 0.02,
+        "CUTTER_RIGHT": 0.02
       },
       "battingCentreTriggerZ": 1.82,
-      "battingReactionMs": 115,
-      "battingTimingJitterMs": 85,
-      "battingPredictionFactor": 0.18,
-      "battingAggression": 0.18,
+      "battingReactionMs": 140,
+      "battingTimingJitterMs": 105,
+      "battingPredictionFactor": 0.12,
+      "battingAggression": 0.12,
       "battingContactZ": 2.12,
-      "deliveryMovementScale": 0.65
+      "deliveryMovementScale": 0.35
     },
     "MEDIUM": {
       "bowlingPowerMin": 0.58,
@@ -348,7 +351,34 @@
     "attackImpactMin": 0.55,
     "attackBaseRisk": 0.04,
     "attackMistimeRisk": 0.22,
-    "attackMaxRisk": 0.3
+    "attackMaxRisk": 0.3,
+    "difficulty": {
+      "EASY": {
+        "perfectHalfWindow": 0.25,
+        "timingSpan": 0.72,
+        "steeringStrength": 0.055,
+        "minPowerMultiplier": 1,
+        "maxPowerMultiplier": 1.08,
+        "attackQualityMin": 0.36,
+        "attackImpactMin": 0.48,
+        "attackBaseRisk": 0.01,
+        "attackMistimeRisk": 0.05,
+        "attackMaxRisk": 0.08
+      },
+      "MEDIUM": {
+        "perfectHalfWindow": 0.18,
+        "timingSpan": 0.58,
+        "steeringStrength": 0.035
+      },
+      "HARD": {
+        "perfectHalfWindow": 0.15,
+        "timingSpan": 0.5,
+        "steeringStrength": 0.028,
+        "attackBaseRisk": 0.05,
+        "attackMistimeRisk": 0.24,
+        "attackMaxRisk": 0.32
+      }
+    }
   },
   "scoringSkill": {
     "enabled": true,
@@ -405,6 +435,17 @@
           "SIX": 0.15
         }
       }
+    }
+  },
+  "difficultyGameplay": {
+    "EASY": {
+      "batRadiusMultiplier": 1.22
+    },
+    "MEDIUM": {
+      "batRadiusMultiplier": 1
+    },
+    "HARD": {
+      "batRadiusMultiplier": 0.96
     }
   }
 }
