@@ -10,6 +10,7 @@ export default defineConfig({
         admin: resolve(process.cwd(), 'admin/index.html'),
         cricketPinball: resolve(process.cwd(), 'cricket-pinball/index.html'),
         cricketPinballPlay: resolve(process.cwd(), 'cricket-pinball/play/index.html'),
+        cricketPinballStadium: resolve(process.cwd(), 'cricket-pinball/stadium-prototype/index.html'),
         cricketPinballWatch: resolve(process.cwd(), 'cricket-pinball/watch/index.html'),
         cricketPinballAdmin: resolve(process.cwd(), 'cricket-pinball/admin/index.html'),
         cricketPinballWorldTest: resolve(process.cwd(), 'cricket-pinball/world-test/index.html')

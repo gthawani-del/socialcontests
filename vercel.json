@@ -4,6 +4,10 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/cricket-pinball/stadium-prototype",
+      "destination": "/cricket-pinball/stadium-prototype/index.html"
+    },
+    {
       "source": "/play",
       "destination": "/play/index.html"
     },
