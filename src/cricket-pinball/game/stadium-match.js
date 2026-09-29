@@ -36,9 +36,11 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   function afterDelivery(outcome, metadata = {}) {
     running = false; ready = false; cpu.reset(); releaseBats(); hud(); controls();
     onFeedback({ type: 'OUTCOME', outcome, metadata });
-    cue.textContent = metadata.reason === 'SKILL_REJECTED'
-      ? `${metadata.attemptedOutcome} MISSED · ${metadata.scoring?.reason || 'MISTIMED'}`
-      : outcome;
+    cue.textContent = metadata.reason === 'RISK_WICKET'
+      ? `MISTIMED ATTACK · WICKET`
+      : metadata.reason === 'SKILL_REJECTED'
+        ? `${metadata.attemptedOutcome} MISSED · ${metadata.scoring?.reason || 'MISTIMED'}`
+        : outcome;
     if (practice) { ready = !match.currentInnings.complete; controls(); return; }
     delay(() => {
       if (match.status === 'INNINGS_BREAK') {
