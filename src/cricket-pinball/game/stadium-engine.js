@@ -13,6 +13,7 @@ export class StadiumEngine extends PinballEngine {
       });
       return { ...route, points, length };
     });
+    this.deliveryVariation = null;
   }
 
   resetBall() {
@@ -21,12 +22,68 @@ export class StadiumEngine extends PinballEngine {
     this.ball.height = 0;
     this.completedRoute = null;
     this.frozen = false;
+    this.deliveryVariation = null;
   }
 
   freezeBall() {
     super.freezeBall();
     this.frozen = true;
     if (this.ramp) this.ramp.speed = 0;
+  }
+
+  releaseLaunch(options = null) {
+    const released = super.releaseLaunch(options);
+    if (!released) return false;
+
+    const profiles = this.config.launcher.deliveryTypes || {};
+    const type = this.launcher.deliveryType || 'PACE';
+    const profile = profiles[type] || profiles.PACE || {};
+    const speedMultiplier = Math.max(.75, Math.min(1.2, Number(profile.speedMultiplier ?? 1)));
+
+    this.ball.velocity.x *= speedMultiplier;
+    this.ball.velocity.z *= speedMultiplier;
+    this.limitBallSpeed();
+    this.deliveryVariation = {
+      type,
+      profile,
+      bounced: false
+    };
+    return true;
+  }
+
+  applyDeliveryVariation(dt) {
+    const state = this.deliveryVariation;
+    if (
+      !state ||
+      this.launcher.awaitingLaunch ||
+      this.launcher.inLane ||
+      this.launcher.deliveryGuideActive ||
+      !this.ball.active ||
+      this.ball.velocity.z <= 0
+    ) return;
+
+    const profile = state.profile || {};
+    const z = this.ball.position.z;
+    const startZ = Number(profile.startZ ?? 1.55);
+    const stopZ = Number(profile.stopZ ?? 2.32);
+    if (z < startZ || z > stopZ) return;
+
+    const swingAcceleration = Number(profile.swingAcceleration ?? 0);
+    if (swingAcceleration) this.ball.velocity.x += swingAcceleration * dt;
+
+    const bounceZ = Number(profile.bounceZ ?? 1.66);
+    if (!state.bounced && z >= bounceZ) {
+      state.bounced = true;
+      this.ball.velocity.x += Number(profile.bounceKickX ?? 0);
+      this.ball.velocity.z *= Number(profile.bounceSpeedMultiplier ?? 1);
+      this.limitBallSpeed();
+      this.emit('delivery-bounce', {
+        type: state.type,
+        x: this.ball.position.x,
+        z: this.ball.position.z,
+        velocity: { ...this.ball.velocity }
+      });
+    }
   }
 
   isDeliveryZoneEligible(zone) {
@@ -45,6 +102,7 @@ export class StadiumEngine extends PinballEngine {
     const before = { ...this.ball.position };
     this.previousPosition = before;
     super.integrateSubstep(dt);
+    this.applyDeliveryVariation(dt);
     if (this.frozen || !this.ball.active || this.launcher.inLane || this.launcher.deliveryGuideActive) return;
     for (const route of this.routes) {
       const start = route.points[0];
