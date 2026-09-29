@@ -13,10 +13,9 @@ try {
   page.on('pageerror', e => errors.push(e.message));
   // Test fixture only: production access gate remains on the actual prototype page.
   await page.route('**/qa-stadium*', r => r.fulfill({ contentType: 'text/html', body: '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><main id="stadiumApp"></main><script type="module" src="/src/cricket-pinball/stadium-prototype.js"></script>' }));
-  await page.addInitScript(() => { Math.random = () => .4; });
   await page.goto('http://127.0.0.1:5179/qa-stadium');
   await page.waitForFunction(() => window.__stadiumQA?.ready, {}, { timeout: 60000 });
-  await page.evaluate(() => window.__stadiumQA.manual(true));
+  await page.evaluate(() => { window.__stadiumQA.manual(true); Math.random = () => .4; });
   await mkdir('docs/qa', { recursive: true });
 
   async function toss() {
@@ -46,9 +45,11 @@ try {
   for (let i = 0; i < 3; i++) await delivery('LEFT');
   await page.locator('#continueInnings').waitFor();
   let state = await page.evaluate(() => window.__stadiumQA.snapshot());
-  assert.equal(state.match.target, 4); assert.equal(state.score.runs, 3);
+  assert.equal(state.score.runs, 12); assert.equal(state.match.target, state.score.runs + 1);
   await page.screenshot({ path: 'docs/qa/stadium-match-chase.png' });
   await page.locator('#continueInnings').click();
+  await page.screenshot({ path: 'docs/qa/stadium-match-batting.png' });
+  assert.equal(await page.locator('.setup label').first().isVisible(), false);
   for (let i = 0; i < 2; i++) await delivery();
   await page.locator('#playAgain').waitFor();
   state = await page.evaluate(() => window.__stadiumQA.snapshot());

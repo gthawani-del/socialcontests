@@ -1,0 +1,33 @@
+import { preview } from 'vite';
+import { readFile, writeFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const bundle = process.env.CHROMIUM_MODULE ? (await import(process.env.CHROMIUM_MODULE)).default : null;
+const server = process.env.QA_URL ? null : await preview({ preview: { host: '127.0.0.1', port: 5180 } });
+const browser = await chromium.launch({ headless: true, ...(bundle ? { args: bundle.args } : {}), ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+try {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const errors = [], models = [];
+  page.on('pageerror', e => errors.push(e.message));
+  page.on('response', r => { if (r.url().endsWith('.glb')) models.push({ url: r.url(), status: r.status() }); });
+  await page.goto(process.env.QA_URL || 'http://127.0.0.1:5180/cricket-pinball/play/?format=ONE_OVER&difficulty=HARD');
+  const gate = await readFile('src/access/demo-gate.js', 'utf8');
+  await page.locator('#c').check(); await page.locator('#n').click();
+  await page.locator('#u').fill(gate.match(/U='([^']+)'/)[1]);
+  await page.locator('#p').fill(gate.match(/P='([^']+)'/)[1]);
+  await page.locator('#l button').click();
+  await page.locator('#beginStadiumToss').waitFor({ timeout: 60000 });
+  await page.evaluate(() => { Math.random = () => .4; });
+  assert.equal(await page.locator('#format').inputValue(), 'ONE_OVER');
+  assert.equal(await page.locator('#difficulty').inputValue(), 'HARD');
+  await page.locator('#beginStadiumToss').click(); await page.locator('#callHeads').click();
+  await page.locator('#chooseBat').click({ timeout: 15000 });
+  await page.waitForFunction(() => !document.querySelector('#bowl').disabled);
+  await page.waitForTimeout(250);
+  assert(models.some(m => m.url.endsWith('cricket-stadium-colosseum-r5.glb') && m.status === 200));
+  assert.deepEqual(errors, []);
+  const label = process.env.QA_URL ? 'live' : 'production';
+  await page.screenshot({ path: `docs/qa/stadium-${label}-route.png` });
+  await writeFile(`docs/qa/stadium-${label}-route.json`, JSON.stringify({ url: page.url(), models, errors, format: 'ONE_OVER', difficulty: 'HARD', demoGate: 'Completed through UI', build: 'production' }, null, 2) + '\n');
+  console.log(JSON.stringify({ models, errors }));
+} finally { await browser.close(); await new Promise(resolve => server ? server.httpServer.close(resolve) : resolve()); }

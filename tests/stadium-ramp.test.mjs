@@ -9,9 +9,9 @@ import { createCricketGameplayAdapter } from '../src/cricket-pinball/game/gamepl
 const table = createStadiumTable(JSON.parse(fs.readFileSync(new URL('../public/game/cricket-table.json', import.meta.url))));
 const rules = JSON.parse(fs.readFileSync(new URL('../public/game/cricket-rules.json', import.meta.url)));
 for (const shot of [
-  { line: 'LEFT', side: 'left', delay: 84, runs: 1 },
-  { line: 'LEFT', side: 'left', delay: 72, runs: 4 },
-  { line: 'CENTRE', side: 'left', delay: 84, runs: 6 }
+  { line: 'LEFT', side: 'left', delay: 62, runs: 1 },
+  { line: 'LEFT', side: 'left', delay: 28, runs: 4 },
+  { line: 'CENTRE', side: 'left', delay: 50, runs: 6 }
 ]) test(`a real delivery and timed ${shot.side} bat can score ${shot.runs}`, () => {
   const { engine, match, adapter } = setup();
   engine.releaseLaunch({ line: shot.line, charge: .2 });
@@ -150,3 +150,29 @@ for (const line of ['LEFT', 'CENTRE', 'RIGHT']) for (const charge of [.2, .5, 1]
     adapter.dispose();
   });
 }
+
+test('delivery starts at the bowling wicket and clears scoring structures before reaching bats', () => {
+  for (const line of ['LEFT', 'CENTRE', 'RIGHT']) {
+    const { engine, adapter } = setup();
+    assert.equal(table.launcher.spawn[1], -.22);
+    const hits = [];
+    engine.on('wall-hit', hit => hits.push(hit.id));
+    engine.releaseLaunch({ line, charge: .5 });
+    for (let i = 0; i < 240 && engine.ball.position.z < 1.6; i++) adapter.step(1 / 120);
+    assert(engine.ball.position.z >= 1.6);
+    assert.deepEqual(hits.filter(id => /gate|recess/.test(id)), []);
+    adapter.dispose();
+  }
+});
+
+test('approaching a scoring alcove from behind rebounds without awarding runs', () => {
+  const { engine, match, adapter } = setup();
+  const zone = table.deliveryZones.find(z => z.id === 'straight-drive-four');
+  flight(engine, zone.position[0], zone.position[1] - .4, -3);
+  let hit = false;
+  engine.on('wall-hit', event => { hit ||= event.id === 'straight-drive-four-recess-back'; });
+  for (let i = 0; i < 15; i++) adapter.step(1 / 120);
+  assert(hit); assert(engine.ball.velocity.z < 0);
+  assert.equal(match.currentInnings.runs, 0);
+  adapter.dispose();
+});

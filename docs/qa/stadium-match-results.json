@@ -3,6 +3,10 @@
     {
       "scenario": "Two innings, chase target and CPU win",
       "state": {
+        "rendering": {
+          "calls": 28,
+          "triangles": 60858
+        },
         "running": false,
         "match": {
           "format": "LAST_3",
@@ -27,8 +31,8 @@
             "wickets": 2,
             "balls": 2
           },
-          "target": 4,
-          "requiredRuns": 4,
+          "target": 13,
+          "requiredRuns": 13,
           "ballsRemaining": 1,
           "battingPlayerId": "player",
           "bowlingPlayerId": "cpu",
@@ -44,16 +48,16 @@
             "type": "WIN",
             "winnerId": "cpu",
             "loserId": "player",
-            "margin": 3,
+            "margin": 12,
             "marginType": "RUNS"
           },
           "deliveryOpen": false
         },
-        "contactCount": 3,
-        "rampEntries": 0,
+        "contactCount": 24,
+        "rampEntries": 3,
         "ball": {
           "x": 0,
-          "z": 2.325281976885222,
+          "z": 2.3268489781224924,
           "height": 0
         },
         "score": {
@@ -74,6 +78,10 @@
     {
       "scenario": "Tie-break completes with chase win",
       "state": {
+        "rendering": {
+          "calls": 28,
+          "triangles": 60858
+        },
         "running": false,
         "match": {
           "format": "LAST_3",
@@ -94,7 +102,7 @@
           "roundInnings": 2,
           "superOverRound": 1,
           "score": {
-            "runs": 1,
+            "runs": 4,
             "wickets": 0,
             "balls": 1
           },
@@ -120,18 +128,18 @@
           },
           "deliveryOpen": false
         },
-        "contactCount": 22,
-        "rampEntries": 3,
+        "contactCount": 38,
+        "rampEntries": 4,
         "ball": {
-          "x": -0.6723346027348166,
-          "z": -0.07102740696080803,
+          "x": -0.06320564722967494,
+          "z": -1.5304517652855836,
           "height": 0
         },
         "score": {
           "number": 4,
           "battingPlayerId": "cpu",
           "bowlingPlayerId": "player",
-          "runs": 1,
+          "runs": 4,
           "wickets": 0,
           "balls": 1,
           "complete": true

@@ -1,4 +1,4 @@
-// Revision 2 of the untextured Jutsu stadium. Opt-in QA configuration only.
+// Colosseum stadium: authored geometry and matching gameplay colliders.
 // Blender (x, y, z-up) becomes engine (x, height, -y), uniformly scaled.
 export const STADIUM_SCALE = 0.45;
 // Physics uses compact arena units. Convert to real-world metres explicitly;
@@ -11,7 +11,7 @@ export const stadiumPoint = (x, y) => [x * STADIUM_SCALE, -y * STADIUM_SCALE];
 
 export function createStadiumTable(base) {
   const table = structuredClone(base);
-  table.world = { ...table.world, glb: '/models/cricket-stadium-greybox-r2.glb', prototype: true, revision: 2 };
+  table.world = { ...table.world, glb: '/models/cricket-stadium-colosseum-r5.glb', prototype: false, revision: 5 };
   table.ball.radius = .115 * STADIUM_SCALE;
   table.playfield.surfaceY = 0;
   table.playfield.drain = { minX: -.41 * STADIUM_SCALE, maxX: .41 * STADIUM_SCALE, z: 5.14 * STADIUM_SCALE };
@@ -83,15 +83,18 @@ export function createStadiumTable(base) {
   for (const zone of table.deliveryZones.filter(z => z.entryZ !== undefined)) {
     const half = zone.entryHalfWidth + .04 * STADIUM_SCALE;
     for (const sign of [-1, 1]) {
-      const x = zone.position[0] + sign * half, z = zone.position[1];
-      const corners = [[x - .04 * STADIUM_SCALE, z - .125 * STADIUM_SCALE], [x + .04 * STADIUM_SCALE, z - .125 * STADIUM_SCALE], [x + .04 * STADIUM_SCALE, z + .125 * STADIUM_SCALE], [x - .04 * STADIUM_SCALE, z + .125 * STADIUM_SCALE]];
+      const x = zone.position[0] + sign * half, z = zone.position[1] - .08375;
+      const corners = [[x - .04 * STADIUM_SCALE, z - .14], [x + .04 * STADIUM_SCALE, z - .14], [x + .04 * STADIUM_SCALE, z + .14], [x - .04 * STADIUM_SCALE, z + .14]];
       for (let i = 0; i < 4; i++) table.walls.push({ id: `${zone.id}-post-${sign}-${i}`, a: corners[i], b: corners[(i + 1) % 4], restitution: .7 });
     }
+    // The new alcove has depth: an approach from behind must rebound from
+    // its back wall instead of passing through the authored structure.
+    table.walls.push({ id: `${zone.id}-recess-back`, a: [zone.position[0] - half, zone.position[1] - .154], b: [zone.position[0] + half, zone.position[1] - .154], restitution: .7 });
   }
   // Bowl from the far end, with guidance released before the bats can make contact.
   table.launcher = {
-    ...table.launcher, spawn: [0, -2.15], direction: [0, 1],
-    lane: { minX: -.09, maxX: .09, exitZ: -2.10, exitDirection: 'GTE' },
+    ...table.launcher, spawn: [0, STADIUM_PITCH.bowlingZ], direction: [0, 1],
+    lane: { minX: -.09, maxX: .09, exitZ: STADIUM_PITCH.bowlingZ + .05, exitDirection: 'GTE' },
     bowlingLines: Object.fromEntries([['LEFT', -.5], ['CENTRE', 0], ['RIGHT', .5]].map(([line, x]) => [line, { target: [x, 1.6] }])),
     deliveryGuide: { halfWidth: .62, releaseZ: 1.55, steering: .22 }
   };

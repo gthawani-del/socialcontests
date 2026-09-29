@@ -13,7 +13,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, prac
   const requested = new URLSearchParams(location.search);
   if (['LAST_3', 'ONE_OVER', 'TWO_OVER'].includes(requested.get('format'))) format = requested.get('format');
   if (['EASY', 'MEDIUM', 'HARD'].includes(requested.get('difficulty'))) difficulty = requested.get('difficulty');
-  const toss = createTossController();
+  const toss = createTossController({ random: () => Math.random() });
   const delay = (fn, ms) => { const id = setTimeout(() => { timers.delete(id); fn(); }, ms); timers.add(id); };
   const name = id => id === 'player' ? 'You' : 'CPU';
   const humanBatting = () => match?.battingPlayerId === 'player';
@@ -22,13 +22,14 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, prac
   }
   function controls() {
     bowl.disabled = !ready || running;
+    document.querySelector('.setup').classList.toggle('batting', !practice && humanBatting());
     bowl.textContent = practice || !humanBatting() ? 'Bowl' : 'Ready for ball';
     for (const id of ['line', 'power']) document.querySelector(`#${id}`).disabled = !practice && (!ready || running || humanBatting());
     for (const side of ['left', 'right']) document.querySelector(`#${side}Bat`).disabled = !practice && (!running || !humanBatting());
   }
   function hud() {
     const state = match.getState(), s = state.score;
-    document.querySelector('#score').innerHTML = `${s.runs} / ${s.wickets}<span>${s.balls} / ${state.ballsPerInnings} balls${state.target !== null ? ` · target ${state.target}` : ''}</span><span>${state.innings ? `${name(match.currentInnings?.battingPlayerId || state.battingPlayerId)} batting · innings ${state.roundInnings}` : 'Toss before play'}</span>`;
+    document.querySelector('#score').innerHTML = `<div><small>${state.innings ? `${name(match.currentInnings?.battingPlayerId || state.battingPlayerId)} batting` : 'Score'}</small><strong>${s.runs} / ${s.wickets}</strong></div><div><small>Ball</small><strong>${s.balls} <span>/ ${state.ballsPerInnings}</span></strong></div><div><small>${state.target !== null ? 'Target' : 'Innings'}</small><strong>${state.target !== null ? state.target : state.innings ? state.roundInnings : '—'}</strong></div>`;
   }
   function show(title, body) { panel.hidden = false; panel.innerHTML = `<h2>${title}</h2>${body}`; }
   function makeReady() { ready = true; panel.hidden = true; cue.textContent = humanBatting() ? 'You bat · prepare for the CPU delivery' : 'You bowl · select line and power'; controls(); hud(); }

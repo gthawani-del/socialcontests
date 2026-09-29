@@ -26,9 +26,9 @@ try {
   await page.screenshot({ path: 'docs/qa/stadium-playable-mobile.png' });
   // Reproducible input timings found by sweeping actual launches; no injected positions/hits.
   for (const shot of [
-    { line: 'LEFT', side: 'left', delay: 84, runs: 1 },
-    { line: 'LEFT', side: 'left', delay: 72, runs: 4 },
-    { line: 'CENTRE', side: 'left', delay: 84, runs: 6 }
+    { line: 'LEFT', side: 'left', delay: 62, runs: 1 },
+    { line: 'LEFT', side: 'left', delay: 28, runs: 4 },
+    { line: 'CENTRE', side: 'left', delay: 50, runs: 6 }
   ]) {
     await page.locator('#restart').click();
     await page.locator('#line').selectOption(shot.line);
