@@ -164,10 +164,12 @@ export function createCricketGameplayAdapter({
     const fieldResolution = cricketRules.delivery?.fieldResolution || {};
     const fieldOutcome = () => {
       const quality = Number(lastBatFeedback?.quality ?? 0);
-      const oneDepthZ = Number(fieldResolution.oneDepthZ ?? .25);
-      const twoDepthZ = Number(fieldResolution.twoDepthZ ?? -1.0);
-      const oneMinQuality = Number(fieldResolution.oneMinQuality ?? .15);
-      const twoMinQuality = Number(fieldResolution.twoMinQuality ?? .35);
+      const difficulty = String(matchEngine.getState().difficulty || 'MEDIUM').toUpperCase();
+      const difficultyBonus = Number(fieldResolution.difficultyQualityBonus?.[difficulty] ?? 0);
+      const oneDepthZ = Number(fieldResolution.oneDepthZ ?? 0);
+      const twoDepthZ = Number(fieldResolution.twoDepthZ ?? -1.5);
+      const oneMinQuality = Number(fieldResolution.oneMinQuality ?? .18) + difficultyBonus;
+      const twoMinQuality = Number(fieldResolution.twoMinQuality ?? .48) + difficultyBonus;
       if (shotFurthestZ !== null && shotFurthestZ <= twoDepthZ && quality >= twoMinQuality) return 'TWO';
       if (shotFurthestZ !== null && shotFurthestZ <= oneDepthZ && quality >= oneMinQuality) return 'ONE';
       return 'DOT';
