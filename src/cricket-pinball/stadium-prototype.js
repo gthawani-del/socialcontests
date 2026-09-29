@@ -8,6 +8,7 @@ import './ui/stadium-prototype.css';
 import { applyStadiumMaterials } from './stadium-materials.js';
 import { batchStadium } from './stadium-batching.js';
 import { buildStadiumArt } from './stadium-art.js';
+import { createStadiumFeedback } from './game/stadium-feedback.js';
 
 const app = document.querySelector('#stadiumApp');
 const batIcon = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="m32 5 5 5-9 10-5-5z" fill="#193149"/><path d="m23 14 8 8-16 20c-2 2-5 2-7 0l-3-3c-2-2-2-5 0-7z" fill="#e7c48a" stroke="#9e793d" stroke-width="1.5"/><path d="m10 33 13-15" stroke="#fff1ca" stroke-width="2"/></svg>';
@@ -38,7 +39,8 @@ try {
   key.shadow.normalBias = .015;
   model.traverse(o => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = !/Number|Crowd_Band|Individual_Seats|Seating_Terrace|Lamp|Lens/.test(o.name); } });
   
-  const ball = new THREE.Mesh(new THREE.SphereGeometry(table.ball.radius, 20, 12), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .35 })); scene.add(ball);
+  const ballMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .35, emissive: 0x000000, emissiveIntensity: 1 });
+  const ball = new THREE.Mesh(new THREE.SphereGeometry(table.ball.radius, 20, 12), ballMaterial); scene.add(ball);
   const seam = new THREE.Mesh(new THREE.TorusGeometry(table.ball.radius * .99, .0025, 5, 32), new THREE.MeshStandardMaterial({ color: 0xb73d3c })); ball.add(seam);
   ball.castShadow = true;
   const camera = new THREE.PerspectiveCamera(48, 1, .1, 50); camera.near = .1; camera.far = 50;
@@ -51,14 +53,34 @@ try {
   environment.dispose(); pmrem.dispose();
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const viewport = document.querySelector('#viewport'); viewport.append(renderer.domElement);
+  const feedback = createStadiumFeedback({
+    app,
+    viewport,
+    canvas: renderer.domElement,
+    ballMaterial,
+    getBallScreenPosition: () => {
+      const projected = new THREE.Vector3(
+        engine.ball.position.x,
+        table.playfield.surfaceY + table.ball.radius + engine.ball.height,
+        engine.ball.position.z
+      ).project(camera);
+      return {
+        x: THREE.MathUtils.clamp((projected.x + 1) * 50, 4, 96),
+        y: THREE.MathUtils.clamp((1 - projected.y) * 50, 5, 95)
+      };
+    }
+  });
+  window.addEventListener('pointerdown', feedback.prime, { once: true, capture: true });
   const bats = art.bats;
   const batching = batchStadium(model, bats);
   if (!bats.left || !bats.right) throw new Error('Stadium bat meshes are missing');
   let last = performance.now(), contactCount = 0, rampEntries = 0;
   engine.on('flipper-hit', () => contactCount++); engine.on('ramp-enter', () => rampEntries++);
+  engine.on('delivery-bounce', event => feedback.handle({ type: 'DELIVERY_BOUNCE', deliveryType: event.type, event }));
   const flow = createStadiumMatch({ engine, table, rules, render,
     practice: import.meta.env.DEV && new URLSearchParams(location.search).has('practice'),
-    onReset: () => { contactCount = 0; rampEntries = 0; }
+    onReset: () => { contactCount = 0; rampEntries = 0; },
+    onFeedback: feedback.handle
   });
   const bat = (side, pressed) => flow.bat(side, pressed);
   for (const side of ['left', 'right']) {
