@@ -1,0 +1,14 @@
+{
+  "url": "https://socialcontests.vercel.app/cricket-pinball/play/?format=ONE_OVER&difficulty=HARD",
+  "models": [
+    {
+      "url": "https://socialcontests.vercel.app/models/cricket-stadium-colosseum-r5.glb",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "format": "ONE_OVER",
+  "difficulty": "HARD",
+  "demoGate": "Completed through UI",
+  "build": "production"
+}
