@@ -1,0 +1,42 @@
+name: Import Cricket Stadium R6
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-cricket-stadium-r6.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Download verified R6 GLB
+        run: |
+          set -euo pipefail
+          mkdir -p public/models
+          curl --fail --location --retry 2             "https://d2ol7oe51mr4n9.cloudfront.net/user_3BjwTJYCzFGxri4Mx2xQr2GkqBc/addbd338-996e-4d73-8ff6-c3e8eccf8be8.zip"             -o /tmp/cricket-stadium-colosseum-r6.zip
+          unzip -j /tmp/cricket-stadium-colosseum-r6.zip             cricket-stadium-colosseum-r6.glb             -d public/models
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("public/models/cricket-stadium-colosseum-r6.glb")
+          data=p.read_bytes()
+          assert len(data)==3190396, f"unexpected GLB size: {len(data)}"
+          assert data[:4]==b"glTF", "invalid GLB header"
+          print("verified", len(data), data[:4])
+          PY
+      - name: Commit R6 asset and remove one-time importer
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/import-cricket-stadium-r6.yml
+          git add public/models/cricket-stadium-colosseum-r6.glb .github/workflows/import-cricket-stadium-r6.yml
+          git commit -m "Import cricket stadium colosseum r6"
+          git push origin HEAD:main
