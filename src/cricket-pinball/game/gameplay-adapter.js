@@ -1,10 +1,12 @@
+import { applyBatContactSkill } from './batting-skill.js';
 export function createCricketGameplayAdapter({
   engine,
   matchEngine,
   tableConfig,
   cricketRules,
   onResolved = () => {},
-  onDeadBall = () => {}
+  onDeadBall = () => {},
+  onBatContact = () => {}
 }) {
   let resolved = true;
   let liveStartedAt = null;
@@ -164,7 +166,8 @@ export function createCricketGameplayAdapter({
 
   unsubs.push(engine.on('physics:step', checkDelivery));
 
-  unsubs.push(engine.on('flipper-hit', ({ pressed = false, impact = 0 } = {}) => {
+  unsubs.push(engine.on('flipper-hit', (hit = {}) => {
+    const { pressed = false, impact = 0 } = hit;
     // Actual bat contact is always proof that the delivery became playable,
     // including contact made slightly before the configured bat-gate z line.
     if (
@@ -176,6 +179,8 @@ export function createCricketGameplayAdapter({
     ) {
       becameHittable = true;
       shotLive = true;
+      const feedback = applyBatContactSkill(engine, hit, cricketRules.batting || {});
+      if (feedback) onBatContact(feedback, hit);
     }
   }));
 
