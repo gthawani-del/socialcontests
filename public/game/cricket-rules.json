@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -263,5 +263,21 @@
       "batButtonGap": 14,
       "batButtonBottom": 18
     }
+  },
+  "batting": {
+    "enabled": true,
+    "idealContactZ": 1.92,
+    "perfectHalfWindow": 0.18,
+    "timingSpan": 0.58,
+    "idealSwingProgress": 0.58,
+    "strongImpact": 8,
+    "timingWeight": 0.52,
+    "angleWeight": 0.28,
+    "impactWeight": 0.2,
+    "timingDirectionWeight": 0.7,
+    "angleDirectionWeight": 0.3,
+    "steeringStrength": 0.13,
+    "minPowerMultiplier": 0.92,
+    "maxPowerMultiplier": 1.12
   }
 }
