@@ -264,7 +264,12 @@ export function createCricketGameplayAdapter({
       shotLive = true;
       shotStartedAt = engine.simTime * 1000;
       shotFurthestZ = engine.ball.position.z;
-      const feedback = applyBatContactSkill(engine, hit, cricketRules.batting || {});
+      const difficulty = String(matchEngine.getState().difficulty || 'MEDIUM').toUpperCase();
+      const battingConfig = {
+        ...(cricketRules.batting || {}),
+        ...(cricketRules.batting?.difficulty?.[difficulty] || {})
+      };
+      const feedback = applyBatContactSkill(engine, hit, battingConfig);
       if (feedback) {
         lastBatFeedback = feedback;
         onBatContact(feedback, hit);
