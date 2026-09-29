@@ -1,0 +1,68 @@
+{
+  "product": "CRICKET_PINBALL",
+  "checkpoint": "R13_PRODUCTION_GAMEPLAY",
+  "date": "2026-09-29",
+  "stadiumModel": "public/models/cricket-stadium-colosseum-r13.glb",
+  "gameplay": {
+    "easyModeAccessibility": true,
+    "bowlingPlunger": true,
+    "lineSelection": [
+      "LEFT",
+      "CENTRE",
+      "RIGHT"
+    ],
+    "movementSelection": [
+      "SWING_LEFT",
+      "CUTTER_LEFT",
+      "PACE",
+      "CUTTER_RIGHT",
+      "SWING_RIGHT"
+    ],
+    "cpuPlungerAnimation": true,
+    "deadBallDoesNotCount": true,
+    "rebowlCountdown": [
+      2,
+      1
+    ],
+    "nextBallCountdown": [
+      3,
+      2,
+      1
+    ],
+    "webglResultLayer": [
+      "DOT",
+      "ONE",
+      "TWO",
+      "FOUR",
+      "SIX",
+      "WICKET",
+      "DEAD_BALL"
+    ],
+    "playtestTelemetry": true
+  },
+  "visual": {
+    "stadiumRevision": 13,
+    "nightLightingPass": true,
+    "reducedPavilionDominance": true,
+    "floodlightTowers": true,
+    "crowdSparkle": true,
+    "premiumCameraPass": true
+  },
+  "qa": {
+    "automatedTests": "96/96",
+    "mobileViewport": "390x844",
+    "browserErrors": 0,
+    "r13GlbHttpStatus": 200,
+    "vercel": "success"
+  },
+  "keyCommits": [
+    "bdcd1bdc0a1636b3d4b67dbd51ece38b9e9a93b6",
+    "e8f3bcd6dece1bf12840f68bb7984921df4187b7",
+    "1a8c95455b1d407bc6bb52b8a73d99ed0f2ced41",
+    "563776cac3728b243e6f6bf6e06488312340d942",
+    "e74a43b0591c081e9438bbceeb54403eb20d4e7a",
+    "2ef0ea51f74ec21758979ed38af67b2b513a0531",
+    "f8d46eaa3e7be744dc333d6af63dae10fd4efda1",
+    "3420425dafc3d7dad97609c04516bbed2739753e"
+  ]
+}
