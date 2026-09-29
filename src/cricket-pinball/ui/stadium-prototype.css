@@ -34,3 +34,25 @@
   .controls:has(.setup.batting) .bats button{min-height:74px;border-radius:34px;font-size:13px;letter-spacing:.11em}
   .controls:has(.setup.batting) .bats svg{width:42px;height:42px}
 }
+
+
+/* Production gameplay feedback */
+#contactFeedback{position:absolute;left:50%;top:64%;z-index:5;transform:translate(-50%,-50%);padding:6px 12px;border-radius:999px;background:#061321cc;border:1px solid #d5b36688;color:#f5e6bd;font-size:11px;font-weight:800;letter-spacing:.14em;pointer-events:none;box-shadow:0 6px 22px #0008;backdrop-filter:blur(6px)}
+#contactFeedback[data-timing="PERFECT"]{color:#fff0b3;border-color:#ffd77fcc;box-shadow:0 0 24px #f0b84c66}
+#contactFeedback[data-timing="EARLY"],#contactFeedback[data-timing="LATE"]{color:#d8e2e9;border-color:#90a4b477}
+.impact-fx{position:absolute;z-index:4;width:18px;height:18px;pointer-events:none;transform:translate(-50%,-50%) scale(var(--impact-scale,1));border-radius:50%;background:radial-gradient(circle,#fff7c8 0 13%,#e7b55cbb 14% 32%,#e7b55c00 72%);box-shadow:0 0 12px #ffc55d99;animation:impact-burst .36s ease-out forwards}
+#viewport::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0}
+#stadiumApp.impact-punch canvas{animation:impact-punch .18s ease-out}
+#stadiumApp.score-run #viewport::after{animation:score-flash-run .28s ease-out}
+#stadiumApp.score-four #viewport::after{animation:score-flash-four .5s ease-out}
+#stadiumApp.score-six #viewport::after{animation:score-flash-six .62s ease-out}
+#stadiumApp.score-wicket #viewport::after{animation:score-flash-wicket .62s ease-out}
+#stadiumApp.score-miss #viewport::after{animation:score-flash-miss .32s ease-out}
+@keyframes impact-punch{0%{transform:translate3d(0,0,0)}22%{transform:translate3d(-2px,1px,0)}50%{transform:translate3d(2px,-1px,0)}100%{transform:translate3d(0,0,0)}}
+@keyframes impact-burst{0%{opacity:1;scale:.55}100%{opacity:0;scale:2.4}}
+@keyframes score-flash-run{0%{opacity:.18;background:radial-gradient(circle at 50% 60%,#e8c57466,#0000 48%)}100%{opacity:0}}
+@keyframes score-flash-four{0%{opacity:.38;background:radial-gradient(circle at 50% 48%,#edaa3d88,#0000 58%)}100%{opacity:0}}
+@keyframes score-flash-six{0%{opacity:.50;background:radial-gradient(circle at 50% 42%,#ffd76faa,#f09a2b35 30%,#0000 68%)}100%{opacity:0}}
+@keyframes score-flash-wicket{0%{opacity:.42;background:radial-gradient(circle at 50% 70%,#d9503a99,#24000044 42%,#0000 72%)}100%{opacity:0}}
+@keyframes score-flash-miss{0%{opacity:.24;background:radial-gradient(circle at 50% 58%,#9aa8b866,#0000 55%)}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){#stadiumApp.impact-punch canvas,.impact-fx,#stadiumApp.score-run #viewport::after,#stadiumApp.score-four #viewport::after,#stadiumApp.score-six #viewport::after,#stadiumApp.score-wicket #viewport::after,#stadiumApp.score-miss #viewport::after{animation:none}}
