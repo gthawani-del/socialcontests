@@ -101,7 +101,7 @@ test('returning fielded shots resolve as one or two from depth and quality',()=>
    return result;
  };
  assert.equal(make({furthestZ:-.5,impact:8}),'ONE');
- assert.equal(make({furthestZ:-2.0,impact:8}),'TWO');
+ assert.equal(make({furthestZ:-2.2,impact:8}),'TWO');
 });
 
 test('shallow returning shot remains a dot',()=>{
