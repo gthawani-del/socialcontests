@@ -61,15 +61,25 @@ export function applyBatContactSkill(engine, hit, config = {}) {
   if (speed <= 0.001) return feedback;
 
   const steer = clamp(Number(config.steeringStrength ?? .13), 0, .35);
-  const lateral = speed * feedback.directionBias * steer;
+  const maxLateralRatio = clamp(Number(config.maxLateralRatio ?? .92), .55, .98);
+  const currentLateralRatio = clamp(velocity.x / speed, -1, 1);
+  const targetLateralRatio = clamp(
+    currentLateralRatio + feedback.directionBias * steer,
+    -maxLateralRatio,
+    maxLateralRatio
+  );
+  const targetSpeed = speed * feedback.powerMultiplier;
+  const zSign = velocity.z < 0 ? -1 : 1;
 
-  velocity.x = (velocity.x + lateral) * feedback.powerMultiplier;
-  velocity.z *= feedback.powerMultiplier;
+  velocity.x = targetLateralRatio * targetSpeed;
+  velocity.z = zSign * Math.sqrt(Math.max(0, targetSpeed * targetSpeed - velocity.x * velocity.x));
   engine.limitBallSpeed?.();
 
   return {
     ...feedback,
     speedBefore: speed,
-    speedAfter: Math.hypot(velocity.x, velocity.z)
+    speedAfter: Math.hypot(velocity.x, velocity.z),
+    lateralRatioBefore: currentLateralRatio,
+    lateralRatioAfter: targetLateralRatio
   };
 }
