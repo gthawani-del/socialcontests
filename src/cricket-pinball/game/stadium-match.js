@@ -128,7 +128,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     if (!ready || running || !match.currentInnings || match.currentInnings.complete) return;
     const selection = !practice && humanBatting() ? chooseCpuBowling(difficulty, rules.cpu) : { line: document.querySelector('#line').value, power: Number(document.querySelector('#power').value) / 100 };
     if (!match.beginDelivery(selection)) return;
-    engine.resetBall(); cpu.reset(); releaseBats(); adapter.armDelivery(); engine.releaseLaunch({ line: selection.line, charge: selection.power, deliveryType: selection.type || 'PACE' });
+    engine.resetBall(); cpu.reset(); releaseBats(); adapter.armDelivery(); engine.releaseLaunch({ line: selection.line, charge: selection.power, deliveryType: selection.type || 'PACE', movementScale: selection.movementScale ?? 1 });
     onFeedback({ type: 'DELIVERY_LAUNCH', selection, match: match?.getState?.() || null });
     running = true; ready = false; stepAccumulator = 0; cue.textContent = humanBatting() ? 'You bat · ball live' : 'CPU batting · ball live'; controls();
   }
