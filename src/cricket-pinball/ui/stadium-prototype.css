@@ -27,4 +27,10 @@
   .bats{gap:10px;margin-top:7px}
   .bats button{min-height:64px;border-radius:28px;border-color:#e3bd6e;background:linear-gradient(145deg,#102b42,#06131f 72%);box-shadow:inset 0 0 0 2px #21384a,0 5px 18px #0009;color:#f2d79e;font-size:12px}
   .bats svg{width:38px;height:38px}
+  .controls:has(.setup.batting) #cue{display:none}
+  .controls:has(.setup.batting) .setup.batting{display:none}
+  .controls:has(.setup.batting){padding-top:4px}
+  .controls:has(.setup.batting) .bats{margin-top:0;gap:12px}
+  .controls:has(.setup.batting) .bats button{min-height:74px;border-radius:34px;font-size:13px;letter-spacing:.11em}
+  .controls:has(.setup.batting) .bats svg{width:42px;height:42px}
 }
