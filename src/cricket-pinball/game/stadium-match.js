@@ -60,6 +60,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
         document.querySelector('#startTieBreak').onclick = () => { match.startSuperOver(); cpu.reset(); engine.resetBall(); makeReady(); };
       } else if (match.status === 'MATCH_OVER') {
         const result = match.result;
+        onFeedback({ type: 'MATCH_RESULT', result });
         show(result.type === 'TIE' ? 'Match tied' : `${name(result.winnerId)} won`, `<p>${result.type === 'TIE' ? 'Scores level.' : result.marginType === 'RUNS' ? `Won by ${result.margin} run${result.margin === 1 ? '' : 's'}.` : `Won with ${result.margin} ball${result.margin === 1 ? '' : 's'} remaining.`}</p><button id="playAgain">New match</button>`);
         document.querySelector('#playAgain').onclick = reset;
       } else makeReady();
