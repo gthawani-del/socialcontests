@@ -1,5 +1,5 @@
 {
-  "version": 16,
+  "version": 17,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -19,12 +19,21 @@
     "bowlerDecisionMs": 5000,
     "stalledSpeed": 0.18,
     "stalledForMs": 1300,
-    "betweenBallsMs": 3000,
+    "betweenBallsMs": 1100,
     "deadBallGutterMs": 120,
     "battingZoneZ": 1.72,
     "battingZoneHalfWidth": 1.08,
     "playableBatZoneZ": 1.72,
-    "playableBatZoneHalfWidth": 1.42
+    "playableBatZoneHalfWidth": 1.42,
+    "cpuDeliveryDelayMs": 850,
+    "resultHoldMs": {
+      "DOT": 700,
+      "ONE": 780,
+      "TWO": 850,
+      "FOUR": 1100,
+      "SIX": 1350,
+      "WICKET": 1350
+    }
   },
   "toss": {
     "coinMs": 2600,
