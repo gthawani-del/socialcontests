@@ -24,7 +24,7 @@ try {
   await page.locator('#chooseBat').click({ timeout: 15000 });
   await page.waitForFunction(() => !document.querySelector('#bowl').disabled);
   await page.waitForTimeout(250);
-  assert(models.some(m => m.url.endsWith('cricket-stadium-colosseum-r7.glb') && m.status === 200));
+  assert(models.some(m => m.url.endsWith('cricket-stadium-colosseum-r8.glb') && m.status === 200));
   assert.deepEqual(errors, []);
   const label = process.env.QA_URL ? 'live' : 'production';
   await page.screenshot({ path: `docs/qa/stadium-${label}-route.png` });
