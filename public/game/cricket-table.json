@@ -321,7 +321,7 @@
     },
     "deliveryTypes": {
       "PACE": {
-        "speedMultiplier": 1.02,
+        "speedMultiplier": 1,
         "startZ": 1.55,
         "stopZ": 2.32,
         "swingAcceleration": 0,
