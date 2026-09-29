@@ -81,3 +81,54 @@
 .telemetry-table td{padding:6px 5px;border-top:1px solid #ffffff0b;vertical-align:top;white-space:nowrap;color:#d2dde3}
 .telemetry-table td small{display:block;margin-top:2px;font-size:7px;color:#738995}.telemetry-table td b{color:#f1d28a}
 @media(min-width:800px){#telemetryToggle{top:116px;right:14px}#telemetryPanel{top:116px;right:14px;bottom:14px}}
+
+
+/* Production bowling console + pinball plunger */
+.legacy-setup{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;opacity:0!important;pointer-events:none!important}
+#bowlingConsole{display:grid;gap:7px;margin:4px 0 7px;padding:7px 8px;border:1px solid #b9965440;border-radius:14px;background:#071726e8;box-shadow:inset 0 0 18px #d8b45c0a}
+#bowlingConsole.cpu{opacity:.72}
+.bowl-selector{display:grid;grid-template-columns:58px minmax(0,1fr);align-items:center;gap:7px}
+.bowl-selector>small{font-size:8px;letter-spacing:.12em;color:#8da0ad}
+.segmented{display:grid;gap:4px}
+.line-options{grid-template-columns:repeat(3,1fr)}
+.movement-options{grid-template-columns:repeat(5,1fr)}
+.segmented button{min-width:0;min-height:30px;padding:4px 5px;border-radius:8px;border:1px solid #557082;background:#0b2132;color:#b9c9d4;font-size:8px;line-height:1.1;letter-spacing:.04em}
+.segmented button.selected{border-color:#e1bb6b;background:linear-gradient(#27445b,#10283c);color:#ffe3a1;box-shadow:inset 0 0 0 1px #e0b35f35,0 0 12px #d5a44b22}
+.segmented button:disabled{opacity:.72}
+.controls:has(.setup.batting) #bowlingConsole{display:none}
+.controls:not(:has(.setup.batting)) .bats{display:none}
+
+#pinballPlunger{position:absolute;z-index:8;right:5px;bottom:18px;width:58px;height:238px;display:grid;grid-template-rows:auto 1fr auto;justify-items:center;gap:5px;padding:7px 4px 5px;border:1px solid #c5a45a66;border-radius:24px;background:linear-gradient(180deg,#071521dd,#0d2437e8);box-shadow:0 10px 28px #000b,inset 0 0 18px #e1b75812;backdrop-filter:blur(7px);touch-action:none}
+#pinballPlunger[hidden]{display:none!important}
+.plunger-label{display:grid;text-align:center;gap:1px}.plunger-label b{font-size:7px;letter-spacing:.11em;color:#b7c5ce}.plunger-label span{font-size:10px;color:#f1d391;font-variant-numeric:tabular-nums}
+.plunger-track{position:relative;width:26px;height:164px;border-radius:13px;background:linear-gradient(90deg,#102231,#1d3649 48%,#091621);border:1px solid #5f718055;box-shadow:inset 0 0 9px #000b}
+.plunger-track::before{content:"";position:absolute;left:50%;top:8px;bottom:8px;width:3px;transform:translateX(-50%);background:linear-gradient(#ddc27b,#6b5530);border-radius:2px;opacity:.82}
+.plunger-spring{position:absolute;left:50%;top:10px;width:13px;height:calc(22px + var(--pull,.5)*72px);transform:translateX(-50%);background:repeating-linear-gradient(0deg,#b1bbc0 0 2px,#293b48 2px 5px);border-radius:8px;opacity:.68}
+.plunger-handle{position:absolute;left:50%;top:calc(12px + var(--pull,.5)*118px);width:39px;height:39px;min-height:39px;padding:0;transform:translate(-50%,-50%);border:2px solid #e3c06f;border-radius:50%;background:radial-gradient(circle at 38% 30%,#fff1c0,#c89b4d 38%,#563b1c 75%);box-shadow:0 3px 10px #000c,0 0 11px #e7ba5d44;transition:top .12s ease}
+#pinballPlunger.dragging .plunger-handle{transition:none;box-shadow:0 4px 14px #000d,0 0 18px #ffd87d77}
+#pinballPlunger.animated .plunger-handle{transition:top .22s cubic-bezier(.3,.8,.2,1)}
+#pinballPlunger.cpu .plunger-handle{pointer-events:none}
+#pinballPlunger.cpu-pulling{box-shadow:0 10px 30px #000b,inset 0 0 24px #5ba4d422}
+#pinballPlunger.cpu-release .plunger-handle{box-shadow:0 0 22px #ffcf75aa}
+.plunger-handle span{display:block;width:11px;height:11px;margin:auto;border-radius:50%;background:#142534aa}
+.plunger-help{font-size:6px;line-height:1.2;text-align:center;letter-spacing:.08em;color:#8ba0ad}
+
+@media(max-width:799px) and (min-height:501px){
+  .controls:not(:has(.setup.batting)){padding:4px 12px max(9px,env(safe-area-inset-bottom))}
+  .controls:not(:has(.setup.batting)) #cue{margin-bottom:4px}
+  #bowlingConsole{margin:0;gap:5px;padding:6px 7px;border-radius:12px}
+  .bowl-selector{grid-template-columns:52px minmax(0,1fr);gap:5px}
+  .segmented button{min-height:27px;padding:3px 3px;font-size:7px}
+  #pinballPlunger{right:3px;bottom:12px;width:54px;height:218px}
+  .plunger-track{height:147px}
+  .plunger-handle{top:calc(12px + var(--pull,.5)*104px);width:37px;height:37px;min-height:37px}
+  .controls:has(.setup.batting)~*{}
+}
+@media(max-height:500px){
+  #bowlingConsole{gap:4px;padding:5px}
+  .bowl-selector{grid-template-columns:46px 1fr}
+  .segmented button{min-height:24px;font-size:7px;padding:2px}
+  #pinballPlunger{height:150px;width:48px;bottom:6px}
+  .plunger-track{height:94px}
+  .plunger-handle{top:calc(10px + var(--pull,.5)*61px);width:31px;height:31px;min-height:31px}
+}
