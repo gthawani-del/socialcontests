@@ -4,7 +4,7 @@ import { createCpuBattingAI, chooseCpuBowling } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 
 // Shared match rules; this module only coordinates stadium screen ownership/timing.
-export function createStadiumMatch({ engine, table, rules, render, onReset, practice = false }) {
+export function createStadiumMatch({ engine, table, rules, render, onReset, onFeedback = () => {}, practice = false }) {
   const cue = document.querySelector('#cue'), bowl = document.querySelector('#bowl');
   const panel = document.createElement('section'); panel.id = 'matchPanel'; panel.setAttribute('aria-label', 'Match setup');
   document.querySelector('#viewport').append(panel);
@@ -35,6 +35,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, prac
   function makeReady() { ready = true; panel.hidden = true; delete cue.dataset.contact; cue.textContent = humanBatting() ? 'You bat · prepare for the CPU delivery' : 'You bowl · select line and power'; controls(); hud(); }
   function afterDelivery(outcome, metadata = {}) {
     running = false; ready = false; cpu.reset(); releaseBats(); hud(); controls();
+    onFeedback({ type: 'OUTCOME', outcome, metadata });
     cue.textContent = metadata.reason === 'SKILL_REJECTED'
       ? `${metadata.attemptedOutcome} MISSED · ${metadata.scoring?.reason || 'MISTIMED'}`
       : outcome;
@@ -61,11 +62,12 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, prac
     adapter = createCricketGameplayAdapter({ engine, matchEngine: match, tableConfig: table, cricketRules: rules,
       onResolved: afterDelivery,
       onDeadBall: () => afterDelivery('Dead ball · does not count'),
-      onBatContact: feedback => {
+      onBatContact: (feedback, hit) => {
         cue.dataset.contact = feedback.timing;
         cue.textContent = feedback.timing === 'PERFECT'
           ? 'PERFECT CONTACT'
           : `${feedback.timing} CONTACT`;
+        onFeedback({ type: 'BAT_CONTACT', feedback, hit });
       }
     });
     running = false; ready = false; stepAccumulator = 0; cue.textContent = 'Choose your match settings'; controls(); hud();
@@ -115,6 +117,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, prac
     const selection = !practice && humanBatting() ? chooseCpuBowling(difficulty, rules.cpu) : { line: document.querySelector('#line').value, power: Number(document.querySelector('#power').value) / 100 };
     if (!match.beginDelivery(selection)) return;
     engine.resetBall(); cpu.reset(); releaseBats(); adapter.armDelivery(); engine.releaseLaunch({ line: selection.line, charge: selection.power, deliveryType: selection.type || 'PACE' });
+    onFeedback({ type: 'DELIVERY_LAUNCH', selection });
     running = true; ready = false; stepAccumulator = 0; cue.textContent = humanBatting() ? 'You bat · ball live' : 'CPU batting · ball live'; controls();
   }
   return {
