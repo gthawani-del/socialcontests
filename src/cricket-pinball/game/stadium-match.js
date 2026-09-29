@@ -59,8 +59,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   function newMatch() {
     adapter?.dispose(); cpu?.reset(); engine.resetBall(); onReset(); releaseBats();
     match = new CricketMatchEngine({ format: practice ? 'ONE_OVER' : format, difficulty, players: [{ id: 'player' }, { id: 'cpu' }], maxWickets: rules.maxWickets, superOver: rules.superOver.enabled, superOverBalls: rules.superOver.ballsPerInnings });
-    const cpuConfig = Object.fromEntries(Object.entries(rules.cpu).map(([id, preset]) => [id, { ...preset, battingCentreTriggerZ: 2.0 }]));
-    cpu = createCpuBattingAI({ engine, tableConfig: table, difficulty, cpuConfig });
+    cpu = createCpuBattingAI({ engine, tableConfig: table, difficulty, cpuConfig: rules.cpu });
     adapter = createCricketGameplayAdapter({ engine, matchEngine: match, tableConfig: table, cricketRules: rules,
       onResolved: afterDelivery,
       onDeadBall: () => afterDelivery('Dead ball · does not count'),
