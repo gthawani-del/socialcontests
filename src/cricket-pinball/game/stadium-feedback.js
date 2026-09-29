@@ -6,6 +6,7 @@ export function createStadiumFeedback({
   getBallScreenPosition = () => ({ x: 50, y: 72 })
 }) {
   let audio = null;
+  let ambience = null;
   let flashTimer = 0;
   const timing = document.createElement('div');
   timing.id = 'contactFeedback';
@@ -17,6 +18,26 @@ export function createStadiumFeedback({
     try {
       audio ||= new (window.AudioContext || window.webkitAudioContext)();
       if (audio.state === 'suspended') audio.resume();
+      if (!ambience) {
+        const length = Math.max(1, Math.floor(audio.sampleRate * 2));
+        const buffer = audio.createBuffer(1, length, audio.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < length; i++) {
+          const envelope = .55 + .45 * Math.sin(i / audio.sampleRate * Math.PI * 1.7);
+          data[i] = (Math.random() * 2 - 1) * envelope;
+        }
+        const source = audio.createBufferSource();
+        const filter = audio.createBiquadFilter();
+        const gain = audio.createGain();
+        source.buffer = buffer;
+        source.loop = true;
+        filter.type = 'lowpass';
+        filter.frequency.value = 620;
+        gain.gain.value = .0024;
+        source.connect(filter).connect(gain).connect(audio.destination);
+        source.start();
+        ambience = { source, gain };
+      }
     } catch {}
   };
 
@@ -139,12 +160,35 @@ export function createStadiumFeedback({
     }
   };
 
+  const onMatchResult = result => {
+    prime();
+    const playerWon = result?.winnerId === 'player';
+    if (result?.type === 'TIE' || !result?.winnerId) {
+      classPulse('match-tie', 900);
+      tone(190, .14, .04, 'triangle', 190);
+      return;
+    }
+    if (playerWon) {
+      classPulse('match-win', 1100);
+      tone(330, .13, .055, 'triangle', 520);
+      tone(520, .20, .045, 'sine', 780);
+      noise(.42, .032);
+      vibrate([24, 20, 24, 20, 48]);
+    } else {
+      classPulse('match-loss', 900);
+      tone(150, .22, .055, 'sine', 65);
+      vibrate([35, 28, 35]);
+    }
+  };
+
   const handle = event => {
     if (!event) return;
     if (event.type === 'BAT_CONTACT') onBatContact(event.feedback);
     else if (event.type === 'OUTCOME') onOutcome(event.outcome, event.metadata);
     else if (event.type === 'DELIVERY_BOUNCE' && event.deliveryType !== 'PACE') {
       tone(95, .035, .018, 'sine', 70);
+    } else if (event.type === 'MATCH_RESULT') {
+      onMatchResult(event.result);
     }
   };
 
