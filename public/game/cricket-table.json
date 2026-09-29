@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "product": "CRICKET_PINBALL",
   "world": {
     "glb": "/models/cricket-world-v2.glb",
@@ -318,6 +318,53 @@
       "halfWidth": 0.48,
       "releaseZ": 1.62,
       "steering": 0.22
+    },
+    "deliveryTypes": {
+      "PACE": {
+        "speedMultiplier": 1.02,
+        "startZ": 1.55,
+        "stopZ": 2.32,
+        "swingAcceleration": 0,
+        "bounceZ": 1.66,
+        "bounceKickX": 0,
+        "bounceSpeedMultiplier": 1
+      },
+      "SWING_LEFT": {
+        "speedMultiplier": 0.98,
+        "startZ": 1.55,
+        "stopZ": 2.32,
+        "swingAcceleration": -0.82,
+        "bounceZ": 1.66,
+        "bounceKickX": -0.06,
+        "bounceSpeedMultiplier": 0.99
+      },
+      "SWING_RIGHT": {
+        "speedMultiplier": 0.98,
+        "startZ": 1.55,
+        "stopZ": 2.32,
+        "swingAcceleration": 0.82,
+        "bounceZ": 1.66,
+        "bounceKickX": 0.06,
+        "bounceSpeedMultiplier": 0.99
+      },
+      "CUTTER_LEFT": {
+        "speedMultiplier": 0.94,
+        "startZ": 1.55,
+        "stopZ": 2.32,
+        "swingAcceleration": -0.38,
+        "bounceZ": 1.72,
+        "bounceKickX": -0.13,
+        "bounceSpeedMultiplier": 0.96
+      },
+      "CUTTER_RIGHT": {
+        "speedMultiplier": 0.94,
+        "startZ": 1.55,
+        "stopZ": 2.32,
+        "swingAcceleration": 0.38,
+        "bounceZ": 1.72,
+        "bounceKickX": 0.13,
+        "bounceSpeedMultiplier": 0.96
+      }
     }
   },
   "nudge": {
