@@ -38,7 +38,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     controls(); hud();
     if (!practice && humanBatting()) {
       delay(() => {
-        if (ready && !running && humanBatting() && match?.status === 'IN_PROGRESS') launch();
+        if (ready && !running && humanBatting() && ['DELIVERY_SETUP', 'SECOND_INNINGS'].includes(match?.status)) launch();
       }, Number(rules.delivery.cpuDeliveryDelayMs ?? 850));
     }
   }
