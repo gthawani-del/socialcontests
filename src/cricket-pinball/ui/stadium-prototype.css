@@ -62,3 +62,22 @@
 @keyframes match-flash-tie{0%{opacity:.32;background:radial-gradient(circle at 50% 48%,#a9b8c877,#0000 64%)}100%{opacity:0}}
 @keyframes score-flash-miss{0%{opacity:.24;background:radial-gradient(circle at 50% 58%,#9aa8b866,#0000 55%)}100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){#stadiumApp.impact-punch canvas,.impact-fx,#stadiumApp.score-run #viewport::after,#stadiumApp.score-four #viewport::after,#stadiumApp.score-six #viewport::after,#stadiumApp.score-wicket #viewport::after,#stadiumApp.score-miss #viewport::after,#stadiumApp.match-win #viewport::after,#stadiumApp.match-loss #viewport::after,#stadiumApp.match-tie #viewport::after{animation:none}}
+
+
+/* Opt-in playtest telemetry: enabled only with ?telemetry=1 */
+#telemetryToggle{position:absolute;top:66px;right:10px;z-index:21;min-height:30px;padding:5px 8px;border-radius:10px;border:1px solid #80a4b766;background:#071520e8;color:#c9d8e1;font-size:8px;letter-spacing:.10em;box-shadow:0 4px 16px #0008;backdrop-filter:blur(8px)}
+#telemetryToggle span{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:5px;padding:0 4px;border-radius:9px;background:#d8b96c;color:#10202c;font-weight:800;letter-spacing:0}
+#telemetryPanel{position:absolute;z-index:30;top:10px;right:10px;bottom:98px;width:min(430px,calc(100vw - 20px));overflow:hidden;border:1px solid #9c875966;border-radius:16px;background:#07131bf5;color:#e5edf2;box-shadow:0 20px 70px #000c;backdrop-filter:blur(14px)}
+.telemetry-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #ffffff12;background:#0d1f2bd9}
+.telemetry-head div{display:grid;gap:2px}.telemetry-head b{font-size:11px;letter-spacing:.12em;color:#f0d28e}.telemetry-head small{font-size:7px;letter-spacing:.12em;color:#78909e}
+#telemetryClose{width:30px;min-height:30px;padding:0;border:0;background:transparent;color:#afbec8;font-size:24px;line-height:1}
+.telemetry-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px}
+.telemetry-summary>div{display:grid;gap:2px;padding:7px;border:1px solid #ffffff0d;border-radius:10px;background:#0a1b26}
+.telemetry-summary small{font-size:7px;letter-spacing:.10em;color:#8297a5}.telemetry-summary strong{font-size:15px;color:#f6e1b0}
+.telemetry-actions{display:flex;gap:7px;padding:0 8px 8px}.telemetry-actions button{min-height:30px;padding:5px 9px;border-radius:9px;font-size:8px;letter-spacing:.08em}
+.telemetry-table-wrap{height:calc(100% - 142px);overflow:auto;border-top:1px solid #ffffff0c}
+.telemetry-table{width:100%;border-collapse:collapse;font-size:8px;font-variant-numeric:tabular-nums}
+.telemetry-table th{position:sticky;top:0;z-index:1;padding:7px 5px;background:#0b1a24;color:#8fa3af;text-align:left;font-size:7px;letter-spacing:.06em}
+.telemetry-table td{padding:6px 5px;border-top:1px solid #ffffff0b;vertical-align:top;white-space:nowrap;color:#d2dde3}
+.telemetry-table td small{display:block;margin-top:2px;font-size:7px;color:#738995}.telemetry-table td b{color:#f1d28a}
+@media(min-width:800px){#telemetryToggle{top:116px;right:14px}#telemetryPanel{top:116px;right:14px;bottom:14px}}
