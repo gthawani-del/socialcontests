@@ -44,12 +44,13 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   }
   function afterDelivery(outcome, metadata = {}) {
     running = false; ready = false; cpu.reset(); releaseBats(); hud(); controls();
-    onFeedback({ type: 'OUTCOME', outcome, metadata });
-    cue.textContent = metadata.reason === 'RISK_WICKET'
-      ? `MISTIMED ATTACK · WICKET`
-      : metadata.reason === 'SKILL_REJECTED'
-        ? `${metadata.attemptedOutcome} MISSED · ${metadata.scoring?.reason || 'MISTIMED'}`
-        : outcome;
+    onFeedback({ type: 'OUTCOME', outcome, metadata, match: match?.getState?.() || null });
+    cue.textContent = metadata.displayText
+      || (metadata.reason === 'RISK_WICKET'
+        ? `MISTIMED ATTACK · WICKET`
+        : metadata.reason === 'SKILL_REJECTED'
+          ? `${metadata.attemptedOutcome} MISSED · ${metadata.scoring?.reason || 'MISTIMED'}`
+          : outcome);
     if (practice) { ready = !match.currentInnings.complete; controls(); return; }
     delay(() => {
       if (match.status === 'INNINGS_BREAK') {
@@ -60,7 +61,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
         document.querySelector('#startTieBreak').onclick = () => { match.startSuperOver(); cpu.reset(); engine.resetBall(); makeReady(); };
       } else if (match.status === 'MATCH_OVER') {
         const result = match.result;
-        onFeedback({ type: 'MATCH_RESULT', result });
+        onFeedback({ type: 'MATCH_RESULT', result, match: match?.getState?.() || null });
         show(result.type === 'TIE' ? 'Match tied' : `${name(result.winnerId)} won`, `<p>${result.type === 'TIE' ? 'Scores level.' : result.marginType === 'RUNS' ? `Won by ${result.margin} run${result.margin === 1 ? '' : 's'}.` : `Won with ${result.margin} ball${result.margin === 1 ? '' : 's'} remaining.`}</p><button id="playAgain">New match</button>`);
         document.querySelector('#playAgain').onclick = reset;
       } else makeReady();
@@ -72,13 +73,13 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     cpu = createCpuBattingAI({ engine, tableConfig: table, difficulty, cpuConfig: rules.cpu });
     adapter = createCricketGameplayAdapter({ engine, matchEngine: match, tableConfig: table, cricketRules: rules,
       onResolved: afterDelivery,
-      onDeadBall: () => afterDelivery('Dead ball · does not count'),
+      onDeadBall: reason => afterDelivery('DEAD_BALL', { reason, displayText: 'Dead ball · does not count' }),
       onBatContact: (feedback, hit) => {
         cue.dataset.contact = feedback.timing;
         cue.textContent = feedback.timing === 'PERFECT'
           ? 'PERFECT CONTACT'
           : `${feedback.timing} CONTACT`;
-        onFeedback({ type: 'BAT_CONTACT', feedback, hit });
+        onFeedback({ type: 'BAT_CONTACT', feedback, hit, match: match?.getState?.() || null });
       }
     });
     running = false; ready = false; stepAccumulator = 0; cue.textContent = 'Choose your match settings'; controls(); hud();
@@ -128,7 +129,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     const selection = !practice && humanBatting() ? chooseCpuBowling(difficulty, rules.cpu) : { line: document.querySelector('#line').value, power: Number(document.querySelector('#power').value) / 100 };
     if (!match.beginDelivery(selection)) return;
     engine.resetBall(); cpu.reset(); releaseBats(); adapter.armDelivery(); engine.releaseLaunch({ line: selection.line, charge: selection.power, deliveryType: selection.type || 'PACE' });
-    onFeedback({ type: 'DELIVERY_LAUNCH', selection });
+    onFeedback({ type: 'DELIVERY_LAUNCH', selection, match: match?.getState?.() || null });
     running = true; ready = false; stepAccumulator = 0; cue.textContent = humanBatting() ? 'You bat · ball live' : 'CPU batting · ball live'; controls();
   }
   return {
