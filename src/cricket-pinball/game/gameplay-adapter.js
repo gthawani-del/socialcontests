@@ -15,6 +15,7 @@ export function createCricketGameplayAdapter({
   let stalledSince = null;
   let shotLive = false;
   let shotStartedAt = null;
+  let shotFurthestZ = null;
   let becameHittable = false;
   let gutterEnteredAt = null;
   let lastBatFeedback = null;
@@ -27,6 +28,7 @@ export function createCricketGameplayAdapter({
     stalledSince = null;
     shotLive = false;
     shotStartedAt = null;
+    shotFurthestZ = null;
     becameHittable = false;
     gutterEnteredAt = null;
     lastBatFeedback = null;
@@ -126,7 +128,8 @@ export function createCricketGameplayAdapter({
           const scoring = evaluateScoringOpportunity(
             zone,
             lastBatFeedback,
-            cricketRules.scoringSkill || {}
+            cricketRules.scoringSkill || {},
+            matchEngine.getState().difficulty
           );
           if (!scoring.qualified) {
             const attackRisk = Number(lastBatFeedback?.attackRisk ?? 0);
@@ -152,6 +155,46 @@ export function createCricketGameplayAdapter({
         }
       }
     }
+    if (shotLive) {
+      shotFurthestZ = shotFurthestZ === null
+        ? engine.ball.position.z
+        : Math.min(shotFurthestZ, engine.ball.position.z);
+    }
+
+    const fieldResolution = cricketRules.delivery?.fieldResolution || {};
+    const fieldOutcome = () => {
+      const quality = Number(lastBatFeedback?.quality ?? 0);
+      const oneDepthZ = Number(fieldResolution.oneDepthZ ?? .25);
+      const twoDepthZ = Number(fieldResolution.twoDepthZ ?? -1.0);
+      const oneMinQuality = Number(fieldResolution.oneMinQuality ?? .15);
+      const twoMinQuality = Number(fieldResolution.twoMinQuality ?? .35);
+      if (shotFurthestZ !== null && shotFurthestZ <= twoDepthZ && quality >= twoMinQuality) return 'TWO';
+      if (shotFurthestZ !== null && shotFurthestZ <= oneDepthZ && quality >= oneMinQuality) return 'ONE';
+      return 'DOT';
+    };
+    const resolveFieldedShot = reason => {
+      const outcome = fieldOutcome();
+      return resolve(outcome, {
+        reason,
+        furthestZ: shotFurthestZ,
+        contact: lastBatFeedback
+      });
+    };
+
+    if (shotLive && shotStartedAt !== null) {
+      const elapsedAfterContactMs = now - shotStartedAt;
+      const minFlightMs = Number(fieldResolution.minFlightMs ?? 500);
+      const returnVelocityZ = Number(fieldResolution.returnVelocityZ ?? .35);
+      if (
+        elapsedAfterContactMs >= minFlightMs &&
+        engine.ball.velocity.z >= returnVelocityZ &&
+        engine.ramp === null
+      ) {
+        resolveFieldedShot('FIELD_RETURN');
+        return;
+      }
+    }
+
     const speed = Math.hypot(engine.ball.velocity.x, engine.ball.velocity.z);
     const stalledSpeed = cricketRules.delivery?.stalledSpeed ?? 0.2;
     const stalledForMs = cricketRules.delivery?.stalledForMs ?? 1200;
@@ -161,7 +204,7 @@ export function createCricketGameplayAdapter({
 
       if (now - stalledSince >= stalledForMs) {
         if (becameHittable) {
-          resolve('DOT', { reason: 'STALLED' });
+          resolveFieldedShot('FIELD_STALLED');
         } else {
           abortDeadBall('PRE_BAT_STALLED');
         }
@@ -173,8 +216,10 @@ export function createCricketGameplayAdapter({
 
     const postContactMaxMs = cricketRules.delivery?.postContactMaxMs ?? 4200;
     if (shotLive && shotStartedAt !== null && now - shotStartedAt >= postContactMaxMs) {
-      resolve('DOT', {
-        reason: 'POST_CONTACT_TIMEOUT',
+      const outcome = fieldOutcome();
+      resolve(outcome, {
+        reason: outcome === 'DOT' ? 'POST_CONTACT_TIMEOUT' : 'FIELD_TIMEOUT',
+        furthestZ: shotFurthestZ,
         contact: lastBatFeedback,
         elapsedAfterContactMs: Math.round(now - shotStartedAt)
       });
@@ -184,7 +229,7 @@ export function createCricketGameplayAdapter({
     const maxLiveMs = cricketRules.delivery?.maxLiveMs ?? 10000;
     if (liveStartedAt !== null && now - liveStartedAt >= maxLiveMs) {
       if (becameHittable) {
-        resolve('DOT', { reason: 'TIMEOUT' });
+        resolveFieldedShot('FIELD_MAX_TIMEOUT');
       } else {
         abortDeadBall('PRE_BAT_TIMEOUT');
       }
@@ -216,6 +261,7 @@ export function createCricketGameplayAdapter({
       becameHittable = true;
       shotLive = true;
       shotStartedAt = engine.simTime * 1000;
+      shotFurthestZ = engine.ball.position.z;
       const feedback = applyBatContactSkill(engine, hit, cricketRules.batting || {});
       if (feedback) {
         lastBatFeedback = feedback;
