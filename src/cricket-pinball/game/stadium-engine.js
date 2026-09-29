@@ -46,6 +46,7 @@ export class StadiumEngine extends PinballEngine {
     this.deliveryVariation = {
       type,
       profile,
+      movementScale: Math.max(.5, Math.min(1.6, Number(options?.movementScale ?? 1))),
       bounced: false
     };
     return true;
@@ -68,13 +69,14 @@ export class StadiumEngine extends PinballEngine {
     const stopZ = Number(profile.stopZ ?? 2.32);
     if (z < startZ || z > stopZ) return;
 
-    const swingAcceleration = Number(profile.swingAcceleration ?? 0);
+    const movementScale = Number(state.movementScale ?? 1);
+    const swingAcceleration = Number(profile.swingAcceleration ?? 0) * movementScale;
     if (swingAcceleration) this.ball.velocity.x += swingAcceleration * dt;
 
     const bounceZ = Number(profile.bounceZ ?? 1.66);
     if (!state.bounced && z >= bounceZ) {
       state.bounced = true;
-      this.ball.velocity.x += Number(profile.bounceKickX ?? 0);
+      this.ball.velocity.x += Number(profile.bounceKickX ?? 0) * movementScale;
       this.ball.velocity.z *= Number(profile.bounceSpeedMultiplier ?? 1);
       this.limitBallSpeed();
       this.emit('delivery-bounce', {
