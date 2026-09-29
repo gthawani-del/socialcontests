@@ -1,4 +1,5 @@
 import { applyBatContactSkill } from './batting-skill.js';
+import { evaluateScoringOpportunity } from './scoring-skill.js';
 export function createCricketGameplayAdapter({
   engine,
   matchEngine,
@@ -14,6 +15,7 @@ export function createCricketGameplayAdapter({
   let shotLive = false;
   let becameHittable = false;
   let gutterEnteredAt = null;
+  let lastBatFeedback = null;
   const zones = (tableConfig.deliveryZones || []).filter((zone) => zone.terminal);
   const unsubs = [];
 
@@ -24,6 +26,7 @@ export function createCricketGameplayAdapter({
     shotLive = false;
     becameHittable = false;
     gutterEnteredAt = null;
+    lastBatFeedback = null;
   }
 
   function resolve(type, metadata = {}) {
@@ -117,10 +120,27 @@ export function createCricketGameplayAdapter({
         const dz = engine.ball.position.z - zone.position[1];
 
         if (Math.hypot(dx, dz) <= zone.radius) {
+          const scoring = evaluateScoringOpportunity(
+            zone,
+            lastBatFeedback,
+            cricketRules.scoringSkill || {}
+          );
+          if (!scoring.qualified) {
+            resolve('DOT', {
+              reason: 'SKILL_REJECTED',
+              attemptedOutcome: zone.outcome,
+              zoneId: zone.id,
+              scoring,
+              contact: lastBatFeedback
+            });
+            return;
+          }
           resolve(zone.outcome, {
             reason: 'DELIVERY_ZONE',
             zoneId: zone.id,
-            runs: zone.runs
+            runs: zone.runs,
+            scoring,
+            contact: lastBatFeedback
           });
           return;
         }
@@ -180,7 +200,10 @@ export function createCricketGameplayAdapter({
       becameHittable = true;
       shotLive = true;
       const feedback = applyBatContactSkill(engine, hit, cricketRules.batting || {});
-      if (feedback) onBatContact(feedback, hit);
+      if (feedback) {
+        lastBatFeedback = feedback;
+        onBatContact(feedback, hit);
+      }
     }
   }));
 
