@@ -39,6 +39,18 @@ export function evaluateBatContact(hit = {}, config = {}) {
   const maxPower = Number(config.maxPowerMultiplier ?? 1.12);
   const powerMultiplier = minPower + (maxPower - minPower) * quality;
 
+  const attackQualityMin = Number(config.attackQualityMin ?? .42);
+  const attackImpactMin = Number(config.attackImpactMin ?? .55);
+  const shotIntent = quality >= attackQualityMin && impactScore >= attackImpactMin ? 'ATTACK' : 'SAFE';
+  const attackRisk = shotIntent === 'ATTACK'
+    ? clamp(
+        Number(config.attackBaseRisk ?? .04) +
+        (1 - timingScore) * Number(config.attackMistimeRisk ?? .22),
+        0,
+        Number(config.attackMaxRisk ?? .30)
+      )
+    : 0;
+
   return {
     timing,
     timingError: error,
@@ -48,7 +60,9 @@ export function evaluateBatContact(hit = {}, config = {}) {
     quality,
     swingProgress,
     directionBias,
-    powerMultiplier
+    powerMultiplier,
+    shotIntent,
+    attackRisk
   };
 }
 
