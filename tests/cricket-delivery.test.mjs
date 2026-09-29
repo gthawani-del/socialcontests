@@ -77,3 +77,50 @@ test('contacted ball resolves on the shorter post-contact timeout',()=>{
  assert(resolvedMetadata.metadata.elapsedAfterContactMs<rules.delivery.maxLiveMs);
  adapter.dispose();
 });
+
+test('returning fielded shots resolve as one or two from depth and quality',()=>{
+ const make = ({ furthestZ, impact }) => {
+   const config=structuredClone(table);
+   config.physics.gravity=[0,0];config.physics.linearDamping=0;config.physics.rollingFriction=0;
+   config.walls=[];config.bumpers=[];config.slingshots=[];config.flippers=[];
+   config.playfield.drain={minX:-1,maxX:1,z:100};
+   config.playfield.safetyBounds={minX:-100,maxX:100,minZ:-100,maxZ:100};
+   const engine=new PinballEngine(config);
+   const match=new CricketMatchEngine({difficulty:'MEDIUM',players:[{id:'a'},{id:'b'}]});
+   match.assignRoles({battingPlayerId:'a',bowlingPlayerId:'b'});match.startInnings();match.beginDelivery();
+   const adapter=createCricketGameplayAdapter({engine,matchEngine:match,tableConfig:{...config,deliveryZones:[]},cricketRules:rules});
+   adapter.armDelivery();
+   Object.assign(engine.launcher,{awaitingLaunch:false,inLane:false,deliveryGuideActive:false});
+   engine.ball.active=true;engine.ball.position={x:0,z:1.92};engine.ball.velocity={x:0,z:-4};
+   engine.emit('flipper-hit',{id:'left',pressed:true,impact,x:0,z:1.92,swingProgress:.58});
+   engine.ball.position.z=furthestZ;
+   engine.ball.velocity={x:0,z:.8};
+   for(let i=0;i<90&&!match.deliveryHistory.length;i++)adapter.step(1/120);
+   const result=match.deliveryHistory[0]?.result.type;
+   adapter.dispose();
+   return result;
+ };
+ assert.equal(make({furthestZ:-.5,impact:8}),'ONE');
+ assert.equal(make({furthestZ:-2.0,impact:8}),'TWO');
+});
+
+test('shallow returning shot remains a dot',()=>{
+ const config=structuredClone(table);
+ config.physics.gravity=[0,0];config.physics.linearDamping=0;config.physics.rollingFriction=0;
+ config.walls=[];config.bumpers=[];config.slingshots=[];config.flippers=[];
+ config.playfield.drain={minX:-1,maxX:1,z:100};
+ config.playfield.safetyBounds={minX:-100,maxX:100,minZ:-100,maxZ:100};
+ const engine=new PinballEngine(config);
+ const match=new CricketMatchEngine({difficulty:'HARD',players:[{id:'a'},{id:'b'}]});
+ match.assignRoles({battingPlayerId:'a',bowlingPlayerId:'b'});match.startInnings();match.beginDelivery();
+ const adapter=createCricketGameplayAdapter({engine,matchEngine:match,tableConfig:{...config,deliveryZones:[]},cricketRules:rules});
+ adapter.armDelivery();
+ Object.assign(engine.launcher,{awaitingLaunch:false,inLane:false,deliveryGuideActive:false});
+ engine.ball.active=true;engine.ball.position={x:0,z:1.92};engine.ball.velocity={x:0,z:-2};
+ engine.emit('flipper-hit',{id:'left',pressed:true,impact:2,x:0,z:1.92,swingProgress:.2});
+ engine.ball.position.z=.4;engine.ball.velocity={x:0,z:.8};
+ for(let i=0;i<90&&!match.deliveryHistory.length;i++)adapter.step(1/120);
+ assert.equal(match.deliveryHistory[0]?.result.type,'DOT');
+ assert.equal(match.deliveryHistory[0]?.reason,'FIELD_RETURN');
+ adapter.dispose();
+});
