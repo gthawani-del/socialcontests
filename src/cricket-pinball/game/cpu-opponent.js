@@ -1,13 +1,25 @@
-export function chooseCpuBowling(difficulty = 'MEDIUM', cpuConfig = {}) {
+export function chooseDeliveryType(mix = { PACE: 1 }, roll = Math.random()) {
+  const entries = Object.entries(mix).filter(([, weight]) => Number(weight) > 0);
+  if (!entries.length) return 'PACE';
+  const total = entries.reduce((sum, [, weight]) => sum + Number(weight), 0);
+  let cursor = Math.max(0, Math.min(.999999, Number(roll))) * total;
+  for (const [type, weight] of entries) {
+    cursor -= Number(weight);
+    if (cursor < 0) return type;
+  }
+  return entries.at(-1)[0];
+}
+
+export function chooseCpuBowling(difficulty = 'MEDIUM', cpuConfig = {}, random = Math.random) {
   const lines = ['LEFT', 'CENTRE', 'RIGHT'];
   const preset = cpuConfig[difficulty] || cpuConfig.MEDIUM || {};
   const min = Number(preset.bowlingPowerMin ?? (difficulty === 'HARD' ? 0.72 : difficulty === 'EASY' ? 0.45 : 0.58));
   const max = Number(preset.bowlingPowerMax ?? (difficulty === 'HARD' ? 0.96 : difficulty === 'EASY' ? 0.72 : 0.86));
 
   return {
-    line: lines[Math.floor(Math.random() * lines.length)],
-    power: min + Math.random() * Math.max(0, max - min),
-    type: 'PACE'
+    line: lines[Math.floor(random() * lines.length)],
+    power: min + random() * Math.max(0, max - min),
+    type: chooseDeliveryType(preset.deliveryMix || { PACE: 1 }, random())
   };
 }
 
