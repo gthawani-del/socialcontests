@@ -11,8 +11,8 @@ export async function applyStadiumMaterials(model) {
     texture.colorSpace = THREE.SRGBColorSpace; texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping; texture.anisotropy = 4;
   }
-  const crowdMaterial = new THREE.MeshStandardMaterial({ map: crowd, color: '#8398b7', roughness: 1, side: THREE.DoubleSide });
-  const fieldMaterial = new THREE.MeshStandardMaterial({ map: grass, color: '#9fbd7f', vertexColors: true, roughness: .93 });
+  const crowdMaterial = new THREE.MeshStandardMaterial({ map: crowd, color: '#d6c8b6', roughness: 1, side: THREE.DoubleSide });
+  const fieldMaterial = new THREE.MeshStandardMaterial({ map: grass, color: '#789f54', vertexColors: true, roughness: .92 });
   let terraces = 0;
   model.traverse(mesh => {
     if (!mesh.isMesh) return;
@@ -24,12 +24,12 @@ export async function applyStadiumMaterials(model) {
         const x = p.getX(i) * STADIUM_SCALE, z = p.getZ(i) * STADIUM_SCALE;
         uv[i * 2] = x * 1.7; uv[i * 2 + 1] = z * 1.7;
         // Very gentle tonal variation; ground remains one continuous collision surface.
-        const shade = .88 + .06 * Math.cos(z * Math.PI / .38);
+        const shade = .80 + .12 * Math.cos(z * Math.PI / .38);
         colors.set([shade, shade, shade], i * 3);
       }
       g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
       g.setAttribute('color', new THREE.BufferAttribute(colors, 3)); mesh.material = fieldMaterial;
     }
   });
-  return { terraces, texture: crowd.image.src, grass: grass.image.src, model: 'colosseum-r9' };
+  return { terraces, texture: crowd.image.src, grass: grass.image.src, model: 'colosseum-r10' };
 }
