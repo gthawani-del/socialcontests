@@ -25,7 +25,7 @@ try {
   const [base, rules, gltf] = await Promise.all([
     fetch('/game/cricket-table.json').then(r => r.json()),
     fetch('/game/cricket-rules.json').then(r => r.json()),
-    new GLTFLoader().loadAsync('/models/cricket-stadium-colosseum-r12.glb', progress => { if (progress.total) document.querySelector('#loading').textContent = `Loading stadium ${Math.round(progress.loaded / progress.total * 100)}%`; })
+    new GLTFLoader().loadAsync('/models/cricket-stadium-colosseum-r13.glb', progress => { if (progress.total) document.querySelector('#loading').textContent = `Loading stadium ${Math.round(progress.loaded / progress.total * 100)}%`; })
   ]);
   const table = createStadiumTable(base), engine = new StadiumEngine(table);
   const scene = new THREE.Scene(); scene.background = new THREE.Color('#030916'); scene.fog = new THREE.Fog('#030916', 7.5, 16);
@@ -107,7 +107,7 @@ try {
     app,
     enabled: new URLSearchParams(location.search).get('telemetry') === '1',
     meta: {
-      model: 'cricket-stadium-colosseum-r12.glb',
+      model: 'cricket-stadium-colosseum-r13.glb',
       rulesVersion: rules.version,
       tableVersion: base.version
     }
