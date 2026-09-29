@@ -56,3 +56,15 @@ test('skill steering changes an uncommitted shot but protects a committed bounda
   const protectedFeedback = applyBatContactSkill(committed, { id: 'left', pressed: true, z: 1.5, swingProgress: .9, impact: 8 }, cfg);
   assert.equal(protectedFeedback.lateralRatioAfter, committedBefore);
 });
+
+test('attack shots carry more risk when timing is poor', () => {
+  const perfect = evaluateBatContact({ id: 'left', pressed: true, z: 1.92, swingProgress: .58, impact: 8 }, {
+    ...cfg, attackQualityMin: .42, attackImpactMin: .55, attackBaseRisk: .04, attackMistimeRisk: .22, attackMaxRisk: .30
+  });
+  const early = evaluateBatContact({ id: 'left', pressed: true, z: 1.5, swingProgress: .95, impact: 8 }, {
+    ...cfg, attackQualityMin: .42, attackImpactMin: .55, attackBaseRisk: .04, attackMistimeRisk: .22, attackMaxRisk: .30
+  });
+  assert.equal(perfect.shotIntent, 'ATTACK');
+  assert.equal(early.shotIntent, 'ATTACK');
+  assert(early.attackRisk > perfect.attackRisk);
+});
