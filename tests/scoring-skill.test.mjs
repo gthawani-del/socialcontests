@@ -5,11 +5,16 @@ import { evaluateScoringOpportunity } from '../src/cricket-pinball/game/scoring-
 const cfg = {
   enabled: true,
   minQuality: { ONE: 0, TWO: .10, FOUR: .42, SIX: .54 },
-  minImpactScore: { ONE: 0, TWO: .08, FOUR: .45, SIX: .65 },
+  minImpactScore: { ONE: 0, TWO: .08, FOUR: .45, SIX: .75 },
   directionalOutcomes: ['FOUR', 'SIX'],
   directionalZoneMinX: .2,
   minDirectionalAlignment: .15,
-  requiredIntent: { FOUR: 'ATTACK', SIX: 'ATTACK' }
+  requiredIntent: { FOUR: 'ATTACK', SIX: 'ATTACK' },
+  difficultyAdjustments: {
+    EASY: { qualityBonus: { FOUR: 0, SIX: 0 }, impactBonus: { FOUR: 0, SIX: 0 } },
+    MEDIUM: { qualityBonus: { FOUR: .03, SIX: 0 }, impactBonus: { FOUR: .05, SIX: .08 } },
+    HARD: { qualityBonus: { FOUR: .08, SIX: .03 }, impactBonus: { FOUR: .10, SIX: .15 } }
+  }
 };
 
 test('one stays forgiving while six requires strong contact', () => {
@@ -69,4 +74,17 @@ test('non-route boundary still uses contact direction', () => {
   );
   assert.equal(result.qualified, false);
   assert.equal(result.reason, 'SHOT_DIRECTION');
+});
+
+test('difficulty raises boundary requirements without changing route proof', () => {
+  const contact = { quality: .6, impactScore: .86, directionBias: 0, shotIntent: 'ATTACK' };
+  const zone = { id: 'six-ramp', outcome: 'SIX', position: [1.1, -1.9], requiresRoute: 'six-ramp' };
+  const easy = evaluateScoringOpportunity(zone, contact, cfg, 'EASY');
+  const medium = evaluateScoringOpportunity(zone, contact, cfg, 'MEDIUM');
+  const hard = evaluateScoringOpportunity(zone, contact, cfg, 'HARD');
+  assert.equal(easy.qualified, true);
+  assert.equal(medium.qualified, true);
+  assert.equal(hard.qualified, false);
+  assert.equal(hard.routeProvesDirection, true);
+  assert.equal(hard.reason, 'CONTACT_IMPACT');
 });
