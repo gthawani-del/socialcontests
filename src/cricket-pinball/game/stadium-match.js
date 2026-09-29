@@ -24,8 +24,19 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     bowl.disabled = !ready || running;
     document.querySelector('.setup').classList.toggle('batting', !practice && humanBatting());
     bowl.textContent = practice || !humanBatting() ? 'Bowl' : 'Ready for ball';
-    for (const id of ['line', 'power']) document.querySelector(`#${id}`).disabled = !practice && (!ready || running || humanBatting());
+    for (const id of ['line', 'power', 'deliveryType']) {
+      const element = document.querySelector(`#${id}`);
+      if (element) element.disabled = !practice && (!ready || running || humanBatting());
+    }
     for (const side of ['left', 'right']) document.querySelector(`#${side}Bat`).disabled = !practice && (!running || !humanBatting());
+    onFeedback({
+      type: 'CONTROL_STATE',
+      ready,
+      running,
+      humanBatting: Boolean(humanBatting()),
+      practice,
+      match: match?.getState?.() || null
+    });
   }
   function hud() {
     const state = match.getState(), s = state.score;
@@ -34,14 +45,38 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   function show(title, body) { panel.hidden = false; panel.innerHTML = `<h2>${title}</h2>${body}`; }
   function makeReady() {
     ready = true; panel.hidden = true; delete cue.dataset.contact;
-    cue.textContent = humanBatting() ? 'You bat · prepare for the CPU delivery' : 'You bowl · select line and power';
+    cue.textContent = humanBatting()
+      ? 'CPU preparing delivery'
+      : 'Select line + movement · pull and release';
     controls(); hud();
     if (!practice && humanBatting()) {
+      const selection = chooseCpuBowling(difficulty, rules.cpu);
       delay(() => {
-        if (ready && !running && humanBatting() && ['DELIVERY_SETUP', 'SECOND_INNINGS'].includes(match?.status)) launch();
-      }, Number(rules.delivery.cpuDeliveryDelayMs ?? 850));
+        if (!ready || running || !humanBatting() || !['DELIVERY_SETUP', 'SECOND_INNINGS'].includes(match?.status)) return;
+        onFeedback({ type: 'CPU_PLUNGER_PREP', selection, match: match?.getState?.() || null });
+        delay(() => {
+          if (ready && !running && humanBatting() && ['DELIVERY_SETUP', 'SECOND_INNINGS'].includes(match?.status)) {
+            launch(selection);
+          }
+        }, Number(rules.delivery.cpuPlungerMs ?? 920));
+      }, Number(rules.delivery.cpuDeliveryDelayMs ?? 450));
     }
   }
+  function runCountdown(label, startAt, done) {
+    let value = startAt;
+    const tick = () => {
+      onFeedback({ type: 'COUNTDOWN', label, value, match: match?.getState?.() || null });
+      cue.textContent = `${label} · ${value}`;
+      if (value <= 1) {
+        delay(done, Number(rules.delivery.countdownStepMs ?? 650));
+        return;
+      }
+      value -= 1;
+      delay(tick, Number(rules.delivery.countdownStepMs ?? 650));
+    };
+    tick();
+  }
+
   function afterDelivery(outcome, metadata = {}) {
     running = false; ready = false; cpu.reset(); releaseBats(); hud(); controls();
     onFeedback({ type: 'OUTCOME', outcome, metadata, match: match?.getState?.() || null });
@@ -50,8 +85,16 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
         ? `MISTIMED ATTACK · WICKET`
         : metadata.reason === 'SKILL_REJECTED'
           ? `${metadata.attemptedOutcome} MISSED · ${metadata.scoring?.reason || 'MISTIMED'}`
-          : outcome);
+          : outcome === 'DEAD_BALL'
+            ? 'DEAD BALL · DOES NOT COUNT'
+            : outcome);
     if (practice) { ready = !match.currentInnings.complete; controls(); return; }
+
+    const deadBall = outcome === 'DEAD_BALL';
+    const holdMs = deadBall
+      ? Number(rules.delivery.deadBallHoldMs ?? 1050)
+      : Number(rules.delivery.resultHoldMs?.[outcome] ?? rules.delivery.betweenBallsMs);
+
     delay(() => {
       if (match.status === 'INNINGS_BREAK') {
         show('Innings break', `<p>${match.battingPlayerId === 'player' ? 'You need' : 'CPU needs'} ${match.target} to win.</p><button id="continueInnings">Start chase</button>`);
@@ -64,8 +107,10 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
         onFeedback({ type: 'MATCH_RESULT', result, match: match?.getState?.() || null });
         show(result.type === 'TIE' ? 'Match tied' : `${name(result.winnerId)} won`, `<p>${result.type === 'TIE' ? 'Scores level.' : result.marginType === 'RUNS' ? `Won by ${result.margin} run${result.margin === 1 ? '' : 's'}.` : `Won with ${result.margin} ball${result.margin === 1 ? '' : 's'} remaining.`}</p><button id="playAgain">New match</button>`);
         document.querySelector('#playAgain').onclick = reset;
-      } else makeReady();
-    }, Number(rules.delivery.resultHoldMs?.[outcome] ?? rules.delivery.betweenBallsMs));
+      } else {
+        runCountdown(deadBall ? 'RE-BOWL' : 'NEXT BALL', deadBall ? 2 : 3, makeReady);
+      }
+    }, holdMs);
   }
   function newMatch() {
     adapter?.dispose(); cpu?.reset(); engine.resetBall(); onReset(); releaseBats();
@@ -73,7 +118,10 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     cpu = createCpuBattingAI({ engine, tableConfig: table, difficulty, cpuConfig: rules.cpu });
     adapter = createCricketGameplayAdapter({ engine, matchEngine: match, tableConfig: table, cricketRules: rules,
       onResolved: afterDelivery,
-      onDeadBall: reason => afterDelivery('DEAD_BALL', { reason, displayText: 'Dead ball · does not count' }),
+      onDeadBall: reason => afterDelivery('DEAD_BALL', {
+        reason,
+        displayText: 'DEAD BALL · DOES NOT COUNT'
+      }),
       onBatContact: (feedback, hit) => {
         cue.dataset.contact = feedback.timing;
         cue.textContent = feedback.timing === 'PERFECT'
@@ -124,13 +172,29 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     }
     render();
   }
-  function launch() {
-    if (!ready || running || !match.currentInnings || match.currentInnings.complete) return;
-    const selection = !practice && humanBatting() ? chooseCpuBowling(difficulty, rules.cpu) : { line: document.querySelector('#line').value, power: Number(document.querySelector('#power').value) / 100 };
-    if (!match.beginDelivery(selection)) return;
-    engine.resetBall(); cpu.reset(); releaseBats(); adapter.armDelivery(); engine.releaseLaunch({ line: selection.line, charge: selection.power, deliveryType: selection.type || 'PACE', movementScale: selection.movementScale ?? 1 });
+  function launch(selectionOverride = null) {
+    if (!ready || running || !match.currentInnings || match.currentInnings.complete) return false;
+    const selection = selectionOverride || (!practice && humanBatting()
+      ? chooseCpuBowling(difficulty, rules.cpu)
+      : {
+          line: document.querySelector('#line')?.value || 'CENTRE',
+          power: Number(document.querySelector('#power')?.value || 50) / 100,
+          type: document.querySelector('#deliveryType')?.value || 'PACE',
+          movementScale: 1
+        });
+    if (!match.beginDelivery(selection)) return false;
+    engine.resetBall(); cpu.reset(); releaseBats(); adapter.armDelivery();
+    engine.releaseLaunch({
+      line: selection.line,
+      charge: selection.power,
+      deliveryType: selection.type || 'PACE',
+      movementScale: selection.movementScale ?? 1
+    });
     onFeedback({ type: 'DELIVERY_LAUNCH', selection, match: match?.getState?.() || null });
-    running = true; ready = false; stepAccumulator = 0; cue.textContent = humanBatting() ? 'You bat · ball live' : 'CPU batting · ball live'; controls();
+    running = true; ready = false; stepAccumulator = 0;
+    cue.textContent = humanBatting() ? 'You bat · ball live' : 'CPU batting · ball live';
+    controls();
+    return true;
   }
   return {
     reset, launch, get running() { return running; }, get match() { return match; },
