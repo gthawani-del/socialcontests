@@ -41,7 +41,7 @@ export function createStadiumTable(base) {
   }));
   // Same 30-point centreline as the authored ramp, measured at metre scale.
   table.ramps = [{
-    id: 'six-ramp', halfWidth: .25 * STADIUM_SCALE,
+    id: 'six-ramp', halfWidth: .22 * STADIUM_SCALE,
     points: Array.from({ length: 30 }, (_, i) => {
       const t = i / 29;
       const [x, z] = stadiumPoint(2.62 + .26 * Math.sin(t * Math.PI), -2.75 + 7 * t);
