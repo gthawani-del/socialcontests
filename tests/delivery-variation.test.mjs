@@ -50,3 +50,25 @@ test('pace delivery preserves the legacy straight post-guide path', () => {
   engine.applyDeliveryVariation(.1);
   assert.equal(engine.ball.velocity.x, 0);
 });
+
+test('hard movement scale bends more than easy movement scale', () => {
+  const easy = new StadiumEngine(structuredClone(table));
+  const hard = new StadiumEngine(structuredClone(table));
+  for (const [engine, movementScale] of [[easy, .65], [hard, 1.35]]) {
+    engine.releaseLaunch({ line: 'CENTRE', charge: .5, deliveryType: 'SWING_LEFT', movementScale });
+    engine.launcher.inLane = false;
+    engine.launcher.deliveryGuideActive = false;
+    engine.ball.position.z = 1.7;
+    engine.ball.velocity = { x: 0, z: 5 };
+    engine.applyDeliveryVariation(.1);
+  }
+  assert(Math.abs(hard.ball.velocity.x) > Math.abs(easy.ball.velocity.x));
+});
+
+test('CPU bowling exposes configured movement progression', () => {
+  const easy = chooseCpuBowling('EASY', rules.cpu, () => .2);
+  const medium = chooseCpuBowling('MEDIUM', rules.cpu, () => .2);
+  const hard = chooseCpuBowling('HARD', rules.cpu, () => .2);
+  assert(easy.movementScale < medium.movementScale);
+  assert(medium.movementScale < hard.movementScale);
+});
