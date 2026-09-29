@@ -27,80 +27,113 @@ export function createCpuBattingAI({
   engine,
   tableConfig,
   difficulty = 'MEDIUM',
-  cpuConfig = {}
+  cpuConfig = {},
+  random = Math.random
 }) {
   let swingUntil = 0;
   let cooldownUntil = 0;
   let activeSide = null;
+  let scheduledSwingAt = null;
+  let scheduledSide = null;
 
   function reset() {
     swingUntil = 0;
     cooldownUntil = 0;
     activeSide = null;
+    scheduledSwingAt = null;
+    scheduledSide = null;
     engine?.setFlipper('left', false);
     engine?.setFlipper('right', false);
   }
 
-  function update(nowMs, enabled) {
-    if (!engine) return;
+  function releaseActiveBats() {
+    if (!activeSide) return;
+    engine.setFlipper('left', false);
+    engine.setFlipper('right', false);
+    activeSide = null;
+  }
 
-    // When CPU does not own batting, it must not mutate shared flipper state.
-    // Human and CPU use the same engine flippers; calling reset() here was
-    // overwriting human setFlipper(true) on the next animation frame.
-    if (!enabled) return;
-
-    // CPU owns the bats here, so it may safely release them while waiting.
-    if (engine.isAwaitingLaunch() || !engine.ball.active) {
-      reset();
-      return;
-    }
-
-    if (nowMs < swingUntil) return;
-
-    if (activeSide) {
-      engine.setFlipper('left', false);
-      engine.setFlipper('right', false);
-      activeSide = null;
-    }
-
-    if (nowMs < cooldownUntil) return;
-
-    const preset = cpuConfig[difficulty] || cpuConfig.MEDIUM || {};
-    const ball = engine.ball;
-
-    // CPU only reacts to an incoming delivery moving toward the batting end.
-    if (ball.velocity.z <= 0) return;
-
-    const centreBand = Number(preset.battingCentreBand ?? 0.18);
-    const triggerZ = Number(Math.abs(ball.position.x) <= centreBand
-      ? preset.battingCentreTriggerZ ?? preset.battingTriggerZ ?? 1.45
-      : preset.battingTriggerZ ?? 1.45);
-    const maxTriggerZ = Number(preset.battingMaxZ ?? 2.48);
-    if (ball.position.z < triggerZ || ball.position.z > maxTriggerZ) return;
-
-    const missChance = clamp(Number(preset.battingMissChance ?? 0.12), 0, 0.75);
-    if (Math.random() < missChance) {
-      cooldownUntil = nowMs + Number(preset.battingCooldownMs ?? 220);
-      return;
-    }
-
-    let side;
-    if (Math.abs(ball.position.x) <= centreBand) side = 'both';
-    else side = ball.position.x < 0 ? 'left' : 'right';
-
+  function startSwing(nowMs, side, preset) {
     if (side === 'both') {
       engine.setFlipper('left', true);
       engine.setFlipper('right', true);
     } else {
       engine.setFlipper(side, true);
     }
-
     activeSide = side;
+    scheduledSwingAt = null;
+    scheduledSide = null;
     swingUntil = nowMs + Number(preset.battingHoldMs ?? 105);
     cooldownUntil = swingUntil + Number(preset.battingCooldownMs ?? 210);
   }
 
-  return { update, reset };
+  function predictSide(ball, preset) {
+    const centreBand = Number(preset.battingCentreBand ?? .18);
+    const predictionFactor = clamp(Number(preset.battingPredictionFactor ?? .5), 0, 1);
+    const contactZ = Number(preset.battingContactZ ?? 2.12);
+    const secondsToContact = ball.velocity.z > .05
+      ? clamp((contactZ - ball.position.z) / ball.velocity.z, 0, .35)
+      : 0;
+    const predictedX = ball.position.x + ball.velocity.x * secondsToContact * predictionFactor;
+
+    if (Math.abs(predictedX) > centreBand) return predictedX < 0 ? 'left' : 'right';
+
+    const aggression = clamp(Number(preset.battingAggression ?? .4), 0, 1);
+    if (random() >= aggression) return 'both';
+    if (Math.abs(ball.velocity.x) > .04) return ball.velocity.x < 0 ? 'left' : 'right';
+    return random() < .5 ? 'left' : 'right';
+  }
+
+  function update(nowMs, enabled) {
+    if (!engine) return;
+    if (!enabled) return;
+
+    if (engine.isAwaitingLaunch() || !engine.ball.active) {
+      reset();
+      return;
+    }
+
+    if (nowMs < swingUntil) return;
+    releaseActiveBats();
+
+    const preset = cpuConfig[difficulty] || cpuConfig.MEDIUM || {};
+    const ball = engine.ball;
+
+    if (scheduledSwingAt !== null) {
+      if (nowMs < scheduledSwingAt) return;
+      startSwing(nowMs, scheduledSide, preset);
+      return;
+    }
+
+    if (nowMs < cooldownUntil || ball.velocity.z <= 0) return;
+
+    const centreBand = Number(preset.battingCentreBand ?? .18);
+    const triggerZ = Number(Math.abs(ball.position.x) <= centreBand
+      ? preset.battingCentreTriggerZ ?? preset.battingTriggerZ ?? 1.45
+      : preset.battingTriggerZ ?? 1.45);
+    const maxTriggerZ = Number(preset.battingMaxZ ?? 2.48);
+    if (ball.position.z < triggerZ || ball.position.z > maxTriggerZ) return;
+
+    const missChance = clamp(Number(preset.battingMissChance ?? .12), 0, .75);
+    if (random() < missChance) {
+      cooldownUntil = nowMs + Number(preset.battingCooldownMs ?? 220);
+      return;
+    }
+
+    scheduledSide = predictSide(ball, preset);
+    const reactionMs = Math.max(0, Number(preset.battingReactionMs ?? 65));
+    const jitterMs = Math.max(0, Number(preset.battingTimingJitterMs ?? 35));
+    const jitter = (random() * 2 - 1) * jitterMs;
+    scheduledSwingAt = nowMs + Math.max(0, reactionMs + jitter);
+
+    if (scheduledSwingAt <= nowMs) startSwing(nowMs, scheduledSide, preset);
+  }
+
+  return {
+    update,
+    reset,
+    getState: () => ({ swingUntil, cooldownUntil, activeSide, scheduledSwingAt, scheduledSide })
+  };
 }
 
 function clamp(value, min, max) {
