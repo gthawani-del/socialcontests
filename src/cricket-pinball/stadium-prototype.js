@@ -10,6 +10,8 @@ import { batchStadium } from './stadium-batching.js';
 import { buildStadiumArt } from './stadium-art.js';
 import { createStadiumFeedback } from './game/stadium-feedback.js';
 import { createPlaytestTelemetry } from './game/playtest-telemetry.js';
+import { createBowlingPlunger } from './game/bowling-plunger.js';
+import { createWebGLResultLayer } from './game/webgl-result-layer.js';
 
 const app = document.querySelector('#stadiumApp');
 const batIcon = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="m32 5 5 5-9 10-5-5z" fill="#193149"/><path d="m23 14 8 8-16 20c-2 2-5 2-7 0l-3-3c-2-2-2-5 0-7z" fill="#e7c48a" stroke="#9e793d" stroke-width="1.5"/><path d="m10 33 13-15" stroke="#fff1ca" stroke-width="2"/></svg>';
@@ -17,7 +19,7 @@ const resetIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 
 app.innerHTML = `<header><a href="/cricket-pinball" aria-label="Back to match lobby">CRICKET <b>PINBALL</b></a><button id="restart" aria-label="Restart match">${resetIcon}</button></header>
 <div id="score" aria-label="Match score">0 / 0</div>
 <section id="viewport" aria-label="Interactive stadium"><div id="loading" role="status">Preparing stadium…</div></section>
-<section class="controls"><p id="cue" role="status">Loading…</p><div class="setup"><label>Line<select id="line"><option>LEFT</option><option selected>CENTRE</option><option>RIGHT</option></select></label><label>Power <output id="powerValue">50%</output><input id="power" type="range" min="20" max="100" value="50"></label><button id="bowl" disabled>Bowl</button></div><div class="bats"><button id="leftBat" aria-label="Left bat">${batIcon}<span>LEFT BAT</span></button><button id="rightBat" aria-label="Right bat">${batIcon}<span>RIGHT BAT</span></button></div></section>`;
+<section class="controls"><p id="cue" role="status">Loading…</p><div class="setup legacy-setup" aria-hidden="true"><label>Line<select id="line"><option>LEFT</option><option selected>CENTRE</option><option>RIGHT</option></select></label><label>Movement<select id="deliveryType"><option value="PACE" selected>STRAIGHT</option><option value="SWING_LEFT">SWING LEFT</option><option value="SWING_RIGHT">SWING RIGHT</option><option value="CUTTER_LEFT">CUTTER LEFT</option><option value="CUTTER_RIGHT">CUTTER RIGHT</option></select></label><label>Power <output id="powerValue">50%</output><input id="power" type="range" min="20" max="100" value="50"></label><button id="bowl" disabled>Bowl</button></div><div class="bats"><button id="leftBat" aria-label="Left bat">${batIcon}<span>LEFT BAT</span></button><button id="rightBat" aria-label="Right bat">${batIcon}<span>RIGHT BAT</span></button></div></section>`;
 
 try {
   const [base, rules, gltf] = await Promise.all([
@@ -54,6 +56,33 @@ try {
   environment.dispose(); pmrem.dispose();
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const viewport = document.querySelector('#viewport'); viewport.append(renderer.domElement);
+  const resultLayer = createWebGLResultLayer({ THREE, scene });
+
+  const aimMaterial = new THREE.MeshBasicMaterial({ color: 0xf2c96b, transparent: true, opacity: .82, depthWrite: false });
+  const aimRing = new THREE.Mesh(new THREE.RingGeometry(.075, .105, 28), aimMaterial);
+  aimRing.rotation.x = -Math.PI / 2;
+  aimRing.position.set(0, .026, 1.62);
+  aimRing.visible = false;
+  scene.add(aimRing);
+  const movementGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, .032, 1.62), new THREE.Vector3(0, .032, 1.32)]);
+  const movementLine = new THREE.Line(movementGeometry, new THREE.LineBasicMaterial({ color: 0x71b8ff, transparent: true, opacity: .82 }));
+  movementLine.visible = false;
+  scene.add(movementLine);
+
+  const updateBowlingGuide = (selection = {}, visible = true) => {
+    const line = String(selection.line || 'CENTRE').toUpperCase();
+    const target = table.launcher.bowlingLines?.[line]?.target || [0, 1.62];
+    aimRing.position.x = Number(target[0] || 0);
+    const type = String(selection.type || 'PACE').toUpperCase();
+    const direction = type.endsWith('_LEFT') ? -1 : type.endsWith('_RIGHT') ? 1 : 0;
+    const attr = movementLine.geometry.getAttribute('position');
+    attr.setXYZ(0, aimRing.position.x, .032, 1.62);
+    attr.setXYZ(1, aimRing.position.x + direction * .24, .032, 1.30);
+    attr.needsUpdate = true;
+    aimRing.visible = visible;
+    movementLine.visible = visible && direction !== 0;
+  };
+
   const feedback = createStadiumFeedback({
     app,
     viewport,
@@ -81,9 +110,51 @@ try {
       tableVersion: base.version
     }
   });
+  let flow;
+  const controlsRoot = document.querySelector('.controls');
+  const bowlingUi = createBowlingPlunger({
+    app,
+    viewport,
+    controls: controlsRoot,
+    cpuPullMs: Math.max(300, Number(rules.delivery.cpuPlungerMs ?? 920) - 220),
+    onRelease: selection => flow?.launch(selection),
+    onSelectionChange: selection => {
+      document.querySelector('#line').value = selection.line;
+      document.querySelector('#deliveryType').value = selection.type;
+      document.querySelector('#power').value = Math.round(selection.power * 100);
+      document.querySelector('#powerValue').textContent = `${Math.round(selection.power * 100)}%`;
+      updateBowlingGuide(selection, true);
+    }
+  });
+
   const gameplayFeedback = event => {
     feedback.handle(event);
     telemetry.handle(event);
+
+    if (event?.type === 'OUTCOME') {
+      resultLayer.showOutcome(event.outcome, event.metadata || {});
+    } else if (event?.type === 'COUNTDOWN') {
+      resultLayer.showCountdown(event.label, event.value);
+    } else if (event?.type === 'CONTROL_STATE') {
+      const inningsActive = Number(event.match?.innings || 0) > 0;
+      bowlingUi.setState({
+        visible: inningsActive,
+        interactive: inningsActive && !event.humanBatting && event.ready && !event.running,
+        cpu: inningsActive && event.humanBatting
+      });
+      if (!inningsActive || event.running) {
+        updateBowlingGuide(bowlingUi.getSelection(), false);
+      } else {
+        updateBowlingGuide(bowlingUi.getSelection(), true);
+      }
+    } else if (event?.type === 'CPU_PLUNGER_PREP') {
+      bowlingUi.setSelection(event.selection || {}, false);
+      updateBowlingGuide(event.selection || {}, true);
+      bowlingUi.animateCpu(event.selection || {});
+    } else if (event?.type === 'DELIVERY_LAUNCH') {
+      bowlingUi.setSelection(event.selection || {}, false);
+      updateBowlingGuide(event.selection || {}, false);
+    }
   };
   const bats = art.bats;
   const batching = batchStadium(model, bats);
@@ -91,7 +162,7 @@ try {
   let last = performance.now(), contactCount = 0, rampEntries = 0;
   engine.on('flipper-hit', () => contactCount++); engine.on('ramp-enter', () => rampEntries++);
   engine.on('delivery-bounce', event => gameplayFeedback({ type: 'DELIVERY_BOUNCE', deliveryType: event.type, event }));
-  const flow = createStadiumMatch({ engine, table, rules, render,
+  flow = createStadiumMatch({ engine, table, rules, render,
     practice: import.meta.env.DEV && new URLSearchParams(location.search).has('practice'),
     onReset: () => { contactCount = 0; rampEntries = 0; },
     onFeedback: gameplayFeedback
@@ -108,7 +179,13 @@ try {
   });
   window.addEventListener('blur', () => { bat('left', false); bat('right', false); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { bat('left', false); bat('right', false); } });
-  document.querySelector('#bowl').addEventListener('click', flow.launch); document.querySelector('#restart').addEventListener('click', flow.reset);
+  document.querySelector('#bowl').addEventListener('click', () => flow.launch({
+    line: document.querySelector('#line').value,
+    power: Number(document.querySelector('#power').value) / 100,
+    type: document.querySelector('#deliveryType').value,
+    movementScale: 1
+  }));
+  document.querySelector('#restart').addEventListener('click', flow.reset);
   document.querySelector('#power').addEventListener('input', e => { document.querySelector('#powerValue').textContent = `${e.target.value}%`; });
   function render() {
     ball.position.set(engine.ball.position.x, table.playfield.surfaceY + table.ball.radius + engine.ball.height, engine.ball.position.z);
@@ -132,7 +209,14 @@ try {
   new ResizeObserver(resize).observe(viewport);
   document.querySelector('#loading').remove(); flow.reset(); resize();
   let manual = false;
-  function frame(now) { const dt = Math.min((now - last) / 1000, .05); last = now; if (!manual && flow.running && !document.hidden) flow.step(dt); render(); requestAnimationFrame(frame); }
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, .05);
+    last = now;
+    if (!manual && flow.running && !document.hidden) flow.step(dt);
+    resultLayer.update(now, dt);
+    render();
+    requestAnimationFrame(frame);
+  }
   requestAnimationFrame(frame);
   // Development-only evidence hook: browser tests still use real controls to launch/hit.
   if (import.meta.env.DEV) window.__stadiumQA = {
