@@ -7,7 +7,8 @@ export function createCricketGameplayAdapter({
   cricketRules,
   onResolved = () => {},
   onDeadBall = () => {},
-  onBatContact = () => {}
+  onBatContact = () => {},
+  random = Math.random
 }) {
   let resolved = true;
   let liveStartedAt = null;
@@ -126,11 +127,14 @@ export function createCricketGameplayAdapter({
             cricketRules.scoringSkill || {}
           );
           if (!scoring.qualified) {
-            resolve('DOT', {
-              reason: 'SKILL_REJECTED',
+            const attackRisk = Number(lastBatFeedback?.attackRisk ?? 0);
+            const riskWicket = lastBatFeedback?.shotIntent === 'ATTACK' && attackRisk > 0 && random() < attackRisk;
+            resolve(riskWicket ? 'WICKET' : 'DOT', {
+              reason: riskWicket ? 'RISK_WICKET' : 'SKILL_REJECTED',
               attemptedOutcome: zone.outcome,
               zoneId: zone.id,
               scoring,
+              attackRisk,
               contact: lastBatFeedback
             });
             return;
