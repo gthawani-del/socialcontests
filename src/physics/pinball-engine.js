@@ -693,10 +693,21 @@ export class PinballEngine {
       }
 
       this.limitBallSpeed();
+      const swingRange = (cfg.activeAngleDeg - cfg.restAngleDeg) * DEG;
+      const swingProgress = Math.abs(swingRange) < EPS
+        ? 0
+        : clamp((flipper.angle - cfg.restAngleDeg * DEG) / swingRange, 0, 1);
       this.emit('flipper-hit', {
         id: cfg.id,
         impact: Math.abs(relativeNormal),
-        pressed: Boolean(flipper.pressed)
+        pressed: Boolean(flipper.pressed),
+        x: this.ball.position.x,
+        z: this.ball.position.z,
+        contactT: closest.t,
+        angleDeg: flipper.angle / DEG,
+        angularVelocityDegPerSec: flipper.angularVelocity / DEG,
+        swingProgress,
+        velocity: { ...this.ball.velocity }
       });
     }
   }
@@ -755,7 +766,7 @@ function closestPointOnSegment(px, pz, ax, az, bx, bz) {
   if (lengthSq < EPS) return { x: ax, z: az };
 
   const t = clamp(((px - ax) * abx + (pz - az) * abz) / lengthSq, 0, 1);
-  return { x: ax + abx * t, z: az + abz * t };
+  return { x: ax + abx * t, z: az + abz * t, t };
 }
 
 function normalize2(x, z) {
