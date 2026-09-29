@@ -48,11 +48,17 @@
 #stadiumApp.score-six #viewport::after{animation:score-flash-six .62s ease-out}
 #stadiumApp.score-wicket #viewport::after{animation:score-flash-wicket .62s ease-out}
 #stadiumApp.score-miss #viewport::after{animation:score-flash-miss .32s ease-out}
+#stadiumApp.match-win #viewport::after{animation:match-flash-win 1.05s ease-out}
+#stadiumApp.match-loss #viewport::after{animation:match-flash-loss .9s ease-out}
+#stadiumApp.match-tie #viewport::after{animation:match-flash-tie .9s ease-out}
 @keyframes impact-punch{0%{transform:translate3d(0,0,0)}22%{transform:translate3d(-2px,1px,0)}50%{transform:translate3d(2px,-1px,0)}100%{transform:translate3d(0,0,0)}}
 @keyframes impact-burst{0%{opacity:1;scale:.55}100%{opacity:0;scale:2.4}}
 @keyframes score-flash-run{0%{opacity:.18;background:radial-gradient(circle at 50% 60%,#e8c57466,#0000 48%)}100%{opacity:0}}
 @keyframes score-flash-four{0%{opacity:.38;background:radial-gradient(circle at 50% 48%,#edaa3d88,#0000 58%)}100%{opacity:0}}
 @keyframes score-flash-six{0%{opacity:.50;background:radial-gradient(circle at 50% 42%,#ffd76faa,#f09a2b35 30%,#0000 68%)}100%{opacity:0}}
 @keyframes score-flash-wicket{0%{opacity:.42;background:radial-gradient(circle at 50% 70%,#d9503a99,#24000044 42%,#0000 72%)}100%{opacity:0}}
+@keyframes match-flash-win{0%{opacity:.5;background:radial-gradient(circle at 50% 45%,#ffd86faa,#d9902a44 34%,#0000 72%)}100%{opacity:0}}
+@keyframes match-flash-loss{0%{opacity:.42;background:radial-gradient(circle at 50% 55%,#9c3b3b88,#24000055 38%,#0000 72%)}100%{opacity:0}}
+@keyframes match-flash-tie{0%{opacity:.32;background:radial-gradient(circle at 50% 48%,#a9b8c877,#0000 64%)}100%{opacity:0}}
 @keyframes score-flash-miss{0%{opacity:.24;background:radial-gradient(circle at 50% 58%,#9aa8b866,#0000 55%)}100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){#stadiumApp.impact-punch canvas,.impact-fx,#stadiumApp.score-run #viewport::after,#stadiumApp.score-four #viewport::after,#stadiumApp.score-six #viewport::after,#stadiumApp.score-wicket #viewport::after,#stadiumApp.score-miss #viewport::after{animation:none}}
+@media(prefers-reduced-motion:reduce){#stadiumApp.impact-punch canvas,.impact-fx,#stadiumApp.score-run #viewport::after,#stadiumApp.score-four #viewport::after,#stadiumApp.score-six #viewport::after,#stadiumApp.score-wicket #viewport::after,#stadiumApp.score-miss #viewport::after,#stadiumApp.match-win #viewport::after,#stadiumApp.match-loss #viewport::after,#stadiumApp.match-tie #viewport::after{animation:none}}
