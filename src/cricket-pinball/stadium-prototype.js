@@ -21,18 +21,18 @@ try {
   const [base, rules, gltf] = await Promise.all([
     fetch('/game/cricket-table.json').then(r => r.json()),
     fetch('/game/cricket-rules.json').then(r => r.json()),
-    new GLTFLoader().loadAsync('/models/cricket-stadium-colosseum-r9.glb', progress => { if (progress.total) document.querySelector('#loading').textContent = `Loading stadium ${Math.round(progress.loaded / progress.total * 100)}%`; })
+    new GLTFLoader().loadAsync('/models/cricket-stadium-colosseum-r10.glb', progress => { if (progress.total) document.querySelector('#loading').textContent = `Loading stadium ${Math.round(progress.loaded / progress.total * 100)}%`; })
   ]);
   const table = createStadiumTable(base), engine = new StadiumEngine(table);
   const scene = new THREE.Scene(); scene.background = new THREE.Color('#030916'); scene.fog = new THREE.Fog('#030916', 7.5, 16);
   const model = gltf.scene; model.scale.setScalar(STADIUM_SCALE); scene.add(model);
   const materialStatus = await applyStadiumMaterials(model);
   const art = buildStadiumArt(scene, model, table);
-  model.traverse(o => { if (o.isLight) o.intensity *= o.isSpotLight ? .045 : .72; });
+  model.traverse(o => { if (o.isLight) o.intensity *= o.isSpotLight ? .035 : .66; });
   scene.add(new THREE.HemisphereLight(0xa9c8ef, 0x302717, .96));
   const key = new THREE.DirectionalLight(0xffcf86, 1.95); key.position.set(-4, 7, 3); scene.add(key);
-  const pavilionGlow = new THREE.PointLight(0xff9b45, 7.5, 4.2, 2); pavilionGlow.position.set(0, 1.0, -2.75); scene.add(pavilionGlow);
-  const fieldGlow = new THREE.PointLight(0xffc06d, 3.4, 5.2, 2); fieldGlow.position.set(0, .65, -.15); scene.add(fieldGlow);
+  const pavilionGlow = new THREE.PointLight(0xff9b45, 4.8, 4.2, 2); pavilionGlow.position.set(0, 1.0, -2.75); scene.add(pavilionGlow);
+  const fieldGlow = new THREE.PointLight(0xffc06d, 1.8, 5.2, 2); fieldGlow.position.set(0, .65, -.15); scene.add(fieldGlow);
   key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
   Object.assign(key.shadow.camera, { left: -4, right: 4, top: 5, bottom: -5, near: .1, far: 20 });
   key.shadow.normalBias = .015;
@@ -44,7 +44,7 @@ try {
   const camera = new THREE.PerspectiveCamera(48, 1, .1, 50); camera.near = .1; camera.far = 50;
   const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.22;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.08;
   const pmrem = new THREE.PMREMGenerator(renderer);
   const environment = new RoomEnvironment();
   scene.environment = pmrem.fromScene(environment, .04).texture; scene.environmentIntensity = .38;
