@@ -115,6 +115,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   function newMatch() {
     adapter?.dispose(); cpu?.reset(); engine.resetBall(); onReset(); releaseBats();
     match = new CricketMatchEngine({ format: practice ? 'ONE_OVER' : format, difficulty, players: [{ id: 'player' }, { id: 'cpu' }], maxWickets: rules.maxWickets, superOver: rules.superOver.enabled, superOverBalls: rules.superOver.ballsPerInnings });
+    engine.setDifficulty?.(difficulty, rules.difficultyGameplay?.[difficulty] || {});
     cpu = createCpuBattingAI({ engine, tableConfig: table, difficulty, cpuConfig: rules.cpu });
     adapter = createCricketGameplayAdapter({ engine, matchEngine: match, tableConfig: table, cricketRules: rules,
       onResolved: afterDelivery,
