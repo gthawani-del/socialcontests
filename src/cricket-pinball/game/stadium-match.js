@@ -33,8 +33,11 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, prac
   }
   function show(title, body) { panel.hidden = false; panel.innerHTML = `<h2>${title}</h2>${body}`; }
   function makeReady() { ready = true; panel.hidden = true; delete cue.dataset.contact; cue.textContent = humanBatting() ? 'You bat · prepare for the CPU delivery' : 'You bowl · select line and power'; controls(); hud(); }
-  function afterDelivery(outcome) {
-    running = false; ready = false; cpu.reset(); releaseBats(); hud(); controls(); cue.textContent = outcome;
+  function afterDelivery(outcome, metadata = {}) {
+    running = false; ready = false; cpu.reset(); releaseBats(); hud(); controls();
+    cue.textContent = metadata.reason === 'SKILL_REJECTED'
+      ? `${metadata.attemptedOutcome} MISSED · ${metadata.scoring?.reason || 'MISTIMED'}`
+      : outcome;
     if (practice) { ready = !match.currentInnings.complete; controls(); return; }
     delay(() => {
       if (match.status === 'INNINGS_BREAK') {
