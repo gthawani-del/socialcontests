@@ -19,7 +19,8 @@ export function chooseCpuBowling(difficulty = 'MEDIUM', cpuConfig = {}, random =
   return {
     line: lines[Math.floor(random() * lines.length)],
     power: min + random() * Math.max(0, max - min),
-    type: chooseDeliveryType(preset.deliveryMix || { PACE: 1 }, random())
+    type: chooseDeliveryType(preset.deliveryMix || { PACE: 1 }, random()),
+    movementScale: Number(preset.deliveryMovementScale ?? 1)
   };
 }
 
