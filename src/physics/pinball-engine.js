@@ -387,6 +387,9 @@ export class PinballEngine {
       this.resolveFlipperCollision(flipper);
     }
 
+    // Observe every physics substep before a drain can end the delivery.
+    this.emit('physics:step');
+    if (!this.ball.active) return;
     this.checkDrain();
     this.checkSafetyBounds();
   }

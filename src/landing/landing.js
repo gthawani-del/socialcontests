@@ -2,6 +2,7 @@ import './landing.css';
 
 bindDemoGate();
 bindNavigation();
+bindWorldSearch();
 
 function bindNavigation() {
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -120,5 +121,26 @@ function bindDemoGate() {
     }
 
     error.textContent = 'Incorrect demo credentials.';
+  });
+}
+
+function bindWorldSearch() {
+  const search = document.querySelector('[name="world-search"]');
+  if (!search) return;
+  const cards = [...document.querySelectorAll('.cover, .mini')];
+  const notice = document.createElement('p');
+  notice.setAttribute('role', 'status');
+  notice.hidden = true;
+  document.querySelector('#worlds .section-title').after(notice);
+  search.addEventListener('input', () => {
+    const query = search.value.trim().toLowerCase();
+    let count = 0;
+    for (const card of cards) {
+      const name = card.getAttribute('aria-label') || card.querySelector('img')?.alt || card.textContent;
+      card.hidden = !name.toLowerCase().includes(query);
+      if (!card.hidden) count += 1;
+    }
+    notice.hidden = !query;
+    notice.textContent = count ? `${count} world${count === 1 ? '' : 's'} found` : 'No matching worlds. Try another name.';
   });
 }

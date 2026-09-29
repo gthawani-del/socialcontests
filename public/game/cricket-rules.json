@@ -19,7 +19,7 @@
     "bowlerDecisionMs": 5000,
     "stalledSpeed": 0.18,
     "stalledForMs": 1300,
-    "betweenBallsMs": 5000,
+    "betweenBallsMs": 3000,
     "deadBallGutterMs": 120,
     "battingZoneZ": 1.72,
     "battingZoneHalfWidth": 1.08,

@@ -105,3 +105,5 @@ body.demo-locked{overflow:hidden}
 .demo-error{min-height:19px;margin:0 0 9px!important;color:#ff7c6e!important;font-size:11px!important}
 .demo-back{display:block;margin:16px auto 0;border:0;background:none;color:#8296a5;font-size:11px;cursor:pointer}.demo-back:hover{color:#fff}
 @media(max-width:600px){.demo-gate{padding:0}.demo-gate-panel{width:100%;min-height:100dvh;padding:30px 22px;display:flex;flex-direction:column;justify-content:center;border:0}.demo-gate-logo{width:142px;margin-bottom:28px}.demo-step h1{font-size:27px}.demo-step p{font-size:12px}.demo-consent{margin:19px 0}}
+
+.cover[hidden], .mini[hidden] { display: none !important; }

@@ -1,0 +1,148 @@
+{
+  "shots": [
+    {
+      "scenario": "Two innings, chase target and CPU win",
+      "state": {
+        "running": false,
+        "match": {
+          "format": "LAST_3",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 3,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "MATCH_OVER",
+          "innings": 2,
+          "roundInnings": 2,
+          "superOverRound": 0,
+          "score": {
+            "runs": 0,
+            "wickets": 2,
+            "balls": 2
+          },
+          "target": 4,
+          "requiredRuns": 4,
+          "ballsRemaining": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "toss": {
+            "call": "HEADS",
+            "result": "HEADS",
+            "callerId": "player",
+            "winnerId": "player",
+            "callerWon": true,
+            "choice": "BOWL"
+          },
+          "result": {
+            "type": "WIN",
+            "winnerId": "cpu",
+            "loserId": "player",
+            "margin": 3,
+            "marginType": "RUNS"
+          },
+          "deliveryOpen": false
+        },
+        "contactCount": 3,
+        "rampEntries": 0,
+        "ball": {
+          "x": 0,
+          "z": 2.325281976885222,
+          "height": 0
+        },
+        "score": {
+          "number": 2,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 0,
+          "wickets": 2,
+          "balls": 2,
+          "complete": true
+        },
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      }
+    },
+    {
+      "scenario": "Tie-break completes with chase win",
+      "state": {
+        "running": false,
+        "match": {
+          "format": "LAST_3",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 3,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "MATCH_OVER",
+          "innings": 4,
+          "roundInnings": 2,
+          "superOverRound": 1,
+          "score": {
+            "runs": 1,
+            "wickets": 0,
+            "balls": 1
+          },
+          "target": 1,
+          "requiredRuns": 0,
+          "ballsRemaining": 2,
+          "battingPlayerId": "cpu",
+          "bowlingPlayerId": "player",
+          "toss": {
+            "call": "HEADS",
+            "result": "HEADS",
+            "callerId": "player",
+            "winnerId": "player",
+            "callerWon": true,
+            "choice": "BOWL"
+          },
+          "result": {
+            "type": "WIN",
+            "winnerId": "cpu",
+            "loserId": "player",
+            "margin": 2,
+            "marginType": "BALLS"
+          },
+          "deliveryOpen": false
+        },
+        "contactCount": 22,
+        "rampEntries": 3,
+        "ball": {
+          "x": -0.6723346027348166,
+          "z": -0.07102740696080803,
+          "height": 0
+        },
+        "score": {
+          "number": 4,
+          "battingPlayerId": "cpu",
+          "bowlingPlayerId": "player",
+          "runs": 1,
+          "wickets": 0,
+          "balls": 1,
+          "complete": true
+        },
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "note": "Seeded RNG and deterministic simulation stepping; real browser controls and match engine."
+}

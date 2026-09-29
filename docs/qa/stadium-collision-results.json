@@ -1,0 +1,82 @@
+{
+  "results": [
+    {
+      "name": "Central miss → wicket drain",
+      "passed": true
+    },
+    {
+      "name": "Left boundary rebound",
+      "passed": true
+    },
+    {
+      "name": "Right boundary rebound",
+      "passed": true
+    },
+    {
+      "name": "Left bat contact",
+      "passed": true
+    },
+    {
+      "name": "Right bat contact",
+      "passed": true
+    },
+    {
+      "name": "Strong shot: six at ramp finish",
+      "passed": true,
+      "maxHeight": 0.48825
+    },
+    {
+      "name": "Weak shot: rollback, no six",
+      "passed": true,
+      "maxHeight": 0.08646825363327726
+    },
+    {
+      "name": "Ground crossing: no six",
+      "passed": true,
+      "maxHeight": 0
+    },
+    {
+      "name": "No bat contact: no runs",
+      "passed": true,
+      "maxHeight": 0.48825
+    },
+    {
+      "name": "Bowling LEFT, power 0.2",
+      "passed": true
+    },
+    {
+      "name": "Bowling LEFT, power 0.5",
+      "passed": true
+    },
+    {
+      "name": "Bowling LEFT, power 1",
+      "passed": true
+    },
+    {
+      "name": "Bowling CENTRE, power 0.2",
+      "passed": true
+    },
+    {
+      "name": "Bowling CENTRE, power 0.5",
+      "passed": true
+    },
+    {
+      "name": "Bowling CENTRE, power 1",
+      "passed": true
+    },
+    {
+      "name": "Bowling RIGHT, power 0.2",
+      "passed": true
+    },
+    {
+      "name": "Bowling RIGHT, power 0.5",
+      "passed": true
+    },
+    {
+      "name": "Bowling RIGHT, power 1",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "scope": "Opt-in physics prototype. Final GLB alignment and playable integration not validated."
+}

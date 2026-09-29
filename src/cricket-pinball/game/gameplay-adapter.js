@@ -17,7 +17,7 @@ export function createCricketGameplayAdapter({
 
   function armDelivery() {
     resolved = false;
-    liveStartedAt = performanceNow();
+    liveStartedAt = engine.simTime * 1000;
     stalledSince = null;
     shotLive = false;
     becameHittable = false;
@@ -40,7 +40,10 @@ export function createCricketGameplayAdapter({
 
   function step(deltaSeconds) {
     engine.step(deltaSeconds);
+    checkDelivery();
+  }
 
+  function checkDelivery() {
     if (
       resolved ||
       engine.isAwaitingLaunch() ||
@@ -50,7 +53,9 @@ export function createCricketGameplayAdapter({
       return;
     }
 
-    const now = performanceNow();
+    // Count physics time, not wall time: slow frames must not abort a ball
+    // before the simulation has had time to deliver it.
+    const now = engine.simTime * 1000;
 
     // A delivery is countable only once it reaches the real playable bat gate.
     // The earlier bowling corridor is guidance only; entering it does not consume a ball.
@@ -102,6 +107,7 @@ export function createCricketGameplayAdapter({
     // gutter handling still run before contact so a delivery can never hang.
     if (shotLive) {
       for (const zone of zones) {
+        if (engine.isDeliveryZoneEligible?.(zone) === false) continue;
         if (zone.direction === 'RETURN' && engine.ball.velocity.z >= -0.05) continue;
         if (zone.direction === 'DELIVERY' && engine.ball.velocity.z <= 0.05) continue;
 
@@ -156,6 +162,8 @@ export function createCricketGameplayAdapter({
     return Boolean(accepted);
   }
 
+  unsubs.push(engine.on('physics:step', checkDelivery));
+
   unsubs.push(engine.on('flipper-hit', ({ pressed = false, impact = 0 } = {}) => {
     // Actual bat contact is always proof that the delivery became playable,
     // including contact made slightly before the configured bat-gate z line.
@@ -195,8 +203,4 @@ export function createCricketGameplayAdapter({
       unsubs.forEach((unsubscribe) => unsubscribe?.());
     }
   };
-}
-
-function performanceNow() {
-  return typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
 }

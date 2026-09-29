@@ -1,3 +1,4 @@
+import { createCricketRenderer } from '../renderer.js';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
@@ -116,7 +117,7 @@ app.innerHTML = `
       </div>
       <div class="coin-stage" id="coinStage" aria-live="polite">
         <div class="coin" id="tossCoin" aria-hidden="true">
-          <div class="coin-face coin-pinball"><img src="/assets/cricket/world/cricket-pinball-toss-coin-v3.webp" alt=""></div>
+          <div class="coin-face coin-pinball"><img src="/assets/cricket/world/cricket-pinball-toss-coin-v4.png" alt=""></div>
           <div class="coin-face coin-heads"><span>H</span><small>HEADS</small></div>
         </div>
         <small id="coinStatus">READY FOR TOSS</small>
@@ -173,7 +174,7 @@ app.innerHTML = `
       <p id="resultEyebrow">MATCH RESULT</p>
       <strong id="resultTitle"></strong>
       <span id="resultDetail"></span>
-      <div><a href="/cricket-pinball">BACK TO LOBBY</a><button type="button" id="rematch">REMATCH</button></div>
+      <div><button type="button" id="startSuperOver" hidden>PLAY SUPER OVER</button><a href="/cricket-pinball">BACK TO LOBBY</a><button type="button" id="rematch">REMATCH</button></div>
     </section>
   </main>
 `;
@@ -206,7 +207,7 @@ const nextBallSeconds = document.querySelector('#nextBallSeconds');
 installHowToPinCricket({ root: app, context: 'gameplay' });
 let nextBallCountdownTimer = null;
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+const renderer = createCricketRenderer(canvas, loading);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -240,6 +241,7 @@ boot();
 async function boot() {
   try {
     loading.hidden = false;
+    await document.querySelector('.coin-pinball img').decode();
     const [table, cricketRules, gltf] = await Promise.all([
       fetchJson('/game/cricket-table.json'),
       fetchJson('/game/cricket-rules.json'),
@@ -248,6 +250,9 @@ async function boot() {
 
     tableConfig = structuredClone(table);
     rulesConfig = cricketRules;
+    match.maxWickets = cricketRules.maxWickets;
+    match.superOverEnabled = cricketRules.superOver.enabled;
+    match.superOverBalls = cricketRules.superOver.ballsPerInnings;
     // Keep the Cricket table's target-based bowling geometry authoritative.
     // Rules may tune delivery behaviour, but must not replace physical launcher targets.
     tableConfig.launcher.bowlingLines = Object.fromEntries(
@@ -789,98 +794,59 @@ function simplifyStadiumStands(root) {
     });
   });
 
-  const crowdTierMeshes = tiers.flatMap((pair) =>
-    pair.map((name) => root.getObjectByName(name)).filter((mesh) => mesh?.isMesh)
-  );
-
-  if (crowdTierMeshes.length) {
-    cricketTextureLoader.load(
-      '/assets/cricket/world/cricket-crowd-stand-strip.webp',
-      (sourceTexture) => {
-        const image = sourceTexture.image;
-        if (!image?.width || !image?.height) return;
-
-        crowdTierMeshes.forEach((stand, index) => {
-          const side = stand.position.x >= 0 ? 1 : -1;
-          const tier = Math.max(0, Math.min(2, Number(String(stand.name).split('_').pop()) || 0));
-
-          stand.geometry.computeBoundingBox();
-          const box = stand.geometry.boundingBox;
-          const size = box.getSize(new THREE.Vector3());
-
-          // Build a wide crowd ribbon from varied square crops of the portrait
-          // crowd source. This keeps every spectator upright and avoids obvious
-          // repetition across the six stand tiers.
-          const canvas = document.createElement('canvas');
-          canvas.width = 3072;
-          canvas.height = 320;
-          const ctx = canvas.getContext('2d');
-          ctx.fillStyle = '#08100d';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          const cells = 12;
-          const cellW = canvas.width / cells;
-          const cropSize = Math.min(image.width, Math.max(220, Math.floor(image.height / 7)));
-
-          for (let cell = 0; cell < cells; cell += 1) {
-            const maxX = Math.max(0, image.width - cropSize);
-            const maxY = Math.max(0, image.height - cropSize);
-            const seed = index * 5 + cell * 3 + tier * 7;
-            const sx = maxX ? (seed * 97) % maxX : 0;
-            const sy = maxY ? (seed * 211) % maxY : 0;
-
-            ctx.save();
-            if ((cell + index) % 2 === 1) {
-              ctx.translate((cell + 1) * cellW, 0);
-              ctx.scale(-1, 1);
-              ctx.drawImage(image, sx, sy, cropSize, cropSize, 0, 0, cellW + 1, canvas.height);
-            } else {
-              ctx.drawImage(image, sx, sy, cropSize, cropSize, cell * cellW, 0, cellW + 1, canvas.height);
-            }
-            ctx.restore();
-          }
-
-          const crowdTexture = new THREE.CanvasTexture(canvas);
-          crowdTexture.colorSpace = THREE.SRGBColorSpace;
-          crowdTexture.wrapS = THREE.ClampToEdgeWrapping;
-          crowdTexture.wrapT = THREE.ClampToEdgeWrapping;
-          crowdTexture.minFilter = THREE.LinearMipmapLinearFilter;
-          crowdTexture.magFilter = THREE.LinearFilter;
-          crowdTexture.generateMipmaps = true;
-
-          const overlayName = `CricketCrowdOverlay_${stand.name}`;
-          root.getObjectByName(overlayName)?.removeFromParent();
-
-          // Camera-visible inner face: long axis follows Z, height follows Y.
-          const overlay = new THREE.Mesh(
-            new THREE.PlaneGeometry(size.z * 0.96, Math.max(0.30, size.y * 1.35)),
-            new THREE.MeshBasicMaterial({
-              map: crowdTexture,
-              toneMapped: false,
-              side: THREE.DoubleSide
-            })
-          );
-          overlay.name = overlayName;
-          overlay.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
-          overlay.position.set(
-            stand.position.x - side * (size.x * stand.scale.x * 0.5 + 0.018),
-            stand.position.y + 0.12,
-            stand.position.z
-          );
-          overlay.renderOrder = 6;
-          overlay.castShadow = false;
-          overlay.receiveShadow = false;
-          overlay.userData.cricketSkin = 'cricket-crowd-stand-strip.webp';
-          root.add(overlay);
-        });
-
-        console.info('[Cricket stands] Indian crowd artwork installed across six tiers');
-      },
-      undefined,
-      () => {
-        console.warn('[Cricket stands] crowd texture failed; authored stand treatment retained');
-      }
-    );
+  const crowdSeats = [];
+  root.traverse((mesh) => {
+    const match = mesh.name?.match(/^SeatBand_(-?1)_(\d)_(\d)$/);
+    if (mesh.isMesh && match && Number(match[3]) !== 2) {
+      crowdSeats.push({ mesh, side: Number(match[1]), tier: Number(match[2]), slot: Number(match[3]) });
+    }
+  });
+  if (crowdSeats.length) {
+    cricketTextureLoader.load('/assets/cricket/world/cricket-crowd-stand-strip.webp', (source) => {
+      source.colorSpace = THREE.SRGBColorSpace;
+      source.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+      crowdSeats.forEach(({ mesh, side, tier, slot }) => {
+        mesh.geometry.computeBoundingBox();
+        const box = mesh.geometry.boundingBox;
+        const size = box.getSize(new THREE.Vector3());
+        const centre = box.getCenter(new THREE.Vector3());
+        const width = size.z * 0.94;
+        const depth = size.x * 0.72;
+        const rise = 0.32 / mesh.scale.y;
+        const y = box.max.y + 0.018 / mesh.scale.y;
+        const innerX = centre.x - side * depth / 2;
+        const outerX = centre.x + side * depth / 2;
+        const leftZ = centre.z - side * width / 2;
+        const rightZ = centre.z + side * width / 2;
+        // Image top follows the higher, outward edge of each seat bank.
+        // Positive UV scale on both sides keeps INDIA lettering unmirrored.
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute([
+          innerX, y, leftZ, innerX, y, rightZ,
+          outerX, y + rise, rightZ, outerX, y + rise, leftZ
+        ], 3));
+        geometry.setAttribute('uv', new THREE.Float32BufferAttribute([0,0, 1,0, 1,1, 0,1], 2));
+        geometry.setIndex([0,1,2, 0,2,3]);
+        geometry.computeVertexNormals();
+        const texture = source.clone();
+        const cropWidth = Math.min(768, source.image.width);
+        const aspect = width * mesh.scale.z / Math.hypot(depth * mesh.scale.x, rise * mesh.scale.y);
+        const cropHeight = Math.min(source.image.height, cropWidth / aspect);
+        const index = (side > 0 ? 9 : 0) + tier * 3 + slot;
+        texture.repeat.set(cropWidth / source.image.width, cropHeight / source.image.height);
+        texture.offset.set(
+          ((index * 83) % Math.max(1, source.image.width - cropWidth)) / source.image.width,
+          ((index * 317) % Math.max(1, source.image.height - cropHeight)) / source.image.height
+        );
+        const overlay = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+          map: texture, color: 0xb3b3b3, toneMapped: false, side: THREE.FrontSide
+        }));
+        overlay.name = `CricketCrowdOverlay_${mesh.name}`;
+        overlay.userData.cricketSkin = 'cricket-crowd-stand-strip.webp';
+        mesh.add(overlay);
+      });
+      console.info(`[Cricket stands] crowd installed on ${crowdSeats.length} seating sections; no mirrored UVs`);
+    }, undefined, () => console.warn('[Cricket stands] crowd texture failed to load'));
   }
 
   root.traverse((mesh) => {
@@ -1752,7 +1718,7 @@ function createMechanics() {
   ballVisual = new THREE.Mesh(
     new THREE.SphereGeometry(ballRadius, 32, 22),
     new THREE.MeshStandardMaterial({
-      map: loadCricketTexture('cricket-ball.webp'),
+      // White match ball contrasts with the authored red bumpers.
       color: 0xffffff,
       emissive: 0x000000,
       emissiveIntensity: 0,
@@ -1760,6 +1726,11 @@ function createMechanics() {
       metalness: 0
     })
   );
+  const seam = new THREE.Mesh(
+    new THREE.TorusGeometry(ballRadius * 0.995, ballRadius * 0.025, 6, 48),
+    new THREE.MeshStandardMaterial({ color: 0x963b30, roughness: 0.7 })
+  );
+  ballVisual.add(seam);
   ballVisual.renderOrder = 12;
   scene.add(ballVisual);
 
@@ -1947,7 +1918,7 @@ function showDeliveryCue(value, label = 'DELIVERY', holdMs = 0) {
 
 
 function createCoin() {
-  const logoTexture = cricketTextureLoader.load('/assets/cricket/world/cricket-pinball-toss-coin-v2.webp');
+  const logoTexture = cricketTextureLoader.load('/assets/cricket/world/cricket-pinball-toss-coin-v4.png');
   logoTexture.colorSpace = THREE.SRGBColorSpace;
   logoTexture.minFilter = THREE.LinearFilter;
   logoTexture.magFilter = THREE.LinearFilter;
@@ -2091,13 +2062,26 @@ function bindUi() {
 
   bindPowerControl();
   bindFlippers();
+  window.addEventListener('blur', () => {
+    for (const id of ['left', 'right']) engine?.setFlipper(id, false);
+    document.querySelectorAll('[data-flipper]').forEach(button => button.classList.remove('pressed'));
+    powerPressed = false;
+    if (engine) engine.launcher.charging = false;
+    powerControl.classList.remove('pressed');
+  });
+
+  document.querySelector('#startSuperOver').addEventListener('click', () => {
+    if (match.status !== 'SUPER_OVER') return;
+    resultPanel.hidden = true;
+    beginInnings({ superOver: true });
+  });
 
   document.querySelector('#rematch').addEventListener('click', () => window.location.reload());
 
   window.addEventListener('keydown', (event) => {
     if (!engine) return;
 
-    if (isHumanBatting()) {
+    if (canBatNow()) {
       if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
         event.preventDefault();
         engine.setFlipper('left', true);
@@ -2166,7 +2150,7 @@ function bindFlippers() {
       button.classList.remove('pressed');
     };
     button.addEventListener('pointerdown', (event) => {
-      if (!isHumanBatting()) return;
+      if (!canBatNow()) return;
       event.preventDefault();
       engine?.setFlipper(id, true);
       button.classList.add('pressed');
@@ -2321,13 +2305,15 @@ async function chooseRole(choice) {
   await beginInnings();
 }
 
-async function beginInnings() {
-  match.startInnings();
+async function beginInnings({ superOver = false } = {}) {
+  if (superOver) {
+    if (!match.startSuperOver()) return;
+  } else match.startInnings();
   updateScoreboards();
   inningsIntro.hidden = false;
   document.querySelector('#inningsBatting').textContent = `${playerName(match.battingPlayerId)} BATTING`;
   document.querySelector('#inningsBowling').textContent = `${playerName(match.bowlingPlayerId)} BOWLING`;
-  inningsIntro.querySelector('p').textContent = `INNINGS ${match.inningsNumber}`;
+  inningsIntro.querySelector('p').textContent = match.superOverRound ? `SUPER OVER ${match.superOverRound}` : `INNINGS ${match.inningsNumber}`;
   await delay(rulesConfig.toss?.inningsIntroMs ?? 1200);
   inningsIntro.hidden = true;
   matchHud.hidden = false;
@@ -2335,7 +2321,7 @@ async function beginInnings() {
   prepareDelivery();
 }
 
-function prepareDelivery() {
+function prepareDelivery({ countdown = true } = {}) {
   if (!engine || match.currentInnings?.complete || ['MATCH_OVER', 'SUPER_OVER'].includes(match.status)) return;
   engine.resetBall();
   cpuBattingAI?.reset();
@@ -2346,7 +2332,8 @@ function prepareDelivery() {
   updateRoleControls();
 
   if (getPlayer(match.bowlingPlayerId).type === 'CPU') {
-    startCpuBowlingCountdown();
+    if (countdown) startCpuBowlingCountdown();
+    else launchCpuDelivery();
     return;
   }
 
@@ -2362,7 +2349,7 @@ async function startCpuBowlingCountdown() {
     if (token !== cpuDeliveryCountdownToken || match.deliveryOpen || match.currentInnings?.complete) return;
     showDeliveryCue(String(count), 'CPU BOWLING', 0);
     setScoreboard('GET READY', String(count));
-    await delay(700);
+    await delay(1000);
   }
 
   if (token !== cpuDeliveryCountdownToken || match.deliveryOpen || match.currentInnings?.complete) return;
@@ -2441,7 +2428,7 @@ function onDeadBall(reason) {
 
   clearTimeout(deliveryResetTimer);
   clearInterval(nextBallCountdownTimer);
-  startNextBallCountdown(() => prepareDelivery());
+  startNextBallCountdown(() => prepareDelivery({ countdown: false }));
 }
 
 function onDeliveryResolved(type) {
@@ -2468,12 +2455,13 @@ function onDeliveryResolved(type) {
     return;
   }
 
-  startNextBallCountdown(() => {
-    prepareDelivery();
-  });
+  deliveryResetTimer = window.setTimeout(() => {
+    startNextBallCountdown(() => prepareDelivery({ countdown: false }));
+  }, rulesConfig.delivery.resolveDelayMs);
 }
 
 async function startSecondInningsTransition() {
+  matchHud.hidden = true;
   clearInterval(nextBallCountdownTimer);
   nextBallClock.hidden = true;
   inputsLocked = true;
@@ -2481,7 +2469,7 @@ async function startSecondInningsTransition() {
   battingControls.hidden = true;
   engine?.freezeBall();
 
-  const first = match.innings?.[0];
+  const first = match.innings?.[match.roundStartIndex];
   const seconds = Math.max(1, Math.round(Number(rulesConfig.toss?.inningsBreakCountdownSeconds) || 5));
 
   inningsIntro.hidden = false;
@@ -2514,13 +2502,14 @@ async function startSecondInningsTransition() {
   await delay(650);
 
   inningsIntro.hidden = true;
+  matchHud.hidden = false;
   inputsLocked = false;
   prepareDelivery();
 }
 
 function startNextBallCountdown(onComplete) {
   clearInterval(nextBallCountdownTimer);
-  let remaining = 5;
+  let remaining = Math.max(1, Math.round((rulesConfig.delivery.betweenBallsMs || 3000) / 1000));
   nextBallSeconds.textContent = String(remaining);
   nextBallClock.hidden = false;
 
@@ -2545,8 +2534,15 @@ function showResult() {
   if (match.status === 'SUPER_OVER') {
     document.querySelector('#resultEyebrow').textContent = 'TIE';
     document.querySelector('#resultTitle').textContent = 'SUPER OVER READY';
-    document.querySelector('#resultDetail').textContent = 'The match is tied. Super Over is the next match state.';
+    document.querySelector('#resultDetail').textContent = `${match.superOverBalls} balls each. Highest score wins. A further tie starts another Super Over.`;
+    document.querySelector('#startSuperOver').hidden = false;
     setScoreboard('TIE', 'SUPER OVER');
+    return;
+  }
+  document.querySelector('#startSuperOver').hidden = true;
+  if (result.type === 'TIE') {
+    document.querySelector('#resultTitle').textContent = 'MATCH TIED';
+    document.querySelector('#resultDetail').textContent = 'Both sides finished level.';
     return;
   }
   const winner = playerName(result.winnerId);
@@ -2574,30 +2570,29 @@ function updateRoleControls() {
     button.disabled = !showBatting;
   });
 
-  const roleText = showBowling
-    ? `${playerName(state.bowlingPlayerId)} · BOWL NOW`
-    : showBatting
-      ? `${playerName(state.battingPlayerId)} · BAT NOW`
-      : ballLive
-        ? `${playerName(state.battingPlayerId)} BATTING`
-        : 'DELIVERY SETUP';
-
-  document.querySelector('#hudRole').textContent = roleText;
+  updateHudRole();
 }
+function updateHudRole() {
+  document.querySelector('#hudRole').textContent = isHumanBatting() ? 'YOUR ROLE' : 'CPU BATTING';
+  document.querySelector('#hudBowler').textContent = isHumanBatting() ? 'BATTING' : 'YOU BOWL';
+  document.querySelector('#hudState').textContent = match.deliveryOpen
+    ? (isHumanBatting() ? 'TAP LEFT / RIGHT' : 'BALL LIVE')
+    : (isHumanBatting() ? 'CPU PREPARING' : 'HOLD TO CHARGE');
+}
+
 function updateScoreboards() {
   const state = match.getState();
   const batting = playerName(state.battingPlayerId);
   const bowling = playerName(state.bowlingPlayerId);
   document.querySelector('#hudBatter').textContent = `${batting} · BATTING`;
-  document.querySelector('#hudRole').textContent = bowling;
-  document.querySelector('#hudBowler').textContent = 'BOWLING';
+  updateHudRole();
   document.querySelector('#hudScore').textContent = `${state.score.runs}/${state.score.wickets}`;
-  document.querySelector('#hudInnings').textContent = `INNINGS ${Math.max(1, state.innings)}`;
+  document.querySelector('#hudInnings').textContent = state.superOverRound ? `SUPER OVER ${state.superOverRound} · INN ${state.roundInnings}` : `INNINGS ${Math.max(1, state.innings)}`;
   document.querySelector('#hudTarget').textContent = state.target === null ? 'TARGET —' : `TARGET ${state.target}`;
   document.querySelector('#hudNeed').textContent = state.target === null
     ? `BALL ${Math.min(state.score.balls + 1, state.ballsPerInnings)} / ${state.ballsPerInnings}`
     : `NEED ${state.requiredRuns} FROM ${state.ballsRemaining}`;
-  document.querySelector('#hudState').textContent = state.status.replaceAll('_', ' ');
+
   if (state.innings > 0) setScoreboard(`INNINGS ${state.innings}`, `${state.score.runs}/${state.score.wickets}`);
 }
 
@@ -2743,43 +2738,50 @@ function syncFlipper(object, state, cfg) {
 }
 
 function frameWorld(size) {
-  const span = Math.max(size.x, size.z, 1);
-  const viewportWidth = window.visualViewport?.width || window.innerWidth;
-  const viewportHeight = window.visualViewport?.height || window.innerHeight;
-  const aspect = viewportWidth / viewportHeight;
-  const portrait = aspect < 0.85;
-
-  camera.aspect = aspect;
-  camera.fov = portrait ? 50 : 40;
-  camera.position.set(
-    0,
-    portrait
-      ? Math.max(size.y * 1.16, span * 0.72)
-      : Math.max(size.y * 1.0, span * 0.56),
-    portrait
-      ? Math.max(span * 1.30, 7.5)
-      : Math.max(span * 0.96, 5.7)
-  );
-  camera.lookAt(
-    0,
-    portrait ? Math.max(size.y * 0.30, 0.56) : Math.max(size.y * 0.24, 0.48),
-    portrait ? -0.18 : -0.08
-  );
-  camera.updateProjectionMatrix();
+  const rect = canvas.getBoundingClientRect();
+  camera.aspect = rect.width / Math.max(1, rect.height);
+  camera.fov = 45;
+  const target = new THREE.Vector3(0, tableConfig?.playfield.surfaceY || 0.5, 0);
+  const portrait = camera.aspect < 0.85;
+  const direction = new THREE.Vector3(0, portrait ? 1.65 : 0.95, 1).normalize();
+  // Fit the playable table, including both bats, inside the unobscured canvas.
+  const bounds = tableConfig?.playfield.safetyBounds;
+  const minX = (bounds?.minX ?? -2.1) - 0.15;
+  const maxX = (bounds?.maxX ?? 2.1) + 0.15;
+  const minZ = bounds?.minZ ?? -3.8;
+  const maxZ = (bounds?.maxZ ?? 3.4) + 0.2;
+  const corners = [minX, maxX].flatMap(x => [minZ, maxZ].map(z =>
+    new THREE.Vector3(x, target.y, z)));
+  // Keep the textured seat banks in frame as well as the playable table.
+  modelRoot?.updateMatrixWorld(true);
+  modelRoot?.traverse((mesh) => {
+    if (portrait || !mesh.isMesh || !/^SeatBand_/.test(mesh.name)) return;
+    const box = new THREE.Box3().setFromObject(mesh);
+    for (const x of [box.min.x, box.max.x]) {
+      for (const z of [box.min.z, box.max.z]) corners.push(new THREE.Vector3(x, box.max.y + 0.16, z));
+    }
+  });
+  let distance = Math.max(size.z, 5);
+  for (let i = 0; i < 80; i += 1) {
+    camera.position.copy(target).addScaledVector(direction, distance);
+    camera.lookAt(target);
+    camera.updateProjectionMatrix();
+    camera.updateMatrixWorld();
+    if (corners.every(p => {
+      const projected = p.clone().project(camera);
+      return Math.abs(projected.x) <= 0.93 && Math.abs(projected.y) <= 0.90;
+    })) break;
+    distance *= 1.035;
+  }
 }
 
 const reframeViewport = () => {
+  const rect = canvas.getBoundingClientRect();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight, false);
-  if (worldFrameSize) {
-    frameWorld(worldFrameSize);
-  } else {
-    const viewportWidth = window.visualViewport?.width || window.innerWidth;
-    const viewportHeight = window.visualViewport?.height || window.innerHeight;
-    camera.aspect = viewportWidth / viewportHeight;
-    camera.updateProjectionMatrix();
-  }
+  renderer.setSize(rect.width, rect.height, false);
+  if (worldFrameSize) frameWorld(worldFrameSize);
 };
+new ResizeObserver(reframeViewport).observe(canvas);
 
 window.addEventListener('resize', reframeViewport, { passive: true });
 window.visualViewport?.addEventListener('resize', reframeViewport, { passive: true });
@@ -2797,7 +2799,7 @@ function animate(now) {
     match.deliveryOpen &&
     getPlayer(match.battingPlayerId)?.type === 'CPU'
   );
-  cpuBattingAI?.update(now, cpuBatting);
+  cpuBattingAI?.update((engine?.simTime ?? 0) * 1000, cpuBatting);
 
   if (adapter) {
     adapter.step(dt);

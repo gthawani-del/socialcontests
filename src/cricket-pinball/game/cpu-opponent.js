@@ -59,11 +59,13 @@ export function createCpuBattingAI({
     // CPU only reacts to an incoming delivery moving toward the batting end.
     if (ball.velocity.z <= 0) return;
 
-    const triggerZ = Number(preset.battingTriggerZ ?? 1.45);
+    const centreBand = Number(preset.battingCentreBand ?? 0.18);
+    const triggerZ = Number(Math.abs(ball.position.x) <= centreBand
+      ? preset.battingCentreTriggerZ ?? preset.battingTriggerZ ?? 1.45
+      : preset.battingTriggerZ ?? 1.45);
     const maxTriggerZ = Number(preset.battingMaxZ ?? 2.48);
     if (ball.position.z < triggerZ || ball.position.z > maxTriggerZ) return;
 
-    const centreBand = Number(preset.battingCentreBand ?? 0.18);
     const missChance = clamp(Number(preset.battingMissChance ?? 0.12), 0, 0.75);
     if (Math.random() < missChance) {
       cooldownUntil = nowMs + Number(preset.battingCooldownMs ?? 220);

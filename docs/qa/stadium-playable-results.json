@@ -1,0 +1,218 @@
+{
+  "art": {
+    "pitchLengthMetres": 20.116800723957567,
+    "pitchWidthMetres": 3.048000034278294,
+    "battingZ": 2.43,
+    "bowlingZ": -0.22,
+    "rampMouthHeight": 0,
+    "rampSurfaceParityError": 5.7549312426630195e-8,
+    "rampUpwardNormals": true,
+    "brandedBats": 2,
+    "scope": "Runtime geometry review; stadium architecture remains the earlier GLB."
+  },
+  "shots": [
+    {
+      "line": "LEFT",
+      "side": "left",
+      "delay": 84,
+      "runs": 1,
+      "maxHeight": 0,
+      "result": {
+        "running": false,
+        "match": {
+          "format": "ONE_OVER",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 6,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "DELIVERY_SETUP",
+          "innings": 1,
+          "roundInnings": 1,
+          "superOverRound": 0,
+          "score": {
+            "runs": 1,
+            "wickets": 0,
+            "balls": 1
+          },
+          "target": null,
+          "requiredRuns": null,
+          "ballsRemaining": 5,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "toss": null,
+          "result": null,
+          "deliveryOpen": false
+        },
+        "contactCount": 1,
+        "rampEntries": 0,
+        "ball": {
+          "x": -0.5798927487975039,
+          "z": -0.0588515024175678,
+          "height": 0
+        },
+        "score": {
+          "number": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 1,
+          "wickets": 0,
+          "balls": 1,
+          "complete": false
+        },
+        "alignment": [
+          2.0540180827887784e-16,
+          1.4946834900704544e-16
+        ]
+      }
+    },
+    {
+      "line": "LEFT",
+      "side": "left",
+      "delay": 72,
+      "runs": 4,
+      "maxHeight": 0.015750000000000004,
+      "result": {
+        "running": false,
+        "match": {
+          "format": "ONE_OVER",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 6,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "DELIVERY_SETUP",
+          "innings": 1,
+          "roundInnings": 1,
+          "superOverRound": 0,
+          "score": {
+            "runs": 4,
+            "wickets": 0,
+            "balls": 1
+          },
+          "target": null,
+          "requiredRuns": null,
+          "ballsRemaining": 5,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "toss": null,
+          "result": null,
+          "deliveryOpen": false
+        },
+        "contactCount": 1,
+        "rampEntries": 1,
+        "ball": {
+          "x": -1.179,
+          "z": -1.9125,
+          "height": 0.015750000000000004
+        },
+        "score": {
+          "number": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 4,
+          "wickets": 0,
+          "balls": 1,
+          "complete": false
+        },
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      }
+    },
+    {
+      "line": "CENTRE",
+      "side": "left",
+      "delay": 84,
+      "runs": 6,
+      "maxHeight": 0.48825,
+      "result": {
+        "running": false,
+        "match": {
+          "format": "ONE_OVER",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 6,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "DELIVERY_SETUP",
+          "innings": 1,
+          "roundInnings": 1,
+          "superOverRound": 0,
+          "score": {
+            "runs": 6,
+            "wickets": 0,
+            "balls": 1
+          },
+          "target": null,
+          "requiredRuns": null,
+          "ballsRemaining": 5,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "toss": null,
+          "result": null,
+          "deliveryOpen": false
+        },
+        "contactCount": 2,
+        "rampEntries": 1,
+        "ball": {
+          "x": 1.179,
+          "z": -1.9125,
+          "height": 0.48825
+        },
+        "score": {
+          "number": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 6,
+          "wickets": 0,
+          "balls": 1,
+          "complete": false
+        },
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      }
+    }
+  ],
+  "layout": {
+    "width": 844,
+    "height": 390,
+    "scrollWidth": 844,
+    "controls": {
+      "x": 584,
+      "y": 76.40625,
+      "width": 260,
+      "height": 297.1875,
+      "top": 76.40625,
+      "right": 844,
+      "bottom": 373.59375,
+      "left": 584
+    }
+  },
+  "errors": [],
+  "scope": "Existing GLB with measured runtime pitch, branded bats and collision-derived six ramp; real button inputs, deterministic simulation stepping. Not a frame-rate or real-device performance test."
+}

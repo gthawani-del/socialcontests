@@ -18,11 +18,11 @@ export function installHowToPinCricket({ root = document.body, context = 'lobby'
             <section><span class="how-pin-num">03</span><h3>WHEN YOU BAT</h3><p>Use the <b>left and right bats</b> to strike the incoming ball. Keyboard: <b>A / ←</b> and <b>D / →</b>.</p><p class="how-pin-rule">No bat contact = no runs.</p></section>
             <section><span class="how-pin-num">04</span><h3>SCORING</h3><p>Runs only count <b>after a legal bat hit</b>. Send the returning ball into a marked scoring target.</p><div class="how-pin-scores"><b>1</b><b>2</b><b>4</b><b>6</b></div></section>
             <section><span class="how-pin-num">05</span><h3>WICKETS & DOT BALLS</h3><p>A genuine wicket drain is a <b>WICKET</b>. A stalled or timed-out delivery is a <b>DOT BALL</b>. Maximum <b>2 wickets</b> per innings.</p></section>
-            <section><span class="how-pin-num">06</span><h3>GUTTER RESCUE</h3><p>Before bat contact, the first side-gutter trap gets <b>one rescue bounce</b>. If trapped again, it is a <b>DOT</b> and the ball counts.</p></section>
+            <section><span class="how-pin-num">06</span><h3>GUTTER RESCUE</h3><p>A delivery that never reaches the playable bat area is a <b>DEAD BALL</b> and is re-bowled. A playable delivery that times out counts as a <b>DOT</b>.</p></section>
             <section><span class="how-pin-num">07</span><h3>SECOND INNINGS</h3><p>After Innings 1, roles switch. The chase target is <b>first-innings score + 1</b>. A visible countdown starts Innings 2.</p></section>
             <section><span class="how-pin-num">08</span><h3>WINNING</h3><p>The chasing side wins by reaching the target. Otherwise the defending side wins when the chase ends. A tie goes to the configured <b>Super Over</b>.</p></section>
           </div>
-          <aside class="how-pin-note"><b>PACE OF PLAY</b><span>Every resolved delivery is followed by a 5-second next-ball countdown. Technical safety resets do not award runs.</span></aside>
+          <aside class="how-pin-note"><b>PACE OF PLAY</b><span>Every resolved delivery is followed by a 3-second next-ball countdown. Technical safety resets do not award runs.</span></aside>
         </div>
         <footer class="how-pin-footer"><button type="button" data-how-close>${actionLabel}</button></footer>
       </section>
