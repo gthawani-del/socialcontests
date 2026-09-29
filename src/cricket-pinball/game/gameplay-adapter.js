@@ -14,6 +14,7 @@ export function createCricketGameplayAdapter({
   let liveStartedAt = null;
   let stalledSince = null;
   let shotLive = false;
+  let shotStartedAt = null;
   let becameHittable = false;
   let gutterEnteredAt = null;
   let lastBatFeedback = null;
@@ -25,6 +26,7 @@ export function createCricketGameplayAdapter({
     liveStartedAt = engine.simTime * 1000;
     stalledSince = null;
     shotLive = false;
+    shotStartedAt = null;
     becameHittable = false;
     gutterEnteredAt = null;
     lastBatFeedback = null;
@@ -169,6 +171,16 @@ export function createCricketGameplayAdapter({
       stalledSince = null;
     }
 
+    const postContactMaxMs = cricketRules.delivery?.postContactMaxMs ?? 4200;
+    if (shotLive && shotStartedAt !== null && now - shotStartedAt >= postContactMaxMs) {
+      resolve('DOT', {
+        reason: 'POST_CONTACT_TIMEOUT',
+        contact: lastBatFeedback,
+        elapsedAfterContactMs: Math.round(now - shotStartedAt)
+      });
+      return;
+    }
+
     const maxLiveMs = cricketRules.delivery?.maxLiveMs ?? 10000;
     if (liveStartedAt !== null && now - liveStartedAt >= maxLiveMs) {
       if (becameHittable) {
@@ -203,6 +215,7 @@ export function createCricketGameplayAdapter({
     ) {
       becameHittable = true;
       shotLive = true;
+      shotStartedAt = engine.simTime * 1000;
       const feedback = applyBatContactSkill(engine, hit, cricketRules.batting || {});
       if (feedback) {
         lastBatFeedback = feedback;
