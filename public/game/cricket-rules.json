@@ -354,7 +354,7 @@
       "ONE": 0,
       "TWO": 0.08,
       "FOUR": 0.45,
-      "SIX": 0.78
+      "SIX": 0.75
     },
     "directionalOutcomes": [
       "FOUR",
@@ -380,7 +380,7 @@
       "MEDIUM": {
         "qualityBonus": {
           "FOUR": 0.03,
-          "SIX": 0.05
+          "SIX": 0
         },
         "impactBonus": {
           "FOUR": 0.05,
@@ -390,7 +390,7 @@
       "HARD": {
         "qualityBonus": {
           "FOUR": 0.08,
-          "SIX": 0.1
+          "SIX": 0.03
         },
         "impactBonus": {
           "FOUR": 0.1,
