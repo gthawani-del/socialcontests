@@ -276,8 +276,8 @@
     "impactWeight": 0.2,
     "timingDirectionWeight": 0.7,
     "angleDirectionWeight": 0.3,
-    "steeringStrength": 0.13,
-    "minPowerMultiplier": 0.92,
-    "maxPowerMultiplier": 1.12
+    "steeringStrength": 0.035,
+    "minPowerMultiplier": 0.98,
+    "maxPowerMultiplier": 1.06
   }
 }
