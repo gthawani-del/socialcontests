@@ -62,13 +62,22 @@ export function applyBatContactSkill(engine, hit, config = {}) {
 
   const steer = clamp(Number(config.steeringStrength ?? .13), 0, .35);
   const maxLateralRatio = clamp(Number(config.maxLateralRatio ?? .92), .55, .98);
+  const steeringActivationRatio = clamp(Number(config.steeringActivationRatio ?? .82), .4, .98);
   const currentLateralRatio = clamp(velocity.x / speed, -1, 1);
-  const targetLateralRatio = clamp(
-    currentLateralRatio + feedback.directionBias * steer,
-    -maxLateralRatio,
-    maxLateralRatio
-  );
-  const targetSpeed = speed * feedback.powerMultiplier;
+  const targetLateralRatio = Math.abs(currentLateralRatio) >= steeringActivationRatio
+    ? currentLateralRatio
+    : clamp(
+        currentLateralRatio + feedback.directionBias * steer,
+        -maxLateralRatio,
+        maxLateralRatio
+      );
+
+  const maxBallSpeed = Math.max(.01, Number(engine.config?.ball?.maxSpeed ?? Infinity));
+  const nearMaxSpeed = Number.isFinite(maxBallSpeed) && speed >= maxBallSpeed * .97;
+  const effectivePowerMultiplier = nearMaxSpeed && feedback.powerMultiplier < 1
+    ? 1
+    : feedback.powerMultiplier;
+  const targetSpeed = speed * effectivePowerMultiplier;
   const zSign = velocity.z < 0 ? -1 : 1;
 
   velocity.x = targetLateralRatio * targetSpeed;
@@ -77,6 +86,7 @@ export function applyBatContactSkill(engine, hit, config = {}) {
 
   return {
     ...feedback,
+    effectivePowerMultiplier,
     speedBefore: speed,
     speedAfter: Math.hypot(velocity.x, velocity.z),
     lateralRatioBefore: currentLateralRatio,
