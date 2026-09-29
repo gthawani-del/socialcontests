@@ -1,0 +1,38 @@
+{
+  "url": "https://socialcontests.vercel.app/cricket-pinball/play/?format=ONE_OVER&difficulty=HARD",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "model": {
+    "url": "https://socialcontests.vercel.app/models/cricket-stadium-colosseum-r6.glb",
+    "status": 200,
+    "sizeBytes": 3190396
+  },
+  "errors": [],
+  "format": "ONE_OVER",
+  "difficulty": "HARD",
+  "flow": "demo gate -> toss -> batting selection -> delivery enabled",
+  "layout": {
+    "canvas": {
+      "x": 0,
+      "y": 106,
+      "width": 390,
+      "height": 599,
+      "bottom": 705
+    },
+    "controls": {
+      "x": 0,
+      "y": 705,
+      "width": 390,
+      "height": 139,
+      "bottom": 844
+    }
+  },
+  "tests": {
+    "passed": 67,
+    "failed": 0
+  },
+  "deployment": "Vercel success",
+  "note": "Sandbox npm build was not used as deployment evidence because sandbox Node 20.9.0 is below the Vite runtime requirement."
+}
