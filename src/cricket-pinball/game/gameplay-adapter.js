@@ -190,7 +190,7 @@ export function createCricketGameplayAdapter({
       if (
         elapsedAfterContactMs >= minFlightMs &&
         engine.ball.velocity.z >= returnVelocityZ &&
-        engine.ramp === null
+        engine.ramp == null
       ) {
         resolveFieldedShot('FIELD_RETURN');
         return;
