@@ -21,9 +21,11 @@ export function evaluateScoringOpportunity(zone = {}, feedback = null, config = 
     directionQualified = directionalAlignment >= Number(config.minDirectionalAlignment ?? .15);
   }
 
+  const requiredIntent = config.requiredIntent?.[outcome] || null;
+  const intentQualified = !requiredIntent || feedback.shotIntent === requiredIntent;
   const qualityQualified = quality >= minQuality;
   const impactQualified = impactScore >= minImpactScore;
-  const qualified = qualityQualified && impactQualified && directionQualified;
+  const qualified = qualityQualified && impactQualified && directionQualified && intentQualified;
 
   return {
     qualified,
@@ -33,15 +35,20 @@ export function evaluateScoringOpportunity(zone = {}, feedback = null, config = 
     impactScore,
     minImpactScore,
     directionalAlignment,
+    requiredIntent,
+    shotIntent: feedback.shotIntent || null,
     qualityQualified,
     impactQualified,
     directionQualified,
+    intentQualified,
     reason: qualified
       ? 'QUALIFIED'
-      : !qualityQualified
-        ? 'CONTACT_QUALITY'
-        : !impactQualified
-          ? 'CONTACT_IMPACT'
-          : 'SHOT_DIRECTION'
+      : !intentQualified
+        ? 'SHOT_INTENT'
+        : !qualityQualified
+          ? 'CONTACT_QUALITY'
+          : !impactQualified
+            ? 'CONTACT_IMPACT'
+            : 'SHOT_DIRECTION'
   };
 }
