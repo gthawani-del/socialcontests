@@ -31,7 +31,7 @@ try {
     return /BALL\s+1\s*\/\s*6/i.test(text);
   }, { timeout: 10000 });
 
-  assert(models.some(m => m.url.endsWith('cricket-stadium-colosseum-r12.glb') && m.status === 200));
+  assert(models.some(m => m.url.endsWith('cricket-stadium-colosseum-r13.glb') && m.status === 200));
   assert.deepEqual(errors, []);
   const layout = await page.evaluate(() => ({
     canvas: document.querySelector('canvas')?.getBoundingClientRect().toJSON(),
@@ -45,7 +45,7 @@ try {
   await page.screenshot({ path: `docs/qa/stadium-${label}-route.png` });
   const resourceTiming = await page.evaluate(() => {
     const entry = performance.getEntriesByType('resource')
-      .find(item => item.name.endsWith('cricket-stadium-colosseum-r12.glb'));
+      .find(item => item.name.endsWith('cricket-stadium-colosseum-r13.glb'));
     return entry ? {
       durationMs: Math.round(entry.duration),
       transferSize: entry.transferSize || null,
