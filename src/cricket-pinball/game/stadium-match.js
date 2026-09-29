@@ -32,7 +32,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, prac
     document.querySelector('#score').innerHTML = `<div><small>${state.innings ? `${name(match.currentInnings?.battingPlayerId || state.battingPlayerId)} batting` : 'Score'}</small><strong>${s.runs} / ${s.wickets}</strong></div><div><small>Ball</small><strong>${s.balls} <span>/ ${state.ballsPerInnings}</span></strong></div><div><small>${state.target !== null ? 'Target' : 'Innings'}</small><strong>${state.target !== null ? state.target : state.innings ? state.roundInnings : '—'}</strong></div>`;
   }
   function show(title, body) { panel.hidden = false; panel.innerHTML = `<h2>${title}</h2>${body}`; }
-  function makeReady() { ready = true; panel.hidden = true; cue.textContent = humanBatting() ? 'You bat · prepare for the CPU delivery' : 'You bowl · select line and power'; controls(); hud(); }
+  function makeReady() { ready = true; panel.hidden = true; delete cue.dataset.contact; cue.textContent = humanBatting() ? 'You bat · prepare for the CPU delivery' : 'You bowl · select line and power'; controls(); hud(); }
   function afterDelivery(outcome) {
     running = false; ready = false; cpu.reset(); releaseBats(); hud(); controls(); cue.textContent = outcome;
     if (practice) { ready = !match.currentInnings.complete; controls(); return; }
@@ -56,7 +56,15 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, prac
     const cpuConfig = Object.fromEntries(Object.entries(rules.cpu).map(([id, preset]) => [id, { ...preset, battingCentreTriggerZ: 2.0 }]));
     cpu = createCpuBattingAI({ engine, tableConfig: table, difficulty, cpuConfig });
     adapter = createCricketGameplayAdapter({ engine, matchEngine: match, tableConfig: table, cricketRules: rules,
-      onResolved: afterDelivery, onDeadBall: () => afterDelivery('Dead ball · does not count') });
+      onResolved: afterDelivery,
+      onDeadBall: () => afterDelivery('Dead ball · does not count'),
+      onBatContact: feedback => {
+        cue.dataset.contact = feedback.timing;
+        cue.textContent = feedback.timing === 'PERFECT'
+          ? 'PERFECT CONTACT'
+          : `${feedback.timing} CONTACT`;
+      }
+    });
     running = false; ready = false; stepAccumulator = 0; cue.textContent = 'Choose your match settings'; controls(); hud();
   }
   function assign(choice) {
