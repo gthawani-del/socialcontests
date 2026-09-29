@@ -9,9 +9,9 @@ import { buildStadiumArt } from './stadium-art.js';
 
 const app = document.querySelector('#stadiumApp');
 const batIcon = '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m22 3 5 5-5 5-2-2-10 15-5-5L20 11l-2-2z"/></svg>';
-app.innerHTML = `<header><div><small>CRICKET PINBALL · DEVELOPMENT</small><h1>Cricket stadium</h1></div><button id="restart">Reset</button></header>
+app.innerHTML = `<header><div><small>CRICKET PINBALL</small><h1>Cricket stadium</h1></div><button id="restart">Reset</button></header>
 <section id="viewport" aria-label="Interactive stadium"><div id="loading" role="status">Loading stadium…</div><div id="score">0 / 0 <span>0 balls</span></div></section>
-<section class="controls"><p id="cue" role="status">Loading…</p><div class="setup"><label>Line<select id="line"><option>LEFT</option><option selected>CENTRE</option><option>RIGHT</option></select></label><label>Power <output id="powerValue">50%</output><input id="power" type="range" min="20" max="100" value="50"></label><button id="bowl" disabled>Bowl</button></div><div class="bats"><button id="leftBat" aria-label="Left bat">${batIcon}<span>Left bat</span></button><button id="rightBat" aria-label="Right bat">${batIcon}<span>Right bat</span></button></div><small>Hold bats or use left/right arrow keys. Stadium materials · gameplay review.</small></section>`;
+<section class="controls"><p id="cue" role="status">Loading…</p><div class="setup"><label>Line<select id="line"><option>LEFT</option><option selected>CENTRE</option><option>RIGHT</option></select></label><label>Power <output id="powerValue">50%</output><input id="power" type="range" min="20" max="100" value="50"></label><button id="bowl" disabled>Bowl</button></div><div class="bats"><button id="leftBat" aria-label="Left bat">${batIcon}<span>Left bat</span></button><button id="rightBat" aria-label="Right bat">${batIcon}<span>Right bat</span></button></div><small>Hold bats or use left/right arrow keys. </small></section>`;
 
 try {
   const [base, rules, gltf] = await Promise.all([
@@ -88,6 +88,6 @@ try {
       }) })
   };
 } catch (error) {
-  (document.querySelector('#loading') || document.querySelector('#cue')).textContent = `Could not load prototype: ${error.message}`;
+  (document.querySelector('#loading') || document.querySelector('#cue')).textContent = `Could not load stadium: ${error.message}`;
   document.querySelector('#cue').textContent = 'Reload to retry'; console.error(error);
 }

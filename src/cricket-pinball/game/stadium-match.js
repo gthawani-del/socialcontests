@@ -10,6 +10,9 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, prac
   document.querySelector('#viewport').append(panel);
   let match, adapter, cpu, running = false, ready = false, format = 'LAST_3', difficulty = 'MEDIUM', stepAccumulator = 0;
   const timers = new Set();
+  const requested = new URLSearchParams(location.search);
+  if (['LAST_3', 'ONE_OVER', 'TWO_OVER'].includes(requested.get('format'))) format = requested.get('format');
+  if (['EASY', 'MEDIUM', 'HARD'].includes(requested.get('difficulty'))) difficulty = requested.get('difficulty');
   const toss = createTossController();
   const delay = (fn, ms) => { const id = setTimeout(() => { timers.delete(id); fn(); }, ms); timers.add(id); };
   const name = id => id === 'player' ? 'You' : 'CPU';

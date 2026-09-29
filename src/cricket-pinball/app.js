@@ -43,7 +43,6 @@ app.innerHTML = `
 
       <aside class="cricket-lobby-panel" aria-label="Match setup">
         <div class="panel-kicker"><span>QUICK MATCH</span><b>SET YOUR MATCH</b></div>
-        <a href="/cricket-pinball/stadium-prototype" style="display:block;padding:14px 0;color:inherit;text-decoration:underline">Stadium preview · work in progress</a>
 
         <section class="quick-match" id="quickMatch" hidden>
           <div class="quick-summary">
