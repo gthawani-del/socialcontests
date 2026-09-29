@@ -13,12 +13,10 @@ export async function applyStadiumMaterials(model) {
   }
   const crowdMaterial = new THREE.MeshStandardMaterial({ map: crowd, color: '#8398b7', roughness: 1, side: THREE.DoubleSide });
   const fieldMaterial = new THREE.MeshStandardMaterial({ map: grass, color: '#9fbd7f', vertexColors: true, roughness: .93 });
-  const pitchMaterial = new THREE.MeshStandardMaterial({ color: '#b78a4f', roughness: .9, metalness: 0 });
   let terraces = 0;
   model.traverse(mesh => {
     if (!mesh.isMesh) return;
     if (mesh.name.startsWith('Crowd_Band')) { mesh.material = crowdMaterial; terraces++; }
-    if (mesh.name === 'Measured_Pitch') mesh.material = pitchMaterial;
     if (mesh.name === 'Arena_Field_Substrate') {
       const g = mesh.geometry, p = g.getAttribute('position');
       const uv = new Float32Array(p.count * 2), colors = new Float32Array(p.count * 3);
@@ -33,5 +31,5 @@ export async function applyStadiumMaterials(model) {
       g.setAttribute('color', new THREE.BufferAttribute(colors, 3)); mesh.material = fieldMaterial;
     }
   });
-  return { terraces, texture: crowd.image.src, grass: grass.image.src, model: 'colosseum-r7' };
+  return { terraces, texture: crowd.image.src, grass: grass.image.src, model: 'colosseum-r8' };
 }
