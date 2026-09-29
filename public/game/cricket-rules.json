@@ -1,5 +1,5 @@
 {
-  "version": 17,
+  "version": 18,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -33,7 +33,8 @@
       "FOUR": 1100,
       "SIX": 1350,
       "WICKET": 1350
-    }
+    },
+    "postContactMaxMs": 4200
   },
   "toss": {
     "coinMs": 2600,
@@ -339,7 +340,7 @@
       "ONE": 0,
       "TWO": 0.1,
       "FOUR": 0.42,
-      "SIX": 0.52
+      "SIX": 0.55
     },
     "minImpactScore": {
       "ONE": 0,
