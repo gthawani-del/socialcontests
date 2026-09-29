@@ -13,9 +13,10 @@ export function evaluateScoringOpportunity(zone = {}, feedback = null, config = 
 
   let directionQualified = true;
   let directionalAlignment = 1;
+  const routeProvesDirection = Boolean(zone.requiresRoute);
   const x = Number(zone.position?.[0] ?? 0);
   const directionalOutcomes = new Set(config.directionalOutcomes || ['FOUR', 'SIX']);
-  if (directionalOutcomes.has(outcome) && Math.abs(x) >= Number(config.directionalZoneMinX ?? .2)) {
+  if (!routeProvesDirection && directionalOutcomes.has(outcome) && Math.abs(x) >= Number(config.directionalZoneMinX ?? .2)) {
     const zoneSide = Math.sign(x);
     directionalAlignment = Number(feedback.directionBias ?? 0) * zoneSide;
     directionQualified = directionalAlignment >= Number(config.minDirectionalAlignment ?? .15);
@@ -35,6 +36,7 @@ export function evaluateScoringOpportunity(zone = {}, feedback = null, config = 
     impactScore,
     minImpactScore,
     directionalAlignment,
+    routeProvesDirection,
     requiredIntent,
     shotIntent: feedback.shotIntent || null,
     qualityQualified,
