@@ -14,6 +14,19 @@ export class StadiumEngine extends PinballEngine {
       return { ...route, points, length };
     });
     this.deliveryVariation = null;
+    this.baseFlipperRadii = new Map(
+      [...this.flippers.entries()].map(([id, state]) => [id, state.config.radius])
+    );
+    this.difficulty = 'MEDIUM';
+  }
+
+  setDifficulty(difficulty = 'MEDIUM', config = {}) {
+    this.difficulty = String(difficulty || 'MEDIUM').toUpperCase();
+    const multiplier = Math.max(.85, Math.min(1.35, Number(config.batRadiusMultiplier ?? 1)));
+    for (const [id, state] of this.flippers.entries()) {
+      const base = this.baseFlipperRadii.get(id) ?? state.config.radius;
+      state.config.radius = base * multiplier;
+    }
   }
 
   resetBall() {
