@@ -21,7 +21,7 @@ try {
   const [base, rules, gltf] = await Promise.all([
     fetch('/game/cricket-table.json').then(r => r.json()),
     fetch('/game/cricket-rules.json').then(r => r.json()),
-    new GLTFLoader().loadAsync('/models/cricket-stadium-colosseum-r6.glb', progress => { if (progress.total) document.querySelector('#loading').textContent = `Loading stadium ${Math.round(progress.loaded / progress.total * 100)}%`; })
+    new GLTFLoader().loadAsync('/models/cricket-stadium-colosseum-r7.glb', progress => { if (progress.total) document.querySelector('#loading').textContent = `Loading stadium ${Math.round(progress.loaded / progress.total * 100)}%`; })
   ]);
   const table = createStadiumTable(base), engine = new StadiumEngine(table);
   const scene = new THREE.Scene(); scene.background = new THREE.Color('#030916'); scene.fog = new THREE.Fog('#030916', 7.5, 16);
@@ -30,7 +30,7 @@ try {
   const art = buildStadiumArt(scene, model, table);
   model.traverse(o => { if (o.isLight) o.intensity *= o.isSpotLight ? .022 : .62; });
   scene.add(new THREE.HemisphereLight(0xb8d3f5, 0x26331f, 1.12));
-  const key = new THREE.DirectionalLight(0xffdfad, 1.65); key.position.set(-4, 7, 3); scene.add(key);
+  const key = new THREE.DirectionalLight(0xffd79a, 1.8); key.position.set(-4, 7, 3); scene.add(key);
   key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
   Object.assign(key.shadow.camera, { left: -4, right: 4, top: 5, bottom: -5, near: .1, far: 20 });
   key.shadow.normalBias = .015;
@@ -39,10 +39,10 @@ try {
   const ball = new THREE.Mesh(new THREE.SphereGeometry(table.ball.radius, 20, 12), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .35 })); scene.add(ball);
   const seam = new THREE.Mesh(new THREE.TorusGeometry(table.ball.radius * .99, .0025, 5, 32), new THREE.MeshStandardMaterial({ color: 0xb73d3c })); ball.add(seam);
   ball.castShadow = true;
-  const camera = new THREE.PerspectiveCamera(40, 1, .1, 50); camera.near = .1; camera.far = 50;
+  const camera = new THREE.PerspectiveCamera(44, 1, .1, 50); camera.near = .1; camera.far = 50;
   const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.18;
   const pmrem = new THREE.PMREMGenerator(renderer);
   const environment = new RoomEnvironment();
   scene.environment = pmrem.fromScene(environment, .04).texture; scene.environmentIntensity = .44;
@@ -80,13 +80,13 @@ try {
   function resize() {
     const { width, height } = viewport.getBoundingClientRect(), aspect = width / height;
     camera.aspect = aspect;
-    const target = new THREE.Vector3(0, .18, -.42), back = new THREE.Vector3(0, .69, .724).normalize();
+    const target = new THREE.Vector3(0, .20, -.34), back = new THREE.Vector3(0, .50, .866).normalize();
     const up = new THREE.Vector3(0, back.z, -back.y), tangent = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
     const critical = [[-1.66,0,0],[1.66,0,0],[0,1.78,-3.32],[0,0,2.85],[-1.02,.16,2.22],[1.02,.16,2.22]];
     let distance = 0;
     for (const point of critical) {
       const p = new THREE.Vector3(...point).sub(target);
-      distance = Math.max(distance, p.dot(back) + Math.abs(p.x) / (tangent * aspect * .99), p.dot(back) + Math.abs(p.dot(up)) / (tangent * .99));
+      distance = Math.max(distance, p.dot(back) + Math.abs(p.x) / (tangent * aspect * 1.08), p.dot(back) + Math.abs(p.dot(up)) / (tangent * 1.08));
     }
     camera.position.copy(target).addScaledVector(back, distance); camera.lookAt(target);
     camera.updateProjectionMatrix(); renderer.setSize(width, height); render();
