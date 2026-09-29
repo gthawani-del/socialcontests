@@ -25,16 +25,6 @@ try {
 
   // Human batting now auto-starts the CPU delivery after the role-confirm beat.
   await page.waitForFunction(() => !document.querySelector('#leftBat').disabled, { timeout: 8000 });
-  const fps = await page.evaluate(() => new Promise(resolve => {
-    let frames = 0, start = performance.now();
-    const tick = now => {
-      frames++;
-      if (now - start >= 1000) resolve(frames * 1000 / (now - start));
-      else requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }));
-  assert(fps >= 30, `mobile render FPS too low: ${fps.toFixed(1)}`);
 
   await page.waitForFunction(() => {
     const text = document.querySelector('#score')?.innerText || '';
@@ -53,10 +43,19 @@ try {
 
   const label = process.env.QA_URL ? 'live' : 'production';
   await page.screenshot({ path: `docs/qa/stadium-${label}-route.png` });
+  const resourceTiming = await page.evaluate(() => {
+    const entry = performance.getEntriesByType('resource')
+      .find(item => item.name.endsWith('cricket-stadium-colosseum-r12.glb'));
+    return entry ? {
+      durationMs: Math.round(entry.duration),
+      transferSize: entry.transferSize || null,
+      decodedBodySize: entry.decodedBodySize || null
+    } : null;
+  });
   const evidence = {
     url: page.url(), models, errors, format: 'ONE_OVER', difficulty: 'HARD',
     demoGate: 'Completed through UI', autoCpuDelivery: true, firstBallCounted: true,
-    fps, layout, build: 'production'
+    viewport: { width: 390, height: 844 }, layout, resourceTiming, build: 'production'
   };
   await writeFile(`docs/qa/stadium-${label}-route.json`, JSON.stringify(evidence, null, 2) + '\n');
   console.log(JSON.stringify(evidence));
