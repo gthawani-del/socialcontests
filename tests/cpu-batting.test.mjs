@@ -51,7 +51,7 @@ test('CPU prediction uses the projected ball side rather than a fixed outcome', 
   engine.ball.position.z = 1.6;
   engine.ball.velocity.x = -1.6;
   engine.ball.velocity.z = 3;
-  const ai = createCpuBattingAI({ engine, difficulty: 'HARD', cpuConfig: rules.cpu, random: () => .99 });
+  const ai = createCpuBattingAI({ engine, difficulty: 'HARD', cpuConfig: rules.cpu, random: () => .5 });
   ai.update(0, true);
   assert.equal(ai.getState().scheduledSide, 'left');
 });
