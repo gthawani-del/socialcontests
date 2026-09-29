@@ -1,5 +1,5 @@
 {
-  "version": 14,
+  "version": 15,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -299,7 +299,12 @@
     "angleDirectionWeight": 0.3,
     "steeringStrength": 0.035,
     "minPowerMultiplier": 0.98,
-    "maxPowerMultiplier": 1.06
+    "maxPowerMultiplier": 1.06,
+    "attackQualityMin": 0.42,
+    "attackImpactMin": 0.55,
+    "attackBaseRisk": 0.04,
+    "attackMistimeRisk": 0.22,
+    "attackMaxRisk": 0.3
   },
   "scoringSkill": {
     "enabled": true,
@@ -320,6 +325,10 @@
       "SIX"
     ],
     "directionalZoneMinX": 0.2,
-    "minDirectionalAlignment": 0.15
+    "minDirectionalAlignment": 0.15,
+    "requiredIntent": {
+      "FOUR": "ATTACK",
+      "SIX": "ATTACK"
+    }
   }
 }
