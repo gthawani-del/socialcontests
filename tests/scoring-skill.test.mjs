@@ -4,7 +4,7 @@ import { evaluateScoringOpportunity } from '../src/cricket-pinball/game/scoring-
 
 const cfg = {
   enabled: true,
-  minQuality: { ONE: 0, TWO: .10, FOUR: .42, SIX: .52 },
+  minQuality: { ONE: 0, TWO: .10, FOUR: .42, SIX: .55 },
   minImpactScore: { ONE: 0, TWO: .08, FOUR: .45, SIX: .65 },
   directionalOutcomes: ['FOUR', 'SIX'],
   directionalZoneMinX: .2,
@@ -40,4 +40,33 @@ test('safe intent cannot unlock a boundary even with enough raw impact', () => {
   const result = evaluateScoringOpportunity({ outcome: 'FOUR', position: [-.7, 0] }, safe, cfg);
   assert.equal(result.qualified, false);
   assert.equal(result.reason, 'SHOT_INTENT');
+});
+
+test('physical ramp route is directional proof even when contact bias disagrees', () => {
+  const perfectButNeutral = { quality: .97, impactScore: 1, directionBias: .04, shotIntent: 'ATTACK' };
+  const four = evaluateScoringOpportunity(
+    { id: 'four-ramp', outcome: 'FOUR', position: [-1.1, -1.9], requiresRoute: 'four-ramp' },
+    perfectButNeutral,
+    cfg
+  );
+  const six = evaluateScoringOpportunity(
+    { id: 'six-ramp', outcome: 'SIX', position: [1.1, -1.9], requiresRoute: 'six-ramp' },
+    perfectButNeutral,
+    cfg
+  );
+  assert.equal(four.qualified, true);
+  assert.equal(four.routeProvesDirection, true);
+  assert.equal(six.qualified, true);
+  assert.equal(six.routeProvesDirection, true);
+});
+
+test('non-route boundary still uses contact direction', () => {
+  const wrongWay = { quality: .8, impactScore: .9, directionBias: .8, shotIntent: 'ATTACK' };
+  const result = evaluateScoringOpportunity(
+    { id: 'open-four', outcome: 'FOUR', position: [-.7, 0] },
+    wrongWay,
+    cfg
+  );
+  assert.equal(result.qualified, false);
+  assert.equal(result.reason, 'SHOT_DIRECTION');
 });
