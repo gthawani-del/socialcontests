@@ -1,13 +1,14 @@
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-export function evaluateScoringOpportunity(zone = {}, feedback = null, config = {}) {
+export function evaluateScoringOpportunity(zone = {}, feedback = null, config = {}, difficulty = 'MEDIUM') {
   const outcome = String(zone.outcome || '').toUpperCase();
   if (!config.enabled || !feedback || !['ONE', 'TWO', 'FOUR', 'SIX'].includes(outcome)) {
     return { qualified: true, outcome, reason: 'LEGACY_OR_UNSCOPED' };
   }
 
-  const minQuality = Number(config.minQuality?.[outcome] ?? 0);
-  const minImpactScore = Number(config.minImpactScore?.[outcome] ?? 0);
+  const adjustment = config.difficultyAdjustments?.[String(difficulty || 'MEDIUM').toUpperCase()] || {};
+  const minQuality = Number(config.minQuality?.[outcome] ?? 0) + Number(adjustment.qualityBonus?.[outcome] ?? 0);
+  const minImpactScore = Number(config.minImpactScore?.[outcome] ?? 0) + Number(adjustment.impactBonus?.[outcome] ?? 0);
   const quality = clamp(Number(feedback.quality ?? 0), 0, 1);
   const impactScore = clamp(Number(feedback.impactScore ?? 0), 0, 1);
 
@@ -31,6 +32,7 @@ export function evaluateScoringOpportunity(zone = {}, feedback = null, config = 
   return {
     qualified,
     outcome,
+    difficulty: String(difficulty || 'MEDIUM').toUpperCase(),
     quality,
     minQuality,
     impactScore,
