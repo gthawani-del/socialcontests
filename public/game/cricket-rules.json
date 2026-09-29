@@ -1,5 +1,5 @@
 {
-  "version": 18,
+  "version": 19,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -34,7 +34,15 @@
       "SIX": 1350,
       "WICKET": 1350
     },
-    "postContactMaxMs": 4200
+    "postContactMaxMs": 4200,
+    "fieldResolution": {
+      "minFlightMs": 500,
+      "returnVelocityZ": 0.35,
+      "oneDepthZ": 0.25,
+      "twoDepthZ": -1,
+      "oneMinQuality": 0.15,
+      "twoMinQuality": 0.35
+    }
   },
   "toss": {
     "coinMs": 2600,
@@ -346,7 +354,7 @@
       "ONE": 0,
       "TWO": 0.08,
       "FOUR": 0.45,
-      "SIX": 0.65
+      "SIX": 0.78
     },
     "directionalOutcomes": [
       "FOUR",
@@ -357,6 +365,38 @@
     "requiredIntent": {
       "FOUR": "ATTACK",
       "SIX": "ATTACK"
+    },
+    "difficultyAdjustments": {
+      "EASY": {
+        "qualityBonus": {
+          "FOUR": 0,
+          "SIX": 0
+        },
+        "impactBonus": {
+          "FOUR": 0,
+          "SIX": 0
+        }
+      },
+      "MEDIUM": {
+        "qualityBonus": {
+          "FOUR": 0.03,
+          "SIX": 0.05
+        },
+        "impactBonus": {
+          "FOUR": 0.05,
+          "SIX": 0.08
+        }
+      },
+      "HARD": {
+        "qualityBonus": {
+          "FOUR": 0.08,
+          "SIX": 0.1
+        },
+        "impactBonus": {
+          "FOUR": 0.1,
+          "SIX": 0.15
+        }
+      }
     }
   }
 }
