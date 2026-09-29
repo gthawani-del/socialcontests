@@ -4,7 +4,7 @@ import { evaluateScoringOpportunity } from '../src/cricket-pinball/game/scoring-
 
 const cfg = {
   enabled: true,
-  minQuality: { ONE: 0, TWO: .10, FOUR: .42, SIX: .55 },
+  minQuality: { ONE: 0, TWO: .10, FOUR: .42, SIX: .54 },
   minImpactScore: { ONE: 0, TWO: .08, FOUR: .45, SIX: .65 },
   directionalOutcomes: ['FOUR', 'SIX'],
   directionalZoneMinX: .2,
