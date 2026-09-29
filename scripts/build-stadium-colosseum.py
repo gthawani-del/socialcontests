@@ -145,7 +145,33 @@ for level,y in enumerate([.39,.75]):
     box('Pavilion_Balcony_Rail_%d'%level,0,y-.06,-2.81,1.78,.018,.02,gold)
 box('Pavilion_Cornice',0,1.16,-3.23,1.85,.08,.65,gold,.012)
 # A peaked pavilion roof with visible eaves and thickness.
-mesh('Pavilion_Peaked_Roof',[(-1,1.18,-2.86),(1,1.18,-2.86),(1,1.18,-3.61),(-1,1.18,-3.61),(0,1.77,-3.30),(0,1.24,-2.79)],[(0,1,5),(0,5,4),(5,1,4),(1,2,4),(2,3,4),(3,0,4),(3,2,1,0)],gold)
+# Sculpted pavilion canopy: shallow saddle shell with higher wing tips and rear lift.
+xs=[-1.08+i*(2.16/16) for i in range(17)]
+zs=[-2.82,-3.08,-3.34,-3.62]
+verts=[];faces=[]
+for zi,z in enumerate(zs):
+    depth=zi/(len(zs)-1)
+    for x in xs:
+        u=x/1.08;y=1.30+.24*(abs(u)**1.55)+.035*math.cos(u*math.pi*2)+.09*depth
+        verts.append((x,y,z))
+for r in range(len(zs)-1):
+    for i in range(len(xs)-1):
+        a=r*len(xs)+i;b=a+1;c=(r+1)*len(xs)+i+1;d=c-1;faces.append((a,b,c,d))
+canopy=mesh('Pavilion_Sculpted_Canopy',verts,faces,white)
+solid=canopy.modifiers.new('Canopy thickness','SOLIDIFY');solid.thickness=.022/S;solid.offset=-1
+bevel=canopy.modifiers.new('Soft canopy edge','BEVEL');bevel.width=.012/S;bevel.segments=2
+for label,z,depth in [('Front',zs[0],0),('Back',zs[-1],1)]:
+    pts=[]
+    for x in xs:
+        u=x/1.08;y=1.30+.24*(abs(u)**1.55)+.035*math.cos(u*math.pi*2)+.09*depth
+        pts.append((x,y+.008,z))
+    tube('Pavilion_Canopy_'+label+'_Trim',pts,.012,gold)
+for idx,x in enumerate([-1.0,-.66,-.33,0,.33,.66,1.0]):
+    pts=[];u=x/1.08
+    for zi,z in enumerate(zs):
+        depth=zi/(len(zs)-1);y=1.30+.24*(abs(u)**1.55)+.035*math.cos(u*math.pi*2)+.09*depth
+        pts.append((x,y+.012,z))
+    tube('Pavilion_Canopy_Rib_%02d'%idx,pts,.008,gold)
 box('Pavilion_Brand_Fascia',0,.98,-2.94,1.43,.15,.07,navy,.008)
 text('Pavilion_Brand','CRICKET PINBALL',0,.947,-2.898,.098,white)
 
@@ -230,14 +256,14 @@ for sign in [-1,1]:
     panel=box('Floodlight_Housing',x,1.80,z,.32,.22,.08,navy,.01)
     for col in range(5):
         for row in range(3):box('Floodlight_Lens',x+(col-2)*.053,1.80+(row-1)*.055,z+.046,.037,.036,.012,light,.003)
-    bpy.ops.object.light_add(type='SPOT',location=v(x,1.70,z));o=bpy.context.object;o.name='Stadium_Flood';o.data.energy=650;o.data.color=(.70,.82,1);o.data.spot_size=math.radians(90);o.rotation_euler=(Vector(v(0,0,0))-o.location).to_track_quat('-Z','Y').to_euler()
+    bpy.ops.object.light_add(type='SPOT',location=v(x,1.70,z));o=bpy.context.object;o.name='Stadium_Flood';o.data.energy=900;o.data.color=(.70,.82,1);o.data.spot_size=math.radians(90);o.rotation_euler=(Vector(v(0,0,0))-o.location).to_track_quat('-Z','Y').to_euler()
 # Small perimeter bollards, kept outside collision boundary.
 for i in range(32):
     a=i*math.tau/32;x=1.70*math.cos(a);z=2.91*math.sin(a)
     cylinder('Boundary_Bollard',x,.04,z,.014,.08,navy);cylinder('Boundary_Bollard_Lamp',x,.087,z,.015,.013,light)
 
 # Delivery cameras and motivated lighting.
-bpy.ops.object.camera_add(location=v(0,7.8,6.2));camera=bpy.context.object;camera.name='Mobile_Production_Camera';camera.rotation_euler=(Vector(v(0,.16,-.18))-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='ORTHO';camera.data.ortho_scale=6.6/S;scene.camera=camera
+bpy.ops.object.camera_add(location=v(0,6.9,5.75));camera=bpy.context.object;camera.name='Mobile_Production_Camera';camera.rotation_euler=(Vector(v(0,.18,-.42))-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='PERSP';camera.data.lens=48;scene.camera=camera
 bpy.ops.object.camera_add(location=v(0,14,0));overhead=bpy.context.object;overhead.name='Engineering_Overhead';overhead.rotation_euler=(Vector((0,0,0))-overhead.location).to_track_quat('-Z','Y').to_euler();overhead.data.type='ORTHO';overhead.data.ortho_scale=8.4/S
 bpy.ops.object.light_add(type='SUN',location=v(-3,6,1));key=bpy.context.object;key.name='Moonlight_Key';key.data.energy=2;key.rotation_euler=(.35,-.45,-.2)
 bpy.ops.object.light_add(type='SUN');fill=bpy.context.object;fill.name='Camera_Fill';fill.data.energy=.7;fill.rotation_euler=(.6,.4,2.3)
@@ -245,7 +271,7 @@ if not scene.world:scene.world=bpy.data.worlds.new('Stadium_Night')
 scene.world.use_nodes=True;scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.018,.028,.05,1);scene.world.node_tree.nodes['Background'].inputs[1].default_value=.35
 scene.render.engine='BLENDER_EEVEE';scene.render.resolution_x=600;scene.render.resolution_y=1000;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG';scene.view_settings.view_transform='AgX'
-scene['design_revision']='colosseum-03';scene['engine_scale']=S;scene['opening_schedule']=json.dumps(openings)
+scene['design_revision']='colosseum-06';scene['engine_scale']=S;scene['opening_schedule']=json.dumps(openings)
 # Fix normals after procedural generation; preserve editable modifiers and named parts.
 for o in list(scene.objects):
     if o.type=='MESH':
