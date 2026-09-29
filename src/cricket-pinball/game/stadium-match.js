@@ -32,7 +32,16 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     document.querySelector('#score').innerHTML = `<div><small>${state.innings ? `${name(match.currentInnings?.battingPlayerId || state.battingPlayerId)} batting` : 'Score'}</small><strong>${s.runs} / ${s.wickets}</strong></div><div><small>Ball</small><strong>${s.balls} <span>/ ${state.ballsPerInnings}</span></strong></div><div><small>${state.target !== null ? 'Target' : 'Innings'}</small><strong>${state.target !== null ? state.target : state.innings ? state.roundInnings : '—'}</strong></div>`;
   }
   function show(title, body) { panel.hidden = false; panel.innerHTML = `<h2>${title}</h2>${body}`; }
-  function makeReady() { ready = true; panel.hidden = true; delete cue.dataset.contact; cue.textContent = humanBatting() ? 'You bat · prepare for the CPU delivery' : 'You bowl · select line and power'; controls(); hud(); }
+  function makeReady() {
+    ready = true; panel.hidden = true; delete cue.dataset.contact;
+    cue.textContent = humanBatting() ? 'You bat · prepare for the CPU delivery' : 'You bowl · select line and power';
+    controls(); hud();
+    if (!practice && humanBatting()) {
+      delay(() => {
+        if (ready && !running && humanBatting() && match?.status === 'IN_PROGRESS') launch();
+      }, Number(rules.delivery.cpuDeliveryDelayMs ?? 850));
+    }
+  }
   function afterDelivery(outcome, metadata = {}) {
     running = false; ready = false; cpu.reset(); releaseBats(); hud(); controls();
     onFeedback({ type: 'OUTCOME', outcome, metadata });
@@ -54,7 +63,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
         show(result.type === 'TIE' ? 'Match tied' : `${name(result.winnerId)} won`, `<p>${result.type === 'TIE' ? 'Scores level.' : result.marginType === 'RUNS' ? `Won by ${result.margin} run${result.margin === 1 ? '' : 's'}.` : `Won with ${result.margin} ball${result.margin === 1 ? '' : 's'} remaining.`}</p><button id="playAgain">New match</button>`);
         document.querySelector('#playAgain').onclick = reset;
       } else makeReady();
-    }, rules.delivery.betweenBallsMs);
+    }, Number(rules.delivery.resultHoldMs?.[outcome] ?? rules.delivery.betweenBallsMs));
   }
   function newMatch() {
     adapter?.dispose(); cpu?.reset(); engine.resetBall(); onReset(); releaseBats();
