@@ -51,3 +51,29 @@ test('a safety reset after bat contact is a dot, never a wicket',()=>{
  const {engine,match,adapter}=flight({id:'test-run',outcome:'SIX',position:[0,0],radius:.22,terminal:true});
  engine.emit('drain',{safetyReset:true});assert.equal(match.currentInnings.balls,1);assert.equal(match.currentInnings.wickets,0);assert.equal(match.currentInnings.runs,0);adapter.dispose();
 });
+
+test('contacted ball resolves on the shorter post-contact timeout',()=>{
+ const config=structuredClone(table);
+ config.physics.gravity=[0,0];config.physics.linearDamping=0;config.physics.rollingFriction=0;
+ config.walls=[];config.bumpers=[];config.slingshots=[];config.flippers=[];
+ config.playfield.drain={minX:-1,maxX:1,z:100};
+ config.playfield.safetyBounds={minX:-100,maxX:100,minZ:-100,maxZ:100};
+ const engine=new PinballEngine(config);
+ const match=new CricketMatchEngine({players:[{id:'a'},{id:'b'}]});
+ match.assignRoles({battingPlayerId:'a',bowlingPlayerId:'b'});match.startInnings();match.beginDelivery();
+ let resolvedMetadata=null;
+ const adapter=createCricketGameplayAdapter({
+   engine,matchEngine:match,tableConfig:{...config,deliveryZones:[]},cricketRules:rules,
+   onResolved:(type,metadata)=>{resolvedMetadata={type,metadata};}
+ });
+ adapter.armDelivery();
+ Object.assign(engine.launcher,{awaitingLaunch:false,inLane:false,deliveryGuideActive:false});
+ engine.ball.active=true;engine.ball.position={x:0,z:1.9};engine.ball.velocity={x:.5,z:0};
+ engine.emit('flipper-hit',{id:'left',pressed:true,impact:3,x:0,z:1.9,swingProgress:.5});
+ for(let i=0;i<650&&!match.deliveryHistory.length;i++)adapter.step(1/120);
+ assert.equal(match.deliveryHistory[0]?.result.type,'DOT');
+ assert.equal(resolvedMetadata?.metadata.reason,'POST_CONTACT_TIMEOUT');
+ assert(resolvedMetadata.metadata.elapsedAfterContactMs>=rules.delivery.postContactMaxMs);
+ assert(resolvedMetadata.metadata.elapsedAfterContactMs<rules.delivery.maxLiveMs);
+ adapter.dispose();
+});
