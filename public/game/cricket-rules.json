@@ -1,5 +1,5 @@
 {
-  "version": 21,
+  "version": 22,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -39,9 +39,9 @@
       "minFlightMs": 500,
       "returnVelocityZ": 0.35,
       "oneDepthZ": 0,
-      "twoDepthZ": -1.85,
+      "twoDepthZ": -2.05,
       "oneMinQuality": 0.18,
-      "twoMinQuality": 0.58,
+      "twoMinQuality": 0.62,
       "difficultyQualityBonus": {
         "EASY": 0,
         "MEDIUM": 0.03,
