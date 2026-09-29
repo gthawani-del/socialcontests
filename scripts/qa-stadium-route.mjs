@@ -22,12 +22,42 @@ try {
   assert.equal(await page.locator('#difficulty').inputValue(), 'HARD');
   await page.locator('#beginStadiumToss').click(); await page.locator('#callHeads').click();
   await page.locator('#chooseBat').click({ timeout: 15000 });
-  await page.waitForFunction(() => !document.querySelector('#bowl').disabled);
-  await page.waitForTimeout(250);
+
+  // Human batting now auto-starts the CPU delivery after the role-confirm beat.
+  await page.waitForFunction(() => !document.querySelector('#leftBat').disabled, { timeout: 8000 });
+  const fps = await page.evaluate(() => new Promise(resolve => {
+    let frames = 0, start = performance.now();
+    const tick = now => {
+      frames++;
+      if (now - start >= 1000) resolve(frames * 1000 / (now - start));
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }));
+  assert(fps >= 30, `mobile render FPS too low: ${fps.toFixed(1)}`);
+
+  await page.waitForFunction(() => {
+    const text = document.querySelector('#score')?.innerText || '';
+    return /BALL\s+1\s*\/\s*6/i.test(text);
+  }, { timeout: 10000 });
+
   assert(models.some(m => m.url.endsWith('cricket-stadium-colosseum-r12.glb') && m.status === 200));
   assert.deepEqual(errors, []);
+  const layout = await page.evaluate(() => ({
+    canvas: document.querySelector('canvas')?.getBoundingClientRect().toJSON(),
+    controls: document.querySelector('.controls')?.getBoundingClientRect().toJSON(),
+    contactFeedback: Boolean(document.querySelector('#contactFeedback'))
+  }));
+  assert(layout.controls?.height <= 100, `batting controls too tall: ${layout.controls?.height}`);
+  assert.equal(layout.contactFeedback, true);
+
   const label = process.env.QA_URL ? 'live' : 'production';
   await page.screenshot({ path: `docs/qa/stadium-${label}-route.png` });
-  await writeFile(`docs/qa/stadium-${label}-route.json`, JSON.stringify({ url: page.url(), models, errors, format: 'ONE_OVER', difficulty: 'HARD', demoGate: 'Completed through UI', build: 'production' }, null, 2) + '\n');
-  console.log(JSON.stringify({ models, errors }));
+  const evidence = {
+    url: page.url(), models, errors, format: 'ONE_OVER', difficulty: 'HARD',
+    demoGate: 'Completed through UI', autoCpuDelivery: true, firstBallCounted: true,
+    fps, layout, build: 'production'
+  };
+  await writeFile(`docs/qa/stadium-${label}-route.json`, JSON.stringify(evidence, null, 2) + '\n');
+  console.log(JSON.stringify(evidence));
 } finally { await browser.close(); await new Promise(resolve => server ? server.httpServer.close(resolve) : resolve()); }
