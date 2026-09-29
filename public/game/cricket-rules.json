@@ -1,5 +1,5 @@
 {
-  "version": 19,
+  "version": 20,
   "product": "CRICKET_PINBALL",
   "formats": {
     "LAST_3": {
@@ -38,10 +38,15 @@
     "fieldResolution": {
       "minFlightMs": 500,
       "returnVelocityZ": 0.35,
-      "oneDepthZ": 0.25,
-      "twoDepthZ": -1,
-      "oneMinQuality": 0.15,
-      "twoMinQuality": 0.35
+      "oneDepthZ": 0,
+      "twoDepthZ": -1.5,
+      "oneMinQuality": 0.18,
+      "twoMinQuality": 0.48,
+      "difficultyQualityBonus": {
+        "EASY": 0,
+        "MEDIUM": 0.03,
+        "HARD": 0.08
+      }
     }
   },
   "toss": {
@@ -108,7 +113,8 @@
       "battingTimingJitterMs": 85,
       "battingPredictionFactor": 0.18,
       "battingAggression": 0.18,
-      "battingContactZ": 2.12
+      "battingContactZ": 2.12,
+      "deliveryMovementScale": 0.65
     },
     "MEDIUM": {
       "bowlingPowerMin": 0.58,
@@ -133,7 +139,8 @@
       "battingTimingJitterMs": 45,
       "battingPredictionFactor": 0.55,
       "battingAggression": 0.45,
-      "battingContactZ": 2.12
+      "battingContactZ": 2.12,
+      "deliveryMovementScale": 1.05
     },
     "HARD": {
       "bowlingPowerMin": 0.72,
@@ -158,7 +165,8 @@
       "battingTimingJitterMs": 22,
       "battingPredictionFactor": 0.9,
       "battingAggression": 0.72,
-      "battingContactZ": 2.12
+      "battingContactZ": 2.12,
+      "deliveryMovementScale": 1.35
     }
   },
   "superOver": {
