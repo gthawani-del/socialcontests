@@ -32,6 +32,13 @@ const cancelled=await page.evaluate(()=>{window.__stadiumQA.step(20);return wind
 assert(!cancelled.flippers[0].pressed);assert(Math.abs(cancelled.flippers[0].angle-idleStart.flippers[0].angle)<.001);
 await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
 const result={before:await page.evaluate(()=>window.__stadiumQA.snapshot())};
+await page.locator('#score').click();
+const pausedBefore=await page.evaluate(()=>window.__stadiumQA.snapshot());
+const pausedAfter=await page.evaluate(()=>{window.__stadiumQA.step(300);return window.__stadiumQA.snapshot();});
+assert(pausedAfter.paused);assert.deepEqual(pausedAfter.ball,pausedBefore.ball);assert.equal(pausedAfter.score.balls,pausedBefore.score.balls);
+await page.locator('#closeMatchDetails').click();
+await page.waitForFunction(()=>!window.__stadiumQA.snapshot().paused);
+
 for(const side of ['left','right']){
  const b=await page.locator('#'+side+'Bat').boundingBox();
  await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:b.x+b.width/2,y:b.y+b.height/2,id:1}]});
@@ -63,6 +70,20 @@ for(let ball=1;ball<=6;ball++){
 }
 result.fullOver=innings;
 await page.locator('#continueInnings').waitFor();
+await page.locator('#score').click();
+assert.equal(await page.locator('.ball-results span').count(),6);
+assert.equal(await page.locator('.commentary-list li').count(),6);
+assert.equal(await page.locator('.innings-total').innerText(),`${innings.at(-1).score.runs}/${innings.at(-1).score.wickets} · 1.0 overs · Complete`);
+await page.screenshot({path:'docs/qa/scorecard-feedback.png'});
+await page.locator('.sound-settings summary').click();
+await page.locator('#muteGame').click();
+assert(await page.evaluate(()=>window.__stadiumQA.snapshot().audio.settings.muted));
+await page.locator('#muteGame').click();
+await page.waitForFunction(()=>window.__stadiumQA.snapshot().audio.loaded===6);
+assert.deepEqual(await page.evaluate(()=>window.__stadiumQA.snapshot().audio.failed),[]);
+assert((await page.evaluate(()=>window.__stadiumQA.snapshot().audio.played))>0);
+await page.locator('#closeMatchDetails').click();
+
 await page.screenshot({path:'docs/qa/full-over-completed.png'});
 assert.deepEqual(errors, [], 'no browser runtime errors');
 await writeFile('docs/qa/batting-regression.json',JSON.stringify({result,idleStart,idleHeld,cancelled,errors},null,2));console.log(JSON.stringify({samples:Object.fromEntries(Object.entries(result).filter(([k])=>k!=='fullOver').map(([k,v])=>[k,{flippers:v.flippers,ball:v.ball,score:v.score,running:v.running}])),errors}));

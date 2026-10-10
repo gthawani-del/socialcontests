@@ -1,3 +1,6 @@
+import { createMatchPresentation } from './game/match-presentation.js';
+import { createStadiumAudio } from './game/stadium-audio.js';
+import { createStadiumVfx } from './game/stadium-vfx.js';
 import { createStadiumLauncher } from './stadium-launcher.js';
 import { frameStadium } from './stadium-camera.js';
 import { installStadiumBackdrop } from './stadium-backdrop.js';
@@ -107,7 +110,10 @@ try {
       };
     }
   });
-  window.addEventListener('pointerdown', feedback.prime, { once: true, capture: true });
+  const sound = createStadiumAudio();
+  window.addEventListener('pointerdown', sound.prime, {capture:true});
+  window.addEventListener('keydown', sound.prime, {capture:true});
+  const vfx = createStadiumVfx(scene,table,ball);
   const telemetry = createPlaytestTelemetry({
     app,
     enabled: new URLSearchParams(location.search).get('telemetry') === '1',
@@ -118,6 +124,7 @@ try {
     }
   });
   let flow;
+  const presentation = createMatchPresentation({app,getFlow:()=>flow,audio:sound});
   const controlsRoot = document.querySelector('.controls');
   const bowlingUi = createBowlingPlunger({
     app,
@@ -136,6 +143,9 @@ try {
 
   const gameplayFeedback = event => {
     feedback.handle(event);
+    sound.handle(event);
+    presentation.handle(event);
+    vfx.handle(event);
     telemetry.handle(event);
 
     if (event?.type === 'OUTCOME') {
@@ -167,6 +177,7 @@ try {
   const batching = batchStadium(model, bats);
   if (!bats.left || !bats.right) throw new Error('Stadium bat meshes are missing');
   let last = performance.now(), contactCount = 0, rampEntries = 0;
+  engine.on('wall-hit', () => sound.play('rail',.35));
   engine.on('flipper-hit', () => contactCount++); engine.on('ramp-enter', () => rampEntries++);
   engine.on('delivery-bounce', event => gameplayFeedback({ type: 'DELIVERY_BOUNCE', deliveryType: event.type, event }));
   flow = createStadiumMatch({ engine, table, rules, render,
@@ -174,7 +185,7 @@ try {
     onReset: () => { contactCount = 0; rampEntries = 0; },
     onFeedback: gameplayFeedback
   });
-  const bat = (side, pressed) => flow.bat(side, pressed);
+  const bat = (side, pressed) => {if(pressed && !flow.paused && !document.querySelector(`#${side}Bat`).disabled)sound.play('flipper',.4);flow.bat(side,pressed);};
   for (const side of ['left', 'right']) {
     const button = document.querySelector(`#${side}Bat`);
     button.addEventListener('pointerdown', e => { e.preventDefault(); button.setPointerCapture(e.pointerId); bat(side, true); });
@@ -211,7 +222,8 @@ try {
     const dt = Math.min((now - last) / 1000, .05);
     last = now;
     if (!manual && !document.hidden) flow.step(dt);
-    resultLayer.update(now, dt);
+    resultLayer.update(now, flow.paused?0:dt);
+    vfx.update(flow.paused?0:dt,flow.running);
     render();
     requestAnimationFrame(frame);
   }
@@ -220,7 +232,7 @@ try {
   if (import.meta.env.DEV) window.__stadiumQA = {
     ready: true, materials: materialStatus, art: art.stats, batching, manual: value => { manual = value; },
     step: count => { for (let i = 0; i < count; i++) flow.step(1 / 120); render(); },
-    snapshot: () => ({ rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, match: flow.match.getState(), contactCount, rampEntries, ball: { ...engine.ball.position, height: engine.ball.height }, score: { ...flow.match.currentInnings },
+    snapshot: () => ({ rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, ball: { ...engine.ball.position, height: engine.ball.height }, score: { ...flow.match.currentInnings },
       flippers: [...engine.flippers].map(([id,s]) => ({id, pressed:s.pressed, angle:s.angle})),
       alignment: ['left', 'right'].map(side => {
         const state = engine.flippers.get(side), cfg = state.config, centre = bats[side].getWorldPosition(new THREE.Vector3());

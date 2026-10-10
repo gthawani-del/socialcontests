@@ -47,17 +47,30 @@ export function createStadiumLauncher(scene, table, model) {
   const spring=[];
   for(let i=0;i<12;i++) {const ring=new THREE.Mesh(new THREE.TorusGeometry(.038,.008,5,14),steel);mechanism.add(ring);spring.push(ring);}
   const tip=new THREE.Mesh(new THREE.CylinderGeometry(.061,.061,.035,16),gold);tip.rotation.x=Math.PI/2;mechanism.add(tip);
+  const glowMaterial = gold.clone(); glowMaterial.emissive.set('#ffc65b'); knob.material = glowMaterial; tip.material = glowMaterial;
+  const halo = new THREE.Mesh(new THREE.RingGeometry(.095,.125,40),new THREE.MeshBasicMaterial({color:'#ffd77b',transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));
+  halo.rotation.x=-Math.PI/2;halo.position.set(path[0].x,.08,path[0].z+.32);group.add(halo);
+  let wasDragging=false, flashUntil=0, glow=0;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const world=new THREE.Vector3();
   return {
+    getState:()=>({glow}),
     update(state,camera,viewport,element) {
+      const now=performance.now();
+      if(wasDragging && !state.dragging && !state.enabled) flashUntil=now+180;
+      wasDragging=state.dragging;
+      const active=state.visible && state.enabled && !state.cpuMode;
+      const intensity=now<flashUntil?2.5:active?(state.dragging?.8+state.pull*1.8:reduced?.65:.6+.25*Math.sin(now*.004)):0;
+      glow=intensity;glowMaterial.emissiveIntensity=intensity; halo.material.opacity=Math.min(.8,intensity*.4);
+      halo.scale.setScalar(1+(active && !reduced?.12*Math.sin(now*.004):0));
       const pull=state.pull;knob.position.z=.32+pull*.13;tip.position.z=.08+pull*.13;
       spring.forEach((ring,i)=>{ring.position.z=.11+i*(.18+pull*.12)/11;});
       // Keep the mechanism visible as table artwork; only the invisible hit area
       // changes ownership. No screen-space lever is drawn over the playfield.
       const size=viewport.getBoundingClientRect();
       world.set(path[0].x,.065,path[0].z+.30).project(camera);
-      element.style.left=`${(world.x+1)*size.width/2-25}px`;
-      element.style.top=`${(1-world.y)*size.height/2-42}px`;
+      element.style.left=`${THREE.MathUtils.clamp((world.x+1)*size.width/2-32,0,Math.max(0,size.width-64))}px`;
+      element.style.top=`${THREE.MathUtils.clamp((1-world.y)*size.height/2-50,0,Math.max(0,size.height-100))}px`;
     }
   };
 }

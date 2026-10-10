@@ -29,14 +29,9 @@ export function createBowlingPlunger({
       </div>
     </div>
     <div class="bowl-selector movement-selector">
-      <small>MOVEMENT</small>
-      <div class="segmented movement-options">
-        <button type="button" data-type="SWING_LEFT">SWING ←</button>
-        <button type="button" data-type="CUTTER_LEFT">CUT ←</button>
-        <button type="button" data-type="PACE" class="selected">STRAIGHT</button>
-        <button type="button" data-type="CUTTER_RIGHT">CUT →</button>
-        <button type="button" data-type="SWING_RIGHT">SWING →</button>
-      </div>
+      <small>DELIVERY</small><select id="bowlingMovement" aria-label="Delivery movement">
+        <option value="PACE">Straight</option><option value="SWING_LEFT">Swing left</option><option value="SWING_RIGHT">Swing right</option><option value="CUTTER_LEFT">Cutter left</option><option value="CUTTER_RIGHT">Cutter right</option>
+      </select><output id="bowlingPower" aria-label="Bowling power">60%</output>
     </div>`;
 
   const plunger = document.createElement('div');
@@ -55,6 +50,9 @@ export function createBowlingPlunger({
 
   const handle = plunger.querySelector('.plunger-handle');
   const powerLabel = plunger.querySelector('#plungerPower');
+  const movement = consoleEl.querySelector('#bowlingMovement');
+  const powerReadout = consoleEl.querySelector('#bowlingPower');
+  let startY = 0, startPull = .5;
   const track = plunger.querySelector('.plunger-track');
 
   let enabled = false;
@@ -73,13 +71,16 @@ export function createBowlingPlunger({
     plunger.style.setProperty('--pull', pull.toFixed(3));
     plunger.classList.toggle('animated', animate);
     powerLabel.textContent = `${Math.round((.2 + .8 * pull) * 100)}%`;
+    powerReadout.textContent = powerLabel.textContent;
+    handle.setAttribute('aria-label', `Pull and release bowling plunger. Power ${powerLabel.textContent}`);
   }
 
   function select(kind, value, emit = true) {
     if (kind === 'line') line = value;
-    if (kind === 'type') type = value;
+    if (kind === 'type') { type = value; movement.value = value; }
     consoleEl.querySelectorAll(`[data-${kind}]`).forEach(button => {
       button.classList.toggle('selected', button.dataset[kind] === value);
+      button.setAttribute('aria-pressed', String(button.dataset[kind] === value));
     });
     if (emit) emitSelection();
   }
@@ -87,14 +88,7 @@ export function createBowlingPlunger({
   consoleEl.querySelectorAll('[data-line]').forEach(button => {
     button.onclick = () => { if (enabled && !cpuMode) select('line', button.dataset.line); };
   });
-  consoleEl.querySelectorAll('[data-type]').forEach(button => {
-    button.onclick = () => { if (enabled && !cpuMode) select('type', button.dataset.type); };
-  });
-
-  function pullFromEvent(event) {
-    const rect = track.getBoundingClientRect();
-    return clamp((event.clientY - rect.top) / Math.max(1, rect.height), .05, 1);
-  }
+  movement.addEventListener('change', () => { if(enabled && !cpuMode) select('type', movement.value); });
 
   handle.addEventListener('pointerdown', event => {
     if (!enabled || cpuMode) return;
@@ -103,31 +97,43 @@ export function createBowlingPlunger({
     pointerId = event.pointerId;
     handle.setPointerCapture?.(pointerId);
     plunger.classList.add('dragging');
-    updatePull(pullFromEvent(event));
+    startY = event.clientY; startPull = pull;
   });
   handle.addEventListener('pointermove', event => {
     if (!dragging || event.pointerId !== pointerId) return;
     event.preventDefault();
-    updatePull(pullFromEvent(event));
+    updatePull(startPull + (event.clientY - startY) / 100);
   });
   const release = event => {
     if (!dragging || (event?.pointerId != null && event.pointerId !== pointerId)) return;
     dragging = false;
     plunger.classList.remove('dragging');
     const selection = { line, type, power: .2 + .8 * pull, movementScale: 1 };
-    onRelease(selection);
+    if (enabled && !cpuMode) onRelease(selection);
     updatePull(.18, true);
     setTimeout(() => updatePull(.5, true), 260);
     pointerId = null;
   };
   handle.addEventListener('pointerup', release);
-  handle.addEventListener('pointercancel', release);
-  handle.addEventListener('lostpointercapture', release);
+  const cancel = () => { dragging = false; pointerId = null; plunger.classList.remove('dragging'); };
+  handle.addEventListener('pointercancel', cancel);
+  handle.addEventListener('lostpointercapture', cancel);
+  window.addEventListener('blur', cancel);
+  document.addEventListener('visibilitychange', () => { if(document.hidden) cancel(); });
+  handle.addEventListener('keydown', event => {
+    if (!enabled || cpuMode) return;
+    if (['ArrowDown','ArrowUp','Enter',' '].includes(event.key)) event.preventDefault();
+    if(event.key === 'ArrowDown') updatePull(pull + .1);
+    if(event.key === 'ArrowUp') updatePull(pull - .1);
+    if((event.key === 'Enter' || event.key === ' ') && !event.repeat) onRelease(getSelection());
+  });
 
   function setState({ visible = false, interactive = false, cpu = false } = {}) {
     plunger.hidden = !visible;
     consoleEl.hidden = !visible;
     enabled = Boolean(interactive);
+    if(!enabled) cancel();
+    movement.disabled = !enabled || cpu;
     cpuMode = Boolean(cpu);
     plunger.classList.toggle('cpu', cpuMode);
     plunger.classList.toggle('disabled', !enabled && !cpuMode);
@@ -174,7 +180,7 @@ export function createBowlingPlunger({
     setState,
     setSelection,
     getSelection,
-    getState: () => ({pull, enabled, cpuMode, visible: !plunger.hidden}),
+    getState: () => ({pull, dragging, enabled, cpuMode, visible: !plunger.hidden}),
     animateCpu,
     get line() { return line; },
     get type() { return type; },

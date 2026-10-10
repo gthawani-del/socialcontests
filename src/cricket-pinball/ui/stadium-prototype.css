@@ -140,3 +140,29 @@
 .integrated-plunger .plunger-track::before{display:none}
 #pinballPlunger.integrated-plunger .plunger-handle{top:50%;left:50%;width:100%;height:100%;margin:0;padding:0;min-height:44px;border:0;background:none;box-shadow:none;border-radius:8px;transition:none}
 .integrated-plunger .plunger-handle:focus-visible{outline:2px solid #e3c06f}
+
+/* Readable controls at every viewport; delivery selection uses the native picker. */
+#bowlingConsole{padding:8px;gap:8px;border-radius:10px}
+#bowlingConsole .bowl-selector{grid-template-columns:44px minmax(0,1fr);gap:8px}
+#bowlingConsole .bowl-selector>small{font-size:10px;letter-spacing:.02em}
+#bowlingConsole .segmented button{min-height:46px;font-size:12px;padding:7px 4px;border-radius:7px}
+#bowlingConsole .movement-selector{grid-template-columns:44px minmax(0,1fr) 42px}
+#bowlingMovement{min-height:46px;font-size:14px;padding:6px;border-radius:7px}
+#bowlingPower{font-size:13px;color:#ffe0a1;text-align:right;font-variant-numeric:tabular-nums}
+#pinballPlunger.integrated-plunger{width:64px;height:100px}
+#matchCommentary{margin:5px 0 7px;min-height:32px;font-size:12px;line-height:1.35;text-align:center;color:#f1dfb9}
+#soundSettings{width:40px;min-height:40px;padding:8px;border:1px solid #d4b46a55;border-radius:50%;background:#07111edb}
+#soundSettings svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#score{cursor:pointer}#score:focus-visible{outline:3px solid #edc478;outline-offset:2px}
+#matchDetails{width:min(94vw,520px);max-height:85dvh;padding:20px;border:1px solid #b79659;border-radius:16px;background:#0b1b2b;color:#eef2f6;overflow:auto}
+#matchDetails::backdrop{background:#020811bc}
+.details-heading{display:flex;align-items:center;justify-content:space-between;gap:15px}.details-heading h2{margin:0;font-size:23px}.details-heading button{min-height:44px;font-size:13px}
+.pause-note{font-size:12px;color:#a4b8c9}.innings-score{padding:8px 0 14px;border-bottom:1px solid #ffffff20}.innings-score h3{font-size:14px}.innings-total{font-size:19px;color:#f2cd82;font-variant-numeric:tabular-nums}.ball-results{display:flex;flex-wrap:wrap;gap:7px}.ball-results span{display:grid;place-items:center;min-width:32px;height:32px;border-radius:50%;background:#20374a;font-size:13px}.ball-results [data-outcome=WICKET]{background:#682d27}.ball-results [data-outcome=FOUR],.ball-results [data-outcome=SIX]{background:#695526}
+.commentary-list{padding-left:22px;line-height:1.55;font-size:13px}.commentary-list li{padding:5px 0;color:#cbd7e2}.sound-settings{border-top:1px solid #ffffff20;padding-top:15px}.sound-settings summary{padding:8px 0;cursor:pointer;min-height:44px}.sound-settings label{display:grid;grid-template-columns:110px 1fr;align-items:center;gap:15px;font-size:14px;margin:15px 0}.sound-settings input{min-height:44px}.sound-settings button{font-size:13px;margin-right:8px}
+@media(max-width:799px) and (min-height:501px){
+  #stadiumApp>header{gap:5px}#stadiumApp>header #restart{width:40px;min-height:40px}
+  #score{right:100px;grid-template-columns:1fr 1fr 1fr;border-radius:12px}#score::before{display:none}#score small{font-size:9px}#score strong{font-size:18px}#score span{font-size:10px}
+  .controls:has(.setup.batting) #matchCommentary{margin:3px 0 5px;min-height:30px}
+}
+@media(max-height:500px){#matchCommentary{font-size:11px;margin:3px 0;min-height:30px}#bowlingConsole{padding:6px}#bowlingConsole .bowl-selector{grid-template-columns:1fr}#bowlingConsole .bowl-selector>small{display:none}#bowlingConsole .movement-selector{grid-template-columns:1fr 38px}#bowlingConsole .segmented button{font-size:11px;min-height:44px}#bowlingMovement{min-height:44px}#cue{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.impact-fx{display:none}#stadiumApp canvas{animation:none!important}#viewport::after{display:none}}

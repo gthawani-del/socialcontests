@@ -40,7 +40,7 @@ try {
     controls: document.querySelector('.controls')?.getBoundingClientRect().toJSON(),
     contactFeedback: Boolean(document.querySelector('#contactFeedback'))
   }));
-  assert(layout.controls?.height <= 100, `batting controls too tall: ${layout.controls?.height}`);
+  assert(layout.controls?.height <= 150, `batting controls too tall: ${layout.controls?.height}`);
   assert.equal(layout.contactFeedback, true);
 
   const label = process.env.QA_URL ? 'live' : 'production';
@@ -76,7 +76,7 @@ try {
   }
   await page.setViewportSize({width:390,height:844});
   await page.locator('#bowlingConsole [data-line="LEFT"]').click();
-  await page.locator('#bowlingConsole [data-type="SWING_RIGHT"]').click();
+  await page.locator('#bowlingMovement').selectOption('SWING_RIGHT');
   const handle = await page.locator('.plunger-handle').boundingBox();
   await page.mouse.move(handle.x + handle.width/2, handle.y + handle.height/2);
   await page.mouse.down(); await page.mouse.move(handle.x + handle.width/2,handle.y + handle.height/2 + 40,{steps:5}); await page.mouse.up();

@@ -35,18 +35,18 @@
       "x": 0,
       "y": 0,
       "width": 390,
-      "height": 756,
+      "height": 718,
       "top": 0,
       "right": 390,
-      "bottom": 756,
+      "bottom": 718,
       "left": 0
     },
     "controls": {
       "x": 0,
-      "y": 756,
+      "y": 718,
       "width": 390,
-      "height": 88,
-      "top": 756,
+      "height": 126,
+      "top": 718,
       "right": 390,
       "bottom": 844,
       "left": 0
@@ -54,7 +54,7 @@
     "contactFeedback": true
   },
   "resourceTiming": {
-    "durationMs": 95,
+    "durationMs": 153,
     "transferSize": null,
     "decodedBodySize": null
   },

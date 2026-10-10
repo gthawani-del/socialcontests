@@ -1,0 +1,250 @@
+{
+  "layouts": [
+    {
+      "name": "mobile",
+      "overflow": false,
+      "buttons": [
+        {
+          "height": 46,
+          "font": 12
+        },
+        {
+          "height": 46,
+          "font": 12
+        },
+        {
+          "height": 46,
+          "font": 12
+        },
+        {
+          "height": 46,
+          "font": 14
+        }
+      ],
+      "plunger": {
+        "x": 326,
+        "y": 387.078125,
+        "width": 64,
+        "height": 100,
+        "top": 387.078125,
+        "right": 390,
+        "bottom": 487.078125,
+        "left": 326
+      },
+      "glow": 0.5566532401578097
+    },
+    {
+      "name": "small",
+      "overflow": false,
+      "buttons": [
+        {
+          "height": 46,
+          "font": 12
+        },
+        {
+          "height": 46,
+          "font": 12
+        },
+        {
+          "height": 46,
+          "font": 12
+        },
+        {
+          "height": 46,
+          "font": 14
+        }
+      ],
+      "plunger": {
+        "x": 256,
+        "y": 276,
+        "width": 64,
+        "height": 100,
+        "top": 276,
+        "right": 320,
+        "bottom": 376,
+        "left": 256
+      },
+      "glow": 0.7800005865026959
+    },
+    {
+      "name": "landscape",
+      "overflow": false,
+      "buttons": [
+        {
+          "height": 44,
+          "font": 11
+        },
+        {
+          "height": 44,
+          "font": 11
+        },
+        {
+          "height": 44,
+          "font": 11
+        },
+        {
+          "height": 44,
+          "font": 14
+        }
+      ],
+      "plunger": {
+        "x": 399.515625,
+        "y": 290,
+        "width": 64,
+        "height": 100,
+        "top": 290,
+        "right": 463.515625,
+        "bottom": 390,
+        "left": 399.515625
+      },
+      "glow": 0.5932669319260699
+    },
+    {
+      "name": "desktop",
+      "overflow": false,
+      "buttons": [
+        {
+          "height": 46,
+          "font": 12
+        },
+        {
+          "height": 46,
+          "font": 12
+        },
+        {
+          "height": 46,
+          "font": 12
+        },
+        {
+          "height": 46,
+          "font": 14
+        }
+      ],
+      "plunger": {
+        "x": 788.390625,
+        "y": 756.4375,
+        "width": 64,
+        "height": 100,
+        "top": 756.4375,
+        "right": 852.390625,
+        "bottom": 856.4375,
+        "left": 788.390625
+      },
+      "glow": 0.6834823988250773
+    }
+  ],
+  "held": {
+    "pull": 0.8,
+    "dragging": true,
+    "enabled": true,
+    "cpuMode": false,
+    "visible": true,
+    "glow": 2.24
+  },
+  "live": {
+    "rendering": {
+      "calls": 1,
+      "triangles": 1
+    },
+    "running": true,
+    "paused": false,
+    "audio": {
+      "loaded": 6,
+      "played": 1,
+      "failed": [],
+      "lastSound": "launch",
+      "settings": {
+        "effects": 0.75,
+        "crowd": 0.45,
+        "muted": false
+      }
+    },
+    "vfx": {
+      "trail": true,
+      "sparks": false,
+      "target": false
+    },
+    "plunger": {
+      "pull": 0.5,
+      "dragging": false,
+      "enabled": false,
+      "cpuMode": false,
+      "visible": true,
+      "glow": 0
+    },
+    "match": {
+      "format": "ONE_OVER",
+      "difficulty": "MEDIUM",
+      "ballsPerInnings": 6,
+      "maxWickets": 2,
+      "superOverBalls": 3,
+      "players": [
+        {
+          "id": "player"
+        },
+        {
+          "id": "cpu"
+        }
+      ],
+      "status": "BALL_LIVE",
+      "innings": 1,
+      "roundInnings": 1,
+      "superOverRound": 0,
+      "score": {
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0
+      },
+      "target": null,
+      "requiredRuns": null,
+      "ballsRemaining": 6,
+      "battingPlayerId": "cpu",
+      "bowlingPlayerId": "player",
+      "toss": {
+        "call": "HEADS",
+        "result": "HEADS",
+        "callerId": "player",
+        "winnerId": "player",
+        "callerWon": true,
+        "choice": "BOWL"
+      },
+      "result": null,
+      "deliveryOpen": true
+    },
+    "contactCount": 0,
+    "rampEntries": 0,
+    "ball": {
+      "x": 1.25,
+      "z": 2.4,
+      "height": 0.065
+    },
+    "score": {
+      "number": 1,
+      "battingPlayerId": "cpu",
+      "bowlingPlayerId": "player",
+      "runs": 0,
+      "wickets": 0,
+      "balls": 0,
+      "complete": false
+    },
+    "flippers": [
+      {
+        "id": "left",
+        "pressed": false,
+        "angle": -0.24993114888558798
+      },
+      {
+        "id": "right",
+        "pressed": false,
+        "angle": 3.391523802475381
+      }
+    ],
+    "alignment": [
+      1.8875832159447664e-16,
+      1.4946834900704544e-16
+    ]
+  },
+  "errors": [],
+  "cancelDoesNotLaunch": true,
+  "oneReleaseOneDelivery": true
+}

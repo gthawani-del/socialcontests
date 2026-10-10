@@ -6,6 +6,31 @@
         "triangles": 1
       },
       "running": true,
+      "paused": false,
+      "audio": {
+        "loaded": 6,
+        "played": 2,
+        "failed": [],
+        "lastSound": "launch",
+        "settings": {
+          "effects": 0.75,
+          "crowd": 0.45,
+          "muted": false
+        }
+      },
+      "vfx": {
+        "trail": true,
+        "sparks": false,
+        "target": false
+      },
+      "plunger": {
+        "pull": 0.1,
+        "dragging": false,
+        "enabled": false,
+        "cpuMode": true,
+        "visible": true,
+        "glow": 0
+      },
       "match": {
         "format": "ONE_OVER",
         "difficulty": "MEDIUM",
@@ -84,6 +109,31 @@
         "triangles": 1
       },
       "running": true,
+      "paused": false,
+      "audio": {
+        "loaded": 6,
+        "played": 3,
+        "failed": [],
+        "lastSound": "flipper",
+        "settings": {
+          "effects": 0.75,
+          "crowd": 0.45,
+          "muted": false
+        }
+      },
+      "vfx": {
+        "trail": true,
+        "sparks": false,
+        "target": false
+      },
+      "plunger": {
+        "pull": 0.1,
+        "dragging": false,
+        "enabled": false,
+        "cpuMode": true,
+        "visible": true,
+        "glow": 0
+      },
       "match": {
         "format": "ONE_OVER",
         "difficulty": "MEDIUM",
@@ -162,6 +212,31 @@
         "triangles": 1
       },
       "running": true,
+      "paused": false,
+      "audio": {
+        "loaded": 6,
+        "played": 3,
+        "failed": [],
+        "lastSound": "flipper",
+        "settings": {
+          "effects": 0.75,
+          "crowd": 0.45,
+          "muted": false
+        }
+      },
+      "vfx": {
+        "trail": true,
+        "sparks": false,
+        "target": false
+      },
+      "plunger": {
+        "pull": 0.1,
+        "dragging": false,
+        "enabled": false,
+        "cpuMode": true,
+        "visible": true,
+        "glow": 0
+      },
       "match": {
         "format": "ONE_OVER",
         "difficulty": "MEDIUM",
@@ -240,6 +315,31 @@
         "triangles": 1
       },
       "running": true,
+      "paused": false,
+      "audio": {
+        "loaded": 6,
+        "played": 4,
+        "failed": [],
+        "lastSound": "flipper",
+        "settings": {
+          "effects": 0.75,
+          "crowd": 0.45,
+          "muted": false
+        }
+      },
+      "vfx": {
+        "trail": true,
+        "sparks": false,
+        "target": false
+      },
+      "plunger": {
+        "pull": 0.1,
+        "dragging": false,
+        "enabled": false,
+        "cpuMode": true,
+        "visible": true,
+        "glow": 0
+      },
       "match": {
         "format": "ONE_OVER",
         "difficulty": "MEDIUM",
@@ -318,6 +418,31 @@
         "triangles": 1
       },
       "running": true,
+      "paused": false,
+      "audio": {
+        "loaded": 6,
+        "played": 4,
+        "failed": [],
+        "lastSound": "flipper",
+        "settings": {
+          "effects": 0.75,
+          "crowd": 0.45,
+          "muted": false
+        }
+      },
+      "vfx": {
+        "trail": true,
+        "sparks": false,
+        "target": false
+      },
+      "plunger": {
+        "pull": 0.1,
+        "dragging": false,
+        "enabled": false,
+        "cpuMode": true,
+        "visible": true,
+        "glow": 0
+      },
       "match": {
         "format": "ONE_OVER",
         "difficulty": "MEDIUM",
@@ -397,6 +522,31 @@
           "triangles": 1
         },
         "running": false,
+        "paused": false,
+        "audio": {
+          "loaded": 6,
+          "played": 7,
+          "failed": [],
+          "lastSound": "rail",
+          "settings": {
+            "effects": 0.75,
+            "crowd": 0.45,
+            "muted": false
+          }
+        },
+        "vfx": {
+          "trail": false,
+          "sparks": true,
+          "target": false
+        },
+        "plunger": {
+          "pull": 0.1,
+          "dragging": false,
+          "enabled": false,
+          "cpuMode": true,
+          "visible": true,
+          "glow": 0
+        },
         "match": {
           "format": "ONE_OVER",
           "difficulty": "MEDIUM",
@@ -475,6 +625,31 @@
           "triangles": 1
         },
         "running": false,
+        "paused": false,
+        "audio": {
+          "loaded": 6,
+          "played": 11,
+          "failed": [],
+          "lastSound": "rail",
+          "settings": {
+            "effects": 0.75,
+            "crowd": 0.45,
+            "muted": false
+          }
+        },
+        "vfx": {
+          "trail": true,
+          "sparks": true,
+          "target": false
+        },
+        "plunger": {
+          "pull": 0.12,
+          "dragging": false,
+          "enabled": false,
+          "cpuMode": true,
+          "visible": true,
+          "glow": 0
+        },
         "match": {
           "format": "ONE_OVER",
           "difficulty": "MEDIUM",
@@ -553,6 +728,31 @@
           "triangles": 1
         },
         "running": false,
+        "paused": false,
+        "audio": {
+          "loaded": 6,
+          "played": 15,
+          "failed": [],
+          "lastSound": "rail",
+          "settings": {
+            "effects": 0.75,
+            "crowd": 0.45,
+            "muted": false
+          }
+        },
+        "vfx": {
+          "trail": true,
+          "sparks": true,
+          "target": false
+        },
+        "plunger": {
+          "pull": 0.12,
+          "dragging": false,
+          "enabled": false,
+          "cpuMode": true,
+          "visible": true,
+          "glow": 0
+        },
         "match": {
           "format": "ONE_OVER",
           "difficulty": "MEDIUM",
@@ -631,6 +831,31 @@
           "triangles": 1
         },
         "running": false,
+        "paused": false,
+        "audio": {
+          "loaded": 6,
+          "played": 19,
+          "failed": [],
+          "lastSound": "rail",
+          "settings": {
+            "effects": 0.75,
+            "crowd": 0.45,
+            "muted": false
+          }
+        },
+        "vfx": {
+          "trail": false,
+          "sparks": true,
+          "target": false
+        },
+        "plunger": {
+          "pull": 0.12,
+          "dragging": false,
+          "enabled": false,
+          "cpuMode": true,
+          "visible": true,
+          "glow": 0
+        },
         "match": {
           "format": "ONE_OVER",
           "difficulty": "MEDIUM",
@@ -709,6 +934,31 @@
           "triangles": 1
         },
         "running": false,
+        "paused": false,
+        "audio": {
+          "loaded": 6,
+          "played": 23,
+          "failed": [],
+          "lastSound": "rail",
+          "settings": {
+            "effects": 0.75,
+            "crowd": 0.45,
+            "muted": false
+          }
+        },
+        "vfx": {
+          "trail": true,
+          "sparks": true,
+          "target": false
+        },
+        "plunger": {
+          "pull": 0.1,
+          "dragging": false,
+          "enabled": false,
+          "cpuMode": true,
+          "visible": true,
+          "glow": 0
+        },
         "match": {
           "format": "ONE_OVER",
           "difficulty": "MEDIUM",
@@ -787,6 +1037,31 @@
           "triangles": 1
         },
         "running": false,
+        "paused": false,
+        "audio": {
+          "loaded": 6,
+          "played": 27,
+          "failed": [],
+          "lastSound": "rail",
+          "settings": {
+            "effects": 0.75,
+            "crowd": 0.45,
+            "muted": false
+          }
+        },
+        "vfx": {
+          "trail": true,
+          "sparks": true,
+          "target": false
+        },
+        "plunger": {
+          "pull": 0.1,
+          "dragging": false,
+          "enabled": false,
+          "cpuMode": false,
+          "visible": true,
+          "glow": 0
+        },
         "match": {
           "format": "ONE_OVER",
           "difficulty": "MEDIUM",
@@ -867,6 +1142,31 @@
       "triangles": 1
     },
     "running": false,
+    "paused": false,
+    "audio": {
+      "loaded": 6,
+      "played": 0,
+      "failed": [],
+      "lastSound": null,
+      "settings": {
+        "effects": 0.75,
+        "crowd": 0.45,
+        "muted": false
+      }
+    },
+    "vfx": {
+      "trail": false,
+      "sparks": false,
+      "target": false
+    },
+    "plunger": {
+      "pull": 0.5,
+      "dragging": false,
+      "enabled": false,
+      "cpuMode": true,
+      "visible": true,
+      "glow": 0
+    },
     "match": {
       "format": "ONE_OVER",
       "difficulty": "MEDIUM",
@@ -945,6 +1245,31 @@
       "triangles": 1
     },
     "running": false,
+    "paused": false,
+    "audio": {
+      "loaded": 6,
+      "played": 1,
+      "failed": [],
+      "lastSound": "flipper",
+      "settings": {
+        "effects": 0.75,
+        "crowd": 0.45,
+        "muted": false
+      }
+    },
+    "vfx": {
+      "trail": false,
+      "sparks": false,
+      "target": false
+    },
+    "plunger": {
+      "pull": 0.5,
+      "dragging": false,
+      "enabled": false,
+      "cpuMode": true,
+      "visible": true,
+      "glow": 0
+    },
     "match": {
       "format": "ONE_OVER",
       "difficulty": "MEDIUM",
@@ -1023,6 +1348,31 @@
       "triangles": 1
     },
     "running": false,
+    "paused": false,
+    "audio": {
+      "loaded": 6,
+      "played": 1,
+      "failed": [],
+      "lastSound": "flipper",
+      "settings": {
+        "effects": 0.75,
+        "crowd": 0.45,
+        "muted": false
+      }
+    },
+    "vfx": {
+      "trail": false,
+      "sparks": false,
+      "target": false
+    },
+    "plunger": {
+      "pull": 0.5,
+      "dragging": false,
+      "enabled": false,
+      "cpuMode": true,
+      "visible": true,
+      "glow": 0
+    },
     "match": {
       "format": "ONE_OVER",
       "difficulty": "MEDIUM",
