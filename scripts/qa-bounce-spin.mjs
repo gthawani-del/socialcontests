@@ -15,8 +15,8 @@ try{
  const evidence=[];
  for(const type of ['SPIN_LEFT','SPIN_RIGHT']){
   await page.locator('#beginStadiumToss').click();await page.locator('#callHeads').click();await page.locator('#chooseBowl').click({timeout:15000});
-  await page.waitForFunction(()=>!document.querySelector('#bowlingMovement').disabled);
-  await page.locator('#bowlingMovement').selectOption(type);
+  await page.waitForFunction(()=>!document.querySelector('#movementPicker').disabled);
+  await page.locator('#movementPicker').click();await page.locator(`[data-type="${type}"]`).click();
   const b=await page.locator('.plunger-handle').boundingBox();
   await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,b.y+b.height/2+20,{steps:4});await page.mouse.up();
   await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);

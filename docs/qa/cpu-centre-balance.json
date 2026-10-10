@@ -1,0 +1,240 @@
+{
+  "method": "Seeded independent deliveries through StadiumEngine, CPU batting and match scoring at 120 Hz; no forced outcomes. Seeds 1-100 for default, 1-50 for matrix, each LCG warmed 32 times. These are regression fixtures, not live user statistics.",
+  "defaultDelivery": {
+    "line": "CENTRE",
+    "type": "PACE",
+    "power": 0.6
+  },
+  "before": [
+    {
+      "difficulty": "EASY",
+      "total": 100,
+      "wickets": 95,
+      "hits": 98
+    },
+    {
+      "difficulty": "MEDIUM",
+      "total": 100,
+      "wickets": 74,
+      "hits": 36
+    },
+    {
+      "difficulty": "HARD",
+      "total": 100,
+      "wickets": 42,
+      "hits": 65
+    }
+  ],
+  "after": [
+    {
+      "difficulty": "EASY",
+      "total": 100,
+      "wickets": 54,
+      "hits": 100
+    },
+    {
+      "difficulty": "MEDIUM",
+      "total": 100,
+      "wickets": 18,
+      "hits": 82
+    },
+    {
+      "difficulty": "HARD",
+      "total": 100,
+      "wickets": 7,
+      "hits": 93
+    }
+  ],
+  "centreMatrix": [
+    {
+      "1": 29,
+      "difficulty": "EASY",
+      "type": "PACE",
+      "0.24": 34,
+      "0.4": 26,
+      "0.6": 27,
+      "0.8": 32
+    },
+    {
+      "1": 27,
+      "difficulty": "EASY",
+      "type": "SWING_LEFT",
+      "0.24": 20,
+      "0.4": 33,
+      "0.6": 27,
+      "0.8": 27
+    },
+    {
+      "1": 27,
+      "difficulty": "EASY",
+      "type": "SWING_RIGHT",
+      "0.24": 20,
+      "0.4": 33,
+      "0.6": 27,
+      "0.8": 27
+    },
+    {
+      "1": 28,
+      "difficulty": "EASY",
+      "type": "CUTTER_LEFT",
+      "0.24": 27,
+      "0.4": 27,
+      "0.6": 27,
+      "0.8": 28
+    },
+    {
+      "1": 28,
+      "difficulty": "EASY",
+      "type": "CUTTER_RIGHT",
+      "0.24": 14,
+      "0.4": 23,
+      "0.6": 7,
+      "0.8": 28
+    },
+    {
+      "1": 0,
+      "difficulty": "EASY",
+      "type": "SPIN_LEFT",
+      "0.24": 0,
+      "0.4": 0,
+      "0.6": 0,
+      "0.8": 0
+    },
+    {
+      "1": 0,
+      "difficulty": "EASY",
+      "type": "SPIN_RIGHT",
+      "0.24": 0,
+      "0.4": 0,
+      "0.6": 6,
+      "0.8": 0
+    },
+    {
+      "1": 8,
+      "difficulty": "MEDIUM",
+      "type": "PACE",
+      "0.24": 29,
+      "0.4": 15,
+      "0.6": 10,
+      "0.8": 28
+    },
+    {
+      "1": 28,
+      "difficulty": "MEDIUM",
+      "type": "SWING_LEFT",
+      "0.24": 18,
+      "0.4": 10,
+      "0.6": 29,
+      "0.8": 28
+    },
+    {
+      "1": 28,
+      "difficulty": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "0.24": 18,
+      "0.4": 29,
+      "0.6": 29,
+      "0.8": 28
+    },
+    {
+      "1": 8,
+      "difficulty": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "0.24": 28,
+      "0.4": 14,
+      "0.6": 14,
+      "0.8": 8
+    },
+    {
+      "1": 8,
+      "difficulty": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "0.24": 28,
+      "0.4": 14,
+      "0.6": 14,
+      "0.8": 8
+    },
+    {
+      "1": 0,
+      "difficulty": "MEDIUM",
+      "type": "SPIN_LEFT",
+      "0.24": 0,
+      "0.4": 0,
+      "0.6": 0,
+      "0.8": 0
+    },
+    {
+      "1": 0,
+      "difficulty": "MEDIUM",
+      "type": "SPIN_RIGHT",
+      "0.24": 0,
+      "0.4": 0,
+      "0.6": 0,
+      "0.8": 0
+    },
+    {
+      "1": 4,
+      "difficulty": "HARD",
+      "type": "PACE",
+      "0.24": 21,
+      "0.4": 4,
+      "0.6": 4,
+      "0.8": 8
+    },
+    {
+      "1": 22,
+      "difficulty": "HARD",
+      "type": "SWING_LEFT",
+      "0.24": 4,
+      "0.4": 21,
+      "0.6": 9,
+      "0.8": 4
+    },
+    {
+      "1": 22,
+      "difficulty": "HARD",
+      "type": "SWING_RIGHT",
+      "0.24": 4,
+      "0.4": 21,
+      "0.6": 9,
+      "0.8": 4
+    },
+    {
+      "1": 4,
+      "difficulty": "HARD",
+      "type": "CUTTER_LEFT",
+      "0.24": 18,
+      "0.4": 13,
+      "0.6": 4,
+      "0.8": 4
+    },
+    {
+      "1": 27,
+      "difficulty": "HARD",
+      "type": "CUTTER_RIGHT",
+      "0.24": 18,
+      "0.4": 13,
+      "0.6": 4,
+      "0.8": 4
+    },
+    {
+      "1": 0,
+      "difficulty": "HARD",
+      "type": "SPIN_LEFT",
+      "0.24": 0,
+      "0.4": 0,
+      "0.6": 0,
+      "0.8": 0
+    },
+    {
+      "1": 0,
+      "difficulty": "HARD",
+      "type": "SPIN_RIGHT",
+      "0.24": 0,
+      "0.4": 0,
+      "0.6": 0,
+      "0.8": 0
+    }
+  ],
+  "matrixValue": "Wickets out of 50 at the power in each numeric key"
+}

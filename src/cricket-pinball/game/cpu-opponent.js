@@ -36,6 +36,7 @@ export function createCpuBattingAI({
   let activeSide = null;
   let scheduledSwingAt = null;
   let scheduledSide = null;
+  let centralTiming = null;
 
   function reset() {
     swingUntil = 0;
@@ -43,6 +44,7 @@ export function createCpuBattingAI({
     activeSide = null;
     scheduledSwingAt = null;
     scheduledSide = null;
+    centralTiming = null;
     engine?.setFlipper('left', false);
     engine?.setFlipper('right', false);
   }
@@ -101,6 +103,10 @@ export function createCpuBattingAI({
     const ball = engine.ball;
 
     if (scheduledSwingAt !== null) {
+      if (centralTiming && ball.velocity.z > 0) {
+        const arrival = (centralTiming.z - ball.position.z) / ball.velocity.z * 1000;
+        scheduledSwingAt = Math.max(centralTiming.reactAt, nowMs + arrival - centralTiming.sweep + centralTiming.jitter);
+      }
       if (nowMs < scheduledSwingAt) return;
       startSwing(nowMs, scheduledSide, preset);
       return;
@@ -109,11 +115,19 @@ export function createCpuBattingAI({
     if (nowMs < cooldownUntil || ball.velocity.z <= 0) return;
 
     const centreBand = Number(preset.battingCentreBand ?? .18);
+    const contactZ = Number(preset.battingContactZ ?? 2.12);
+    const arrivalMs = (contactZ - ball.position.z) / ball.velocity.z * 1000;
+    const projectedX = ball.position.x + ball.velocity.x * Math.max(0, arrivalMs / 1000);
+    const centralApproach = Boolean(tableConfig?.flippers && Math.abs(projectedX) <= centreBand);
+    const reactionMs = Math.max(0, Number(preset.battingReactionMs ?? 65));
     const triggerZ = Number(Math.abs(ball.position.x) <= centreBand
       ? preset.battingCentreTriggerZ ?? preset.battingTriggerZ ?? 1.45
       : preset.battingTriggerZ ?? 1.45);
     const maxTriggerZ = Number(preset.battingMaxZ ?? 2.48);
-    if (ball.position.z < triggerZ || ball.position.z > maxTriggerZ) return;
+    if (ball.position.z > maxTriggerZ) return;
+    if (centralApproach) {
+      if (engine.launcher.inLane || ball.position.z < .5 || arrivalMs > reactionMs + 140) return;
+    } else if (ball.position.z < triggerZ) return;
 
     const missChance = clamp(Number(preset.battingMissChance ?? .12), 0, .75);
     if (random() < missChance) {
@@ -121,11 +135,17 @@ export function createCpuBattingAI({
       return;
     }
 
-    scheduledSide = predictSide(ball, preset);
-    const reactionMs = Math.max(0, Number(preset.battingReactionMs ?? 65));
+    scheduledSide = centralApproach ? 'both' : predictSide(ball, preset);
     const jitterMs = Math.max(0, Number(preset.battingTimingJitterMs ?? 35));
-    const jitter = (random() * 2 - 1) * jitterMs;
-    scheduledSwingAt = nowMs + Math.max(0, reactionMs + jitter);
+    const jitter = (random() * 2 - 1) * jitterMs * (centralApproach ? .18 : 1);
+    // Centre balls pass the blade tips: aim the crossing of the horizontal
+    // bat position at their arrival, rather than reacting at a fixed pitch Z.
+    const blade = tableConfig?.flippers?.[0];
+    const sweepMs = blade ? Math.abs(blade.restAngleDeg) / blade.speedDegPerSec * 1000 : 20;
+    centralTiming = centralApproach ? {z:Number(preset.battingCentreContactZ ?? 2.02),reactAt:nowMs+reactionMs,sweep:sweepMs,jitter} : null;
+    scheduledSwingAt = nowMs + Math.max(0, centralApproach
+      ? Math.max(reactionMs, arrivalMs - sweepMs) + jitter
+      : reactionMs + jitter);
 
     if (scheduledSwingAt <= nowMs) startSwing(nowMs, scheduledSide, preset);
   }

@@ -1,0 +1,46 @@
+[
+  {
+    "name": "mobile",
+    "x": 16,
+    "y": 163.796875,
+    "right": 374,
+    "bottom": 528.1875,
+    "height": 364.390625,
+    "viewportHeight": 626,
+    "scoreBottom": 63.5,
+    "overflow": false
+  },
+  {
+    "name": "small",
+    "x": 16,
+    "y": 101.796875,
+    "right": 304,
+    "bottom": 458.1875,
+    "height": 356.390625,
+    "viewportHeight": 494,
+    "scoreBottom": 63.5,
+    "overflow": false
+  },
+  {
+    "name": "landscape",
+    "x": 117,
+    "y": 49.59375,
+    "right": 497,
+    "bottom": 376.390625,
+    "height": 326.796875,
+    "viewportHeight": 354,
+    "scoreBottom": 101.5,
+    "overflow": false
+  },
+  {
+    "name": "desktop",
+    "x": 352.5,
+    "y": 322.796875,
+    "right": 732.5,
+    "bottom": 687.1875,
+    "height": 364.390625,
+    "viewportHeight": 790,
+    "scoreBottom": 110,
+    "overflow": false
+  }
+]

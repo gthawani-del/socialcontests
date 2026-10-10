@@ -58,7 +58,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     const state = match.getState(), s = state.score;
     document.querySelector('#score').innerHTML = `<div><small>${state.innings ? `${name(match.currentInnings?.battingPlayerId || state.battingPlayerId)} batting` : 'Score'}</small><strong>${s.runs} / ${s.wickets}</strong></div><div><small>Ball</small><strong>${s.balls} <span>/ ${state.ballsPerInnings}</span></strong><span>${Math.floor(s.balls/6)}.${s.balls%6} ov</span></div><div><small>${state.target !== null ? 'Target' : 'Innings'}</small><strong>${state.target !== null ? state.target : state.innings ? state.roundInnings : '—'}</strong>${state.roundInnings === 2 && state.target !== null ? `<span>${state.requiredRuns} needed</span>` : ''}</div>`;
   }
-  function show(title, body) { panel.hidden = false; panel.innerHTML = `<h2>${title}</h2>${body}`; }
+  function show(title, body) { panel.hidden = false; panel.classList.remove('match-setup'); panel.innerHTML = `<h2>${title}</h2>${body}`; }
   function makeReady() {
     ready = true; panel.hidden = true; delete cue.dataset.contact;
     cue.textContent = humanBatting()
@@ -188,7 +188,8 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     for (const job of timers) clearTimeout(job.id); timers.clear(); paused=false; toss.reset(); newMatch();
     if (practice) { match.assignRoles({ battingPlayerId: 'player', bowlingPlayerId: 'cpu' }); match.startInnings(); makeReady(); }
     else {
-      show('Set up your match', '<label>Format<select id="format"><option value="LAST_3">Last 3 balls</option><option value="ONE_OVER">One over</option><option value="TWO_OVER">Two overs</option></select></label><label>Difficulty<select id="difficulty"><option>EASY</option><option selected>MEDIUM</option><option>HARD</option></select></label><p>One over: 6 balls · Two overs: 12 balls · 2 wickets per innings.</p><button id="beginStadiumToss">Begin toss</button>');
+      show('Set up your match', '<label>Format<select id="format"><option value="LAST_3">Last 3 balls</option><option value="ONE_OVER">One over</option><option value="TWO_OVER">Two overs</option></select></label><label>Difficulty<select id="difficulty"><option value="EASY">Easy</option><option value="MEDIUM" selected>Normal</option><option value="HARD">Hard</option></select></label><p>One over: 6 balls · Two overs: 12 balls · 2 wickets per innings.</p><button id="beginStadiumToss">Begin toss</button>');
+      panel.classList.add('match-setup');
       document.querySelector('#format').value = format; document.querySelector('#difficulty').value = difficulty;
       document.querySelector('#beginStadiumToss').onclick = () => {
         format = document.querySelector('#format').value; difficulty = document.querySelector('#difficulty').value; newMatch();

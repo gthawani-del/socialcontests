@@ -1,0 +1,38 @@
+{
+  "defence": {
+    "score": {
+      "number": 1,
+      "battingPlayerId": "cpu",
+      "bowlingPlayerId": "player",
+      "runs": 4,
+      "wickets": 0,
+      "balls": 1,
+      "complete": false
+    },
+    "contactCount": 4
+  },
+  "wickets": [
+    {
+      "number": 1,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "runs": 0,
+      "wickets": 1,
+      "balls": 1,
+      "complete": false
+    },
+    {
+      "number": 1,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "runs": 0,
+      "wickets": 2,
+      "balls": 2,
+      "complete": true
+    }
+  ],
+  "reset": "MATCH_INTRO",
+  "allDeliveryChoices": true,
+  "errors": [],
+  "note": "Seeded/accelerated fixture; real UI inputs, bat contact and drain physics."
+}

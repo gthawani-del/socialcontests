@@ -1,3 +1,4 @@
+import {lineIcon, deliveryIcon, DELIVERY_LABELS} from './bowling-icons.js';
 const TYPE_LABELS = {
   PACE: 'STRAIGHT',
   SWING_LEFT: 'SWING ←',
@@ -25,16 +26,15 @@ export function createBowlingPlunger({
     <div class="bowl-selector">
       <small>LINE</small>
       <div class="segmented line-options">
-        <button type="button" data-line="LEFT">LEFT</button>
-        <button type="button" data-line="CENTRE" class="selected">CENTRE</button>
-        <button type="button" data-line="RIGHT">RIGHT</button>
+        ${['LEFT','CENTRE','RIGHT'].map(line => `<button type="button" data-line="${line}">${lineIcon(line)}<span>${line[0]+line.slice(1).toLowerCase()}</span></button>`).join('')}
       </div>
     </div>
     <div class="bowl-selector movement-selector">
-      <small>DELIVERY</small><select id="bowlingMovement" aria-label="Delivery movement">
-        <option value="PACE">Straight</option><option value="SWING_LEFT">Swing left</option><option value="SWING_RIGHT">Swing right</option><option value="CUTTER_LEFT">Cutter left</option><option value="CUTTER_RIGHT">Cutter right</option><option value="SPIN_LEFT">Spin left</option><option value="SPIN_RIGHT">Spin right</option>
-      </select><output id="bowlingPower" aria-label="Bowling power">60%</output>
-    </div>`;
+      <small>BALL</small>
+      <button type="button" id="movementPicker" aria-label="Choose delivery" aria-expanded="false" aria-controls="deliveryOptions"></button>
+      <div class="power-meter"><small>POWER</small><output id="bowlingPower" aria-label="Bowling power">60%</output><meter id="powerMeter" min="0" max="100" value="60" aria-label="Bowling power"></meter></div>
+    </div>
+    <div id="deliveryOptions" hidden><div class="delivery-heading"><strong>Choose delivery</strong><button type="button" id="closeDelivery" aria-label="Close delivery choices">Close</button></div><div class="delivery-grid">${Object.entries(DELIVERY_LABELS).map(([type,label])=>`<button type="button" data-type="${type}">${deliveryIcon(type)}<span>${label}</span></button>`).join('')}</div></div>`;
 
   const plunger = document.createElement('div');
   plunger.id = 'pinballPlunger'; plunger.classList.add('integrated-plunger');
@@ -52,7 +52,12 @@ export function createBowlingPlunger({
 
   const handle = plunger.querySelector('.plunger-handle');
   const powerLabel = plunger.querySelector('#plungerPower');
-  const movement = consoleEl.querySelector('#bowlingMovement');
+  const movement = consoleEl.querySelector('#movementPicker');
+  const options = consoleEl.querySelector('#deliveryOptions');
+  const toggleOptions = open => { options.hidden = !open; movement.setAttribute('aria-expanded', String(open)); };
+  movement.onclick = () => toggleOptions(options.hidden);
+  consoleEl.querySelector('#closeDelivery').onclick = () => { toggleOptions(false); movement.focus(); };
+  consoleEl.addEventListener('keydown', event => { if(event.key === 'Escape') {toggleOptions(false); movement.focus();} });
   const powerReadout = consoleEl.querySelector('#bowlingPower');
   let startY = 0, startPull = .5;
   const track = plunger.querySelector('.plunger-track');
@@ -74,12 +79,13 @@ export function createBowlingPlunger({
     plunger.classList.toggle('animated', animate);
     powerLabel.textContent = `${Math.round((.2 + .8 * pull) * 100)}%`;
     powerReadout.textContent = powerLabel.textContent;
+    consoleEl.querySelector('#powerMeter').value = Math.round((.2 + .8 * pull) * 100);
     handle.setAttribute('aria-label', `Pull and release bowling plunger. Power ${powerLabel.textContent}`);
   }
 
   function select(kind, value, emit = true) {
     if (kind === 'line') line = value;
-    if (kind === 'type') { type = value; movement.value = value; }
+    if (kind === 'type') { type = value; movement.innerHTML = `${deliveryIcon(value)}<span>${DELIVERY_LABELS[value]}</span><svg class="picker-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>`; }
     consoleEl.querySelectorAll(`[data-${kind}]`).forEach(button => {
       button.classList.toggle('selected', button.dataset[kind] === value);
       button.setAttribute('aria-pressed', String(button.dataset[kind] === value));
@@ -90,7 +96,7 @@ export function createBowlingPlunger({
   consoleEl.querySelectorAll('[data-line]').forEach(button => {
     button.onclick = () => { if (enabled && !cpuMode) select('line', button.dataset.line); };
   });
-  movement.addEventListener('change', () => { if(enabled && !cpuMode) select('type', movement.value); });
+  consoleEl.querySelectorAll('[data-type]').forEach(button => { button.onclick = () => { if(enabled && !cpuMode) { select('type', button.dataset.type); toggleOptions(false); movement.focus(); } }; });
 
   handle.addEventListener('pointerdown', event => {
     if (!enabled || cpuMode) return;
@@ -134,7 +140,7 @@ export function createBowlingPlunger({
     plunger.hidden = !visible;
     consoleEl.hidden = !visible;
     enabled = Boolean(interactive);
-    if(!enabled) cancel();
+    if(!enabled) { cancel(); toggleOptions(false); }
     movement.disabled = !enabled || cpu;
     cpuMode = Boolean(cpu);
     plunger.classList.toggle('cpu', cpuMode);

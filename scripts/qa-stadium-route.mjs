@@ -7,6 +7,8 @@ const server = process.env.QA_URL ? null : await preview({ preview: { host: '127
 const browser = await chromium.launch({ headless: true, ...(process.env.QA_URL && process.env.HTTPS_PROXY ? {proxy: {server: process.env.HTTPS_PROXY}} : {}), ...(bundle ? { args: bundle.args } : {}), ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, ignoreHTTPSErrors: Boolean(process.env.QA_URL) });
+  // Reuse reviewed layout captures when a software-rendered screenshot stalls.
+  const capture = options => process.env.QA_SKIP_SCREENSHOTS ? Promise.resolve() : page.screenshot(options);
   const errors = [], models = [], artAssets = [];
   page.on('response', r => { if (/\/(stadium-pavilion-night-v1|rolled-pitch-v2|seated-crowd-night-v2)\.webp$/.test(r.url())) artAssets.push({url:r.url(),status:r.status()}); });
   page.on('pageerror', e => errors.push(e.message));
@@ -44,7 +46,7 @@ try {
   assert.equal(layout.contactFeedback, true);
 
   const label = process.env.QA_URL ? 'live' : 'production';
-  await page.screenshot({ path: `docs/qa/stadium-${label}-route.png` });
+  await capture({ path: `docs/qa/stadium-${label}-route.png` });
   const resourceTiming = await page.evaluate(() => {
     const entry = performance.getEntriesByType('resource')
       .find(item => item.name.endsWith('cricket-stadium-r28.glb'));
@@ -62,7 +64,7 @@ try {
   await writeFile(`docs/qa/stadium-${label}-route.json`, JSON.stringify(evidence, null, 2) + '\n');
   for (const [name, width, height] of [['desktop',1365,900],['landscape',844,390]]) {
     await page.setViewportSize({width,height}); await page.waitForTimeout(300);
-    await page.screenshot({path:`docs/qa/stadium-${label}-route-${name}.png`});
+    await capture({path:`docs/qa/stadium-${label}-route-${name}.png`});
   }
   await page.setViewportSize({width:390,height:844});
   await page.locator('#restart').click();
@@ -72,11 +74,11 @@ try {
   // Capture a stable ready-to-bowl state, outside countdown/innings overlays.
   for (const [suffix, width, height] of [['',390,844],['-desktop',1365,900],['-landscape',844,390]]) {
     await page.setViewportSize({width,height}); await page.waitForTimeout(300);
-    await page.screenshot({path:`docs/qa/stadium-${label}-route${suffix}.png`});
+    await capture({path:`docs/qa/stadium-${label}-route${suffix}.png`});
   }
   await page.setViewportSize({width:390,height:844});
   await page.locator('#bowlingConsole [data-line="LEFT"]').click();
-  await page.locator('#bowlingMovement').selectOption('SWING_RIGHT');
+  await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
   const handle = await page.locator('.plunger-handle').boundingBox();
   await page.mouse.move(handle.x + handle.width/2, handle.y + handle.height/2);
   await page.mouse.down(); await page.mouse.move(handle.x + handle.width/2,handle.y + handle.height/2 + 40,{steps:5}); await page.mouse.up();

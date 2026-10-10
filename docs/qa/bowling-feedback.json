@@ -5,86 +5,86 @@
       "overflow": false,
       "buttons": [
         {
-          "height": 46,
-          "font": 12
+          "height": 50,
+          "font": 11
         },
         {
-          "height": 46,
-          "font": 12
+          "height": 50,
+          "font": 11
         },
         {
-          "height": 46,
-          "font": 12
+          "height": 50,
+          "font": 11
         },
         {
-          "height": 46,
-          "font": 14
+          "height": 48,
+          "font": 12
         }
       ],
       "plunger": {
         "x": 326,
-        "y": 372.9375,
+        "y": 369.828125,
         "width": 64,
         "height": 100,
-        "top": 372.9375,
+        "top": 369.828125,
         "right": 390,
-        "bottom": 472.9375,
+        "bottom": 469.828125,
         "left": 326
       },
-      "glow": 0.8302091404508032
+      "glow": 0.5002720499956042
     },
     {
       "name": "small",
       "overflow": false,
       "buttons": [
         {
-          "height": 46,
-          "font": 12
+          "height": 50,
+          "font": 11
         },
         {
-          "height": 46,
-          "font": 12
+          "height": 50,
+          "font": 11
         },
         {
-          "height": 46,
-          "font": 12
+          "height": 50,
+          "font": 11
         },
         {
-          "height": 46,
-          "font": 14
+          "height": 48,
+          "font": 12
         }
       ],
       "plunger": {
         "x": 256,
-        "y": 270.625,
+        "y": 265.515625,
         "width": 64,
         "height": 100,
-        "top": 270.625,
+        "top": 265.515625,
         "right": 320,
-        "bottom": 370.625,
+        "bottom": 365.515625,
         "left": 256
       },
-      "glow": 0.7600001021089231
+      "glow": 0.844927278005442
     },
     {
       "name": "landscape",
       "overflow": false,
       "buttons": [
         {
-          "height": 44,
+          "height": 50,
           "font": 11
         },
         {
-          "height": 44,
+          "height": 50,
           "font": 11
         },
         {
-          "height": 44,
+          "height": 50,
           "font": 11
         },
         {
-          "height": 44,
-          "font": 14
+          "height": 48,
+          "font": 12
         }
       ],
       "plunger": {
@@ -97,27 +97,27 @@
         "bottom": 387.859375,
         "left": 403.609375
       },
-      "glow": 0.8428556517128828
+      "glow": 0.3659653559258248
     },
     {
       "name": "desktop",
       "overflow": false,
       "buttons": [
         {
-          "height": 46,
-          "font": 12
+          "height": 59.09375,
+          "font": 11
         },
         {
-          "height": 46,
-          "font": 12
+          "height": 59.09375,
+          "font": 11
         },
         {
-          "height": 46,
-          "font": 12
+          "height": 59.09375,
+          "font": 11
         },
         {
-          "height": 46,
-          "font": 14
+          "height": 48,
+          "font": 12
         }
       ],
       "plunger": {
@@ -130,7 +130,7 @@
         "bottom": 833.65625,
         "left": 797.5
       },
-      "glow": 0.436054356457585
+      "glow": 0.38244837685697497
     }
   ],
   "held": {
