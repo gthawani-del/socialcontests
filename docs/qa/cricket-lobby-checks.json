@@ -1,0 +1,106 @@
+{
+  "layouts": [
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 700,
+      "overflow": false,
+      "play": {
+        "x": 18,
+        "y": 563.1875,
+        "width": 354,
+        "height": 48,
+        "top": 563.1875,
+        "right": 372,
+        "bottom": 611.1875,
+        "left": 18
+      },
+      "targets": [
+        44,
+        44,
+        44,
+        44,
+        44,
+        44
+      ]
+    },
+    {
+      "name": "small",
+      "width": 320,
+      "height": 568,
+      "overflow": false,
+      "play": {
+        "x": 18,
+        "y": 528.1875,
+        "width": 284,
+        "height": 48,
+        "top": 528.1875,
+        "right": 302,
+        "bottom": 576.1875,
+        "left": 18
+      },
+      "targets": [
+        48,
+        48,
+        48,
+        44,
+        44,
+        44
+      ]
+    },
+    {
+      "name": "desktop",
+      "width": 1365,
+      "height": 900,
+      "overflow": false,
+      "play": {
+        "x": 821.6875,
+        "y": 562.390625,
+        "width": 444.796875,
+        "height": 52,
+        "top": 562.390625,
+        "right": 1266.484375,
+        "bottom": 614.390625,
+        "left": 821.6875
+      },
+      "targets": [
+        46,
+        46,
+        46,
+        46,
+        46,
+        46
+      ]
+    },
+    {
+      "name": "landscape",
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "play": {
+        "x": 508,
+        "y": 404.1875,
+        "width": 300,
+        "height": 52,
+        "top": 404.1875,
+        "right": 808,
+        "bottom": 456.1875,
+        "left": 508
+      },
+      "targets": [
+        46,
+        46,
+        46,
+        46,
+        46,
+        46
+      ]
+    }
+  ],
+  "errors": [],
+  "oldModelRequests": 0,
+  "help": true,
+  "preferences": true,
+  "playRoute": true,
+  "previewFailureFallback": true
+}
