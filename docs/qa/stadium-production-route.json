@@ -2,7 +2,21 @@
   "url": "http://127.0.0.1:5180/cricket-pinball/play/?format=ONE_OVER&difficulty=HARD",
   "models": [
     {
-      "url": "http://127.0.0.1:5180/models/cricket-stadium-colosseum-r5.glb",
+      "url": "http://127.0.0.1:5180/models/cricket-stadium-r28.glb",
+      "status": 200
+    }
+  ],
+  "artAssets": [
+    {
+      "url": "http://127.0.0.1:5180/assets/cricket/world/rolled-pitch-v2.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:5180/assets/cricket/world/seated-crowd-night-v2.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:5180/assets/cricket/world/stadium-pavilion-night-v1.webp",
       "status": 200
     }
   ],
@@ -10,5 +24,40 @@
   "format": "ONE_OVER",
   "difficulty": "HARD",
   "demoGate": "Completed through UI",
-  "build": "production"
+  "autoCpuDelivery": true,
+  "firstBallCounted": true,
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layout": {
+    "canvas": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 756,
+      "top": 0,
+      "right": 390,
+      "bottom": 756,
+      "left": 0
+    },
+    "controls": {
+      "x": 0,
+      "y": 756,
+      "width": 390,
+      "height": 88,
+      "top": 756,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "contactFeedback": true
+  },
+  "resourceTiming": {
+    "durationMs": 320,
+    "transferSize": null,
+    "decodedBodySize": null
+  },
+  "build": "production",
+  "humanBowlingPlunger": true
 }

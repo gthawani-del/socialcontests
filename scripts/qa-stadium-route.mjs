@@ -7,7 +7,8 @@ const server = process.env.QA_URL ? null : await preview({ preview: { host: '127
 const browser = await chromium.launch({ headless: true, ...(bundle ? { args: bundle.args } : {}), ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  const errors = [], models = [];
+  const errors = [], models = [], artAssets = [];
+  page.on('response', r => { if (/\/(stadium-pavilion-night-v1|rolled-pitch-v2|seated-crowd-night-v2)\.webp$/.test(r.url())) artAssets.push({url:r.url(),status:r.status()}); });
   page.on('pageerror', e => errors.push(e.message));
   page.on('response', r => { if (r.url().endsWith('.glb')) models.push({ url: r.url(), status: r.status() }); });
   await page.goto(process.env.QA_URL || 'http://127.0.0.1:5180/cricket-pinball/play/?format=ONE_OVER&difficulty=HARD');
@@ -31,7 +32,8 @@ try {
     return /BALL\s+1\s*\/\s*6/i.test(text);
   }, { timeout: 10000 });
 
-  assert(models.some(m => m.url.endsWith('cricket-stadium-colosseum-r13.glb') && m.status === 200));
+  assert(models.some(m => m.url.endsWith('cricket-stadium-r28.glb') && m.status === 200));
+  assert.equal(artAssets.filter(r => r.status === 200).length, 3);
   assert.deepEqual(errors, []);
   const layout = await page.evaluate(() => ({
     canvas: document.querySelector('canvas')?.getBoundingClientRect().toJSON(),
@@ -45,7 +47,7 @@ try {
   await page.screenshot({ path: `docs/qa/stadium-${label}-route.png` });
   const resourceTiming = await page.evaluate(() => {
     const entry = performance.getEntriesByType('resource')
-      .find(item => item.name.endsWith('cricket-stadium-colosseum-r13.glb'));
+      .find(item => item.name.endsWith('cricket-stadium-r28.glb'));
     return entry ? {
       durationMs: Math.round(entry.duration),
       transferSize: entry.transferSize || null,
@@ -53,10 +55,28 @@ try {
     } : null;
   });
   const evidence = {
-    url: page.url(), models, errors, format: 'ONE_OVER', difficulty: 'HARD',
+    url: page.url(), models, artAssets, errors, format: 'ONE_OVER', difficulty: 'HARD',
     demoGate: 'Completed through UI', autoCpuDelivery: true, firstBallCounted: true,
     viewport: { width: 390, height: 844 }, layout, resourceTiming, build: 'production'
   };
   await writeFile(`docs/qa/stadium-${label}-route.json`, JSON.stringify(evidence, null, 2) + '\n');
+  for (const [name, width, height] of [['desktop',1365,900],['landscape',844,390]]) {
+    await page.setViewportSize({width,height}); await page.waitForTimeout(300);
+    await page.screenshot({path:`docs/qa/stadium-${label}-route-${name}.png`});
+  }
+  await page.setViewportSize({width:390,height:844});
+  await page.locator('#restart').click();
+  await page.locator('#beginStadiumToss').click(); await page.locator('#callHeads').click();
+  await page.locator('#chooseBowl').click({timeout:15000});
+  await page.waitForFunction(() => !document.querySelector('#bowlingConsole [data-line="LEFT"]').disabled);
+  await page.locator('#bowlingConsole [data-line="LEFT"]').click();
+  await page.locator('#bowlingConsole [data-type="SWING_RIGHT"]').click();
+  const handle = await page.locator('.plunger-handle').boundingBox();
+  await page.mouse.move(handle.x + handle.width/2, handle.y + handle.height/2);
+  await page.mouse.down(); await page.mouse.move(handle.x + handle.width/2,handle.y + handle.height/2 + 40,{steps:5}); await page.mouse.up();
+  await page.waitForFunction(() => /BALL\s+1\s*\/\s*6/i.test(document.querySelector('#score').innerText));
+  assert.deepEqual(errors, []);
+  evidence.humanBowlingPlunger = true;
+  await writeFile(`docs/qa/stadium-${label}-route.json`, JSON.stringify(evidence,null,2)+'\n');
   console.log(JSON.stringify(evidence));
 } finally { await browser.close(); await new Promise(resolve => server ? server.httpServer.close(resolve) : resolve()); }
