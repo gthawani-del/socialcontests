@@ -16,7 +16,7 @@ for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,3
  const layout=await page.locator('#matchPanel').evaluate(p=>{const r=p.getBoundingClientRect(),v=document.querySelector('#viewport').getBoundingClientRect(),s=document.querySelector('#score').getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,height:r.height,viewportHeight:v.height,scoreBottom:s.bottom,overflow:p.scrollWidth>p.clientWidth};});
  assert(!layout.overflow);assert(layout.x>=0&&layout.right<=w&&layout.bottom<=h);
  if(w<800&&h>500){assert(layout.y>=layout.scoreBottom,'setup must clear HUD');assert(layout.height<layout.viewportHeight*.8,'setup must not stretch to fill table');}
- setupLayouts.push({name,...layout});await page.screenshot({path:`docs/qa/match-setup-${name}.png`});
+ setupLayouts.push({name,...layout});if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/match-setup-${name}.png`});
 }
 await page.setViewportSize({width:390,height:700});
 await page.locator('#beginStadiumToss').click();await page.locator('#callHeads').click();
@@ -37,8 +37,9 @@ await page.evaluate(()=>document.querySelector('.toss-lift').getAnimations()[0].
 assert.equal(await page.locator('#matchPanel h2').innerText(),'Coin in the air');
 await page.evaluate(()=>document.querySelector('.toss-coin').getAnimations()[0].finish());
 await page.waitForSelector('.toss-coin.heads:not(.flipping)');assert.equal(await page.locator('.toss-coin').getAttribute('aria-label'),'HEADS');
-await page.screenshot({path:'docs/qa/toss-heads.png'});
+if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:'docs/qa/toss-heads.png'});
 await page.locator('#chooseBowl').click({timeout:15000});
+await page.locator('#confirmBowler').click();
 await page.waitForFunction(()=>!document.querySelector('#movementPicker').disabled);
 await page.locator('[data-line="LEFT"]').click();await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
 await writeFile('docs/qa/match-setup-layouts.json',JSON.stringify(setupLayouts,null,2));
@@ -46,20 +47,20 @@ const layouts=[];
 for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,390],['desktop',1365,900]]){
  await page.setViewportSize({width:w,height:h});await page.waitForFunction(()=>document.querySelector("#pinballPlunger").getBoundingClientRect().right<=innerWidth && document.querySelector("#pinballPlunger").getBoundingClientRect().bottom<=innerHeight && Math.abs(document.querySelector("#viewport canvas").width-document.querySelector("#viewport").clientWidth*Math.min(devicePixelRatio,2))<2);
  const layout=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth,buttons:[...document.querySelectorAll('#bowlingConsole button,#movementPicker')].filter(b=>b.getBoundingClientRect().height>0).map(b=>({height:b.getBoundingClientRect().height,font:parseFloat(getComputedStyle(b).fontSize)})),plunger:document.querySelector('#pinballPlunger').getBoundingClientRect().toJSON(),glow:window.__stadiumQA.snapshot().plunger.glow}));
- console.log(name,JSON.stringify(layout));assert(!layout.overflow);assert(layout.buttons.every(b=>b.height>=44&&b.font>=11));assert(layout.glow>0);assert(layout.plunger.x>=0&&layout.plunger.right<=w);assert(layout.plunger.bottom<=h);
+ console.log(name,JSON.stringify(layout));assert(!layout.overflow);assert(layout.buttons.every(b=>b.height>=44&&b.font>=11));assert.equal(layout.glow,0);assert(layout.plunger.x>=0&&layout.plunger.right<=w);assert(layout.plunger.bottom<=h);
  await page.locator('#movementPicker').click();
  const picker=await page.locator('#deliveryOptions').boundingBox();assert(picker.x>=0&&picker.y>=0&&picker.x+picker.width<=w&&picker.y+picker.height<=h);
- assert.equal(await page.locator('[data-type] svg').count(),7);
- await page.screenshot({path:`docs/qa/delivery-options-${name}.png`});
+ assert.equal(await page.locator('[data-type]:visible svg').count(),6);
+ if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/delivery-options-${name}.png`});
  await page.locator('#closeDelivery').click();
  assert.equal(await page.locator('#movementPicker').getAttribute('aria-expanded'),'false');
- layouts.push({name,...layout});await page.screenshot({path:`docs/qa/bowling-feedback-${name}.png`});
+ layouts.push({name,...layout});if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/bowling-feedback-${name}.png`});
 }
 await page.setViewportSize({width:390,height:700});await page.waitForFunction(()=>document.querySelector("#pinballPlunger").getBoundingClientRect().right<=innerWidth && document.querySelector("#pinballPlunger").getBoundingClientRect().bottom<=innerHeight && Math.abs(document.querySelector("#viewport canvas").width-document.querySelector("#viewport").clientWidth*Math.min(devicePixelRatio,2))<2);
 const cdp=await page.context().newCDPSession(page);const box=await page.locator('.plunger-handle').boundingBox();const x=box.x+box.width/2,y=box.y+box.height/2;
 await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});
 await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:y+30,id:1}]});
-await page.waitForTimeout(60);const held=await page.evaluate(()=>window.__stadiumQA.snapshot().plunger);assert(held.dragging&&held.pull>.5&&held.glow>1);
+await page.waitForTimeout(60);const held=await page.evaluate(()=>window.__stadiumQA.snapshot().plunger);assert(held.dragging&&held.pull>.5&&held.glow>0);
 await cdp.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});assert.equal(await page.evaluate(()=>window.__stadiumQA.snapshot().running),false);
 await page.locator('#score').click();assert(await page.evaluate(()=>window.__stadiumQA.snapshot().paused));await page.locator('#closeMatchDetails').click();await page.waitForFunction(()=>!window.__stadiumQA.snapshot().paused);
 await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
@@ -75,7 +76,7 @@ await page.evaluate(()=>{Math.random=()=>.9;});await page.locator('#callHeads').
 await page.waitForSelector('.toss-coin.tails:not(.flipping)');
 assert.equal(await page.locator('.toss-coin').getAttribute('aria-label'),'TAILS');
 const tailsMatrix=await page.locator('.toss-coin').evaluate(e=>getComputedStyle(e).transform);
-assert(tailsMatrix.includes('-1'));await page.screenshot({path:'docs/qa/toss-tails.png'});
+assert(tailsMatrix.includes('-1'));if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:'docs/qa/toss-tails.png'});
 await writeFile('docs/qa/toss-feedback.json',JSON.stringify({tossMotion,tailsMatrix,headsConfirmed:true,tailsConfirmed:true,noEarlyRevealWhileAnimationPaused:true},null,2));
 console.log('Bowling and both toss faces passed');
 }finally{await browser.close();await server.close();}

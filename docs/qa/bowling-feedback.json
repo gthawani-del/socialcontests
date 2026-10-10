@@ -18,20 +18,24 @@
         },
         {
           "height": 48,
-          "font": 12
+          "font": 11
+        },
+        {
+          "height": 48,
+          "font": 11
         }
       ],
       "plunger": {
-        "x": 326,
-        "y": 369.828125,
+        "x": 311.609375,
+        "y": 298.828125,
         "width": 64,
         "height": 100,
-        "top": 369.828125,
-        "right": 390,
-        "bottom": 469.828125,
-        "left": 326
+        "top": 298.828125,
+        "right": 375.609375,
+        "bottom": 398.828125,
+        "left": 311.609375
       },
-      "glow": 0.5002720499956042
+      "glow": 0
     },
     {
       "name": "small",
@@ -51,20 +55,24 @@
         },
         {
           "height": 48,
-          "font": 12
+          "font": 11
+        },
+        {
+          "height": 48,
+          "font": 11
         }
       ],
       "plunger": {
-        "x": 256,
-        "y": 265.515625,
+        "x": 234.125,
+        "y": 192.125,
         "width": 64,
         "height": 100,
-        "top": 265.515625,
-        "right": 320,
-        "bottom": 365.515625,
-        "left": 256
+        "top": 192.125,
+        "right": 298.125,
+        "bottom": 292.125,
+        "left": 234.125
       },
-      "glow": 0.844927278005442
+      "glow": 0
     },
     {
       "name": "landscape",
@@ -84,7 +92,11 @@
         },
         {
           "height": 48,
-          "font": 12
+          "font": 11
+        },
+        {
+          "height": 48,
+          "font": 11
         }
       ],
       "plunger": {
@@ -97,7 +109,7 @@
         "bottom": 387.859375,
         "left": 403.609375
       },
-      "glow": 0.3659653559258248
+      "glow": 0
     },
     {
       "name": "desktop",
@@ -117,20 +129,24 @@
         },
         {
           "height": 48,
-          "font": 12
+          "font": 11
+        },
+        {
+          "height": 48,
+          "font": 11
         }
       ],
       "plunger": {
-        "x": 797.5,
-        "y": 733.65625,
+        "x": 804.046875,
+        "y": 731.015625,
         "width": 64,
         "height": 100,
-        "top": 733.65625,
-        "right": 861.5,
-        "bottom": 833.65625,
-        "left": 797.5
+        "top": 731.015625,
+        "right": 868.046875,
+        "bottom": 831.015625,
+        "left": 804.046875
       },
-      "glow": 0.38244837685697497
+      "glow": 0
     }
   ],
   "held": {
@@ -139,9 +155,28 @@
     "enabled": true,
     "cpuMode": false,
     "visible": true,
-    "glow": 2.24
+    "glow": 0.264
   },
   "live": {
+    "bowling": {
+      "bowler": "MEDIUM",
+      "length": "GOOD",
+      "line": "LEFT",
+      "type": "SWING_RIGHT",
+      "power": 0.6000000000000001,
+      "movementScale": 1
+    },
+    "quality": "high",
+    "atmosphere": {
+      "reducedMotion": false,
+      "quality": "high",
+      "spectators": 240,
+      "active": true,
+      "elapsed": 3.2332999999999776,
+      "flashCount": 0,
+      "flash": false,
+      "reaction": false
+    },
     "rendering": {
       "calls": 1,
       "triangles": 1
@@ -162,7 +197,12 @@
     "vfx": {
       "trail": true,
       "sparks": false,
-      "target": false
+      "target": false,
+      "shadow": true,
+      "shadowScale": 1.08125,
+      "shadowOpacity": 0.42477876106194695,
+      "reducedMotion": false,
+      "quality": "high"
     },
     "plunger": {
       "pull": 0.5,

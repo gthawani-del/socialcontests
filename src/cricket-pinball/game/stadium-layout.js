@@ -107,5 +107,8 @@ export function createStadiumTable(base) {
     table.launcher.deliveryTypes[type] = { speedMultiplier: .82, startZ: 1.55, stopZ: 2.32,
       swingAcceleration: 0, bounceZ: 1.66, bounceKickX: direction * .8, bounceSpeedMultiplier: .94 };
   }
+  table.launcher.deliveryTypes.SLOWER = {...table.launcher.deliveryTypes.PACE,speedMultiplier:.76};
+  table.launcher.deliveryTypes.FLIGHTED = {...table.launcher.deliveryTypes.PACE,speedMultiplier:.78};
+  table.launcher.deliveryTypes.FLIPPER = {...table.launcher.deliveryTypes.PACE,speedMultiplier:1.1};
   return table;
 }

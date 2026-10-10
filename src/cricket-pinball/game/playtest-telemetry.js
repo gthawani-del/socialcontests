@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'cricket-pinball-playtest-v1';
 const MAX_DELIVERIES = 200;
 
-const round = value => Number.isFinite(Number(value)) ? Math.round(Number(value) * 1000) / 1000 : null;
+const round = value => value != null && Number.isFinite(Number(value)) ? Math.round(Number(value) * 1000) / 1000 : null;
 const upper = value => value == null ? null : String(value).toUpperCase();
 
 export function createTelemetryState(meta = {}, existing = []) {
@@ -31,9 +31,13 @@ export function reduceTelemetryEvent(state, event = {}, now = Date.now) {
       inningsBall: Number(score.balls || 0) + 1,
       battingPlayerId: match.battingPlayerId || null,
       bowlingPlayerId: match.bowlingPlayerId || null,
+      bowler: upper(event.selection?.bowler),
+      length: upper(event.selection?.length),
+      practice: event.practice || state.meta.practice || false,
       line: upper(event.selection?.line),
       deliveryType: upper(event.selection?.type || 'PACE'),
       power: round(event.selection?.power),
+      powerBand: telemetryPowerBand(event.selection?.power),
       timing: null,
       contactQuality: null,
       timingScore: null,
@@ -100,6 +104,8 @@ export function reduceTelemetryEvent(state, event = {}, now = Date.now) {
     return state;
   }
 
+  if (event.type === 'MATCH_RESET') {state.current=null;state.matchResult=null;return state;}
+
   if (event.type === 'MATCH_RESULT') {
     state.matchResult = event.result ? { ...event.result } : null;
     return state;
@@ -149,6 +155,52 @@ export function summarizeTelemetry(deliveries = []) {
   summary.avgQuality = qualityCount ? qualityTotal / qualityCount : null;
   summary.boundaryConversion = summary.boundaryAttempts ? summary.boundaries / summary.boundaryAttempts : null;
   return summary;
+}
+
+export function telemetryPowerBand(power) {
+  if (power == null || !Number.isFinite(Number(power)) || power < 0 || power > 1) return 'UNKNOWN';
+  return power < .45 ? 'LOW' : power < .75 ? 'MEDIUM' : 'HIGH';
+}
+
+// Rates use counted balls; dead balls remain visible as attempts but never dilute
+// wicket/run rates. Keep practice, difficulty and batting side separate in cells.
+export function summarizeTelemetryGroups(deliveries = []) {
+  const dimensions = ['bowler','deliveryType','line','length','powerBand','difficulty','battingPlayerId','practice'];
+  const groups = Object.fromEntries(dimensions.map(key => [key,new Map()]));
+  const combinations = new Map();
+  for (const row of deliveries) {
+    const fields = Object.fromEntries(dimensions.map(key => [key,
+      key === 'powerBand' ? telemetryPowerBand(row.power) :
+      key === 'practice' ? (row.practice ? String(row.practice) : 'MATCH') : upper(row[key]) || 'UNKNOWN'
+    ]));
+    for (const key of dimensions) {
+      if (!groups[key].has(fields[key])) groups[key].set(fields[key],[]);
+      groups[key].get(fields[key]).push(row);
+    }
+    const id = JSON.stringify(fields);
+    if (!combinations.has(id)) combinations.set(id,{fields,rows:[]});
+    combinations.get(id).rows.push(row);
+  }
+  const measure = rows => {
+    const counted = rows.filter(row => ['ONE','TWO','FOUR','SIX','DOT','WICKET'].includes(row.result));
+    const summary = summarizeTelemetry(counted);
+    const runs = counted.reduce((total,row) => total + ({ONE:1,TWO:2,FOUR:4,SIX:6}[row.result] || 0),0);
+    return {
+      attempts: rows.length,
+      deadBalls: rows.filter(row => row.result === 'DEAD_BALL').length,
+      ...summary,
+      runs,
+      runsPerBall: counted.length ? runs / counted.length : null,
+      wicketRate: counted.length ? (summary.results.WICKET || 0) / counted.length : null,
+      boundaryRate: counted.length ? summary.boundaries / counted.length : null,
+      reasons: rows.reduce((counts,row) => {const reason=row.reason || 'UNKNOWN';counts[reason]=(counts[reason] || 0)+1;return counts;},{})
+    };
+  };
+  return {
+    powerBands: {LOW:'0–44%',MEDIUM:'45–74%',HIGH:'75–100%'},
+    by: Object.fromEntries(dimensions.map(key => [key,Array.from(groups[key],([value,rows]) => ({value,...measure(rows)}))])),
+    combinations: Array.from(combinations.values(),({fields,rows}) => ({...fields,...measure(rows)}))
+  };
 }
 
 function loadStored() {
@@ -224,7 +276,7 @@ export function createPlaytestTelemetry({ app, enabled = false, meta = {} } = {}
       <tr>
         <td>${state.deliveries.length - index}</td>
         <td>I${val(row.innings)}·B${val(row.inningsBall)}</td>
-        <td><b>${val(row.line)}</b><small>${val(row.deliveryType)} · ${row.power == null ? '—' : Math.round(row.power * 100) + '%'}</small></td>
+        <td><b>${val(row.line)}</b><small>${val(row.bowler)} · ${val(row.length)} · ${val(row.deliveryType)} · ${row.power == null ? '—' : Math.round(row.power * 100) + '%'}</small></td>
         <td>${val(row.timing)}<small>${val(row.bat)}</small></td>
         <td>${row.contactQuality == null ? '—' : row.contactQuality.toFixed(2)}</td>
         <td>${val(row.shotIntent)}</td>
@@ -254,6 +306,7 @@ export function createPlaytestTelemetry({ app, enabled = false, meta = {} } = {}
       meta: state.meta,
       matchResult: state.matchResult,
       summary: summarizeTelemetry(state.deliveries),
+      balance: summarizeTelemetryGroups(state.deliveries),
       deliveries: state.deliveries
     };
     const text = JSON.stringify(payload, null, 2);
@@ -282,5 +335,5 @@ export function createPlaytestTelemetry({ app, enabled = false, meta = {} } = {}
   panel.querySelector('#telemetryClear').onclick = clear;
 
   render();
-  return { enabled: true, handle, getState: () => state, clear };
+  return { enabled: true, handle, getState: () => state, getBalance: () => summarizeTelemetryGroups(state.deliveries), clear };
 }

@@ -1,0 +1,130 @@
+{
+  "lengths": [
+    {
+      "length": "FULL",
+      "z": 1.9224961272038517,
+      "height": 0.004293055555555556
+    },
+    {
+      "length": "GOOD",
+      "z": 1.7203585977182727,
+      "height": 0.004314583333333342
+    },
+    {
+      "length": "SHORT",
+      "z": 1.2517130344808223,
+      "height": 0.0018166666666666696
+    }
+  ],
+  "layouts": [
+    {
+      "name": "mobile",
+      "overflow": false,
+      "picker": {
+        "x": 13,
+        "y": 454.421875,
+        "width": 364,
+        "height": 149,
+        "top": 454.421875,
+        "right": 377,
+        "bottom": 603.421875,
+        "left": 13
+      },
+      "score": {
+        "x": 12,
+        "y": 8,
+        "width": 272,
+        "height": 44,
+        "top": 8,
+        "right": 284,
+        "bottom": 52,
+        "left": 12
+      }
+    },
+    {
+      "name": "small",
+      "overflow": false,
+      "picker": {
+        "x": 13,
+        "y": 180,
+        "width": 294,
+        "height": 149,
+        "top": 180,
+        "right": 307,
+        "bottom": 329,
+        "left": 13
+      },
+      "score": {
+        "x": 12,
+        "y": 8,
+        "width": 202,
+        "height": 44,
+        "top": 8,
+        "right": 214,
+        "bottom": 52,
+        "left": 12
+      }
+    },
+    {
+      "name": "landscape",
+      "overflow": false,
+      "picker": {
+        "x": 544,
+        "y": 229,
+        "width": 290,
+        "height": 149,
+        "top": 229,
+        "right": 834,
+        "bottom": 378,
+        "left": 544
+      },
+      "score": {
+        "x": 624,
+        "y": 44,
+        "width": 210,
+        "height": 44,
+        "top": 44,
+        "right": 834,
+        "bottom": 88,
+        "left": 624
+      }
+    },
+    {
+      "name": "desktop",
+      "overflow": false,
+      "picker": {
+        "x": 1021.5,
+        "y": 438.78125,
+        "width": 242,
+        "height": 149,
+        "top": 438.78125,
+        "right": 1263.5,
+        "bottom": 587.78125,
+        "left": 1021.5
+      },
+      "score": {
+        "x": 407.5,
+        "y": 44,
+        "width": 550,
+        "height": 44,
+        "top": 44,
+        "right": 957.5,
+        "bottom": 88,
+        "left": 407.5
+      }
+    }
+  ],
+  "atmosphere": {
+    "reducedMotion": false,
+    "quality": "high",
+    "spectators": 240,
+    "active": true,
+    "elapsed": 0.8833000000000006,
+    "flashCount": 0,
+    "flash": false,
+    "reaction": false
+  },
+  "pauseResume": true,
+  "lowQuality": true,
+  "errors": []
+}

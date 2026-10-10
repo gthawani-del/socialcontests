@@ -1,6 +1,7 @@
+import {BOWLERS,normalizeBowling} from './bowling-rules.js';
 import { CricketMatchEngine } from '../match/match-engine.js';
 import { createCricketGameplayAdapter } from './gameplay-adapter.js';
-import { createCpuBattingAI, chooseCpuBowling } from './cpu-opponent.js';
+import { createCpuBattingAI, chooseTacticalBowling } from './cpu-opponent.js';
 import { createTossController } from '../toss/toss-controller.js';
 
 // Shared match rules; this module only coordinates stadium screen ownership/timing.
@@ -9,18 +10,22 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   const panel = document.createElement('section'); panel.id = 'matchPanel'; panel.setAttribute('aria-label', 'Match setup');
   document.querySelector('#viewport').append(panel);
   let match, adapter, cpu, running = false, ready = false, format = 'LAST_3', difficulty = 'MEDIUM', stepAccumulator = 0;
-  const timers = new Set();
-  let paused = false;
-  const displayState = () => match ? {...match.getState(), inningsHistory:match.innings.map(i=>({...i})), deliveryHistory:match.deliveryHistory.map(d=>({...d}))} : null;
+  const timers = new Set(), pauseReasons = new Set();
+  let paused = false, bowlerByInnings={}, currentBowler='MEDIUM', deliveryPlan=null;
+  const practiceRole=practice==='bowl'?'bowl':'bat';
+  const isPractice=Boolean(practice);
+  const displayState = () => match ? {...match.getState(), practice:isPractice,bowler:currentBowler,inningsHistory:match.innings.map(i=>({...i})), deliveryHistory:match.deliveryHistory.map(d=>({...d}))} : null;
   const requested = new URLSearchParams(location.search);
   if (['LAST_3', 'ONE_OVER', 'TWO_OVER'].includes(requested.get('format'))) format = requested.get('format');
   if (['EASY', 'MEDIUM', 'HARD'].includes(requested.get('difficulty'))) difficulty = requested.get('difficulty');
   const toss = createTossController({ random: () => Math.random() });
   const schedule = job => { job.started=performance.now(); job.id=setTimeout(()=>{timers.delete(job);job.fn();},job.remaining); };
   const delay = (fn, ms) => {const job={fn,remaining:ms,id:null,started:0};timers.add(job);if(!paused)schedule(job);};
-  function setPaused(value) {
-    if(paused === value)return;
-    paused=value;
+  function setPaused(value, reason='panel') {
+    if(value)pauseReasons.add(reason);else pauseReasons.delete(reason);
+    const nextPaused=pauseReasons.size>0;
+    if(paused === nextPaused)return;
+    paused=nextPaused;
     for (const animation of panel.getAnimations({subtree:true})) {
       if (paused && animation.playState === 'running') animation.pause();
       else if (!paused && animation.playState === 'paused') animation.play();
@@ -31,17 +36,17 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   }
   const name = id => id === 'player' ? 'You' : 'CPU';
   const humanBatting = () => match?.battingPlayerId === 'player';
-  const canBat = () => practice || Boolean(humanBatting() && match?.currentInnings && !match.currentInnings.complete);
+  const canBat = () => Boolean(humanBatting() && match?.currentInnings && !match.currentInnings.complete);
   function releaseBats() {
     for (const side of ['left', 'right']) { engine.setFlipper(side, false); document.querySelector(`#${side}Bat`).classList.remove('pressed'); }
   }
   function controls() {
-    bowl.disabled = paused || !ready || running;
-    document.querySelector('.setup').classList.toggle('batting', !practice && humanBatting());
-    bowl.textContent = practice || !humanBatting() ? 'Bowl' : 'Ready for ball';
-    for (const id of ['line', 'power', 'deliveryType']) {
+    bowl.disabled = paused || !ready || running || humanBatting();
+    document.querySelector('.setup').classList.toggle('batting', humanBatting());
+    bowl.textContent = !humanBatting() ? 'Bowl' : 'Ready for ball';
+    for (const id of ['line', 'power', 'deliveryType', 'length']) {
       const element = document.querySelector(`#${id}`);
-      if (element) element.disabled = !practice && (!ready || running || humanBatting());
+      if (element) element.disabled = paused || !ready || running || humanBatting();
     }
     for (const side of ['left', 'right']) document.querySelector(`#${side}Bat`).disabled = paused || !canBat();
     onFeedback({
@@ -56,17 +61,35 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   }
   function hud() {
     const state = match.getState(), s = state.score;
-    document.querySelector('#score').innerHTML = `<div><small>${state.innings ? `${name(match.currentInnings?.battingPlayerId || state.battingPlayerId)} batting` : 'Score'}</small><strong>${s.runs} / ${s.wickets}</strong></div><div><small>Ball</small><strong>${s.balls} <span>/ ${state.ballsPerInnings}</span></strong><span>${Math.floor(s.balls/6)}.${s.balls%6} ov</span></div><div><small>${state.target !== null ? 'Target' : 'Innings'}</small><strong>${state.target !== null ? state.target : state.innings ? state.roundInnings : '—'}</strong>${state.roundInnings === 2 && state.target !== null ? `<span>${state.requiredRuns} needed</span>` : ''}</div>`;
+    document.querySelector('#score').innerHTML = `<div><small>${state.innings ? `${name(match.currentInnings?.battingPlayerId || state.battingPlayerId)} batting` : 'Score'}</small><strong>${s.runs} / ${s.wickets}</strong></div><div><small>Ball</small><strong>${s.balls} <span>/ ${state.ballsPerInnings}</span></strong></div><div><small>${state.target !== null ? 'Target' : 'Innings'}</small><strong>${state.target !== null ? state.target : state.innings ? state.roundInnings : '—'}</strong></div>`;
   }
   function show(title, body) { panel.hidden = false; panel.classList.remove('match-setup'); panel.innerHTML = `<h2>${title}</h2>${body}`; }
+  function prepareBowler() {
+    if(!match?.currentInnings || match.currentInnings.complete)return;
+    ready=false;running=false;releaseBats();controls();
+    const selectedMatch=match,key=match.currentInnings.number;
+    if(bowlerByInnings[key]) {currentBowler=bowlerByInnings[key];makeReady();return;}
+    const confirm=bowler=>{if(paused || match!==selectedMatch || match.currentInnings.number!==key || ready)return;currentBowler=bowler;bowlerByInnings[key]=bowler;onFeedback({type:'BOWLER_SELECTED',bowler,human:!humanBatting(),match:displayState()});makeReady();};
+    if(humanBatting()) {
+      // Choose while paused too; the delivery timer remains suspended until resume.
+      const keys=Object.keys(BOWLERS);currentBowler=keys[Math.floor(Math.random()*keys.length)];bowlerByInnings[key]=currentBowler;
+      onFeedback({type:'BOWLER_SELECTED',bowler:currentBowler,human:false,match:displayState()});makeReady();return;
+    }
+    show('Choose your bowler',`<p>One bowler for this innings. Choose the ball and length before each delivery.</p><div class="bowler-options">${Object.entries(BOWLERS).map(([id,b])=>`<button type="button" data-bowler="${id}" aria-pressed="${id==='MEDIUM'}"><strong>${b.label}</strong><small>${id==='FAST'?'Speed and swing':id==='MEDIUM'?'Swing, cutters and slower balls':'Turn, flight and flipper'}</small></button>`).join('')}</div><button id="confirmBowler">Start bowling</button>`);
+    let chosen='MEDIUM';
+    panel.querySelectorAll('[data-bowler]').forEach(button=>button.onclick=()=>{chosen=button.dataset.bowler;panel.querySelectorAll('[data-bowler]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));});
+    panel.querySelector('#confirmBowler').onclick=()=>confirm(chosen);
+  }
   function makeReady() {
+    if(!match?.currentInnings || match.currentInnings.complete)return;
+    if(!bowlerByInnings[match.currentInnings.number]){prepareBowler();return;}
     ready = true; panel.hidden = true; delete cue.dataset.contact;
     cue.textContent = humanBatting()
       ? 'CPU preparing delivery'
-      : 'Select line + movement · pull and release';
+      : 'Select line, length and delivery · pull and release';
     controls(); hud();
-    if (!practice && humanBatting()) {
-      const selection = chooseCpuBowling(difficulty, rules.cpu);
+    if (humanBatting()) {
+      const selection = chooseTacticalBowling(difficulty,rules.cpu,{bowler:currentBowler,history:match.deliveryHistory.filter(d=>d.innings===match.currentInnings.number),state:match.getState()});
       delay(() => {
         if (!ready || running || !humanBatting() || !['DELIVERY_SETUP', 'SECOND_INNINGS'].includes(match?.status)) return;
         onFeedback({ type: 'CPU_PLUNGER_PREP', selection, match: displayState() });
@@ -95,7 +118,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
 
   function afterDelivery(outcome, metadata = {}) {
     running = false; ready = false; cpu.reset(); releaseBats(); hud(); controls();
-    onFeedback({ type: 'OUTCOME', outcome, metadata, match: displayState() });
+    onFeedback({ type: 'OUTCOME', outcome, metadata:{...metadata,selection:deliveryPlan}, match: displayState() });
     cue.textContent = metadata.displayText
       || (metadata.reason === 'RISK_WICKET'
         ? `MISTIMED ATTACK · WICKET`
@@ -104,7 +127,10 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
           : outcome === 'DEAD_BALL'
             ? 'DEAD BALL · DOES NOT COUNT'
             : outcome);
-    if (practice) { ready = !match.currentInnings.complete; controls(); return; }
+    if (isPractice) {
+      delay(()=>{if(match.currentInnings.complete){show('Practice complete',`<p>${match.currentInnings.runs} runs · ${match.currentInnings.wickets} wickets · ${match.currentInnings.balls} balls</p><button id="practiceAgain">Practice again</button><p><a href="/cricket-pinball/">Back to lobby</a></p>`);panel.querySelector('#practiceAgain').onclick=reset;}else makeReady();},Number(rules.delivery.resultHoldMs?.[outcome]??900));
+      return;
+    }
 
     const deadBall = outcome === 'DEAD_BALL';
     const holdMs = deadBall
@@ -114,10 +140,10 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     delay(() => {
       if (match.status === 'INNINGS_BREAK') {
         show('Innings break', `<p>${match.innings.at(-1).wickets >= match.maxWickets ? `${match.maxWickets} wickets lost` : `${match.ballsPerInnings} balls completed`} · ${match.innings.at(-1).balls}/${match.ballsPerInnings} balls</p><p>${match.battingPlayerId === 'player' ? 'You need' : 'CPU needs'} ${match.target} to win.</p><button id="continueInnings">Start chase</button>`);
-        document.querySelector('#continueInnings').onclick = () => { match.startSecondInnings(); cpu.reset(); engine.resetBall(); makeReady(); };
+        document.querySelector('#continueInnings').onclick = () => { match.startSecondInnings(); cpu.reset(); engine.resetBall(); prepareBowler(); };
       } else if (match.status === 'SUPER_OVER') {
         show('Scores tied', `<p>Three-ball tie-break. Two wickets per side.</p><button id="startTieBreak">Play tie-break</button>`);
-        document.querySelector('#startTieBreak').onclick = () => { match.startSuperOver(); cpu.reset(); engine.resetBall(); makeReady(); };
+        document.querySelector('#startTieBreak').onclick = () => { match.startSuperOver(); cpu.reset(); engine.resetBall(); prepareBowler(); };
       } else if (match.status === 'MATCH_OVER') {
         const result = match.result;
         onFeedback({ type: 'MATCH_RESULT', result, match: displayState() });
@@ -129,8 +155,9 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     }, holdMs);
   }
   function newMatch() {
+    bowlerByInnings={};currentBowler='MEDIUM';deliveryPlan=null;
     adapter?.dispose(); cpu?.reset(); engine.resetBall(); onReset(); releaseBats();
-    match = new CricketMatchEngine({ format: practice ? 'ONE_OVER' : format, difficulty, players: [{ id: 'player' }, { id: 'cpu' }], maxWickets: rules.maxWickets, superOver: rules.superOver.enabled, superOverBalls: rules.superOver.ballsPerInnings });
+    match = new CricketMatchEngine({ format: practice ? 'ONE_OVER' : format, difficulty, players: [{ id: 'player' }, { id: 'cpu' }], maxWickets: isPractice ? 6 : rules.maxWickets, superOver: rules.superOver.enabled, superOverBalls: rules.superOver.ballsPerInnings });
     engine.setDifficulty?.(difficulty, rules.difficultyGameplay?.[difficulty] || {});
     cpu = createCpuBattingAI({ engine, tableConfig: table, difficulty, cpuConfig: rules.cpu });
     adapter = createCricketGameplayAdapter({ engine, matchEngine: match, tableConfig: table, cricketRules: rules,
@@ -156,7 +183,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     const battingPlayerId = choice === 'BAT' ? winner : winner === 'player' ? 'cpu' : 'player';
     match.assignRoles({ battingPlayerId, bowlingPlayerId: battingPlayerId === 'player' ? 'cpu' : 'player', choice });
     show('Roles confirmed', `<p>${battingPlayerId === 'player' ? 'You bat' : 'CPU bats'} first.</p>`);
-    delay(() => { match.startInnings(); makeReady(); }, rules.toss.roleConfirmMs);
+    delay(() => { match.startInnings(); prepareBowler(); }, rules.toss.roleConfirmMs);
   }
   function coinMarkup(face = 'HEADS', flying = false) {
     return `<div class="toss-stage"><div class="toss-lift${flying ? ' tossing' : ''}" style="--toss-duration:${rules.toss.coinMs}ms"><div class="toss-coin ${face === 'TAILS' ? 'tails' : 'heads'}${flying ? ' flipping' : ''}" role="img" aria-label="${flying ? 'Coin flipping in the air' : face}"><div class="coin-face coin-heads"><img src="/assets/cricket/world/cricket-pinball-toss-coin-v4.png" alt=""><strong>HEADS</strong></div><div class="coin-face coin-tails"><span aria-hidden="true">✦</span><strong>TAILS</strong></div></div></div></div>`;
@@ -185,8 +212,8 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     else delay(reveal, 240); // Reduced-motion users get a short static reveal.
   }
   function reset() {
-    for (const job of timers) clearTimeout(job.id); timers.clear(); paused=false; toss.reset(); newMatch();
-    if (practice) { match.assignRoles({ battingPlayerId: 'player', bowlingPlayerId: 'cpu' }); match.startInnings(); makeReady(); }
+    for (const job of timers) clearTimeout(job.id); timers.clear(); paused=pauseReasons.size>0; bowlerByInnings={}; currentBowler='MEDIUM'; toss.reset(); newMatch();
+    if (isPractice) { match.assignRoles({ battingPlayerId: practiceRole==='bat'?'player':'cpu', bowlingPlayerId: practiceRole==='bat'?'cpu':'player' }); match.startInnings(); prepareBowler(); }
     else {
       show('Set up your match', '<label>Format<select id="format"><option value="LAST_3">Last 3 balls</option><option value="ONE_OVER">One over</option><option value="TWO_OVER">Two overs</option></select></label><label>Difficulty<select id="difficulty"><option value="EASY">Easy</option><option value="MEDIUM" selected>Normal</option><option value="HARD">Hard</option></select></label><p>One over: 6 balls · Two overs: 12 balls · 2 wickets per innings.</p><button id="beginStadiumToss">Begin toss</button>');
       panel.classList.add('match-setup');
@@ -204,43 +231,46 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   }
   function launch(selectionOverride = null) {
     if (paused || !ready || running || !match.currentInnings || match.currentInnings.complete) return false;
-    const selection = selectionOverride || (!practice && humanBatting()
-      ? chooseCpuBowling(difficulty, rules.cpu)
+    const selection = normalizeBowling(selectionOverride || (humanBatting()
+      ? chooseTacticalBowling(difficulty,rules.cpu,{bowler:currentBowler,history:match.deliveryHistory.filter(d=>d.innings===match.currentInnings.number),state:match.getState()})
       : {
           line: document.querySelector('#line')?.value || 'CENTRE',
           power: Number(document.querySelector('#power')?.value || 50) / 100,
           type: document.querySelector('#deliveryType')?.value || 'PACE',
+          length: document.querySelector('#length')?.value || 'GOOD',
           movementScale: 1
-        });
+        }),currentBowler);
+    deliveryPlan=selection;
     if (!match.beginDelivery(selection)) return false;
     const held = Object.fromEntries(['left', 'right'].map(side => [side, engine.flippers.get(side).pressed]));
-    engine.resetBall(); cpu.reset();
+    engine.resetBall(); cpu.reset(); cpu.observeDelivery(selection,match.getState());
     if (humanBatting()) for (const side of ['left', 'right']) engine.setFlipper(side, held[side]);
     adapter.armDelivery();
     engine.releaseLaunch({
       line: selection.line,
       charge: selection.power,
       deliveryType: selection.type || 'PACE',
+      bowler:selection.bowler, length:selection.length,
       movementScale: selection.movementScale ?? 1
     });
-    onFeedback({ type: 'DELIVERY_LAUNCH', selection, match: displayState() });
+    onFeedback({ type: 'DELIVERY_LAUNCH', selection, practice:isPractice?practiceRole:false, match: displayState() });
     running = true; ready = false; stepAccumulator = 0;
     cue.textContent = humanBatting() ? 'You bat · ball live' : 'CPU batting · ball live';
     controls();
     return true;
   }
   return {
-    reset, launch, setPaused, get paused() {return paused;}, get running() { return running; }, get match() { return match; },
+    reset, launch, setPaused, get practice(){return isPractice?practiceRole:false;}, get bowler(){return currentBowler;}, get paused() {return paused;}, get pauseReasons(){return [...pauseReasons];}, get running() { return running; }, get match() { return match; },
     step(dt) {
       if(paused)return;
       if (!running) { engine.updateFlippers(Math.min(Math.max(dt, 0), table.physics.maxFrameDelta)); return; }
       stepAccumulator += Math.min(Math.max(dt, 0), table.physics.maxFrameDelta);
       while (running && stepAccumulator >= table.physics.fixedStep) {
-        cpu.update(engine.simTime * 1000, !practice && !humanBatting());
+        cpu.update(engine.simTime * 1000, !humanBatting());
         adapter.step(table.physics.fixedStep);
         stepAccumulator -= table.physics.fixedStep;
       }
     },
-    bat(side, pressed) { if(paused)return; if (pressed && !practice && !canBat()) return; engine.setFlipper(side, pressed); document.querySelector(`#${side}Bat`).classList.toggle('pressed', pressed); }
+    bat(side, pressed) { if(paused)return; if (pressed && !canBat()) return; engine.setFlipper(side, pressed); document.querySelector(`#${side}Bat`).classList.toggle('pressed', pressed); }
   };
 }

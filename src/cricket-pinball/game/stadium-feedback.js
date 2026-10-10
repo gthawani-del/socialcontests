@@ -5,7 +5,7 @@ export function createStadiumFeedback({
   ballMaterial,
   getBallScreenPosition = () => ({ x: 50, y: 72 })
 }) {
-  let flashTimer=0;
+  let flashTimer=0, contactSeen=false, humanBatting=false, deliveryHumanBatting=false;
   const timing=document.createElement('div');timing.id='contactFeedback';timing.setAttribute('aria-live','polite');timing.hidden=true;viewport.append(timing);
   const vibrate = pattern => {
     try { navigator.vibrate?.(pattern); } catch {}
@@ -42,19 +42,22 @@ export function createStadiumFeedback({
 
   const showTiming = feedback => {
     timing.hidden = false;
-    timing.textContent = feedback.timing === 'PERFECT'
-      ? 'PERFECT'
-      : feedback.timing;
+    const tips={PERFECT:'Clean contact',EARLY:'Wait a little longer',LATE:'Swing a little sooner',MISSED:'No bat contact'};
+    timing.replaceChildren();
+    const title=document.createElement('strong');title.textContent=feedback.timing;
+    const tip=document.createElement('span');tip.textContent=tips[feedback.timing] || 'Bat contact';
+    timing.append(title,tip);
     timing.dataset.timing = feedback.timing;
     clearTimeout(showTiming.timer);
-    showTiming.timer = setTimeout(() => { timing.hidden = true; }, 620);
+    showTiming.timer = setTimeout(() => { timing.hidden = true; }, 1050);
   };
 
   const onBatContact = feedback => {
-    showTiming(feedback);
+    contactSeen=true;
+    if(deliveryHumanBatting)showTiming(feedback);
     impactBurst(feedback.quality);
     flashBall(feedback.quality);
-    classPulse('impact-punch', 190);
+
     if (feedback.timing === 'PERFECT') {
       vibrate(18);
     } else {
@@ -64,6 +67,7 @@ export function createStadiumFeedback({
 
   const onOutcome = (outcome, metadata = {}) => {
     const value = String(outcome || '').toUpperCase();
+    if(deliveryHumanBatting && !contactSeen && value !== 'DEAD_BALL')showTiming({timing:'MISSED'});
     if (metadata.reason === 'SKILL_REJECTED') {
       classPulse('score-miss', 320);
       vibrate(12);
@@ -101,6 +105,10 @@ export function createStadiumFeedback({
 
   const handle = event => {
     if (!event) return;
+    if (event.type === 'CONTROL_STATE') humanBatting=event.practice==='bat' || event.humanBatting;
+    if (event.type === 'DELIVERY_LAUNCH') deliveryHumanBatting=event.match?.battingPlayerId ? event.match.battingPlayerId==='player' : humanBatting;
+    if (event.type === 'MATCH_RESET') deliveryHumanBatting=false;
+    if (event.type === 'DELIVERY_LAUNCH' || event.type === 'MATCH_RESET') {contactSeen=false;timing.hidden=true;clearTimeout(showTiming.timer);}
     if (event.type === 'BAT_CONTACT') onBatContact(event.feedback);
     else if (event.type === 'OUTCOME') onOutcome(event.outcome, event.metadata);
     else if (event.type === 'MATCH_RESULT') {

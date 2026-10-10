@@ -1,3 +1,4 @@
+import {BOWLERS,normalizeBowling,selectionKey} from './bowling-rules.js';
 export function chooseDeliveryType(mix = { PACE: 1 }, roll = Math.random()) {
   const entries = Object.entries(mix).filter(([, weight]) => Number(weight) > 0);
   if (!entries.length) return 'PACE';
@@ -24,6 +25,20 @@ export function chooseCpuBowling(difficulty = 'MEDIUM', cpuConfig = {}, random =
   };
 }
 
+export function chooseTacticalBowling(difficulty,cpuConfig,{bowler='MEDIUM',history=[],state={},random=Math.random}={}) {
+ const legal=BOWLERS[bowler]?.types || BOWLERS.MEDIUM.types;
+ const selection=chooseCpuBowling(difficulty,cpuConfig,random);
+ const recent=history.slice(-3).map(d=>d.selection || d.bowling || {});
+ selection.type=legal.includes(selection.type)?selection.type:legal[Math.floor(random()*legal.length)];
+ selection.length=['FULL','GOOD','SHORT'][Math.floor(random()*3)];
+ // Avoid repeating the identical plan; still commit before the ball is live.
+ if(recent.length>=2&&recent.slice(-2).every(s=>s.type===selection.type)) {
+  const alternatives=legal.filter(t=>t!==selection.type);selection.type=alternatives[Math.floor(random()*alternatives.length)];
+ }
+ if(state.target!==null&&state.requiredRuns>state.ballsRemaining*2&&random()<.5)selection.length='FULL';
+ return normalizeBowling(selection,bowler);
+}
+
 export function createCpuBattingAI({
   engine,
   tableConfig,
@@ -31,6 +46,8 @@ export function createCpuBattingAI({
   cpuConfig = {},
   random = Math.random
 }) {
+  let repeated=0, previousDelivery=null, chasePressure=false;
+  const observeDelivery=(selection,state={})=>{const key=selectionKey(selection);repeated=key===previousDelivery?Math.min(4,repeated+1):0;previousDelivery=key;chasePressure=state.target!=null&&state.requiredRuns>state.ballsRemaining*1.5;};
   let swingUntil = 0;
   let cooldownUntil = 0;
   let activeSide = null;
@@ -99,7 +116,9 @@ export function createCpuBattingAI({
     if (nowMs < swingUntil) return;
     releaseActiveBats();
 
-    const preset = cpuConfig[difficulty] || cpuConfig.MEDIUM || {};
+    const source=cpuConfig[difficulty] || cpuConfig.MEDIUM || {};
+    const adaptation=difficulty==='EASY'?1:1-Math.min(.16,repeated*.04);
+    const preset={...source,battingReactionMs:(source.battingReactionMs??65)*adaptation,battingTimingJitterMs:(source.battingTimingJitterMs??35)*adaptation,battingMissChance:(source.battingMissChance??.12)*adaptation,battingAggression:Math.min(.9,(source.battingAggression??.4)+(chasePressure?.15:0))};
     const ball = engine.ball;
 
     if (scheduledSwingAt !== null) {
@@ -153,6 +172,7 @@ export function createCpuBattingAI({
   return {
     update,
     reset,
+    observeDelivery,
     getState: () => ({ swingUntil, cooldownUntil, activeSide, scheduledSwingAt, scheduledSide })
   };
 }

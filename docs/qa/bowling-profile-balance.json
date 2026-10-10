@@ -1,0 +1,1995 @@
+{
+  "fixture": "Seeded CPU versus centre deliveries. Seeds1–100 per cell; 120Hz physics; production difficulty presets, standard initial CPU (no repeated-delivery adaptation), full innings/chase strategy not represented. Offline simulation, not player telemetry.",
+  "rows": [
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "PACE",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "WICKET": 54,
+        "TWO": 33,
+        "ONE": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "PACE",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "WICKET": 54,
+        "TWO": 33,
+        "ONE": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "PACE",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "WICKET": 54,
+        "TWO": 33,
+        "ONE": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "SWING_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 76,
+      "outcomes": {
+        "WICKET": 64,
+        "ONE": 12,
+        "FOUR": 24
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "SWING_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 74,
+      "outcomes": {
+        "WICKET": 66,
+        "TWO": 11,
+        "FOUR": 23
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "SWING_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 88,
+      "outcomes": {
+        "WICKET": 64,
+        "TWO": 11,
+        "ONE": 12,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "SWING_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 87,
+      "outcomes": {
+        "WICKET": 53,
+        "TWO": 22,
+        "FOUR": 25
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "SWING_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 86,
+      "outcomes": {
+        "WICKET": 54,
+        "ONE": 11,
+        "TWO": 22,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "SWING_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 27,
+        "ONE": 28,
+        "FOUR": 32,
+        "WICKET": 12,
+        "DOT": 1
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "SLOWER",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 60,
+      "outcomes": {
+        "WICKET": 53,
+        "DOT": 13,
+        "TWO": 20,
+        "FOUR": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "SLOWER",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 60,
+      "outcomes": {
+        "WICKET": 53,
+        "DOT": 13,
+        "TWO": 20,
+        "FOUR": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "FAST",
+      "type": "SLOWER",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 60,
+      "outcomes": {
+        "WICKET": 53,
+        "DOT": 13,
+        "TWO": 20,
+        "FOUR": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "PACE",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "WICKET": 54,
+        "ONE": 29,
+        "TWO": 17
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "PACE",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "WICKET": 54,
+        "ONE": 29,
+        "TWO": 17
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "PACE",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "WICKET": 54,
+        "ONE": 29,
+        "TWO": 17
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 86,
+      "outcomes": {
+        "WICKET": 54,
+        "ONE": 21,
+        "TWO": 13,
+        "FOUR": 12
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 87,
+      "outcomes": {
+        "WICKET": 53,
+        "ONE": 21,
+        "TWO": 13,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 87,
+      "outcomes": {
+        "WICKET": 53,
+        "TWO": 22,
+        "FOUR": 25
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 86,
+      "outcomes": {
+        "WICKET": 54,
+        "ONE": 21,
+        "TWO": 13,
+        "FOUR": 12
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 87,
+      "outcomes": {
+        "WICKET": 53,
+        "TWO": 34,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 87,
+      "outcomes": {
+        "WICKET": 53,
+        "DOT": 13,
+        "FOUR": 25,
+        "ONE": 9
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 88,
+      "outcomes": {
+        "WICKET": 52,
+        "TWO": 23,
+        "DOT": 13,
+        "FOUR": 12
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 87,
+      "outcomes": {
+        "WICKET": 53,
+        "TWO": 23,
+        "DOT": 11,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 41,
+        "ONE": 16,
+        "WICKET": 14,
+        "FOUR": 27,
+        "DOT": 2
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 88,
+      "outcomes": {
+        "WICKET": 52,
+        "ONE": 25,
+        "TWO": 11,
+        "FOUR": 12
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 87,
+      "outcomes": {
+        "ONE": 33,
+        "TWO": 30,
+        "DOT": 8,
+        "WICKET": 13,
+        "FOUR": 16
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 41,
+        "TWO": 39,
+        "FOUR": 6,
+        "WICKET": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "SLOWER",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "WICKET": 54,
+        "TWO": 33,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "SLOWER",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "WICKET": 54,
+        "TWO": 33,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "MEDIUM",
+      "type": "SLOWER",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "WICKET": 54,
+        "TWO": 33,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "SPIN_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 57,
+        "TWO": 39,
+        "FOUR": 1,
+        "SIX": 1,
+        "DOT": 2
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "SPIN_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 54,
+        "ONE": 32,
+        "DOT": 3,
+        "FOUR": 11
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "SPIN_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "DOT": 30,
+        "TWO": 40,
+        "ONE": 16,
+        "FOUR": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 47,
+        "DOT": 13,
+        "ONE": 16,
+        "FOUR": 24
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 64,
+        "DOT": 4,
+        "ONE": 32
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 65,
+        "ONE": 28,
+        "DOT": 3,
+        "FOUR": 4
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "PACE",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 49,
+      "outcomes": {
+        "WICKET": 51,
+        "TWO": 22,
+        "DOT": 13,
+        "FOUR": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "PACE",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 49,
+      "outcomes": {
+        "WICKET": 51,
+        "TWO": 22,
+        "DOT": 13,
+        "FOUR": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "PACE",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 49,
+      "outcomes": {
+        "WICKET": 51,
+        "TWO": 22,
+        "DOT": 13,
+        "FOUR": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "FLIGHTED",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 88,
+      "outcomes": {
+        "WICKET": 52,
+        "TWO": 35,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "FLIGHTED",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 88,
+      "outcomes": {
+        "WICKET": 52,
+        "TWO": 35,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "FLIGHTED",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 88,
+      "outcomes": {
+        "WICKET": 52,
+        "TWO": 35,
+        "FOUR": 13
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "FLIPPER",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 86,
+      "outcomes": {
+        "WICKET": 54,
+        "FOUR": 5,
+        "ONE": 27,
+        "TWO": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "FLIPPER",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 86,
+      "outcomes": {
+        "WICKET": 54,
+        "FOUR": 5,
+        "ONE": 27,
+        "TWO": 14
+      }
+    },
+    {
+      "difficulty": "EASY",
+      "bowler": "SPINNER",
+      "type": "FLIPPER",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 86,
+      "outcomes": {
+        "WICKET": 54,
+        "FOUR": 5,
+        "ONE": 27,
+        "TWO": 14
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "PACE",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 85,
+      "outcomes": {
+        "TWO": 85,
+        "WICKET": 15
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "PACE",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 85,
+      "outcomes": {
+        "TWO": 85,
+        "WICKET": 15
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "PACE",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 85,
+      "outcomes": {
+        "TWO": 85,
+        "WICKET": 15
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "SWING_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 41,
+      "outcomes": {
+        "WICKET": 59,
+        "TWO": 41
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "SWING_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 42,
+      "outcomes": {
+        "WICKET": 58,
+        "TWO": 42
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "SWING_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 70,
+      "outcomes": {
+        "WICKET": 59,
+        "TWO": 41
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "SWING_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 41,
+      "outcomes": {
+        "WICKET": 59,
+        "TWO": 41
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "SWING_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 42,
+      "outcomes": {
+        "WICKET": 58,
+        "ONE": 42
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "SWING_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 70,
+      "outcomes": {
+        "WICKET": 59,
+        "TWO": 41
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "SLOWER",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 61,
+      "outcomes": {
+        "WICKET": 57,
+        "TWO": 43
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "SLOWER",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 61,
+      "outcomes": {
+        "WICKET": 57,
+        "TWO": 43
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "FAST",
+      "type": "SLOWER",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 61,
+      "outcomes": {
+        "WICKET": 57,
+        "TWO": 43
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "PACE",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 82,
+      "outcomes": {
+        "WICKET": 18,
+        "FOUR": 82
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "PACE",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 82,
+      "outcomes": {
+        "WICKET": 18,
+        "FOUR": 82
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "PACE",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 82,
+      "outcomes": {
+        "WICKET": 18,
+        "FOUR": 82
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 42,
+      "outcomes": {
+        "WICKET": 58,
+        "TWO": 42
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 44,
+      "outcomes": {
+        "WICKET": 56,
+        "TWO": 44
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 43,
+      "outcomes": {
+        "WICKET": 57,
+        "TWO": 43
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 42,
+      "outcomes": {
+        "WICKET": 58,
+        "TWO": 42
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 44,
+      "outcomes": {
+        "WICKET": 56,
+        "TWO": 44
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 43,
+      "outcomes": {
+        "WICKET": 57,
+        "TWO": 43
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 65,
+      "outcomes": {
+        "DOT": 27,
+        "TWO": 38,
+        "WICKET": 35
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 76,
+      "outcomes": {
+        "ONE": 76,
+        "WICKET": 24
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 97,
+      "outcomes": {
+        "WICKET": 18,
+        "TWO": 82
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 65,
+      "outcomes": {
+        "DOT": 27,
+        "TWO": 38,
+        "WICKET": 35
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 76,
+      "outcomes": {
+        "ONE": 76,
+        "WICKET": 24
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 97,
+      "outcomes": {
+        "WICKET": 18,
+        "ONE": 43,
+        "FOUR": 39
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "SLOWER",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 54,
+      "outcomes": {
+        "WICKET": 57,
+        "TWO": 43
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "SLOWER",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 54,
+      "outcomes": {
+        "WICKET": 57,
+        "TWO": 43
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "MEDIUM",
+      "type": "SLOWER",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 54,
+      "outcomes": {
+        "WICKET": 57,
+        "TWO": 43
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "SPIN_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 85,
+        "TWO": 15
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "SPIN_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 30,
+        "FOUR": 55,
+        "TWO": 15
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "SPIN_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 53,
+        "TWO": 47
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 59,
+        "ONE": 41
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 30,
+        "TWO": 56,
+        "FOUR": 14
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 53,
+        "TWO": 47
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "PACE",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 65,
+      "outcomes": {
+        "ONE": 22,
+        "TWO": 43,
+        "WICKET": 35
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "PACE",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 65,
+      "outcomes": {
+        "ONE": 22,
+        "TWO": 43,
+        "WICKET": 35
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "PACE",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 65,
+      "outcomes": {
+        "ONE": 22,
+        "TWO": 43,
+        "WICKET": 35
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "FLIGHTED",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 68,
+      "outcomes": {
+        "TWO": 27,
+        "FOUR": 41,
+        "WICKET": 32
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "FLIGHTED",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 68,
+      "outcomes": {
+        "TWO": 27,
+        "FOUR": 41,
+        "WICKET": 32
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "FLIGHTED",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 68,
+      "outcomes": {
+        "TWO": 27,
+        "FOUR": 41,
+        "WICKET": 32
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "FLIPPER",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 85,
+      "outcomes": {
+        "ONE": 85,
+        "WICKET": 15
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "FLIPPER",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 85,
+      "outcomes": {
+        "ONE": 85,
+        "WICKET": 15
+      }
+    },
+    {
+      "difficulty": "MEDIUM",
+      "bowler": "SPINNER",
+      "type": "FLIPPER",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 85,
+      "outcomes": {
+        "ONE": 85,
+        "WICKET": 15
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "PACE",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "ONE": 51,
+        "FOUR": 42,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "PACE",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "ONE": 51,
+        "FOUR": 42,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "PACE",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "ONE": 51,
+        "FOUR": 42,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "SWING_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 86,
+      "outcomes": {
+        "WICKET": 14,
+        "FOUR": 86
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "SWING_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 83,
+      "outcomes": {
+        "WICKET": 17,
+        "ONE": 83
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "SWING_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "WICKET": 23,
+        "TWO": 77
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "SWING_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 86,
+      "outcomes": {
+        "WICKET": 14,
+        "TWO": 86
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "SWING_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 83,
+      "outcomes": {
+        "WICKET": 17,
+        "FOUR": 83
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "SWING_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "WICKET": 23,
+        "FOUR": 77
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "SLOWER",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 92,
+      "outcomes": {
+        "FOUR": 92,
+        "WICKET": 8
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "SLOWER",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 92,
+      "outcomes": {
+        "FOUR": 92,
+        "WICKET": 8
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "FAST",
+      "type": "SLOWER",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 92,
+      "outcomes": {
+        "FOUR": 92,
+        "WICKET": 8
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "PACE",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "ONE": 56,
+        "TWO": 37,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "PACE",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "ONE": 56,
+        "TWO": 37,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "PACE",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "ONE": 56,
+        "TWO": 37,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 78,
+      "outcomes": {
+        "TWO": 78,
+        "WICKET": 22
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 84,
+      "outcomes": {
+        "TWO": 84,
+        "WICKET": 16
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 92,
+      "outcomes": {
+        "TWO": 92,
+        "WICKET": 8
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 78,
+      "outcomes": {
+        "ONE": 78,
+        "WICKET": 22
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 84,
+      "outcomes": {
+        "TWO": 84,
+        "WICKET": 16
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "SWING_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 92,
+      "outcomes": {
+        "TWO": 92,
+        "WICKET": 8
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "ONE": 14,
+        "TWO": 79,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "DOT": 28,
+        "TWO": 65,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 57,
+        "ONE": 36,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "DOT": 14,
+        "FOUR": 79,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "ONE": 28,
+        "TWO": 65,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "CUTTER_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 57,
+        "FOUR": 36,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "SLOWER",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 75,
+      "outcomes": {
+        "TWO": 75,
+        "WICKET": 25
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "SLOWER",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 75,
+      "outcomes": {
+        "TWO": 75,
+        "WICKET": 25
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "MEDIUM",
+      "type": "SLOWER",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 75,
+      "outcomes": {
+        "TWO": 75,
+        "WICKET": 25
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "SPIN_LEFT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 87,
+        "ONE": 13
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "SPIN_LEFT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 24,
+        "TWO": 76
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "SPIN_LEFT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 80,
+        "TWO": 20
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "TWO": 87,
+        "ONE": 13
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 17,
+        "TWO": 76,
+        "FOUR": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 100,
+      "outcomes": {
+        "ONE": 80,
+        "TWO": 20
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "PACE",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "WICKET": 11,
+        "TWO": 89
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "PACE",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "WICKET": 11,
+        "TWO": 89
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "PACE",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "WICKET": 11,
+        "TWO": 89
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "FLIGHTED",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "TWO": 93,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "FLIGHTED",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "TWO": 93,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "FLIGHTED",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "TWO": 93,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "FLIPPER",
+      "length": "FULL",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "TWO": 93,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "FLIPPER",
+      "length": "GOOD",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "TWO": 93,
+        "WICKET": 7
+      }
+    },
+    {
+      "difficulty": "HARD",
+      "bowler": "SPINNER",
+      "type": "FLIPPER",
+      "length": "SHORT",
+      "line": "CENTRE",
+      "power": 0.6,
+      "deliveries": 100,
+      "contacts": 93,
+      "outcomes": {
+        "TWO": 93,
+        "WICKET": 7
+      }
+    }
+  ]
+}

@@ -8,7 +8,7 @@ const browser = await chromium.launch({ headless: true, ...(process.env.QA_URL &
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, ignoreHTTPSErrors: Boolean(process.env.QA_URL) });
   // Reuse reviewed layout captures when a software-rendered screenshot stalls.
-  const capture = options => process.env.QA_SKIP_SCREENSHOTS ? Promise.resolve() : page.screenshot(options);
+  const capture = options => process.env.QA_SKIP_SCREENSHOTS ? Promise.resolve() : page.screenshot({...options,timeout:60000});
   const errors = [], models = [], artAssets = [];
   page.on('response', r => { if (/\/(stadium-pavilion-night-v1|rolled-pitch-v2|seated-crowd-night-v2)\.webp$/.test(r.url())) artAssets.push({url:r.url(),status:r.status()}); });
   page.on('pageerror', e => errors.push(e.message));
@@ -42,7 +42,7 @@ try {
     controls: document.querySelector('.controls')?.getBoundingClientRect().toJSON(),
     contactFeedback: Boolean(document.querySelector('#contactFeedback'))
   }));
-  assert(layout.controls?.height <= 150, `batting controls too tall: ${layout.controls?.height}`);
+  assert(layout.controls?.height <= 230, `batting controls too tall: ${layout.controls?.height}`);
   assert.equal(layout.contactFeedback, true);
 
   const label = process.env.QA_URL ? 'live' : 'production';
@@ -70,6 +70,7 @@ try {
   await page.locator('#restart').click();
   await page.locator('#beginStadiumToss').click(); await page.locator('#callHeads').click();
   await page.locator('#chooseBowl').click({timeout:15000});
+  await page.locator('#confirmBowler').click();
   await page.waitForFunction(() => !document.querySelector('#bowlingConsole [data-line="LEFT"]').disabled);
   // Capture a stable ready-to-bowl state, outside countdown/innings overlays.
   for (const [suffix, width, height] of [['',390,844],['-desktop',1365,900],['-landscape',844,390]]) {

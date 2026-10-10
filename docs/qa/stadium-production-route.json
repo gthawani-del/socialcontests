@@ -35,18 +35,18 @@
       "x": 0,
       "y": 0,
       "width": 390,
-      "height": 718,
+      "height": 626.328125,
       "top": 0,
       "right": 390,
-      "bottom": 718,
+      "bottom": 626.328125,
       "left": 0
     },
     "controls": {
       "x": 0,
-      "y": 718,
+      "y": 626.328125,
       "width": 390,
-      "height": 126,
-      "top": 718,
+      "height": 217.671875,
+      "top": 626.328125,
       "right": 390,
       "bottom": 844,
       "left": 0
@@ -54,7 +54,7 @@
     "contactFeedback": true
   },
   "resourceTiming": {
-    "durationMs": 157,
+    "durationMs": 225,
     "transferSize": null,
     "decodedBodySize": null
   },

@@ -1,3 +1,4 @@
+import {BOWLERS,LENGTHS,normalizeBowling} from './bowling-rules.js';
 import { PinballEngine } from '../../physics/pinball-engine.js';
 
 // Opt-in prototype: planar free play with a constrained, height-aware ramp.
@@ -48,13 +49,20 @@ export class StadiumEngine extends PinballEngine {
   }
 
   releaseLaunch(options = null) {
+    if (options?.bowler) {
+      const selection=normalizeBowling({...options,type:options.deliveryType,power:options.charge});
+      options={...options,...selection,deliveryType:selection.type,charge:selection.power};
+    }
     const released = super.releaseLaunch(options);
     if (!released) return false;
 
     const profiles = this.config.launcher.deliveryTypes || {};
     const type = this.launcher.deliveryType || 'PACE';
-    const profile = profiles[type] || profiles.PACE || {};
-    const speedMultiplier = Math.max(.75, Math.min(1.2, Number(profile.speedMultiplier ?? 1)));
+    const profile = {...(profiles[type] || profiles.PACE || {})};
+    const length=LENGTHS[options?.length];
+    if(length) {profile.bounceZ=length.bounceZ;profile.startZ=Math.min(profile.startZ??1.55,length.bounceZ-.2);}
+    this.config.launcher.deliveryGuide.releaseZ=length?Math.min(1.55,length.bounceZ-.11):1.55;
+    const speedMultiplier = Math.max(.55, Math.min(1.3, Number(profile.speedMultiplier ?? 1)*(BOWLERS[options?.bowler]?.speed ?? 1)));
 
     this.ball.velocity.x *= speedMultiplier;
     this.ball.velocity.z *= speedMultiplier;
@@ -62,6 +70,8 @@ export class StadiumEngine extends PinballEngine {
     this.deliveryVariation = {
       type,
       profile,
+      length:options?.length || null,
+      bowler:options?.bowler || null,
       movementScale: Math.max(.5, Math.min(1.6, Number(options?.movementScale ?? 1))),
       bounced: false
     };
@@ -142,7 +152,7 @@ export class StadiumEngine extends PinballEngine {
       this.ball.velocity.x += Number(state.profile.bounceKickX ?? 0) * state.movementScale;
       this.ball.velocity.z *= Number(state.profile.bounceSpeedMultiplier ?? 1);
       this.limitBallSpeed();
-      this.verticalVelocity = Math.min(1.05, -this.verticalVelocity * .5);
+      this.verticalVelocity = Math.min(LENGTHS[state.length]?.rebound ?? 1.05, -this.verticalVelocity * .5);
       this.emit('delivery-bounce', { type: state.type, x: this.ball.position.x, z: this.ball.position.z,
         height: 0, beforeVelocity: before, velocity: { ...this.ball.velocity } });
     } else {

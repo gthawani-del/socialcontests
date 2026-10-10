@@ -1,4 +1,5 @@
-import {lineIcon, deliveryIcon, DELIVERY_LABELS} from './bowling-icons.js';
+import {BOWLERS, LENGTHS, normalizeBowling} from './bowling-rules.js';
+import {lineIcon, deliveryIcon, lengthIcon, DELIVERY_LABELS} from './bowling-icons.js';
 const TYPE_LABELS = {
   PACE: 'STRAIGHT',
   SWING_LEFT: 'SWING ←',
@@ -16,6 +17,7 @@ export function createBowlingPlunger({
   viewport,
   controls,
   onRelease = () => {},
+  onInteraction = () => {},
   onSelectionChange = () => {},
   cpuPullMs = 720
 } = {}) {
@@ -23,6 +25,7 @@ export function createBowlingPlunger({
   consoleEl.id = 'bowlingConsole';
   consoleEl.hidden = true;
   consoleEl.innerHTML = `
+    <div class="bowler-heading"><strong id="bowlerName">Medium pace</strong><span>Bowling plan</span></div>
     <div class="bowl-selector">
       <small>LINE</small>
       <div class="segmented line-options">
@@ -30,10 +33,12 @@ export function createBowlingPlunger({
       </div>
     </div>
     <div class="bowl-selector movement-selector">
-      <small>BALL</small>
+
       <button type="button" id="movementPicker" aria-label="Choose delivery" aria-expanded="false" aria-controls="deliveryOptions"></button>
+      <button type="button" id="lengthPicker" aria-label="Choose length" aria-expanded="false" aria-controls="lengthOptions"></button>
       <div class="power-meter"><small>POWER</small><output id="bowlingPower" aria-label="Bowling power">60%</output><meter id="powerMeter" min="0" max="100" value="60" aria-label="Bowling power"></meter></div>
     </div>
+    <div id="lengthOptions" hidden><div class="delivery-heading"><strong>Where should it bounce?</strong><button type="button" id="closeLength">Close</button></div><div class="length-grid">${Object.entries(LENGTHS).map(([key,item])=>`<button type="button" data-length="${key}">${lengthIcon(key)}<span>${item.label}</span></button>`).join('')}</div></div>
     <div id="deliveryOptions" hidden><div class="delivery-heading"><strong>Choose delivery</strong><button type="button" id="closeDelivery" aria-label="Close delivery choices">Close</button></div><div class="delivery-grid">${Object.entries(DELIVERY_LABELS).map(([type,label])=>`<button type="button" data-type="${type}">${deliveryIcon(type)}<span>${label}</span></button>`).join('')}</div></div>`;
 
   const plunger = document.createElement('div');
@@ -54,10 +59,14 @@ export function createBowlingPlunger({
   const powerLabel = plunger.querySelector('#plungerPower');
   const movement = consoleEl.querySelector('#movementPicker');
   const options = consoleEl.querySelector('#deliveryOptions');
-  const toggleOptions = open => { options.hidden = !open; movement.setAttribute('aria-expanded', String(open)); };
+  const lengthPicker = consoleEl.querySelector('#lengthPicker'), lengthOptions = consoleEl.querySelector('#lengthOptions');
+  const toggleLength = open => {lengthOptions.hidden=!open;lengthPicker.setAttribute('aria-expanded',String(open));};
+  lengthPicker.onclick=()=>{toggleOptions(false);toggleLength(lengthOptions.hidden);};
+  consoleEl.querySelector('#closeLength').onclick=()=>{toggleLength(false);lengthPicker.focus();};
+  const toggleOptions = open => { if(open)toggleLength(false); options.hidden = !open; movement.setAttribute('aria-expanded', String(open)); };
   movement.onclick = () => toggleOptions(options.hidden);
   consoleEl.querySelector('#closeDelivery').onclick = () => { toggleOptions(false); movement.focus(); };
-  consoleEl.addEventListener('keydown', event => { if(event.key === 'Escape') {toggleOptions(false); movement.focus();} });
+  consoleEl.addEventListener('keydown', event => { if(event.key === 'Escape') {toggleLength(false);toggleOptions(false); movement.focus();} });
   const powerReadout = consoleEl.querySelector('#bowlingPower');
   let startY = 0, startPull = .5;
   const track = plunger.querySelector('.plunger-track');
@@ -68,10 +77,10 @@ export function createBowlingPlunger({
   let pointerId = null;
   let pull = .5;
   let line = 'CENTRE';
-  let type = 'PACE';
+  let type = 'PACE', bowler='MEDIUM', length='GOOD';
   let cpuTimer = null;
 
-  const emitSelection = () => onSelectionChange({ line, type, power: .2 + .8 * pull });
+  const emitSelection = () => onSelectionChange(getSelection());
 
   function updatePull(next, animate = false) {
     pull = clamp(next, .05, 1);
@@ -85,6 +94,7 @@ export function createBowlingPlunger({
 
   function select(kind, value, emit = true) {
     if (kind === 'line') line = value;
+    if (kind === 'length') {length=value;lengthPicker.innerHTML=`${lengthIcon(value)}<span><small>LENGTH</small>${LENGTHS[value].label}</span>`;}
     if (kind === 'type') { type = value; movement.innerHTML = `${deliveryIcon(value)}<span>${DELIVERY_LABELS[value]}</span><svg class="picker-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>`; }
     consoleEl.querySelectorAll(`[data-${kind}]`).forEach(button => {
       button.classList.toggle('selected', button.dataset[kind] === value);
@@ -98,9 +108,12 @@ export function createBowlingPlunger({
   });
   consoleEl.querySelectorAll('[data-type]').forEach(button => { button.onclick = () => { if(enabled && !cpuMode) { select('type', button.dataset.type); toggleOptions(false); movement.focus(); } }; });
 
+  consoleEl.querySelectorAll('[data-length]').forEach(button=>{button.onclick=()=>{if(enabled&&!cpuMode){select('length',button.dataset.length);toggleLength(false);lengthPicker.focus();}};});
+
   handle.addEventListener('pointerdown', event => {
     if (!enabled || cpuMode) return;
     event.preventDefault();
+    onInteraction({type:'LEVER_PULL'});
     dragging = true;
     pointerId = event.pointerId;
     handle.setPointerCapture?.(pointerId);
@@ -116,7 +129,7 @@ export function createBowlingPlunger({
     if (!dragging || (event?.pointerId != null && event.pointerId !== pointerId)) return;
     dragging = false;
     plunger.classList.remove('dragging');
-    const selection = { line, type, power: .2 + .8 * pull, movementScale: 1 };
+    const selection = getSelection();
     if (enabled && !cpuMode) onRelease(selection);
     updatePull(.18, true);
     setTimeout(() => updatePull(.5, true), 260);
@@ -140,7 +153,7 @@ export function createBowlingPlunger({
     plunger.hidden = !visible;
     consoleEl.hidden = !visible;
     enabled = Boolean(interactive);
-    if(!enabled) { cancel(); toggleOptions(false); }
+    if(!enabled) { cancel(); toggleOptions(false); toggleLength(false); }
     movement.disabled = !enabled || cpu;
     cpuMode = Boolean(cpu);
     plunger.classList.toggle('cpu', cpuMode);
@@ -150,7 +163,12 @@ export function createBowlingPlunger({
     handle.disabled = !enabled || cpuMode;
   }
 
+  function setBowler(next){bowler=BOWLERS[next]?next:'MEDIUM';consoleEl.querySelector('#bowlerName').textContent=BOWLERS[bowler].label;consoleEl.querySelectorAll('[data-type]').forEach(button=>{button.hidden=!BOWLERS[bowler].types.includes(button.dataset.type);});if(!BOWLERS[bowler].types.includes(type))select('type',BOWLERS[bowler].types[0],false);}
+
   function setSelection(selection = {}, emit = false) {
+    if(selection.bowler)setBowler(selection.bowler);
+    selection=normalizeBowling({...getSelection(),...selection},bowler);
+    if(selection.length)select('length',selection.length,false);
     if (selection.line) select('line', String(selection.line).toUpperCase(), false);
     if (selection.type) select('type', String(selection.type).toUpperCase(), false);
     if (Number.isFinite(Number(selection.power))) updatePull(clamp((Number(selection.power) - .2) / .8, .05, 1), true);
@@ -177,15 +195,18 @@ export function createBowlingPlunger({
   }
 
   function getSelection() {
-    return { line, type, power: .2 + .8 * pull, movementScale: 1 };
+    return { bowler, length, line, type, power: .2 + .8 * pull, movementScale: 1 };
   }
 
   updatePull(.5);
   select('line', line, false);
   select('type', type, false);
+  select('length', length, false);
+  setBowler(bowler);
 
   return {
     setState,
+    setBowler,
     setSelection,
     getSelection,
     getState: () => ({pull, dragging, enabled, cpuMode, visible: !plunger.hidden}),

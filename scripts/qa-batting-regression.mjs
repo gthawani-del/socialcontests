@@ -53,18 +53,20 @@ for(const [index,side] of ['left','right'].entries()) {
  assert(Math.abs(result[side+'up'].flippers[index].angle-result.before.flippers[index].angle)<.001);
 }
 assert.equal(result.rightup.score.balls,0,'shooter lane must not count a delivery');
-await page.screenshot({path:'docs/qa/batting-launcher-preview.png'});
+if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:'docs/qa/batting-launcher-preview.png'});
 const innings=[];
 for(let ball=1;ball<=6;ball++){
  await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
- // First delivery already advanced 80 ticks while checking each bat.
- await page.evaluate(n=>window.__stadiumQA.step(n),ball===1?89:169);
+ // Track the actual flight. FAST/FULL and later tactical variations no longer
+ // arrive on the old fixed tick. No position, score or outcome is injected.
+ const approach=await page.evaluate(()=>{const qa=window.__stadiumQA;let n=0;while(n++<800){const s=qa.snapshot();if(!s.running || (s.ball.z>1.6 && s.ball.velocity.z>0 && s.ball.bounced))return {n,state:s};qa.step(1,false);}throw new Error('No hittable approach');});
+ assert(approach.state.running && approach.state.ball.bounced,'delivery reaches its real pitch bounce');
  const box=await page.locator('#leftBat').boundingBox();
  await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();
  await page.evaluate(()=>window.__stadiumQA.step(18));await page.mouse.up();
  await page.evaluate(()=>window.__stadiumQA.step(1400));
  const state=await page.evaluate(()=>window.__stadiumQA.snapshot());
- assert(state.contactCount>0,'real bat/ball contact required');
+ assert(state.contactCount>approach.state.contactCount,'each delivery requires new real bat/ball contact');
  assert.equal(state.score.balls,ball);assert.equal(state.score.complete,ball===6);
  innings.push(state);
 }
@@ -74,7 +76,7 @@ await page.locator('#score').click();
 assert.equal(await page.locator('.ball-results span').count(),6);
 assert.equal(await page.locator('.commentary-list li').count(),6);
 assert.equal(await page.locator('.innings-total').innerText(),`${innings.at(-1).score.runs}/${innings.at(-1).score.wickets} · 1.0 overs · Complete`);
-await page.screenshot({path:'docs/qa/scorecard-feedback.png'});
+if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:'docs/qa/scorecard-feedback.png'});
 await page.locator('.sound-settings summary').click();
 await page.locator('#muteGame').click();
 assert(await page.evaluate(()=>window.__stadiumQA.snapshot().audio.settings.muted));
@@ -84,7 +86,23 @@ assert.deepEqual(await page.evaluate(()=>window.__stadiumQA.snapshot().audio.fai
 assert((await page.evaluate(()=>window.__stadiumQA.snapshot().audio.played))>0);
 await page.locator('#closeMatchDetails').click();
 
-await page.screenshot({path:'docs/qa/full-over-completed.png'});
+if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:'docs/qa/full-over-completed.png'});
+// Separate hands-off CENTRE/GOOD match verifies two physical drains.
+// Switch the RNG only after toss result: MEDIUM bowler, CENTRE line, GOOD length.
+// LEFT deliveries can legitimately time out as dots without any batting input.
+await page.locator('#restart').click();
+await page.locator('#beginStadiumToss').click();await page.locator('#callHeads').click();await page.locator('#chooseBat').waitFor({timeout:15000});
+await page.evaluate(()=>{Math.random=()=>.5;});await page.locator('#chooseBat').click();
+const wickets=[];
+for(let wicket=1;wicket<=2;wicket++){
+ await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
+ const state=await page.evaluate(()=>{window.__stadiumQA.step(2000,false);return window.__stadiumQA.snapshot();});
+ assert.equal(state.score.wickets,wicket,'untouched delivery must physically reach the wicket drain');
+ assert.equal(state.score.balls,wicket,'wicket counts exactly one delivery');
+ assert.equal(state.score.complete,wicket===2,'first wicket continues; second wicket ends innings');
+ wickets.push(state);
+}
+result.twoWicketFinish=wickets;
 assert.deepEqual(errors, [], 'no browser runtime errors');
-await writeFile('docs/qa/batting-regression.json',JSON.stringify({result,idleStart,idleHeld,cancelled,errors},null,2));console.log(JSON.stringify({samples:Object.fromEntries(Object.entries(result).filter(([k])=>k!=='fullOver').map(([k,v])=>[k,{flippers:v.flippers,ball:v.ball,score:v.score,running:v.running}])),errors}));
+await writeFile('docs/qa/batting-regression.json',JSON.stringify({result,idleStart,idleHeld,cancelled,errors},null,2));console.log(JSON.stringify({samples:Object.fromEntries(Object.entries(result).filter(([k])=>!['fullOver','twoWicketFinish'].includes(k)).map(([k,v])=>[k,{flippers:v.flippers,ball:v.ball,score:v.score,running:v.running}])),errors}));
 }finally{await browser.close();await server.close();}

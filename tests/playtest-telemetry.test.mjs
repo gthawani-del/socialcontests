@@ -81,3 +81,34 @@ test('summary calculates contact and boundary conversion rates', () => {
   assert.equal(summary.boundaryConversion, .5);
   assert.equal(summary.wickets.WICKET_DRAIN, 1);
 });
+
+test('balance groups separate bowler, length, difficulty and power, excluding dead balls from rates', async () => {
+  const {summarizeTelemetryGroups,telemetryPowerBand}=await import('../src/cricket-pinball/game/playtest-telemetry.js');
+  const base={bowler:'FAST',length:'FULL',difficulty:'MEDIUM',deliveryType:'PACE',line:'CENTRE',power:.6,battingPlayerId:'cpu'};
+  const grouped=summarizeTelemetryGroups([
+    {...base,result:'WICKET',reason:'WICKET_DRAIN',wicketReason:'WICKET_DRAIN'},
+    {...base,result:'FOUR',timing:'PERFECT',contactQuality:.9},
+    {...base,result:'DEAD_BALL',reason:'LAUNCH_FAILED'},
+    {...base,bowler:'SPINNER',length:'SHORT',power:.9,result:'DOT'},
+    {...base,difficulty:'HARD',result:'SIX'},
+    {...base,practice:'bowl',result:'TWO'}
+  ]);
+  const cell=grouped.combinations.find(row=>row.bowler==='FAST' && row.difficulty==='MEDIUM' && row.practice==='MATCH');
+  assert.equal(cell.attempts,3);assert.equal(cell.deliveries,2);assert.equal(cell.deadBalls,1);
+  assert.equal(cell.wicketRate,.5);assert.equal(cell.runsPerBall,2);assert.equal(cell.contactRate,.5);
+  assert.equal(cell.reasons.LAUNCH_FAILED,1);assert.equal(grouped.combinations.length,4);
+  assert.equal(telemetryPowerBand(.44),'LOW');assert.equal(telemetryPowerBand(.45),'MEDIUM');
+  assert.equal(telemetryPowerBand(.75),'HIGH');assert.equal(telemetryPowerBand(null),'UNKNOWN');
+  assert.equal(telemetryPowerBand(60),'UNKNOWN');
+});
+
+test('telemetry records new selection dimensions and stays capped at 200 completed deliveries',()=>{
+  const state=createTelemetryState({practice:'bowl'});
+  for(let i=0;i<205;i++){
+    reduceTelemetryEvent(state,{type:'DELIVERY_LAUNCH',selection:{bowler:'SPINNER',length:'GOOD',type:'FLIPPER',power:.8}},fixedNow);
+    reduceTelemetryEvent(state,{type:'OUTCOME',outcome:'DOT'},fixedNow);
+  }
+  assert.equal(state.deliveries.length,200);
+  const row=state.deliveries.at(-1);
+  assert.equal(row.bowler,'SPINNER');assert.equal(row.length,'GOOD');assert.equal(row.powerBand,'HIGH');assert.equal(row.practice,'bowl');
+});

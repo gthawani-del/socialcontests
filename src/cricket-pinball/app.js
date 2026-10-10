@@ -26,7 +26,7 @@ app.innerHTML = `
         <fieldset><legend>Match length</legend><div class="cricket-segmented">${Object.entries(formats).map(([value,label])=>`<button type="button" data-format="${value}" aria-pressed="false">${label}</button>`).join('')}</div></fieldset>
         <fieldset><legend>Difficulty</legend><div class="cricket-segmented">${Object.entries(difficulties).map(([value,label])=>`<button type="button" data-difficulty="${value}" aria-pressed="false">${label}</button>`).join('')}</div></fieldset>
         <button type="button" id="cricketStart" class="cricket-start">Play match <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
-        <p class="match-note" id="matchNote"></p>
+        <p class="match-note" id="matchNote"></p><nav class="practice-links" aria-label="Practice"><a href="/cricket-pinball/play/?practice=bat">Practise batting</a><a href="/cricket-pinball/play/?practice=bowl">Practise bowling</a></nav>
       </section>
     </section>
   </main>`;
