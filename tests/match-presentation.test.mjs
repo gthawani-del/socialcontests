@@ -12,7 +12,7 @@ test('commentary distinguishes rejected runs and dead balls from boundaries',()=
  assert.match(deliveryCommentary('SIX'),/SIX/);
  assert.notEqual(deliveryCommentary('ONE',{},1),deliveryCommentary('ONE',{},2));
 });
-test('bundled original effects contain valid non-silent PCM audio',()=>{
+test('bundled recorded effects contain valid non-silent PCM audio',()=>{
  for(const name of ['bat','flipper','rail','launch','wicket','crowd']){
   const b=readFileSync(new URL(`../public/audio/cricket/${name}.wav`,import.meta.url));
   assert.equal(b.toString('ascii',0,4),'RIFF');assert.equal(b.toString('ascii',8,12),'WAVE');

@@ -154,13 +154,16 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     show('Roles confirmed', `<p>${battingPlayerId === 'player' ? 'You bat' : 'CPU bats'} first.</p>`);
     delay(() => { match.startInnings(); makeReady(); }, rules.toss.roleConfirmMs);
   }
+  function coinMarkup(face = 'HEADS', flying = false) {
+    return `<div class="toss-stage"><div class="toss-lift${flying ? ' tossing' : ''}" style="--toss-duration:${rules.toss.coinMs}ms"><div class="toss-coin ${face === 'TAILS' ? 'tails' : 'heads'}${flying ? ' flipping' : ''}" role="img" aria-label="${flying ? 'Coin flipping in the air' : face}"><div class="coin-face coin-heads"><img src="/assets/cricket/world/cricket-pinball-toss-coin-v4.png" alt=""><strong>HEADS</strong></div><div class="coin-face coin-tails"><span aria-hidden="true">✦</span><strong>TAILS</strong></div></div></div></div>`;
+  }
   function perform(call, caller) {
     const result = toss.perform(call, caller, caller === 'player' ? 'cpu' : 'player');
     if (!result) return;
-    show('Coin in the air', `<img class="stadium-coin flipping" src="/assets/cricket/world/cricket-pinball-toss-coin-v4.png" alt="Cricket Pinball toss coin"><p>${name(caller)} called ${call.toLowerCase()}.</p>`);
+    show('Coin in the air', `${coinMarkup(result.result, true)}<p>${name(caller)} called ${call.toLowerCase()}.</p>`);
     delay(() => {
       match.setToss(result);
-      show(`${result.result} · ${name(result.winnerId)} won the toss`, `<img class="stadium-coin" src="/assets/cricket/world/cricket-pinball-toss-coin-v4.png" alt="Toss coin"><p id="tossChoice">Result confirmed</p>`);
+      show(`${result.result} · ${name(result.winnerId)} won the toss`, `${coinMarkup(result.result)}<p id="tossChoice">Result confirmed</p>`);
       delay(() => {
         if (result.winnerId === 'player') {
           document.querySelector('#tossChoice').innerHTML = '<button id="chooseBat">Bat first</button> <button id="chooseBowl">Bowl first</button>';

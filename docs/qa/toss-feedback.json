@@ -1,0 +1,13 @@
+{
+  "tossMotion": {
+    "lift": 75,
+    "matrix": "matrix3d(1, 0, 0, 0, 0, -0.309017, -0.951057, 0, 0, 0.951057, -0.309017, 0, 0, 0, 0, 1)",
+    "faces": [
+      "HEADS",
+      "TAILS"
+    ]
+  },
+  "tailsMatrix": "matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1)",
+  "headsConfirmed": true,
+  "tailsConfirmed": true
+}

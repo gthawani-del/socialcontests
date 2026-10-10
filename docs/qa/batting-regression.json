@@ -746,7 +746,7 @@
           "target": false
         },
         "plunger": {
-          "pull": 0.12,
+          "pull": 0.1,
           "dragging": false,
           "enabled": false,
           "cpuMode": true,
@@ -844,12 +844,12 @@
           }
         },
         "vfx": {
-          "trail": false,
+          "trail": true,
           "sparks": true,
           "target": false
         },
         "plunger": {
-          "pull": 0.12,
+          "pull": 0.1,
           "dragging": false,
           "enabled": false,
           "cpuMode": true,

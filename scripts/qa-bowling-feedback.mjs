@@ -10,7 +10,20 @@ const page=await browser.newPage({viewport:{width:390,height:700},hasTouch:true}
 await page.route('**/qa-bowling*',r=>r.fulfill({contentType:'text/html',body:'<meta name="viewport" content="width=device-width,initial-scale=1"><main id="stadiumApp"></main><script type="module" src="/src/cricket-pinball/stadium-prototype.js"></script>'}));
 await page.goto('http://127.0.0.1:5183/qa-bowling?format=ONE_OVER');await page.waitForFunction(()=>window.__stadiumQA?.ready);
 await page.evaluate(()=>{Math.random=()=>.1;window.__stadiumQA.manual(true);});
-await page.locator('#beginStadiumToss').click();await page.locator('#callHeads').click();await page.locator('#chooseBowl').click({timeout:15000});
+await page.locator('#beginStadiumToss').click();await page.locator('#callHeads').click();
+await page.waitForSelector('.toss-coin.flipping');
+const tossMotion=await page.evaluate(()=>{
+ const lift=document.querySelector('.toss-lift'),coin=document.querySelector('.toss-coin');
+ const a=lift.getAnimations()[0],b=coin.getAnimations()[0];
+ a.pause();b.pause();a.currentTime=0;b.currentTime=0;const start=lift.getBoundingClientRect().y;
+ a.currentTime=1170;b.currentTime=1170;
+ const motion={lift:start-lift.getBoundingClientRect().y,matrix:getComputedStyle(coin).transform,faces:[...coin.querySelectorAll('strong')].map(x=>x.textContent)};
+ a.play();b.play();return motion;
+});
+assert(tossMotion.lift>50);assert(tossMotion.matrix.startsWith('matrix3d'));assert.deepEqual(tossMotion.faces,['HEADS','TAILS']);
+await page.waitForSelector('.toss-coin.heads:not(.flipping)');assert.equal(await page.locator('.toss-coin').getAttribute('aria-label'),'HEADS');
+await page.screenshot({path:'docs/qa/toss-heads.png'});
+await page.locator('#chooseBowl').click({timeout:15000});
 await page.waitForFunction(()=>!document.querySelector('#bowlingMovement').disabled);
 await page.locator('[data-line="LEFT"]').click();await page.locator('#bowlingMovement').selectOption('SWING_RIGHT');
 const layouts=[];
@@ -34,5 +47,13 @@ await page.evaluate(()=>window.__stadiumQA.step(1600));
 assert.equal((await page.evaluate(()=>window.__stadiumQA.snapshot())).score.balls,1);
 assert.equal(await page.locator('#matchCommentary').innerText()==='',false);
 await page.locator('#score').click();assert.equal(await page.locator('.ball-results span').count(),1);assert.equal(await page.locator('.commentary-list li').count(),1);
-assert.deepEqual(errors,[]);await writeFile('docs/qa/bowling-feedback.json',JSON.stringify({layouts,held,live,errors,cancelDoesNotLaunch:true,oneReleaseOneDelivery:true},null,2));console.log('Bowling feedback checks passed');
+assert.deepEqual(errors,[]);await writeFile('docs/qa/bowling-feedback.json',JSON.stringify({layouts,held,live,errors,cancelDoesNotLaunch:true,oneReleaseOneDelivery:true},null,2));await page.locator('#closeMatchDetails').click();await page.locator('#restart').click();
+await page.locator('#beginStadiumToss').click();await page.waitForSelector('#callHeads');
+await page.evaluate(()=>{Math.random=()=>.9;});await page.locator('#callHeads').click();
+await page.waitForSelector('.toss-coin.tails:not(.flipping)');
+assert.equal(await page.locator('.toss-coin').getAttribute('aria-label'),'TAILS');
+const tailsMatrix=await page.locator('.toss-coin').evaluate(e=>getComputedStyle(e).transform);
+assert(tailsMatrix.includes('-1'));await page.screenshot({path:'docs/qa/toss-tails.png'});
+await writeFile('docs/qa/toss-feedback.json',JSON.stringify({tossMotion,tailsMatrix,headsConfirmed:true,tailsConfirmed:true},null,2));
+console.log('Bowling and both toss faces passed');
 }finally{await browser.close();await server.close();}

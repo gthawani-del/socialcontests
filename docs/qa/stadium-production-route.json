@@ -54,7 +54,7 @@
     "contactFeedback": true
   },
   "resourceTiming": {
-    "durationMs": 153,
+    "durationMs": 110,
     "transferSize": null,
     "decodedBodySize": null
   },

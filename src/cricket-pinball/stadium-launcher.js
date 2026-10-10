@@ -4,16 +4,16 @@ import * as THREE from 'three';
 export function createStadiumLauncher(scene, table, model) {
   const group = new THREE.Group(); group.name = 'Integrated_Shooter_Lane'; scene.add(group);
   const gold = new THREE.MeshStandardMaterial({color:'#bc995d',metalness:.65,roughness:.32});
-  const steel = new THREE.MeshStandardMaterial({color:'#7c8b93',metalness:.8,roughness:.25});
+  const steel = new THREE.MeshStandardMaterial({color:'#b9c7d2',metalness:.45,roughness:.38,emissive:'#32495a',emissiveIntensity:.35});
   const navy = new THREE.MeshStandardMaterial({color:'#102738',metalness:.3,roughness:.5});
   const path = table.launcher.launchPath;
   // Cut a real channel through decorative seating, rather than drawing a lever over it.
   model.updateMatrixWorld(true);
-  const channel = [{x:path[0].x,z:path[0].z+.65},...path];
+  const channel = [{x:path[0].x,z:path[0].z+1.5},...path];
   const inside = p => channel.slice(1).some((b,i)=>{
     const a=channel[i],dx=b.x-a.x,dz=b.z-a.z;
     const t=THREE.MathUtils.clamp(((p.x-a.x)*dx+(p.z-a.z)*dz)/(dx*dx+dz*dz),0,1);
-    return Math.hypot(p.x-a.x-t*dx,p.z-a.z-t*dz)<.15;
+    return Math.hypot(p.x-a.x-t*dx,p.z-a.z-t*dz)<.22;
   });
   model.traverse(mesh=>{
     if(!mesh.isMesh || !/^(Crowd_Band|Seating_Terrace|Individual_Seats|Tier_Gold|R7_(Tier|Upper)|R9_Tier|R11_Tier|Boundary_(Cushion|Gold|Light|Bollard))/.test(mesh.name))return;
@@ -25,7 +25,7 @@ export function createStadiumLauncher(scene, table, model) {
     }
     g.setIndex(keep);mesh.geometry=g;
   });
-  const base=new THREE.Mesh(new THREE.BoxGeometry(.28,.04,.65),navy);base.position.set(path[0].x,.025,path[0].z+.3);group.add(base);
+  const base=new THREE.Mesh(new THREE.BoxGeometry(.28,.18,.65),navy);base.position.set(path[0].x,.09,path[0].z+.3);group.add(base);
   const vertices=[], indices=[];
   const edges=[[],[]];
   path.forEach((p,i)=>{
@@ -41,15 +41,15 @@ export function createStadiumLauncher(scene, table, model) {
   navy.side=THREE.DoubleSide;
   group.add(new THREE.Mesh(geometry,navy));
   for(const edge of edges) group.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(edge),120,.014,6,false),gold));
-  const mechanism = new THREE.Group(); mechanism.position.set(path[0].x,.065,path[0].z);group.add(mechanism);
+  const mechanism = new THREE.Group(); mechanism.position.set(path[0].x,.24,path[0].z);group.add(mechanism);
   const rod=new THREE.Mesh(new THREE.CylinderGeometry(.022,.022,.38,12),steel);rod.rotation.x=Math.PI/2;rod.position.z=.22;mechanism.add(rod);
   const knob=new THREE.Mesh(new THREE.CylinderGeometry(.085,.085,.07,24),gold);knob.rotation.x=Math.PI/2;mechanism.add(knob);
   const spring=[];
-  for(let i=0;i<12;i++) {const ring=new THREE.Mesh(new THREE.TorusGeometry(.038,.008,5,14),steel);mechanism.add(ring);spring.push(ring);}
+  for(let i=0;i<12;i++) {const ring=new THREE.Mesh(new THREE.TorusGeometry(.048,.01,6,16),steel);mechanism.add(ring);spring.push(ring);}
   const tip=new THREE.Mesh(new THREE.CylinderGeometry(.061,.061,.035,16),gold);tip.rotation.x=Math.PI/2;mechanism.add(tip);
   const glowMaterial = gold.clone(); glowMaterial.emissive.set('#ffc65b'); knob.material = glowMaterial; tip.material = glowMaterial;
   const halo = new THREE.Mesh(new THREE.RingGeometry(.095,.125,40),new THREE.MeshBasicMaterial({color:'#ffd77b',transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));
-  halo.rotation.x=-Math.PI/2;halo.position.set(path[0].x,.08,path[0].z+.32);group.add(halo);
+  halo.rotation.x=-Math.PI/2;halo.position.set(path[0].x,.19,path[0].z+.32);group.add(halo);
   let wasDragging=false, flashUntil=0, glow=0;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const world=new THREE.Vector3();
@@ -68,7 +68,7 @@ export function createStadiumLauncher(scene, table, model) {
       // Keep the mechanism visible as table artwork; only the invisible hit area
       // changes ownership. No screen-space lever is drawn over the playfield.
       const size=viewport.getBoundingClientRect();
-      world.set(path[0].x,.065,path[0].z+.30).project(camera);
+      world.set(path[0].x,.24,path[0].z+.30).project(camera);
       element.style.left=`${THREE.MathUtils.clamp((world.x+1)*size.width/2-32,0,Math.max(0,size.width-64))}px`;
       element.style.top=`${THREE.MathUtils.clamp((1-world.y)*size.height/2-50,0,Math.max(0,size.height-100))}px`;
     }

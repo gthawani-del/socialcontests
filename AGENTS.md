@@ -10,6 +10,7 @@ Before release, verify the changed surface with real browser input and meaningfu
 - The ball visibly starts in the side shooter lane, follows its curve without teleporting, and enters the playfield before bat contact.
 - The bowling plunger is visible table artwork; its pointer hit area remains aligned after mobile/desktop/landscape resize. Pull/release changes power and launches exactly one ball.
 - Preserve CPU batting, role changes, chase completion, score HUD, and access gate.
+- For toss or launcher presentation changes, run scripts/qa-bowling-feedback.mjs: verify vertical lift/end-over-end flipping and both final coin faces, inspect the visible shaft/spring across all four viewports, and test pull, cancellation and single release. Audio playback checks do not establish physical phone-speaker quality.
 
 Use scripts/qa-batting-regression.mjs for deterministic touch/physics/full-over coverage and scripts/qa-stadium-route.mjs for the production route, access, toss and bowling flow. Extend assertions when a reported failure reveals a gap. Record seeded/accelerated fixtures honestly and keep a production-default check. A clicked button is not evidence that the bat moved. A screenshot alone is not evidence of gameplay. Inspect screenshots for visible regressions too.
 
