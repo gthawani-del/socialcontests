@@ -22,6 +22,15 @@ for(const [width,height] of [[390,844],[320,568],[844,390],[1365,900]]){
 await page.setViewportSize({width:390,height:844});await page.locator('.plunger-handle').press('ArrowDown');for(let i=0;i<5;i++)await page.locator('.plunger-handle').press('ArrowDown');
 assert.equal(await page.locator('#bowlingPowerMeter').getAttribute('data-zone'),'red');await page.locator('.plunger-handle').press('Enter');
 assert(!(await page.locator('#bowlingPowerMeter').isVisible()));assert(!(await page.locator('#bowlingConsole').isVisible()));
-const result=await page.evaluate(()=>window.__stadiumQA.snapshot());assert(result.accuracy.risk>0);assert(result.running);assert.deepEqual(errors,[]);
+assert(await page.locator('#bowlingSummary').isVisible());
+assert.match(await page.locator('#bowlingSummary').innerText(),/Right \/ Full · 100%/);
+await page.waitForTimeout(350);
+const result=await page.evaluate(()=>window.__stadiumQA.snapshot());
+assert.equal(result.bowling.power,1,'power does not reset after release');assert(result.accuracy.risk>0);assert(result.running);assert.deepEqual(errors,[]);
+await page.evaluate(()=>window.__stadiumQA.step(3000,false));
+await page.waitForFunction(()=>!document.querySelector('#lengthPicker').disabled);
+const restored=await page.evaluate(()=>window.__stadiumQA.snapshot().bowling);
+assert.equal(restored.power,1);assert.equal(restored.line,'RIGHT');assert.equal(restored.length,'FULL');
+assert(!(await page.locator('#bowlingSummary').isVisible()));assert(await page.locator('#bowlingConsole').isVisible());
 await writeFile('docs/qa/compact-bowling-checks.json',JSON.stringify({result,errors,graphics:'battery saver',realPointerInput:true},null,2));console.log('Compact dock, dismissible guide, actual red-zone launch passed');
 }finally{await browser.close();await server.close();}

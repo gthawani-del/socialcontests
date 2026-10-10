@@ -31,7 +31,7 @@ import { createWebGLResultLayer } from './game/webgl-result-layer.js';
 
 const practice = ['bat','bowl'].includes(new URLSearchParams(location.search).get('practice')) ? new URLSearchParams(location.search).get('practice') : false;
 const app = document.querySelector('#stadiumApp');
-const batIcon = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="m32 5 5 5-9 10-5-5z" fill="#193149"/><path d="m23 14 8 8-16 20c-2 2-5 2-7 0l-3-3c-2-2-2-5 0-7z" fill="#e7c48a" stroke="#9e793d" stroke-width="1.5"/><path d="m10 33 13-15" stroke="#fff1ca" stroke-width="2"/></svg>';
+const batIcon = '<svg viewBox="0 0 48 48" aria-hidden="true"><path class="swing-arc" d="M7 21 Q10 6 25 6 M20 2 L26 6 L21 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m32 5 5 5-9 10-5-5z" fill="#193149"/><path d="m23 14 8 8-16 20c-2 2-5 2-7 0l-3-3c-2-2-2-5 0-7z" fill="#e7c48a" stroke="#9e793d" stroke-width="1.5"/><path d="m10 33 13-15" stroke="#fff1ca" stroke-width="2"/></svg>';
 const resetIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 7M4 4v6h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
 app.innerHTML = `<header><a href="/cricket-pinball" aria-label="Back to match lobby">CRICKET <b>PINBALL</b></a><button id="restart" aria-label="Restart match">${resetIcon}</button></header>
 <div id="score" aria-label="Match score">0 / 0</div>
@@ -176,6 +176,7 @@ try {
       bowlingUi.setState({
         visible: inningsActive,
         interactive: inningsActive && !event.humanBatting && event.ready && !event.running && !event.paused,
+        running: event.running,
         cpu: inningsActive && event.humanBatting
       });
       if (!inningsActive || event.running) {

@@ -37,6 +37,8 @@ export function createBowlingPlunger({
   const meter=document.createElement('div');meter.id='bowlingPowerMeter';meter.hidden=true;
   meter.innerHTML='<small>POWER</small><output id="bowlingPower">60%</output><div class="colour-power-track" id="powerMeter" role="meter" aria-label="Bowling power" aria-valuemin="24" aria-valuemax="100"><i></i></div><span class="power-status">Controlled</span>';
   viewport.append(meter);
+  const summary=document.createElement("p");summary.id="bowlingSummary";summary.hidden=true;summary.setAttribute("role","status");controls.prepend(summary);
+  let lastDelivery=null;
 
 
   const plunger = document.createElement('div');
@@ -143,9 +145,7 @@ export function createBowlingPlunger({
     dragging = false;
     plunger.classList.remove('dragging');meter.classList.remove('charging');
     const selection = getSelection();
-    if (enabled && !cpuMode) onRelease(selection);
-    updatePull(.18, true);
-    setTimeout(() => updatePull(.5, true), 260);
+    if (enabled && !cpuMode) {lastDelivery=selection;onRelease(selection);}
     pointerId = null;
   };
   handle.addEventListener('pointerup', release);
@@ -160,10 +160,13 @@ export function createBowlingPlunger({
     if(['ArrowDown','ArrowUp'].includes(event.key))meter.classList.add('charging');
     if(event.key === 'ArrowDown') updatePull(pull + .1);
     if(event.key === 'ArrowUp') updatePull(pull - .1);
-    if((event.key === 'Enter' || event.key === ' ') && !event.repeat) onRelease(getSelection());
+    if((event.key === 'Enter' || event.key === ' ') && !event.repeat) {lastDelivery=getSelection();meter.classList.remove('charging');onRelease(lastDelivery);}
   });
 
-  function setState({ visible = false, interactive = false, cpu = false } = {}) {
+  function setState({ visible = false, interactive = false, cpu = false, running = false } = {}) {
+    summary.hidden=!visible || cpu || !running || !lastDelivery;
+    if(!summary.hidden){const s=lastDelivery;summary.textContent=`${DELIVERY_LABELS[s.type]} · ${s.line[0]+s.line.slice(1).toLowerCase()} / ${LENGTHS[s.length].label} · ${Math.round(s.power*100)}%`;}
+    if(!visible)lastDelivery=null;
     plunger.hidden = !visible;
     consoleEl.hidden = !visible || !interactive || cpu;
     meter.hidden = !visible || !interactive || cpu;
@@ -224,7 +227,7 @@ export function createBowlingPlunger({
     setBowler,
     setSelection,
     getSelection,
-    getState: () => ({pull, dragging, enabled, cpuMode, visible: !plunger.hidden}),
+    getState: () => ({pull: !enabled && !cpuMode ? .05 : pull, dragging, enabled, cpuMode, visible: !plunger.hidden}),
     animateCpu,
     get line() { return line; },
     get type() { return type; },

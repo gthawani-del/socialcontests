@@ -247,3 +247,18 @@
 .power-status{display:block;font-size:11px;background:#071622df;padding:3px;border-radius:3px}#bowlingPowerMeter[data-zone=red] .power-status{color:#ffbaba}
 @media(min-width:800px) and (min-height:501px){#stadiumApp{grid-template-columns:minmax(0,1fr) 330px}}
 @media(max-height:500px){#bowlingConsole #movementPicker,#bowlingConsole #lengthPicker{font-size:16px;height:64px}#bowlingConsole #movementPicker svg,#bowlingConsole #lengthPicker svg{display:none}#lengthOptions,#deliveryOptions{position:fixed;left:auto;right:10px;width:min(310px,calc(100vw - 20px));bottom:12px}#bowlingPowerMeter{width:70px}.colour-power-track{height:65px}}
+
+/* A stable thumb row: feedback changes above it, never under the player's thumbs. */
+.controls:has(.setup.batting){display:flex;flex-direction:column}
+.controls:has(.setup.batting) .bats{order:10;margin-top:6px;gap:12px}
+.controls:has(.setup.batting) .bats button{height:64px;min-height:64px;flex-direction:row;padding:8px;gap:8px;border-radius:16px;font-size:14px;letter-spacing:.02em;box-shadow:inset 0 0 0 1px #304b5c;background:#10283b;transform:none}
+.controls:has(.setup.batting) .bats svg{width:38px;height:38px;transition:rotate .08s ease-out}
+.controls:has(.setup.batting) .bats #rightBat svg{order:2}
+.bats .swing-arc{opacity:.5}
+.controls:has(.setup.batting) .bats button.pressed{background:#35536a;border-color:#ffe0a1;box-shadow:inset 0 -3px #e8c782}
+.bats .pressed .swing-arc{opacity:1}
+.controls:has(.setup.batting) #leftBat.pressed svg{rotate:12deg}
+.controls:has(.setup.batting) #rightBat.pressed svg{rotate:-12deg}
+#bowlingSummary{margin:4px 0;padding:8px 4px;text-align:center;font-size:14px;line-height:1.4;color:#d9e4ec;font-variant-numeric:tabular-nums}
+@media(max-height:500px){.controls:has(.setup.batting) .bats button{height:56px;min-height:56px;font-size:12px;gap:4px}.controls:has(.setup.batting) .bats svg{width:30px;height:30px}}
+@media(prefers-reduced-motion:reduce){.controls:has(.setup.batting) .bats svg{transition:none}}
