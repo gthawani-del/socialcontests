@@ -20,7 +20,7 @@ try{
  const a=await page.evaluate(()=>window.__stadiumQA.snapshot().atmosphere);await page.waitForTimeout(300);const b=await page.evaluate(()=>window.__stadiumQA.snapshot().atmosphere);assert(b.spectators>0&&b.active&&b.elapsed>a.elapsed,'stadium animation advances');evidence.atmosphere=b;
  for(const length of ['FULL','GOOD','SHORT']){
   await page.waitForFunction(()=>!document.querySelector('#lengthPicker').disabled);
-  await page.locator('#lengthPicker').click();await page.locator(`[data-length=${length}]`).click();
+  await page.locator('#lengthPicker').click();await page.locator(`[data-zone-length=${length}][data-zone-line=CENTRE]`).click();await page.locator('#closeLength').click();
   assert.equal(await page.evaluate(()=>window.__stadiumQA.snapshot().bowling.length),length);
   await page.locator('.plunger-handle').press('Enter');await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
   const bounce=await page.evaluate(()=>{for(let n=0;n<800;n++){window.__stadiumQA.step(1,false);const s=window.__stadiumQA.snapshot();if(s.ball.bounced){window.__stadiumQA.step(0);return s;}}throw Error('No bounce');});

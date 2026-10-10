@@ -41,7 +41,7 @@ if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:'d
 await page.locator('#chooseBowl').click({timeout:15000});
 await page.locator('#confirmBowler').click();
 await page.waitForFunction(()=>!document.querySelector('#movementPicker').disabled);
-await page.locator('[data-line="LEFT"]').click();await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
+await page.locator('#lengthPicker').click();await page.locator('[data-zone-line="LEFT"][data-zone-length="GOOD"]').click();await page.locator('#closeLength').click();await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
 await writeFile('docs/qa/match-setup-layouts.json',JSON.stringify(setupLayouts,null,2));
 const layouts=[];
 for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,390],['desktop',1365,900]]){

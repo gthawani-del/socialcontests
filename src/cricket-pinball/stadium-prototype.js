@@ -243,6 +243,8 @@ try {
     ball.position.set(engine.ball.position.x, table.playfield.surfaceY + table.ball.radius + engine.ball.height, engine.ball.position.z);
     art.update(engine);
     shooterArt.update(bowlingUi.getState(), camera, viewport, viewport.querySelector('#pinballPlunger'));
+    const powerMeter=viewport.querySelector('#bowlingPowerMeter');
+    if(powerMeter&&!powerMeter.hidden){const anchor=new THREE.Vector3(.48,table.playfield.surfaceY,1.1).project(camera);const w=viewport.clientWidth,h=viewport.clientHeight;powerMeter.style.left=`${Math.max(0,Math.min(w-74,(anchor.x+1)*w/2))}px`;powerMeter.style.top=`${Math.max(60,Math.min(h-164,(1-anchor.y)*h/2-75))}px`;}
     composer.render();
   }
   function resize() {
@@ -269,7 +271,7 @@ try {
   if (import.meta.env.DEV) window.__stadiumQA = {
     ready: true, materials: materialStatus, art: art.stats, batching, manual: value => { manual = value; },
     step: (count, draw = true) => { for (let i = 0; i < count; i++) flow.step(1 / 120); if (draw) render(); },
-    snapshot: () => ({ bowling:bowlingUi.getSelection(), quality, atmosphere:atmosphere.getState(), rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, ball: { ...engine.ball.position, height: engine.ball.height, verticalVelocity:engine.verticalVelocity, velocity:{...engine.ball.velocity}, bounced:engine.deliveryVariation?.bounced, deliveryType:engine.deliveryVariation?.type }, score: { ...flow.match.currentInnings },
+    snapshot: () => ({ bowling:bowlingUi.getSelection(), quality, atmosphere:atmosphere.getState(), rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, accuracy:engine.deliveryVariation?.accuracy, ball: { ...engine.ball.position, height: engine.ball.height, verticalVelocity:engine.verticalVelocity, velocity:{...engine.ball.velocity}, bounced:engine.deliveryVariation?.bounced, deliveryType:engine.deliveryVariation?.type }, score: { ...flow.match.currentInnings },
       flippers: [...engine.flippers].map(([id,s]) => ({id, pressed:s.pressed, angle:s.angle})),
       alignment: ['left', 'right'].map(side => {
         const state = engine.flippers.get(side), cfg = state.config, centre = bats[side].getWorldPosition(new THREE.Vector3());

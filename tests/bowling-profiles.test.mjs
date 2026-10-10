@@ -27,9 +27,10 @@ test('CPU only commits legal deliveries and breaks repeated delivery plans',()=>
  }
 });
 
+// Neutral accuracy sample isolates baseline trajectories; power tests cover both error extremes.
 test('all legal bowler deliveries and lengths bounce once and arrive within blade height',()=>{
  for(const [bowler,profile] of Object.entries(BOWLERS))for(const type of profile.types)for(const [length,definition] of Object.entries(LENGTHS))for(const line of ['LEFT','CENTRE','RIGHT'])for(const charge of [.24,.6,1]){
-  const engine=new StadiumEngine(structuredClone(table));const impacts=[];let arrivalHeight=null,peak=0;
+  const engine=new StadiumEngine(structuredClone(table),{random:()=>.5});const impacts=[];let arrivalHeight=null,peak=0;
   engine.on('delivery-bounce',event=>impacts.push(event));engine.releaseLaunch({bowler,deliveryType:type,length,line,charge});
   for(let frame=0;frame<1200&&engine.ball.active;frame++){
    engine.step(1/120);if(engine.launcher.inLane)continue;

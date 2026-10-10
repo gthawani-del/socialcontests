@@ -1,11 +1,12 @@
-import {BOWLERS,LENGTHS,normalizeBowling} from './bowling-rules.js';
+import {BOWLERS,LENGTHS,normalizeBowling,bowlingDispersion} from './bowling-rules.js';
 import { PinballEngine } from '../../physics/pinball-engine.js';
 
 // Opt-in prototype: planar free play with a constrained, height-aware ramp.
 // The existing game continues to use PinballEngine directly.
 export class StadiumEngine extends PinballEngine {
-  constructor(config) {
+  constructor(config, {random=Math.random} = {}) {
     super(config);
+    this.random=random;
     this.routes = (config.ramps || []).map(route => {
       let length = 0;
       const points = route.points.map((p, i, all) => {
@@ -59,8 +60,9 @@ export class StadiumEngine extends PinballEngine {
     const profiles = this.config.launcher.deliveryTypes || {};
     const type = this.launcher.deliveryType || 'PACE';
     const profile = {...(profiles[type] || profiles.PACE || {})};
+    const accuracy=options?.bowler?bowlingDispersion({...options,type:options.deliveryType,power:options.charge},this.random):{x:0,z:0,risk:0};
     const length=LENGTHS[options?.length];
-    if(length) {profile.bounceZ=length.bounceZ;profile.startZ=Math.min(profile.startZ??1.55,length.bounceZ-.2);}
+    if(length) {profile.bounceZ=length.bounceZ+accuracy.z;profile.startZ=Math.min(profile.startZ??1.55,length.bounceZ-.2);}
     this.config.launcher.deliveryGuide.releaseZ=length?Math.min(1.55,length.bounceZ-.11):1.55;
     const speedMultiplier = Math.max(.55, Math.min(1.3, Number(profile.speedMultiplier ?? 1)*(BOWLERS[options?.bowler]?.speed ?? 1)));
 
@@ -70,6 +72,7 @@ export class StadiumEngine extends PinballEngine {
     this.deliveryVariation = {
       type,
       profile,
+      accuracy,
       length:options?.length || null,
       bowler:options?.bowler || null,
       movementScale: Math.max(.5, Math.min(1.6, Number(options?.movementScale ?? 1))),
@@ -94,7 +97,8 @@ export class StadiumEngine extends PinballEngine {
     }
     if (r.segment >= r.path.length - 1) {
       this.launchRoute = null; this.launcher.inLane = false; this.ball.height = 0;
-      this.launcher.deliveryTarget = this.config.launcher.bowlingLines[this.launcher.deliveryLine].target;
+      const target=this.config.launcher.bowlingLines[this.launcher.deliveryLine].target;
+      this.launcher.deliveryTarget = [target[0]+(this.deliveryVariation?.accuracy.x||0),target[1]];
       this.launcher.deliveryGuideActive = true;
       this.beginDeliveryFlight();
       this.emit('launcher-exit',{line:this.launcher.deliveryLine, deliveryType:this.launcher.deliveryType, target:[...this.launcher.deliveryTarget]});

@@ -222,3 +222,28 @@
 #deliveryBrief{font-size:11px;text-align:center;color:#aabfcd;margin:3px 0 6px;line-height:1.25}
 /* Open pickers must sit above the table's transparent lever hit region. */
 .controls:has(#deliveryOptions:not([hidden])),.controls:has(#lengthOptions:not([hidden])){z-index:10}
+
+/* Approved compact bowling dock. Details are only shown while editing. */
+#bowlingConsole{padding:7px 8px;margin:0;border-radius:8px;gap:0}
+.compact-bowling-dock{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#bowlingConsole #movementPicker,#bowlingConsole #lengthPicker{display:flex;align-items:center;justify-content:flex-start;gap:6px;height:54px;min-height:54px;min-width:0;padding:5px 7px;font-size:16px;text-align:left;border:1px solid #718695;border-radius:6px;background:#112d40}
+#bowlingConsole #movementPicker>span,#bowlingConsole #lengthPicker>span{min-width:0;line-height:1.15}
+#bowlingConsole #movementPicker small,#bowlingConsole #lengthPicker small{display:block;font-size:10px;color:#bfced7;line-height:1.4}
+#bowlingConsole #movementPicker svg,#bowlingConsole #lengthPicker svg{width:24px;height:32px}
+#bowlingConsole .picker-chevron{display:none}
+#lengthOptions,#deliveryOptions{left:0;right:0;bottom:calc(100% + 8px);max-height:calc(100dvh - 90px);padding:14px;background:#0b2131}
+.delivery-heading button{min-height:48px;font-size:14px}.delivery-heading strong{font-size:16px}.delivery-grid button{font-size:16px;min-height:82px}
+.landing-axis{display:grid;grid-template-columns:38px repeat(3,1fr);font-size:13px;text-align:center;margin-bottom:6px}
+.landing-editor{display:grid;grid-template-columns:38px 1fr}.landing-labels{display:grid;grid-template-rows:repeat(3,54px);align-items:center;font-size:13px}
+.landing-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,54px);touch-action:none;background:#96774d;border:1px solid #c6b086}
+#bowlingConsole .landing-grid button{position:relative;border:1px solid #f3e4c244;border-radius:0;padding:0;min-height:48px;background:transparent;touch-action:none}
+#bowlingConsole .landing-grid button.selected{box-shadow:none;background:#f1d79427}
+.landing-grid button.selected:after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px;border:2px solid #fff2c9;border-radius:50%;background:#e9c97d;box-shadow:0 0 0 4px #06142188}
+#landingReadout{font-size:16px;text-align:center;margin:10px 0;color:#ffe2a4}.landing-help{font-size:12px;text-align:center;margin:6px 0 0;color:#bccdd7}
+#bowlingPowerMeter{position:absolute;z-index:3;width:74px;pointer-events:none;text-align:center;opacity:.7;color:#fff;line-height:1.2}
+#bowlingPowerMeter.charging{opacity:1}#bowlingPowerMeter small{display:block;font-size:10px}#bowlingPowerMeter output{display:block;float:none;font-size:16px;font-weight:bold;text-shadow:0 1px 3px #000}
+.colour-power-track{position:relative;width:13px;height:100px;margin:5px auto;border:1px solid #d7e3e9;border-radius:4px;background:linear-gradient(to top,#e6ad25 0 var(--low),#68be38 var(--low) var(--ideal-start),#69e1e9 var(--ideal-start) var(--ideal-end),#68be38 var(--ideal-end) var(--red),#db4343 var(--red) 100%)}
+.colour-power-track i{position:absolute;left:-6px;bottom:calc(var(--power) - 1.5px);width:23px;height:3px;background:white;border-radius:2px;box-shadow:0 1px 2px #000}
+.power-status{display:block;font-size:11px;background:#071622df;padding:3px;border-radius:3px}#bowlingPowerMeter[data-zone=red] .power-status{color:#ffbaba}
+@media(min-width:800px) and (min-height:501px){#stadiumApp{grid-template-columns:minmax(0,1fr) 330px}}
+@media(max-height:500px){#bowlingConsole #movementPicker,#bowlingConsole #lengthPicker{font-size:16px;height:64px}#bowlingConsole #movementPicker svg,#bowlingConsole #lengthPicker svg{display:none}#lengthOptions,#deliveryOptions{position:fixed;left:auto;right:10px;width:min(310px,calc(100vw - 20px));bottom:12px}#bowlingPowerMeter{width:70px}.colour-power-track{height:65px}}

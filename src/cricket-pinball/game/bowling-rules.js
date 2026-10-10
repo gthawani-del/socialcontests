@@ -19,3 +19,18 @@ export function normalizeBowling(selection={},bowler=selection.bowler||'MEDIUM')
   movementScale:Number.isFinite(Number(selection.movementScale))?selection.movementScale:1};
 }
 export function selectionKey(selection={}) {return [selection.bowler,selection.line,selection.type,selection.length].join(':');}
+
+// One source for UI bands and the physical loss of control. No scoring penalty.
+export function bowlingPowerBand(selection={}) {
+ const s=normalizeBowling(selection);
+ const ideal=({SPINNER:.60,MEDIUM:.70,FAST:.80})[s.bowler]+(s.type==='FLIPPER'?.10:['SLOWER','FLIGHTED'].includes(s.type)?-.10:0);
+ const red=Math.min(.95,ideal+.20),low=ideal-.20;
+ const risk=Math.max(0,(s.power-red)/(1-red));
+ return {ideal,low,red,risk,zone:risk>0?'red':s.power<low?'amber':Math.abs(s.power-ideal)<=.030001?'cyan':'green'};
+}
+export function bowlingDispersion(selection,random=Math.random) {
+ const s=normalizeBowling(selection),{risk}=bowlingPowerBand(s);
+ if(!risk)return {x:0,z:0,risk:0};
+ const spread=({SPINNER:.20,MEDIUM:.16,FAST:.12})[s.bowler]*risk;
+ return {x:(random()*2-1)*spread,z:(random()*2-1)*.055*risk,risk};
+}

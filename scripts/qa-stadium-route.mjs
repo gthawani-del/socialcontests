@@ -69,16 +69,16 @@ try {
   await page.setViewportSize({width:390,height:844});
   await page.locator('#restart').click();
   await page.locator('#beginStadiumToss').click(); await page.locator('#callHeads').click();
-  await page.locator('#chooseBowl').click({timeout:15000});
+  await page.locator('#chooseBowl').click({timeout:45000});
   await page.locator('#confirmBowler').click();
-  await page.waitForFunction(() => !document.querySelector('#bowlingConsole [data-line="LEFT"]').disabled);
+  await page.waitForFunction(() => !document.querySelector('#lengthPicker').disabled);
   // Capture a stable ready-to-bowl state, outside countdown/innings overlays.
   for (const [suffix, width, height] of [['',390,844],['-desktop',1365,900],['-landscape',844,390]]) {
     await page.setViewportSize({width,height}); await page.waitForTimeout(300);
     await capture({path:`docs/qa/stadium-${label}-route${suffix}.png`});
   }
   await page.setViewportSize({width:390,height:844});
-  await page.locator('#bowlingConsole [data-line="LEFT"]').click();
+  await page.locator('#lengthPicker').click();await page.locator('[data-zone-line="LEFT"][data-zone-length="GOOD"]').click();await page.locator('#closeLength').click();
   await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
   const handle = await page.locator('.plunger-handle').boundingBox();
   await page.mouse.move(handle.x + handle.width/2, handle.y + handle.height/2);

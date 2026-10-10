@@ -22,7 +22,7 @@ try {
   assert.equal(await page.locator('#deliveryType').inputValue(),type);
   assert.equal(await page.locator(`[data-type="${type}"]`).getAttribute('aria-pressed'),'true');
  }
- await page.locator('#movementPicker').click();await page.locator('[data-type="PACE"]').click();await page.locator('[data-line="CENTRE"]').click();
+ await page.locator('#movementPicker').click();await page.locator('[data-type="PACE"]').click();await page.locator('#lengthPicker').click();await page.locator('[data-zone-line="CENTRE"][data-zone-length="GOOD"]').click();await page.locator('#closeLength').click();
  // Keyboard is the accessible equivalent of releasing the visible plunger at its default 60%.
  await page.locator('.plunger-handle').press('Enter');
  await page.evaluate(()=>window.__stadiumQA.step(1500));
