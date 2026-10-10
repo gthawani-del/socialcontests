@@ -1,4 +1,5 @@
 import './landing.css';
+import '../access/demo-gate.css';
 
 bindDemoGate();
 bindNavigation();
@@ -72,6 +73,11 @@ function bindDemoGate() {
   const username = document.getElementById('demoUsername');
   const password = document.getElementById('demoPassword');
 
+  document.getElementById('demoFill').onclick = () => {
+    username.value = DEMO_USER; password.value = DEMO_PASS; error.textContent = '';
+    document.getElementById('demoFill').textContent = 'Demo credentials filled';
+  };
+
   let attempts = 0;
   let lockedUntil = 0;
 
@@ -83,7 +89,7 @@ function bindDemoGate() {
     if (!consent.checked) return;
     disclaimer.hidden = true;
     login.hidden = false;
-    username.focus();
+    if (matchMedia('(pointer:fine)').matches) username.focus();
   });
 
   backButton.addEventListener('click', () => {

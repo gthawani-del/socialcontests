@@ -18,9 +18,15 @@ const tossMotion=await page.evaluate(()=>{
  a.pause();b.pause();a.currentTime=0;b.currentTime=0;const start=lift.getBoundingClientRect().y;
  a.currentTime=1170;b.currentTime=1170;
  const motion={lift:start-lift.getBoundingClientRect().y,matrix:getComputedStyle(coin).transform,faces:[...coin.querySelectorAll('strong')].map(x=>x.textContent)};
- a.play();b.play();return motion;
+ return motion;
 });
 assert(tossMotion.lift>50);assert(tossMotion.matrix.startsWith('matrix3d'));assert.deepEqual(tossMotion.faces,['HEADS','TAILS']);
+await page.waitForTimeout(2900);
+assert.equal(await page.locator('#matchPanel h2').innerText(),'Coin in the air');
+assert.equal(await page.locator('#chooseBat').count(),0);
+await page.evaluate(()=>document.querySelector('.toss-lift').getAnimations()[0].finish());
+assert.equal(await page.locator('#matchPanel h2').innerText(),'Coin in the air');
+await page.evaluate(()=>document.querySelector('.toss-coin').getAnimations()[0].finish());
 await page.waitForSelector('.toss-coin.heads:not(.flipping)');assert.equal(await page.locator('.toss-coin').getAttribute('aria-label'),'HEADS');
 await page.screenshot({path:'docs/qa/toss-heads.png'});
 await page.locator('#chooseBowl').click({timeout:15000});
@@ -54,6 +60,6 @@ await page.waitForSelector('.toss-coin.tails:not(.flipping)');
 assert.equal(await page.locator('.toss-coin').getAttribute('aria-label'),'TAILS');
 const tailsMatrix=await page.locator('.toss-coin').evaluate(e=>getComputedStyle(e).transform);
 assert(tailsMatrix.includes('-1'));await page.screenshot({path:'docs/qa/toss-tails.png'});
-await writeFile('docs/qa/toss-feedback.json',JSON.stringify({tossMotion,tailsMatrix,headsConfirmed:true,tailsConfirmed:true},null,2));
+await writeFile('docs/qa/toss-feedback.json',JSON.stringify({tossMotion,tailsMatrix,headsConfirmed:true,tailsConfirmed:true,noEarlyRevealWhileAnimationPaused:true},null,2));
 console.log('Bowling and both toss faces passed');
 }finally{await browser.close();await server.close();}

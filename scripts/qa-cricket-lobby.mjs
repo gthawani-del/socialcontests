@@ -35,7 +35,7 @@ await page.locator('#beginStadiumToss').waitFor({timeout:60000});
 await page.goto('http://127.0.0.1:5180/cricket-pinball/');
 assert.equal(await page.locator('[data-format="TWO_OVER"]').getAttribute('aria-pressed'),'true');
 assert.equal(await page.locator('[data-difficulty="HARD"]').getAttribute('aria-pressed'),'true');
-await page.route('**/stadium-lobby-r28.png',r=>r.abort());await page.reload();await page.locator('figcaption').waitFor();assert(await page.locator('#cricketStart').isEnabled());
+await page.route('**/stadium-lobby-wide.webp',r=>r.abort());await page.reload();await page.locator('figcaption').waitFor();assert(await page.locator('#cricketStart').isEnabled());
 assert.deepEqual(errors,[]);
 await writeFile('docs/qa/cricket-lobby-checks.json',JSON.stringify({layouts,errors,oldModelRequests:0,help:true,preferences:true,playRoute:true,previewFailureFallback:true},null,2));
 console.log('Lobby checks passed: layouts, controls, help, preferences, play route, image fallback.');

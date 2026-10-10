@@ -21,6 +21,10 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   function setPaused(value) {
     if(paused === value)return;
     paused=value;
+    for (const animation of panel.getAnimations({subtree:true})) {
+      if (paused && animation.playState === 'running') animation.pause();
+      else if (!paused && animation.playState === 'paused') animation.play();
+    }
     for(const job of timers){if(paused){clearTimeout(job.id);job.remaining=Math.max(0,job.remaining-(performance.now()-job.started));}else schedule(job);}
     if(paused)releaseBats();
     controls();
@@ -161,7 +165,9 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     const result = toss.perform(call, caller, caller === 'player' ? 'cpu' : 'player');
     if (!result) return;
     show('Coin in the air', `${coinMarkup(result.result, true)}<p>${name(caller)} called ${call.toLowerCase()}.</p>`);
-    delay(() => {
+    const coin = panel.querySelector('.toss-coin');
+    const reveal = () => {
+      if (panel.querySelector('.toss-coin') !== coin) return;
       match.setToss(result);
       show(`${result.result} · ${name(result.winnerId)} won the toss`, `${coinMarkup(result.result)}<p id="tossChoice">Result confirmed</p>`);
       delay(() => {
@@ -170,7 +176,13 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
           document.querySelector('#chooseBat').onclick = () => assign('BAT'); document.querySelector('#chooseBowl').onclick = () => assign('BOWL');
         } else { const choice = Math.random() < .5 ? 'BAT' : 'BOWL'; document.querySelector('#tossChoice').textContent = `CPU chooses to ${choice.toLowerCase()}`; delay(() => assign(choice), rules.toss.cpuChoiceMs); }
       }, rules.toss.resultHoldMs);
-    }, rules.toss.coinMs);
+    };
+    // Wait for the rendered lift AND flip, including throttled/paused frames.
+    // A wall-clock timeout can reveal the result before the compositor lands.
+    const animations = panel.getAnimations({subtree:true});
+    if (animations.length) Promise.all(animations.map(a => a.finished))
+      .then(() => delay(reveal, 180)).catch(() => {}); // Reset cancels the old toss.
+    else delay(reveal, 240); // Reduced-motion users get a short static reveal.
   }
   function reset() {
     for (const job of timers) clearTimeout(job.id); timers.clear(); paused=false; toss.reset(); newMatch();

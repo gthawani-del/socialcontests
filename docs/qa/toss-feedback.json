@@ -9,5 +9,6 @@
   },
   "tailsMatrix": "matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1)",
   "headsConfirmed": true,
-  "tailsConfirmed": true
+  "tailsConfirmed": true,
+  "noEarlyRevealWhileAnimationPaused": true
 }

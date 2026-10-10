@@ -24,9 +24,10 @@
     <form class="demo-step" id="loginStep" hidden>
       <span class="demo-kicker">Authorized Demo Access</span>
       <h1>Enter Infinite Pinball</h1>
-      <p class="demo-login-copy">Use the private credentials supplied with your demo invitation.</p>
+      <p class="demo-login-copy">Use your demo credentials, or fill them with the link below.</p>
       <label class="demo-field"><span>Username</span><input id="demoUsername" name="username" autocomplete="username" required></label>
       <label class="demo-field"><span>Password</span><input id="demoPassword" name="password" type="password" autocomplete="current-password" required></label>
+      <button class="demo-fill" id="demoFill" type="button">Use demo password</button>
       <p class="demo-error" id="demoError" role="alert" aria-live="polite"></p>
       <button class="demo-primary" type="submit">Enter Demo <span aria-hidden="true">→</span></button>
       <button class="demo-back" id="demoBack" type="button">← Back to disclaimer</button>

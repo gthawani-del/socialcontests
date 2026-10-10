@@ -1,0 +1,126 @@
+[
+  {
+    "path": "/",
+    "layouts": [
+      {
+        "w": 320,
+        "h": 568,
+        "disclaimer": {
+          "overflow": false,
+          "panelRight": 304,
+          "width": 320
+        },
+        "login": {
+          "overflow": false,
+          "panelRight": 304,
+          "width": 320
+        }
+      },
+      {
+        "w": 390,
+        "h": 700,
+        "disclaimer": {
+          "overflow": false,
+          "panelRight": 374,
+          "width": 390
+        },
+        "login": {
+          "overflow": false,
+          "panelRight": 374,
+          "width": 390
+        }
+      },
+      {
+        "w": 844,
+        "h": 390,
+        "disclaimer": {
+          "overflow": false,
+          "panelRight": 662,
+          "width": 844
+        },
+        "login": {
+          "overflow": false,
+          "panelRight": 662,
+          "width": 844
+        }
+      },
+      {
+        "w": 390,
+        "h": 320,
+        "disclaimer": {
+          "overflow": false,
+          "panelRight": 374,
+          "width": 390
+        },
+        "login": {
+          "overflow": false,
+          "panelRight": 374,
+          "width": 390
+        }
+      }
+    ],
+    "errors": []
+  },
+  {
+    "path": "/cricket-pinball/",
+    "layouts": [
+      {
+        "w": 320,
+        "h": 568,
+        "disclaimer": {
+          "overflow": false,
+          "panelRight": 304,
+          "width": 320
+        },
+        "login": {
+          "overflow": false,
+          "panelRight": 304,
+          "width": 320
+        }
+      },
+      {
+        "w": 390,
+        "h": 700,
+        "disclaimer": {
+          "overflow": false,
+          "panelRight": 374,
+          "width": 390
+        },
+        "login": {
+          "overflow": false,
+          "panelRight": 374,
+          "width": 390
+        }
+      },
+      {
+        "w": 844,
+        "h": 390,
+        "disclaimer": {
+          "overflow": false,
+          "panelRight": 662,
+          "width": 844
+        },
+        "login": {
+          "overflow": false,
+          "panelRight": 662,
+          "width": 844
+        }
+      },
+      {
+        "w": 390,
+        "h": 320,
+        "disclaimer": {
+          "overflow": false,
+          "panelRight": 374,
+          "width": 390
+        },
+        "login": {
+          "overflow": false,
+          "panelRight": 374,
+          "width": 390
+        }
+      }
+    ],
+    "errors": []
+  }
+]

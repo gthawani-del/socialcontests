@@ -19,8 +19,8 @@ app.innerHTML = `
       <a class="worlds-link" href="/">All games</a>
     </header>
     <section class="cricket-lobby" aria-labelledby="cricketLobbyTitle">
-      <div class="cricket-identity"><h1 id="cricketLobbyTitle">Cricket Pinball</h1><p>Cricket strategy. Pinball reflexes.</p></div>
-      <figure class="stadium-preview"><img src="/assets/cricket/world/stadium-lobby-r28.png" alt="Night stadium with two flipper bats, scoring ramps and a right-side bowling lane" width="600" height="842" fetchpriority="high"><figcaption hidden>Stadium preview unavailable. Your match is ready to start.</figcaption></figure>
+      <div class="cricket-identity"><span class="cricket-eyebrow">ARCADE CRICKET</span><h1 id="cricketLobbyTitle">Cricket Pinball</h1><p>Time your shots. Defend your score.</p></div>
+      <figure class="stadium-preview"><img src="/assets/cricket/world/stadium-lobby-wide.webp" alt="Night stadium with two flipper bats, scoring ramps and a right-side bowling lane" width="1000" height="600" fetchpriority="high"><figcaption hidden>Stadium preview unavailable. Your match is ready to start.</figcaption></figure>
       <section class="cricket-lobby-panel" aria-labelledby="matchSetupTitle">
         <div class="match-heading"><h2 id="matchSetupTitle">Your match</h2><span>You vs CPU</span></div>
         <fieldset><legend>Match length</legend><div class="cricket-segmented">${Object.entries(formats).map(([value,label])=>`<button type="button" data-format="${value}" aria-pressed="false">${label}</button>`).join('')}</div></fieldset>
