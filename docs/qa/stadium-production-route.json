@@ -8,11 +8,11 @@
   ],
   "artAssets": [
     {
-      "url": "http://127.0.0.1:5180/assets/cricket/world/rolled-pitch-v2.webp",
+      "url": "http://127.0.0.1:5180/assets/cricket/world/seated-crowd-night-v2.webp",
       "status": 200
     },
     {
-      "url": "http://127.0.0.1:5180/assets/cricket/world/seated-crowd-night-v2.webp",
+      "url": "http://127.0.0.1:5180/assets/cricket/world/rolled-pitch-v2.webp",
       "status": 200
     },
     {
@@ -54,7 +54,7 @@
     "contactFeedback": true
   },
   "resourceTiming": {
-    "durationMs": 320,
+    "durationMs": 95,
     "transferSize": null,
     "decodedBodySize": null
   },

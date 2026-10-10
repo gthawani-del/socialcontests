@@ -1,0 +1,29 @@
+{
+  "commit": "05b95da7477845a45728ec8ca98831699e6214cc",
+  "assets": [
+    {
+      "path": "public/models/cricket-stadium-r28.glb",
+      "status": 200,
+      "bytes": 6735888,
+      "matchesRelease": true
+    },
+    {
+      "path": "public/assets/cricket/world/stadium-pavilion-night-v1.webp",
+      "status": 200,
+      "bytes": 398882,
+      "matchesRelease": true
+    },
+    {
+      "path": "public/assets/cricket/world/rolled-pitch-v2.webp",
+      "status": 200,
+      "bytes": 354910,
+      "matchesRelease": true
+    },
+    {
+      "path": "public/assets/cricket/world/seated-crowd-night-v2.webp",
+      "status": 200,
+      "bytes": 159850,
+      "matchesRelease": true
+    }
+  ]
+}

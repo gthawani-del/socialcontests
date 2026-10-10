@@ -9,9 +9,9 @@ import { createCricketGameplayAdapter } from '../src/cricket-pinball/game/gamepl
 const table = createStadiumTable(JSON.parse(fs.readFileSync(new URL('../public/game/cricket-table.json', import.meta.url))));
 const rules = JSON.parse(fs.readFileSync(new URL('../public/game/cricket-rules.json', import.meta.url)));
 for (const shot of [
-  { line: 'LEFT', side: 'left', delay: 62, runs: 1 },
-  { line: 'LEFT', side: 'left', delay: 28, runs: 4 },
-  { line: 'CENTRE', side: 'left', delay: 50, runs: 6 }
+  { line: 'LEFT', side: 'left', delay: 169, runs: 1 },
+  { line: 'LEFT', side: 'left', delay: 173, runs: 4 },
+  { line: 'CENTRE', side: 'left', delay: 190, runs: 6 }
 ]) test(`a real delivery and timed ${shot.side} bat can score ${shot.runs}`, () => {
   const { engine, match, adapter } = setup();
   engine.releaseLaunch({ line: shot.line, charge: .2 });
@@ -29,13 +29,13 @@ function setup() {
   const match = new CricketMatchEngine({ players: [{ id: 'a' }, { id: 'b' }] });
   match.assignRoles({ battingPlayerId: 'a', bowlingPlayerId: 'b' });
   match.startInnings(); match.beginDelivery();
-  const adapter = createCricketGameplayAdapter({ engine, matchEngine: match, tableConfig: table, cricketRules: rules });
+  const adapter = createCricketGameplayAdapter({ engine, matchEngine: match, tableConfig: table, cricketRules: rules, random: () => .99 });
   adapter.armDelivery();
   return { engine, match, adapter };
 }
 function flight(engine, x, z, speed, contact = true) {
   Object.assign(engine.launcher, { awaitingLaunch: false, inLane: false, deliveryGuideActive: false });
-  Object.assign(engine.ball, { position: { x, z }, velocity: { x: 0, z: -speed }, active: true });
+  Object.assign(engine.ball, { height: 0, position: { x, z }, velocity: { x: 0, z: -speed }, active: true });
   if (contact) engine.emit('flipper-hit', { pressed: true, impact: 2 });
 }
 test('four lane requires mouth entry and completion, not a side crossing at its finish', () => {
@@ -101,7 +101,7 @@ test('strong ramp shot climbs to deck height and scores six only at the finish',
   const position = { ...engine.ball.position };
   adapter.step(.05); assert.deepEqual(engine.ball.position, position);
   assert.equal(match.currentInnings.runs, 6);
-  engine.resetBall(); assert.equal(engine.ball.height, 0); assert.equal(engine.ramp, null); assert.equal(engine.completedRoute, null);
+  engine.resetBall(); assert.equal(engine.ball.height, table.launcher.launchPath[0].height); assert.equal(engine.ramp, null); assert.equal(engine.completedRoute, null);
   adapter.dispose();
 });
 test('weak ramp shot rolls back onto the field without awarding six', () => {
@@ -151,14 +151,20 @@ for (const line of ['LEFT', 'CENTRE', 'RIGHT']) for (const charge of [.2, .5, 1]
   });
 }
 
-test('delivery starts at the bowling wicket and clears scoring structures before reaching bats', () => {
+test('delivery travels up the right lane and around its curve before reaching the bats', () => {
   for (const line of ['LEFT', 'CENTRE', 'RIGHT']) {
     const { engine, adapter } = setup();
-    assert.equal(table.launcher.spawn[1], -.22);
+    assert.deepEqual(table.launcher.spawn, [1.25, 2.4]);
     const hits = [];
     engine.on('wall-hit', hit => hits.push(hit.id));
     engine.releaseLaunch({ line, charge: .5 });
-    for (let i = 0; i < 240 && engine.ball.position.z < 1.6; i++) adapter.step(1 / 120);
+    let sawUp=false, sawCurve=false;
+    for (let i = 0; i < 600 && (engine.launcher.inLane || engine.ball.position.z < 1.6); i++) {
+      adapter.step(1/120);
+      sawUp ||= engine.ball.position.x > 1.7 && engine.ball.velocity.z < 0;
+      sawCurve ||= engine.launcher.inLane && engine.ball.position.x < 1.5 && engine.ball.velocity.x < 0;
+    }
+    assert(sawUp && sawCurve);
     assert(engine.ball.position.z >= 1.6);
     assert.deepEqual(hits.filter(id => /gate|recess/.test(id)), []);
     adapter.dispose();

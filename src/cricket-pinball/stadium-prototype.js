@@ -1,3 +1,4 @@
+import { createStadiumLauncher } from './stadium-launcher.js';
 import { frameStadium } from './stadium-camera.js';
 import { installStadiumBackdrop } from './stadium-backdrop.js';
 import { lightStadium } from './stadium-lighting.js';
@@ -38,6 +39,7 @@ try {
   const scene = new THREE.Scene(); scene.background = new THREE.Color('#07111e');
   const model = gltf.scene; model.scale.setScalar(STADIUM_SCALE); scene.add(model);
   const materialStatus = await applyStadiumMaterials(model);
+  const shooterArt = createStadiumLauncher(scene, table, model);
   const art = buildStadiumArt(scene, model, table);
   const lighting = lightStadium(scene, model);
   model.traverse(o => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = !/Number|Crowd_Band|Individual_Seats|Seating_Terrace|Lamp|Lens/.test(o.name); } });
@@ -195,6 +197,7 @@ try {
   function render() {
     ball.position.set(engine.ball.position.x, table.playfield.surfaceY + table.ball.radius + engine.ball.height, engine.ball.position.z);
     art.update(engine);
+    shooterArt.update(bowlingUi.getState(), camera, viewport, viewport.querySelector('#pinballPlunger'));
     composer.render();
   }
   function resize() {
@@ -207,7 +210,7 @@ try {
   function frame(now) {
     const dt = Math.min((now - last) / 1000, .05);
     last = now;
-    if (!manual && flow.running && !document.hidden) flow.step(dt);
+    if (!manual && !document.hidden) flow.step(dt);
     resultLayer.update(now, dt);
     render();
     requestAnimationFrame(frame);
@@ -216,8 +219,9 @@ try {
   // Development-only evidence hook: browser tests still use real controls to launch/hit.
   if (import.meta.env.DEV) window.__stadiumQA = {
     ready: true, materials: materialStatus, art: art.stats, batching, manual: value => { manual = value; },
-    step: count => { for (let i = 0; i < count && flow.running; i++) flow.step(1 / 120); render(); },
+    step: count => { for (let i = 0; i < count; i++) flow.step(1 / 120); render(); },
     snapshot: () => ({ rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, match: flow.match.getState(), contactCount, rampEntries, ball: { ...engine.ball.position, height: engine.ball.height }, score: { ...flow.match.currentInnings },
+      flippers: [...engine.flippers].map(([id,s]) => ({id, pressed:s.pressed, angle:s.angle})),
       alignment: ['left', 'right'].map(side => {
         const state = engine.flippers.get(side), cfg = state.config, centre = bats[side].getWorldPosition(new THREE.Vector3());
         return Math.hypot(centre.x - cfg.pivot[0] - Math.cos(state.angle) * cfg.length / 2, centre.z - cfg.pivot[1] + Math.sin(state.angle) * cfg.length / 2);

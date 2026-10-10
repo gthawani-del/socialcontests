@@ -40,7 +40,7 @@ export function createBowlingPlunger({
     </div>`;
 
   const plunger = document.createElement('div');
-  plunger.id = 'pinballPlunger';
+  plunger.id = 'pinballPlunger'; plunger.classList.add('integrated-plunger');
   plunger.hidden = true;
   plunger.innerHTML = `
     <div class="plunger-label"><b>POWER</b><span id="plungerPower">50%</span></div>
@@ -174,6 +174,7 @@ export function createBowlingPlunger({
     setState,
     setSelection,
     getSelection,
+    getState: () => ({pull, enabled, cpuMode, visible: !plunger.hidden}),
     animateCpu,
     get line() { return line; },
     get type() { return type; },

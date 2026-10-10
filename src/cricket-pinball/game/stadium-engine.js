@@ -32,10 +32,11 @@ export class StadiumEngine extends PinballEngine {
   resetBall() {
     super.resetBall();
     this.ramp = null;
-    this.ball.height = 0;
+    this.ball.height = this.config.launcher.launchPath?.[0]?.height || 0;
     this.completedRoute = null;
     this.frozen = false;
     this.deliveryVariation = null;
+    this.launchRoute = null;
   }
 
   freezeBall() {
@@ -62,7 +63,30 @@ export class StadiumEngine extends PinballEngine {
       movementScale: Math.max(.5, Math.min(1.6, Number(options?.movementScale ?? 1))),
       bounced: false
     };
+    const path = this.config.launcher.launchPath;
+    if (path?.length > 1) this.launchRoute = {path, segment:0, progress:0, speed:Math.hypot(this.ball.velocity.x,this.ball.velocity.z)};
     return true;
+  }
+
+  advanceLaunchRoute(dt) {
+    const r = this.launchRoute; let remaining = r.speed * dt;
+    while (remaining > 0 && r.segment < r.path.length - 1) {
+      const a = r.path[r.segment], b = r.path[r.segment+1];
+      const length = Math.hypot(b.x-a.x,b.z-a.z);
+      const travel = Math.min(remaining,length-r.progress); r.progress += travel; remaining -= travel;
+      const t = r.progress / length;
+      Object.assign(this.ball.position,{x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t});
+      this.ball.height = a.height+(b.height-a.height)*t;
+      Object.assign(this.ball.velocity,{x:(b.x-a.x)/length*r.speed,z:(b.z-a.z)/length*r.speed});
+      if (r.progress >= length - 1e-9) {r.segment++;r.progress=0;}
+    }
+    if (r.segment >= r.path.length - 1) {
+      this.launchRoute = null; this.launcher.inLane = false; this.ball.height = 0;
+      this.launcher.deliveryTarget = this.config.launcher.bowlingLines[this.launcher.deliveryLine].target;
+      this.launcher.deliveryGuideActive = true;
+      this.emit('launcher-exit',{line:this.launcher.deliveryLine, deliveryType:this.launcher.deliveryType, target:[...this.launcher.deliveryTarget]});
+    }
+    this.emit('physics:step');
   }
 
   applyDeliveryVariation(dt) {
@@ -113,6 +137,7 @@ export class StadiumEngine extends PinballEngine {
 
   integrateSubstep(dt) {
     if (this.frozen) return;
+    if (this.launchRoute) return this.advanceLaunchRoute(dt);
     if (this.ramp) return this.advanceRamp(dt);
     const before = { ...this.ball.position };
     this.previousPosition = before;

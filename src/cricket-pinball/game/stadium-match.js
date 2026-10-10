@@ -17,6 +17,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   const delay = (fn, ms) => { const id = setTimeout(() => { timers.delete(id); fn(); }, ms); timers.add(id); };
   const name = id => id === 'player' ? 'You' : 'CPU';
   const humanBatting = () => match?.battingPlayerId === 'player';
+  const canBat = () => practice || Boolean(humanBatting() && match?.currentInnings && !match.currentInnings.complete);
   function releaseBats() {
     for (const side of ['left', 'right']) { engine.setFlipper(side, false); document.querySelector(`#${side}Bat`).classList.remove('pressed'); }
   }
@@ -28,7 +29,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
       const element = document.querySelector(`#${id}`);
       if (element) element.disabled = !practice && (!ready || running || humanBatting());
     }
-    for (const side of ['left', 'right']) document.querySelector(`#${side}Bat`).disabled = !practice && (!running || !humanBatting());
+    for (const side of ['left', 'right']) document.querySelector(`#${side}Bat`).disabled = !canBat();
     onFeedback({
       type: 'CONTROL_STATE',
       ready,
@@ -97,7 +98,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
 
     delay(() => {
       if (match.status === 'INNINGS_BREAK') {
-        show('Innings break', `<p>${match.battingPlayerId === 'player' ? 'You need' : 'CPU needs'} ${match.target} to win.</p><button id="continueInnings">Start chase</button>`);
+        show('Innings break', `<p>${match.innings.at(-1).wickets >= match.maxWickets ? `${match.maxWickets} wickets lost` : `${match.ballsPerInnings} balls completed`} · ${match.innings.at(-1).balls}/${match.ballsPerInnings} balls</p><p>${match.battingPlayerId === 'player' ? 'You need' : 'CPU needs'} ${match.target} to win.</p><button id="continueInnings">Start chase</button>`);
         document.querySelector('#continueInnings').onclick = () => { match.startSecondInnings(); cpu.reset(); engine.resetBall(); makeReady(); };
       } else if (match.status === 'SUPER_OVER') {
         show('Scores tied', `<p>Three-ball tie-break. Two wickets per side.</p><button id="startTieBreak">Play tie-break</button>`);
@@ -160,7 +161,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     for (const id of timers) clearTimeout(id); timers.clear(); toss.reset(); newMatch();
     if (practice) { match.assignRoles({ battingPlayerId: 'player', bowlingPlayerId: 'cpu' }); match.startInnings(); makeReady(); }
     else {
-      show('Set up your match', '<label>Format<select id="format"><option value="LAST_3">Last 3 balls</option><option value="ONE_OVER">One over</option><option value="TWO_OVER">Two overs</option></select></label><label>Difficulty<select id="difficulty"><option>EASY</option><option selected>MEDIUM</option><option>HARD</option></select></label><button id="beginStadiumToss">Begin toss</button>');
+      show('Set up your match', '<label>Format<select id="format"><option value="LAST_3">Last 3 balls</option><option value="ONE_OVER">One over</option><option value="TWO_OVER">Two overs</option></select></label><label>Difficulty<select id="difficulty"><option>EASY</option><option selected>MEDIUM</option><option>HARD</option></select></label><p>One over: 6 balls · Two overs: 12 balls · 2 wickets per innings.</p><button id="beginStadiumToss">Begin toss</button>');
       document.querySelector('#format').value = format; document.querySelector('#difficulty').value = difficulty;
       document.querySelector('#beginStadiumToss').onclick = () => {
         format = document.querySelector('#format').value; difficulty = document.querySelector('#difficulty').value; newMatch();
@@ -184,7 +185,10 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
           movementScale: 1
         });
     if (!match.beginDelivery(selection)) return false;
-    engine.resetBall(); cpu.reset(); releaseBats(); adapter.armDelivery();
+    const held = Object.fromEntries(['left', 'right'].map(side => [side, engine.flippers.get(side).pressed]));
+    engine.resetBall(); cpu.reset();
+    if (humanBatting()) for (const side of ['left', 'right']) engine.setFlipper(side, held[side]);
+    adapter.armDelivery();
     engine.releaseLaunch({
       line: selection.line,
       charge: selection.power,
@@ -200,7 +204,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   return {
     reset, launch, get running() { return running; }, get match() { return match; },
     step(dt) {
-      if (!running) return;
+      if (!running) { engine.updateFlippers(Math.min(Math.max(dt, 0), table.physics.maxFrameDelta)); return; }
       stepAccumulator += Math.min(Math.max(dt, 0), table.physics.maxFrameDelta);
       while (running && stepAccumulator >= table.physics.fixedStep) {
         cpu.update(engine.simTime * 1000, !practice && !humanBatting());
@@ -208,6 +212,6 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
         stepAccumulator -= table.physics.fixedStep;
       }
     },
-    bat(side, pressed) { if (pressed && !practice && (!running || !humanBatting())) return; engine.setFlipper(side, pressed); document.querySelector(`#${side}Bat`).classList.toggle('pressed', pressed); }
+    bat(side, pressed) { if (pressed && !practice && !canBat()) return; engine.setFlipper(side, pressed); document.querySelector(`#${side}Bat`).classList.toggle('pressed', pressed); }
   };
 }

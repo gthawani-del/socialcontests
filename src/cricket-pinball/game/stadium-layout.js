@@ -91,10 +91,15 @@ export function createStadiumTable(base) {
     // its back wall instead of passing through the authored structure.
     table.walls.push({ id: `${zone.id}-recess-back`, a: [zone.position[0] - half, zone.position[1] - .154], b: [zone.position[0] + half, zone.position[1] - .154], restitution: .7 });
   }
-  // Bowl from the far end, with guidance released before the bats can make contact.
+  // A dedicated right-side shooter lane and curved return feed the playfield.
+  const launchPath = Array.from({length: 25}, (_, i) => ({x: 1.25 + .55 * Math.min(1, i / 10), z: 2.4 - 3.3 * i / 24, height: .065}));
+  for (let i = 1; i <= 32; i++) {
+    const angle = Math.PI * i / 32;
+    launchPath.push({x: .9 + .9 * Math.cos(angle), z: -.9 - .65 * Math.sin(angle), height: .065 * (1-i/32)});
+  }
   table.launcher = {
-    ...table.launcher, spawn: [0, STADIUM_PITCH.bowlingZ], direction: [0, 1],
-    lane: { minX: -.09, maxX: .09, exitZ: STADIUM_PITCH.bowlingZ + .05, exitDirection: 'GTE' },
+    ...table.launcher, spawn: [1.25, 2.4], direction: [0, -1], launchPath,
+    lane: { minX: 1.71, maxX: 1.89, exitZ: -.9, exitDirection: 'LTE' },
     bowlingLines: Object.fromEntries([['LEFT', -.5], ['CENTRE', 0], ['RIGHT', .5]].map(([line, x]) => [line, { target: [x, 1.6] }])),
     deliveryGuide: { halfWidth: .62, releaseZ: 1.55, steering: .22 }
   };

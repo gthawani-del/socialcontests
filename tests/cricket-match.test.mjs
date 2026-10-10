@@ -66,3 +66,12 @@ test('reject ambiguous players and invalid wicket or tie-break limits',()=>{
  assert.throws(()=>new CricketMatchEngine({players,maxWickets:0}));
  assert.throws(()=>new CricketMatchEngine({players,superOverBalls:0}));
 });
+
+test('one over: first wicket cannot end the innings and six legal dots finish exactly once', () => {
+ const m=game('ONE_OVER');
+ ball(m,'WICKET');
+ assert.equal(m.currentInnings.balls,1); assert.equal(m.currentInnings.wickets,1);
+ assert.equal(m.currentInnings.complete,false); assert.equal(m.status,'DELIVERY_SETUP');
+ for(let i=2;i<=6;i++){ball(m,'DOT');assert.equal(m.currentInnings.balls,i);assert.equal(m.currentInnings.complete,i===6);}
+ assert.equal(m.status,'INNINGS_BREAK');assert.equal(m.beginDelivery(),false);
+});

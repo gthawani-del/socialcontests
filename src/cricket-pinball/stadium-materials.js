@@ -39,10 +39,27 @@ export async function applyStadiumMaterials(model) {
     bladeMaterials.set(side, new THREE.MeshStandardMaterial({ map, roughness: .7 }));
   }
   const rampMaterial = new THREE.MeshStandardMaterial({ color: '#263d4c', metalness: .45, roughness: .42 });
+  const scoreValues = { Single_Number: '1', Double_Number: '2', Straight_Four_Number: '4', Boundary_Four_Number: '4', Six_Finish_Number: '6' };
+  const scoreMaterials = new Map();
+  for (const value of new Set(Object.values(scoreValues))) {
+    const canvas = document.createElement('canvas'); canvas.width = canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    ctx.font = 'bold 208px Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.strokeStyle = '#07111e'; ctx.lineWidth = 14; ctx.lineJoin = 'round';
+    ctx.strokeText(value, 128, 137); ctx.fillStyle = '#fff0cc'; ctx.fillText(value, 128, 137);
+    const map = new THREE.CanvasTexture(canvas); map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 4;
+    scoreMaterials.set(value, new THREE.MeshBasicMaterial({ map, transparent: true, alphaTest: .1, toneMapped: false }));
+  }
   const tuned = new Set(), accents = new Map();
   let terraces = 0;
   model.traverse(mesh => {
     if (!mesh.isMesh) return;
+    if (scoreValues[mesh.name]) {
+      // Replace only the existing label face, keeping the arch and scoring sensor.
+      mesh.geometry = new THREE.PlaneGeometry(.30, .32).rotateX(-Math.PI / 2).translate(0, .012, -.115);
+      mesh.material = scoreMaterials.get(scoreValues[mesh.name]);
+      return;
+    }
     const original = mesh.material;
     if (!tuned.has(original)) {
       tuned.add(original);

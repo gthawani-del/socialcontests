@@ -4,9 +4,9 @@ import assert from 'node:assert/strict';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const bundle = process.env.CHROMIUM_MODULE ? (await import(process.env.CHROMIUM_MODULE)).default : null;
 const server = process.env.QA_URL ? null : await preview({ preview: { host: '127.0.0.1', port: 5180 } });
-const browser = await chromium.launch({ headless: true, ...(bundle ? { args: bundle.args } : {}), ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+const browser = await chromium.launch({ headless: true, ...(process.env.QA_URL && process.env.HTTPS_PROXY ? {proxy: {server: process.env.HTTPS_PROXY}} : {}), ...(bundle ? { args: bundle.args } : {}), ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
 try {
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, ignoreHTTPSErrors: Boolean(process.env.QA_URL) });
   const errors = [], models = [], artAssets = [];
   page.on('response', r => { if (/\/(stadium-pavilion-night-v1|rolled-pitch-v2|seated-crowd-night-v2)\.webp$/.test(r.url())) artAssets.push({url:r.url(),status:r.status()}); });
   page.on('pageerror', e => errors.push(e.message));
@@ -69,6 +69,12 @@ try {
   await page.locator('#beginStadiumToss').click(); await page.locator('#callHeads').click();
   await page.locator('#chooseBowl').click({timeout:15000});
   await page.waitForFunction(() => !document.querySelector('#bowlingConsole [data-line="LEFT"]').disabled);
+  // Capture a stable ready-to-bowl state, outside countdown/innings overlays.
+  for (const [suffix, width, height] of [['',390,844],['-desktop',1365,900],['-landscape',844,390]]) {
+    await page.setViewportSize({width,height}); await page.waitForTimeout(300);
+    await page.screenshot({path:`docs/qa/stadium-${label}-route${suffix}.png`});
+  }
+  await page.setViewportSize({width:390,height:844});
   await page.locator('#bowlingConsole [data-line="LEFT"]').click();
   await page.locator('#bowlingConsole [data-type="SWING_RIGHT"]').click();
   const handle = await page.locator('.plunger-handle').boundingBox();

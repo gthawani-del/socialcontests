@@ -1,0 +1,1099 @@
+{
+  "result": {
+    "before": {
+      "rendering": {
+        "calls": 1,
+        "triangles": 1
+      },
+      "running": true,
+      "match": {
+        "format": "ONE_OVER",
+        "difficulty": "MEDIUM",
+        "ballsPerInnings": 6,
+        "maxWickets": 2,
+        "superOverBalls": 3,
+        "players": [
+          {
+            "id": "player"
+          },
+          {
+            "id": "cpu"
+          }
+        ],
+        "status": "BALL_LIVE",
+        "innings": 1,
+        "roundInnings": 1,
+        "superOverRound": 0,
+        "score": {
+          "runs": 0,
+          "wickets": 0,
+          "balls": 0
+        },
+        "target": null,
+        "requiredRuns": null,
+        "ballsRemaining": 6,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "toss": {
+          "call": "HEADS",
+          "result": "HEADS",
+          "callerId": "player",
+          "winnerId": "player",
+          "callerWon": true,
+          "choice": "BAT"
+        },
+        "result": null,
+        "deliveryOpen": true
+      },
+      "contactCount": 0,
+      "rampEntries": 0,
+      "ball": {
+        "x": 1.25,
+        "z": 2.4,
+        "height": 0.065
+      },
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0,
+        "complete": false
+      },
+      "flippers": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": false,
+          "angle": 3.391523802475381
+        }
+      ],
+      "alignment": [
+        1.8875832159447664e-16,
+        1.4946834900704544e-16
+      ]
+    },
+    "leftdown": {
+      "rendering": {
+        "calls": 1,
+        "triangles": 1
+      },
+      "running": true,
+      "match": {
+        "format": "ONE_OVER",
+        "difficulty": "MEDIUM",
+        "ballsPerInnings": 6,
+        "maxWickets": 2,
+        "superOverBalls": 3,
+        "players": [
+          {
+            "id": "player"
+          },
+          {
+            "id": "cpu"
+          }
+        ],
+        "status": "BALL_LIVE",
+        "innings": 1,
+        "roundInnings": 1,
+        "superOverRound": 0,
+        "score": {
+          "runs": 0,
+          "wickets": 0,
+          "balls": 0
+        },
+        "target": null,
+        "requiredRuns": null,
+        "ballsRemaining": 6,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "toss": {
+          "call": "HEADS",
+          "result": "HEADS",
+          "callerId": "player",
+          "winnerId": "player",
+          "callerWon": true,
+          "choice": "BAT"
+        },
+        "result": null,
+        "deliveryOpen": true
+      },
+      "contactCount": 0,
+      "rampEntries": 0,
+      "ball": {
+        "x": 1.5916794222457755,
+        "z": 1.5458014443855612,
+        "height": 0.065
+      },
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0,
+        "complete": false
+      },
+      "flippers": [
+        {
+          "id": "left",
+          "pressed": true,
+          "angle": 0.9599310885968813
+        },
+        {
+          "id": "right",
+          "pressed": false,
+          "angle": 3.391523802475381
+        }
+      ],
+      "alignment": [
+        7.850462293418876e-17,
+        1.4946834900704544e-16
+      ]
+    },
+    "leftup": {
+      "rendering": {
+        "calls": 1,
+        "triangles": 1
+      },
+      "running": true,
+      "match": {
+        "format": "ONE_OVER",
+        "difficulty": "MEDIUM",
+        "ballsPerInnings": 6,
+        "maxWickets": 2,
+        "superOverBalls": 3,
+        "players": [
+          {
+            "id": "player"
+          },
+          {
+            "id": "cpu"
+          }
+        ],
+        "status": "BALL_LIVE",
+        "innings": 1,
+        "roundInnings": 1,
+        "superOverRound": 0,
+        "score": {
+          "runs": 0,
+          "wickets": 0,
+          "balls": 0
+        },
+        "target": null,
+        "requiredRuns": null,
+        "ballsRemaining": 6,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "toss": {
+          "call": "HEADS",
+          "result": "HEADS",
+          "callerId": "player",
+          "winnerId": "player",
+          "callerWon": true,
+          "choice": "BAT"
+        },
+        "result": null,
+        "deliveryOpen": true
+      },
+      "contactCount": 0,
+      "rampEntries": 0,
+      "ball": {
+        "x": 1.8,
+        "z": 0.6659203219619884,
+        "height": 0.065
+      },
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0,
+        "complete": false
+      },
+      "flippers": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": false,
+          "angle": 3.391523802475381
+        }
+      ],
+      "alignment": [
+        1.8875832159447664e-16,
+        1.4946834900704544e-16
+      ]
+    },
+    "rightdown": {
+      "rendering": {
+        "calls": 1,
+        "triangles": 1
+      },
+      "running": true,
+      "match": {
+        "format": "ONE_OVER",
+        "difficulty": "MEDIUM",
+        "ballsPerInnings": 6,
+        "maxWickets": 2,
+        "superOverBalls": 3,
+        "players": [
+          {
+            "id": "player"
+          },
+          {
+            "id": "cpu"
+          }
+        ],
+        "status": "BALL_LIVE",
+        "innings": 1,
+        "roundInnings": 1,
+        "superOverRound": 0,
+        "score": {
+          "runs": 0,
+          "wickets": 0,
+          "balls": 0
+        },
+        "target": null,
+        "requiredRuns": null,
+        "ballsRemaining": 6,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "toss": {
+          "call": "HEADS",
+          "result": "HEADS",
+          "callerId": "player",
+          "winnerId": "player",
+          "callerWon": true,
+          "choice": "BAT"
+        },
+        "result": null,
+        "deliveryOpen": true
+      },
+      "contactCount": 0,
+      "rampEntries": 0,
+      "ball": {
+        "x": 1.8,
+        "z": -0.25407967803801174,
+        "height": 0.065
+      },
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0,
+        "complete": false
+      },
+      "flippers": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": true,
+          "angle": 2.181661564992912
+        }
+      ],
+      "alignment": [
+        1.8875832159447664e-16,
+        5.551115123125783e-17
+      ]
+    },
+    "rightup": {
+      "rendering": {
+        "calls": 1,
+        "triangles": 1
+      },
+      "running": true,
+      "match": {
+        "format": "ONE_OVER",
+        "difficulty": "MEDIUM",
+        "ballsPerInnings": 6,
+        "maxWickets": 2,
+        "superOverBalls": 3,
+        "players": [
+          {
+            "id": "player"
+          },
+          {
+            "id": "cpu"
+          }
+        ],
+        "status": "BALL_LIVE",
+        "innings": 1,
+        "roundInnings": 1,
+        "superOverRound": 0,
+        "score": {
+          "runs": 0,
+          "wickets": 0,
+          "balls": 0
+        },
+        "target": null,
+        "requiredRuns": null,
+        "ballsRemaining": 6,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "toss": {
+          "call": "HEADS",
+          "result": "HEADS",
+          "callerId": "player",
+          "winnerId": "player",
+          "callerWon": true,
+          "choice": "BAT"
+        },
+        "result": null,
+        "deliveryOpen": true
+      },
+      "contactCount": 0,
+      "rampEntries": 0,
+      "ball": {
+        "x": 1.7242113621333228,
+        "z": -1.1598611996988635,
+        "height": 0.056483395524454076
+      },
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0,
+        "complete": false
+      },
+      "flippers": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": false,
+          "angle": 3.391523802475381
+        }
+      ],
+      "alignment": [
+        1.8875832159447664e-16,
+        1.4946834900704544e-16
+      ]
+    },
+    "fullOver": [
+      {
+        "rendering": {
+          "calls": 1,
+          "triangles": 1
+        },
+        "running": false,
+        "match": {
+          "format": "ONE_OVER",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 6,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "DELIVERY_SETUP",
+          "innings": 1,
+          "roundInnings": 1,
+          "superOverRound": 0,
+          "score": {
+            "runs": 1,
+            "wickets": 0,
+            "balls": 1
+          },
+          "target": null,
+          "requiredRuns": null,
+          "ballsRemaining": 5,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "toss": {
+            "call": "HEADS",
+            "result": "HEADS",
+            "callerId": "player",
+            "winnerId": "player",
+            "callerWon": true,
+            "choice": "BAT"
+          },
+          "result": null,
+          "deliveryOpen": false
+        },
+        "contactCount": 2,
+        "rampEntries": 0,
+        "ball": {
+          "x": 1.306877024882551,
+          "z": -1.4688353207425016,
+          "height": 0
+        },
+        "score": {
+          "number": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 1,
+          "wickets": 0,
+          "balls": 1,
+          "complete": false
+        },
+        "flippers": [
+          {
+            "id": "left",
+            "pressed": false,
+            "angle": -0.24993114888558798
+          },
+          {
+            "id": "right",
+            "pressed": false,
+            "angle": 3.391523802475381
+          }
+        ],
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      },
+      {
+        "rendering": {
+          "calls": 1,
+          "triangles": 1
+        },
+        "running": false,
+        "match": {
+          "format": "ONE_OVER",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 6,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "DELIVERY_SETUP",
+          "innings": 1,
+          "roundInnings": 1,
+          "superOverRound": 0,
+          "score": {
+            "runs": 2,
+            "wickets": 0,
+            "balls": 2
+          },
+          "target": null,
+          "requiredRuns": null,
+          "ballsRemaining": 4,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "toss": {
+            "call": "HEADS",
+            "result": "HEADS",
+            "callerId": "player",
+            "winnerId": "player",
+            "callerWon": true,
+            "choice": "BAT"
+          },
+          "result": null,
+          "deliveryOpen": false
+        },
+        "contactCount": 4,
+        "rampEntries": 0,
+        "ball": {
+          "x": 1.306877024882551,
+          "z": -1.4688353207425016,
+          "height": 0
+        },
+        "score": {
+          "number": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 2,
+          "wickets": 0,
+          "balls": 2,
+          "complete": false
+        },
+        "flippers": [
+          {
+            "id": "left",
+            "pressed": false,
+            "angle": -0.24993114888558798
+          },
+          {
+            "id": "right",
+            "pressed": false,
+            "angle": 3.391523802475381
+          }
+        ],
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      },
+      {
+        "rendering": {
+          "calls": 1,
+          "triangles": 1
+        },
+        "running": false,
+        "match": {
+          "format": "ONE_OVER",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 6,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "DELIVERY_SETUP",
+          "innings": 1,
+          "roundInnings": 1,
+          "superOverRound": 0,
+          "score": {
+            "runs": 3,
+            "wickets": 0,
+            "balls": 3
+          },
+          "target": null,
+          "requiredRuns": null,
+          "ballsRemaining": 3,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "toss": {
+            "call": "HEADS",
+            "result": "HEADS",
+            "callerId": "player",
+            "winnerId": "player",
+            "callerWon": true,
+            "choice": "BAT"
+          },
+          "result": null,
+          "deliveryOpen": false
+        },
+        "contactCount": 6,
+        "rampEntries": 0,
+        "ball": {
+          "x": 1.306877024882551,
+          "z": -1.4688353207425016,
+          "height": 0
+        },
+        "score": {
+          "number": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 3,
+          "wickets": 0,
+          "balls": 3,
+          "complete": false
+        },
+        "flippers": [
+          {
+            "id": "left",
+            "pressed": false,
+            "angle": -0.24993114888558798
+          },
+          {
+            "id": "right",
+            "pressed": false,
+            "angle": 3.391523802475381
+          }
+        ],
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      },
+      {
+        "rendering": {
+          "calls": 1,
+          "triangles": 1
+        },
+        "running": false,
+        "match": {
+          "format": "ONE_OVER",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 6,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "DELIVERY_SETUP",
+          "innings": 1,
+          "roundInnings": 1,
+          "superOverRound": 0,
+          "score": {
+            "runs": 4,
+            "wickets": 0,
+            "balls": 4
+          },
+          "target": null,
+          "requiredRuns": null,
+          "ballsRemaining": 2,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "toss": {
+            "call": "HEADS",
+            "result": "HEADS",
+            "callerId": "player",
+            "winnerId": "player",
+            "callerWon": true,
+            "choice": "BAT"
+          },
+          "result": null,
+          "deliveryOpen": false
+        },
+        "contactCount": 8,
+        "rampEntries": 0,
+        "ball": {
+          "x": 1.306877024882551,
+          "z": -1.4688353207425016,
+          "height": 0
+        },
+        "score": {
+          "number": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 4,
+          "wickets": 0,
+          "balls": 4,
+          "complete": false
+        },
+        "flippers": [
+          {
+            "id": "left",
+            "pressed": false,
+            "angle": -0.24993114888558798
+          },
+          {
+            "id": "right",
+            "pressed": false,
+            "angle": 3.391523802475381
+          }
+        ],
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      },
+      {
+        "rendering": {
+          "calls": 1,
+          "triangles": 1
+        },
+        "running": false,
+        "match": {
+          "format": "ONE_OVER",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 6,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "DELIVERY_SETUP",
+          "innings": 1,
+          "roundInnings": 1,
+          "superOverRound": 0,
+          "score": {
+            "runs": 5,
+            "wickets": 0,
+            "balls": 5
+          },
+          "target": null,
+          "requiredRuns": null,
+          "ballsRemaining": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "toss": {
+            "call": "HEADS",
+            "result": "HEADS",
+            "callerId": "player",
+            "winnerId": "player",
+            "callerWon": true,
+            "choice": "BAT"
+          },
+          "result": null,
+          "deliveryOpen": false
+        },
+        "contactCount": 10,
+        "rampEntries": 0,
+        "ball": {
+          "x": 1.306877024882551,
+          "z": -1.4688353207425016,
+          "height": 0
+        },
+        "score": {
+          "number": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 5,
+          "wickets": 0,
+          "balls": 5,
+          "complete": false
+        },
+        "flippers": [
+          {
+            "id": "left",
+            "pressed": false,
+            "angle": -0.24993114888558798
+          },
+          {
+            "id": "right",
+            "pressed": false,
+            "angle": 3.391523802475381
+          }
+        ],
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      },
+      {
+        "rendering": {
+          "calls": 1,
+          "triangles": 1
+        },
+        "running": false,
+        "match": {
+          "format": "ONE_OVER",
+          "difficulty": "MEDIUM",
+          "ballsPerInnings": 6,
+          "maxWickets": 2,
+          "superOverBalls": 3,
+          "players": [
+            {
+              "id": "player"
+            },
+            {
+              "id": "cpu"
+            }
+          ],
+          "status": "INNINGS_BREAK",
+          "innings": 1,
+          "roundInnings": 1,
+          "superOverRound": 0,
+          "score": {
+            "runs": 6,
+            "wickets": 0,
+            "balls": 6
+          },
+          "target": 7,
+          "requiredRuns": 1,
+          "ballsRemaining": 0,
+          "battingPlayerId": "cpu",
+          "bowlingPlayerId": "player",
+          "toss": {
+            "call": "HEADS",
+            "result": "HEADS",
+            "callerId": "player",
+            "winnerId": "player",
+            "callerWon": true,
+            "choice": "BAT"
+          },
+          "result": null,
+          "deliveryOpen": false
+        },
+        "contactCount": 12,
+        "rampEntries": 0,
+        "ball": {
+          "x": 1.306877024882551,
+          "z": -1.4688353207425016,
+          "height": 0
+        },
+        "score": {
+          "number": 1,
+          "battingPlayerId": "player",
+          "bowlingPlayerId": "cpu",
+          "runs": 6,
+          "wickets": 0,
+          "balls": 6,
+          "complete": true
+        },
+        "flippers": [
+          {
+            "id": "left",
+            "pressed": false,
+            "angle": -0.24993114888558798
+          },
+          {
+            "id": "right",
+            "pressed": false,
+            "angle": 3.391523802475381
+          }
+        ],
+        "alignment": [
+          1.8875832159447664e-16,
+          1.4946834900704544e-16
+        ]
+      }
+    ]
+  },
+  "idleStart": {
+    "rendering": {
+      "calls": 1,
+      "triangles": 1
+    },
+    "running": false,
+    "match": {
+      "format": "ONE_OVER",
+      "difficulty": "MEDIUM",
+      "ballsPerInnings": 6,
+      "maxWickets": 2,
+      "superOverBalls": 3,
+      "players": [
+        {
+          "id": "player"
+        },
+        {
+          "id": "cpu"
+        }
+      ],
+      "status": "DELIVERY_SETUP",
+      "innings": 1,
+      "roundInnings": 1,
+      "superOverRound": 0,
+      "score": {
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0
+      },
+      "target": null,
+      "requiredRuns": null,
+      "ballsRemaining": 6,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "toss": {
+        "call": "HEADS",
+        "result": "HEADS",
+        "callerId": "player",
+        "winnerId": "player",
+        "callerWon": true,
+        "choice": "BAT"
+      },
+      "result": null,
+      "deliveryOpen": false
+    },
+    "contactCount": 0,
+    "rampEntries": 0,
+    "ball": {
+      "x": 1.25,
+      "z": 2.4,
+      "height": 0.065
+    },
+    "score": {
+      "number": 1,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "runs": 0,
+      "wickets": 0,
+      "balls": 0,
+      "complete": false
+    },
+    "flippers": [
+      {
+        "id": "left",
+        "pressed": false,
+        "angle": -0.24993114888558798
+      },
+      {
+        "id": "right",
+        "pressed": false,
+        "angle": 3.391523802475381
+      }
+    ],
+    "alignment": [
+      1.8875832159447664e-16,
+      1.4946834900704544e-16
+    ]
+  },
+  "idleHeld": {
+    "rendering": {
+      "calls": 1,
+      "triangles": 1
+    },
+    "running": false,
+    "match": {
+      "format": "ONE_OVER",
+      "difficulty": "MEDIUM",
+      "ballsPerInnings": 6,
+      "maxWickets": 2,
+      "superOverBalls": 3,
+      "players": [
+        {
+          "id": "player"
+        },
+        {
+          "id": "cpu"
+        }
+      ],
+      "status": "DELIVERY_SETUP",
+      "innings": 1,
+      "roundInnings": 1,
+      "superOverRound": 0,
+      "score": {
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0
+      },
+      "target": null,
+      "requiredRuns": null,
+      "ballsRemaining": 6,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "toss": {
+        "call": "HEADS",
+        "result": "HEADS",
+        "callerId": "player",
+        "winnerId": "player",
+        "callerWon": true,
+        "choice": "BAT"
+      },
+      "result": null,
+      "deliveryOpen": false
+    },
+    "contactCount": 0,
+    "rampEntries": 0,
+    "ball": {
+      "x": 1.25,
+      "z": 2.4,
+      "height": 0.065
+    },
+    "score": {
+      "number": 1,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "runs": 0,
+      "wickets": 0,
+      "balls": 0,
+      "complete": false
+    },
+    "flippers": [
+      {
+        "id": "left",
+        "pressed": true,
+        "angle": 0.9599310885968813
+      },
+      {
+        "id": "right",
+        "pressed": false,
+        "angle": 3.391523802475381
+      }
+    ],
+    "alignment": [
+      7.850462293418876e-17,
+      1.4946834900704544e-16
+    ]
+  },
+  "cancelled": {
+    "rendering": {
+      "calls": 1,
+      "triangles": 1
+    },
+    "running": false,
+    "match": {
+      "format": "ONE_OVER",
+      "difficulty": "MEDIUM",
+      "ballsPerInnings": 6,
+      "maxWickets": 2,
+      "superOverBalls": 3,
+      "players": [
+        {
+          "id": "player"
+        },
+        {
+          "id": "cpu"
+        }
+      ],
+      "status": "DELIVERY_SETUP",
+      "innings": 1,
+      "roundInnings": 1,
+      "superOverRound": 0,
+      "score": {
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0
+      },
+      "target": null,
+      "requiredRuns": null,
+      "ballsRemaining": 6,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "toss": {
+        "call": "HEADS",
+        "result": "HEADS",
+        "callerId": "player",
+        "winnerId": "player",
+        "callerWon": true,
+        "choice": "BAT"
+      },
+      "result": null,
+      "deliveryOpen": false
+    },
+    "contactCount": 0,
+    "rampEntries": 0,
+    "ball": {
+      "x": 1.25,
+      "z": 2.4,
+      "height": 0.065
+    },
+    "score": {
+      "number": 1,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "runs": 0,
+      "wickets": 0,
+      "balls": 0,
+      "complete": false
+    },
+    "flippers": [
+      {
+        "id": "left",
+        "pressed": false,
+        "angle": -0.24993114888558798
+      },
+      {
+        "id": "right",
+        "pressed": false,
+        "angle": 3.391523802475381
+      }
+    ],
+    "alignment": [
+      1.8875832159447664e-16,
+      1.4946834900704544e-16
+    ]
+  },
+  "errors": []
+}
