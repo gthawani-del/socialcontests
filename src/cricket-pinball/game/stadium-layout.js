@@ -103,5 +103,9 @@ export function createStadiumTable(base) {
     bowlingLines: Object.fromEntries([['LEFT', -.5], ['CENTRE', 0], ['RIGHT', .5]].map(([line, x]) => [line, { target: [x, 1.6] }])),
     deliveryGuide: { halfWidth: .62, releaseZ: 1.55, steering: .22 }
   };
+  for (const [type, direction] of [['SPIN_LEFT', -1], ['SPIN_RIGHT', 1]]) {
+    table.launcher.deliveryTypes[type] = { speedMultiplier: .82, startZ: 1.55, stopZ: 2.32,
+      swingAcceleration: 0, bounceZ: 1.66, bounceKickX: direction * .8, bounceSpeedMultiplier: .94 };
+  }
   return table;
 }

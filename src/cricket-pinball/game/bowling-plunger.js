@@ -3,7 +3,9 @@ const TYPE_LABELS = {
   SWING_LEFT: 'SWING ←',
   SWING_RIGHT: 'SWING →',
   CUTTER_LEFT: 'CUTTER ←',
-  CUTTER_RIGHT: 'CUTTER →'
+  CUTTER_RIGHT: 'CUTTER →',
+  SPIN_LEFT: 'SPIN ←',
+  SPIN_RIGHT: 'SPIN →'
 };
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -30,7 +32,7 @@ export function createBowlingPlunger({
     </div>
     <div class="bowl-selector movement-selector">
       <small>DELIVERY</small><select id="bowlingMovement" aria-label="Delivery movement">
-        <option value="PACE">Straight</option><option value="SWING_LEFT">Swing left</option><option value="SWING_RIGHT">Swing right</option><option value="CUTTER_LEFT">Cutter left</option><option value="CUTTER_RIGHT">Cutter right</option>
+        <option value="PACE">Straight</option><option value="SWING_LEFT">Swing left</option><option value="SWING_RIGHT">Swing right</option><option value="CUTTER_LEFT">Cutter left</option><option value="CUTTER_RIGHT">Cutter right</option><option value="SPIN_LEFT">Spin left</option><option value="SPIN_RIGHT">Spin right</option>
       </select><output id="bowlingPower" aria-label="Bowling power">60%</output>
     </div>`;
 

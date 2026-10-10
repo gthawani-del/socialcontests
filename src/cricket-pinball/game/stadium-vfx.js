@@ -20,6 +20,9 @@ export function createStadiumVfx(scene,table,ball){
   return{handle(event){
     if(event.type==='MATCH_RESET'){life=ringLife=0;wasLive=false;trail.visible=false;}
     if(event.type==='BAT_CONTACT')burst(ball.position,'#ffe2a0');
+    if(event.type==='DELIVERY_BOUNCE'){
+      ring.position.set(event.event.x,.012,event.event.z);ring.material.color.set('#c6ab78');ringLife=.22;
+    }
     if(event.type==='OUTCOME'){
       const zone=table.deliveryZones.find(z=>z.id===event.metadata?.zoneId);
       if(zone && !['DOT','DEAD_BALL','WICKET'].includes(event.outcome)){

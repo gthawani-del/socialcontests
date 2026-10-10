@@ -30,7 +30,7 @@ const resetIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 
 app.innerHTML = `<header><a href="/cricket-pinball" aria-label="Back to match lobby">CRICKET <b>PINBALL</b></a><button id="restart" aria-label="Restart match">${resetIcon}</button></header>
 <div id="score" aria-label="Match score">0 / 0</div>
 <section id="viewport" aria-label="Interactive stadium"><div id="loading" role="status">Preparing stadium…</div></section>
-<section class="controls"><p id="cue" role="status">Loading…</p><div class="setup legacy-setup" aria-hidden="true"><label>Line<select id="line"><option>LEFT</option><option selected>CENTRE</option><option>RIGHT</option></select></label><label>Movement<select id="deliveryType"><option value="PACE" selected>STRAIGHT</option><option value="SWING_LEFT">SWING LEFT</option><option value="SWING_RIGHT">SWING RIGHT</option><option value="CUTTER_LEFT">CUTTER LEFT</option><option value="CUTTER_RIGHT">CUTTER RIGHT</option></select></label><label>Power <output id="powerValue">50%</output><input id="power" type="range" min="20" max="100" value="50"></label><button id="bowl" disabled>Bowl</button></div><div class="bats"><button id="leftBat" aria-label="Left bat">${batIcon}<span>LEFT BAT</span></button><button id="rightBat" aria-label="Right bat">${batIcon}<span>RIGHT BAT</span></button></div></section>`;
+<section class="controls"><p id="cue" role="status">Loading…</p><div class="setup legacy-setup" aria-hidden="true"><label>Line<select id="line"><option>LEFT</option><option selected>CENTRE</option><option>RIGHT</option></select></label><label>Movement<select id="deliveryType"><option value="PACE" selected>STRAIGHT</option><option value="SWING_LEFT">SWING LEFT</option><option value="SWING_RIGHT">SWING RIGHT</option><option value="CUTTER_LEFT">CUTTER LEFT</option><option value="CUTTER_RIGHT">CUTTER RIGHT</option><option value="SPIN_LEFT">SPIN LEFT</option><option value="SPIN_RIGHT">SPIN RIGHT</option></select></label><label>Power <output id="powerValue">50%</output><input id="power" type="range" min="20" max="100" value="50"></label><button id="bowl" disabled>Bowl</button></div><div class="bats"><button id="leftBat" aria-label="Left bat">${batIcon}<span>LEFT BAT</span></button><button id="rightBat" aria-label="Right bat">${batIcon}<span>RIGHT BAT</span></button></div></section>`;
 
 try {
   const [base, rules, gltf] = await Promise.all([
@@ -84,6 +84,7 @@ try {
     const target = table.launcher.bowlingLines?.[line]?.target || [0, 1.62];
     aimRing.position.x = Number(target[0] || 0);
     const type = String(selection.type || 'PACE').toUpperCase();
+    aimRing.position.z = Number(table.launcher.deliveryTypes[type]?.bounceZ ?? 1.66);
     const direction = type.endsWith('_LEFT') ? -1 : type.endsWith('_RIGHT') ? 1 : 0;
     const attr = movementLine.geometry.getAttribute('position');
     attr.setXYZ(0, aimRing.position.x, .032, 1.62);
@@ -231,8 +232,8 @@ try {
   // Development-only evidence hook: browser tests still use real controls to launch/hit.
   if (import.meta.env.DEV) window.__stadiumQA = {
     ready: true, materials: materialStatus, art: art.stats, batching, manual: value => { manual = value; },
-    step: count => { for (let i = 0; i < count; i++) flow.step(1 / 120); render(); },
-    snapshot: () => ({ rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, ball: { ...engine.ball.position, height: engine.ball.height }, score: { ...flow.match.currentInnings },
+    step: (count, draw = true) => { for (let i = 0; i < count; i++) flow.step(1 / 120); if (draw) render(); },
+    snapshot: () => ({ rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, ball: { ...engine.ball.position, height: engine.ball.height, verticalVelocity:engine.verticalVelocity, velocity:{...engine.ball.velocity}, bounced:engine.deliveryVariation?.bounced, deliveryType:engine.deliveryVariation?.type }, score: { ...flow.match.currentInnings },
       flippers: [...engine.flippers].map(([id,s]) => ({id, pressed:s.pressed, angle:s.angle})),
       alignment: ['left', 'right'].map(side => {
         const state = engine.flippers.get(side), cfg = state.config, centre = bats[side].getWorldPosition(new THREE.Vector3());

@@ -24,7 +24,7 @@
         "target": false
       },
       "plunger": {
-        "pull": 0.1,
+        "pull": 0.12,
         "dragging": false,
         "enabled": false,
         "cpuMode": true,
@@ -75,7 +75,14 @@
       "ball": {
         "x": 1.25,
         "z": 2.4,
-        "height": 0.065
+        "height": 0.065,
+        "verticalVelocity": 0,
+        "velocity": {
+          "x": 0,
+          "z": -5.52
+        },
+        "bounced": false,
+        "deliveryType": "PACE"
       },
       "score": {
         "number": 1,
@@ -178,7 +185,14 @@
       "ball": {
         "x": 1.5916794222457755,
         "z": 1.5458014443855612,
-        "height": 0.065
+        "height": 0.065,
+        "verticalVelocity": 0,
+        "velocity": {
+          "x": 2.0500765334746482,
+          "z": -5.125191333686632
+        },
+        "bounced": false,
+        "deliveryType": "PACE"
       },
       "score": {
         "number": 1,
@@ -281,7 +295,14 @@
       "ball": {
         "x": 1.8,
         "z": 0.6659203219619884,
-        "height": 0.065
+        "height": 0.065,
+        "verticalVelocity": 0,
+        "velocity": {
+          "x": 0,
+          "z": -5.52
+        },
+        "bounced": false,
+        "deliveryType": "PACE"
       },
       "score": {
         "number": 1,
@@ -384,7 +405,14 @@
       "ball": {
         "x": 1.8,
         "z": -0.25407967803801174,
-        "height": 0.065
+        "height": 0.065,
+        "verticalVelocity": 0,
+        "velocity": {
+          "x": 0,
+          "z": -5.52
+        },
+        "bounced": false,
+        "deliveryType": "PACE"
       },
       "score": {
         "number": 1,
@@ -487,7 +515,14 @@
       "ball": {
         "x": 1.7242113621333228,
         "z": -1.1598611996988635,
-        "height": 0.056483395524454076
+        "height": 0.056483395524454076,
+        "verticalVelocity": 0,
+        "velocity": {
+          "x": -3.0241416880466283,
+          "z": -4.61789638803411
+        },
+        "bounced": false,
+        "deliveryType": "PACE"
       },
       "score": {
         "number": 1,
@@ -537,7 +572,7 @@
         "vfx": {
           "trail": false,
           "sparks": true,
-          "target": false
+          "target": true
         },
         "plunger": {
           "pull": 0.1,
@@ -591,7 +626,14 @@
         "ball": {
           "x": 1.306877024882551,
           "z": -1.4688353207425016,
-          "height": 0
+          "height": 0,
+          "verticalVelocity": 0,
+          "velocity": {
+            "x": 0,
+            "z": 0
+          },
+          "bounced": true,
+          "deliveryType": "PACE"
         },
         "score": {
           "number": 1,
@@ -640,10 +682,10 @@
         "vfx": {
           "trail": true,
           "sparks": true,
-          "target": false
+          "target": true
         },
         "plunger": {
-          "pull": 0.12,
+          "pull": 0.1,
           "dragging": false,
           "enabled": false,
           "cpuMode": true,
@@ -694,7 +736,14 @@
         "ball": {
           "x": 1.306877024882551,
           "z": -1.4688353207425016,
-          "height": 0
+          "height": 0,
+          "verticalVelocity": 0,
+          "velocity": {
+            "x": 0,
+            "z": 0
+          },
+          "bounced": true,
+          "deliveryType": "PACE"
         },
         "score": {
           "number": 1,
@@ -743,7 +792,7 @@
         "vfx": {
           "trail": true,
           "sparks": true,
-          "target": false
+          "target": true
         },
         "plunger": {
           "pull": 0.1,
@@ -797,7 +846,14 @@
         "ball": {
           "x": 1.306877024882551,
           "z": -1.4688353207425016,
-          "height": 0
+          "height": 0,
+          "verticalVelocity": 0,
+          "velocity": {
+            "x": 0,
+            "z": 0
+          },
+          "bounced": true,
+          "deliveryType": "PACE"
         },
         "score": {
           "number": 1,
@@ -846,10 +902,10 @@
         "vfx": {
           "trail": true,
           "sparks": true,
-          "target": false
+          "target": true
         },
         "plunger": {
-          "pull": 0.1,
+          "pull": 0.12,
           "dragging": false,
           "enabled": false,
           "cpuMode": true,
@@ -900,7 +956,14 @@
         "ball": {
           "x": 1.306877024882551,
           "z": -1.4688353207425016,
-          "height": 0
+          "height": 0,
+          "verticalVelocity": 0,
+          "velocity": {
+            "x": 0,
+            "z": 0
+          },
+          "bounced": true,
+          "deliveryType": "PACE"
         },
         "score": {
           "number": 1,
@@ -949,10 +1012,10 @@
         "vfx": {
           "trail": true,
           "sparks": true,
-          "target": false
+          "target": true
         },
         "plunger": {
-          "pull": 0.1,
+          "pull": 0.12,
           "dragging": false,
           "enabled": false,
           "cpuMode": true,
@@ -1003,7 +1066,14 @@
         "ball": {
           "x": 1.306877024882551,
           "z": -1.4688353207425016,
-          "height": 0
+          "height": 0,
+          "verticalVelocity": 0,
+          "velocity": {
+            "x": 0,
+            "z": 0
+          },
+          "bounced": true,
+          "deliveryType": "PACE"
         },
         "score": {
           "number": 1,
@@ -1052,10 +1122,10 @@
         "vfx": {
           "trail": true,
           "sparks": true,
-          "target": false
+          "target": true
         },
         "plunger": {
-          "pull": 0.1,
+          "pull": 0.12,
           "dragging": false,
           "enabled": false,
           "cpuMode": false,
@@ -1106,7 +1176,14 @@
         "ball": {
           "x": 1.306877024882551,
           "z": -1.4688353207425016,
-          "height": 0
+          "height": 0,
+          "verticalVelocity": 0,
+          "velocity": {
+            "x": 0,
+            "z": 0
+          },
+          "bounced": true,
+          "deliveryType": "PACE"
         },
         "score": {
           "number": 1,
@@ -1211,7 +1288,12 @@
     "ball": {
       "x": 1.25,
       "z": 2.4,
-      "height": 0.065
+      "height": 0.065,
+      "verticalVelocity": 0,
+      "velocity": {
+        "x": 0,
+        "z": 0
+      }
     },
     "score": {
       "number": 1,
@@ -1314,7 +1396,12 @@
     "ball": {
       "x": 1.25,
       "z": 2.4,
-      "height": 0.065
+      "height": 0.065,
+      "verticalVelocity": 0,
+      "velocity": {
+        "x": 0,
+        "z": 0
+      }
     },
     "score": {
       "number": 1,
@@ -1417,7 +1504,12 @@
     "ball": {
       "x": 1.25,
       "z": 2.4,
-      "height": 0.065
+      "height": 0.065,
+      "verticalVelocity": 0,
+      "velocity": {
+        "x": 0,
+        "z": 0
+      }
     },
     "score": {
       "number": 1,

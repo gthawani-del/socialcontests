@@ -37,6 +37,8 @@ export class StadiumEngine extends PinballEngine {
     this.frozen = false;
     this.deliveryVariation = null;
     this.launchRoute = null;
+    this.verticalVelocity = 0;
+    this.deliveryFlight = false;
   }
 
   freezeBall() {
@@ -84,6 +86,7 @@ export class StadiumEngine extends PinballEngine {
       this.launchRoute = null; this.launcher.inLane = false; this.ball.height = 0;
       this.launcher.deliveryTarget = this.config.launcher.bowlingLines[this.launcher.deliveryLine].target;
       this.launcher.deliveryGuideActive = true;
+      this.beginDeliveryFlight();
       this.emit('launcher-exit',{line:this.launcher.deliveryLine, deliveryType:this.launcher.deliveryType, target:[...this.launcher.deliveryTarget]});
     }
     this.emit('physics:step');
@@ -95,7 +98,6 @@ export class StadiumEngine extends PinballEngine {
       !state ||
       this.launcher.awaitingLaunch ||
       this.launcher.inLane ||
-      this.launcher.deliveryGuideActive ||
       !this.ball.active ||
       this.ball.velocity.z <= 0
     ) return;
@@ -108,21 +110,51 @@ export class StadiumEngine extends PinballEngine {
 
     const movementScale = Number(state.movementScale ?? 1);
     const swingAcceleration = Number(profile.swingAcceleration ?? 0) * movementScale;
-    if (swingAcceleration) this.ball.velocity.x += swingAcceleration * dt;
+    if (!state.bounced && swingAcceleration) this.ball.velocity.x += swingAcceleration * dt;
+  }
 
-    const bounceZ = Number(profile.bounceZ ?? 1.66);
-    if (!state.bounced && z >= bounceZ) {
-      state.bounced = true;
-      this.ball.velocity.x += Number(profile.bounceKickX ?? 0) * movementScale;
-      this.ball.velocity.z *= Number(profile.bounceSpeedMultiplier ?? 1);
-      this.limitBallSpeed();
-      this.emit('delivery-bounce', {
-        type: state.type,
-        x: this.ball.position.x,
-        z: this.ball.position.z,
-        velocity: { ...this.ball.velocity }
-      });
+  beginDeliveryFlight() {
+    // Predict time to the pitching length with the same forward acceleration,
+    // damping and friction as the table. Height is then integrated under gravity.
+    const target = Number(this.deliveryVariation?.profile.bounceZ ?? 1.66);
+    const dt = this.fixedStep / this.config.physics.collisionSubsteps;
+    let z = this.ball.position.z, speed = Math.hypot(this.ball.velocity.x, this.ball.velocity.z), time = 0;
+    while (z < target && time < 2) {
+      speed = Math.min(this.config.ball.maxSpeed, Math.max(0,
+        (speed + this.config.physics.gravity[1] * dt) * Math.exp(-this.config.physics.linearDamping * dt)
+        - this.config.physics.rollingFriction * dt));
+      z += speed * dt; time += dt;
     }
+    this.verticalVelocity = 9.81 * time / 2;
+    this.deliveryFlight = true;
+  }
+
+  advanceDeliveryHeight(dt) {
+    if (!this.deliveryFlight) return;
+    this.ball.height += this.verticalVelocity * dt - .5 * 9.81 * dt * dt;
+    this.verticalVelocity -= 9.81 * dt;
+    if (this.ball.height > 0 || this.verticalVelocity >= 0) return;
+    this.ball.height = 0;
+    const state = this.deliveryVariation;
+    if (state && !state.bounced) {
+      state.bounced = true;
+      const before = { ...this.ball.velocity };
+      this.ball.velocity.x += Number(state.profile.bounceKickX ?? 0) * state.movementScale;
+      this.ball.velocity.z *= Number(state.profile.bounceSpeedMultiplier ?? 1);
+      this.limitBallSpeed();
+      this.verticalVelocity = Math.min(1.05, -this.verticalVelocity * .5);
+      this.emit('delivery-bounce', { type: state.type, x: this.ball.position.x, z: this.ball.position.z,
+        height: 0, beforeVelocity: before, velocity: { ...this.ball.velocity } });
+    } else {
+      this.verticalVelocity = 0;
+      this.deliveryFlight = false;
+    }
+  }
+
+  resolveFlipperCollision(flipper) {
+    // Ball height is its lower surface above the pitch; the bat blade is low.
+    if (this.ball.height > (flipper.config.contactHeight ?? .06)) return;
+    super.resolveFlipperCollision(flipper);
   }
 
   isDeliveryZoneEligible(zone) {
@@ -141,11 +173,13 @@ export class StadiumEngine extends PinballEngine {
     if (this.ramp) return this.advanceRamp(dt);
     const before = { ...this.ball.position };
     this.previousPosition = before;
-    super.integrateSubstep(dt);
+    this.advanceDeliveryHeight(dt);
     this.applyDeliveryVariation(dt);
+    super.integrateSubstep(dt);
     if (this.frozen || !this.ball.active || this.launcher.inLane || this.launcher.deliveryGuideActive) return;
     for (const route of this.routes) {
       const start = route.points[0];
+      if (this.ball.height > start.height + this.config.ball.radius) continue;
       // Capture only a forward crossing of the mouth, never a side/top crossing.
       if (before.z <= start.z || this.ball.position.z > start.z || this.ball.velocity.z >= 0) continue;
       const fraction = (before.z - start.z) / (before.z - this.ball.position.z);
@@ -155,6 +189,8 @@ export class StadiumEngine extends PinballEngine {
       const speed = this.ball.velocity.x * sample.tx + this.ball.velocity.z * sample.tz;
       if (speed <= 0) continue;
       this.ramp = { route, distance: 0, speed };
+      this.deliveryFlight = false;
+      this.verticalVelocity = 0;
       this.completedRoute = null;
       this.placeOnRamp(sample);
       this.emit('ramp-enter', { id: route.id });

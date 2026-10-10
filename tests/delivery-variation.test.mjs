@@ -24,7 +24,7 @@ test('hard CPU bowling uses the configured variation mix', () => {
   assert.equal(choice.type, 'CUTTER_RIGHT');
 });
 
-test('swing delivery bends after guide release and emits one bounce', () => {
+test('swing delivery bends before bounce without synthesizing ground contact', () => {
   const engine = new StadiumEngine(structuredClone(table));
   let bounces = 0;
   engine.on('delivery-bounce', () => bounces++);
@@ -35,9 +35,9 @@ test('swing delivery bends after guide release and emits one bounce', () => {
   engine.ball.velocity = { x: 0, z: 5 };
   engine.applyDeliveryVariation(.1);
   assert(engine.ball.velocity.x < 0);
-  assert.equal(bounces, 1);
+  assert.equal(bounces, 0);
   engine.applyDeliveryVariation(.1);
-  assert.equal(bounces, 1);
+  assert.equal(bounces, 0);
 });
 
 test('pace delivery preserves the legacy straight post-guide path', () => {
