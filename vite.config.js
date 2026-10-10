@@ -6,6 +6,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         home: resolve(process.cwd(), 'index.html'),
+        footballPinball: resolve(process.cwd(), 'football-pinball/index.html'),
         play: resolve(process.cwd(), 'play/index.html'),
         admin: resolve(process.cwd(), 'admin/index.html'),
         cricketPinball: resolve(process.cwd(), 'cricket-pinball/index.html'),

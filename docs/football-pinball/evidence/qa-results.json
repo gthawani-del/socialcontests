@@ -1,0 +1,203 @@
+{
+  "browser": "153.0.8010.0",
+  "physicsFixtures": [
+    {
+      "id": "blue-left",
+      "velocity": {
+        "x": 3.178790807723999,
+        "y": 15.681048393249512
+      },
+      "contact": true
+    },
+    {
+      "id": "blue-right",
+      "velocity": {
+        "x": -3.1781303882598877,
+        "y": 15.67778205871582
+      },
+      "contact": true
+    },
+    {
+      "id": "red-left",
+      "velocity": {
+        "x": 3.1781301498413086,
+        "y": -15.67778205871582
+      },
+      "contact": true
+    },
+    {
+      "id": "red-right",
+      "velocity": {
+        "x": -3.178790807723999,
+        "y": -15.681048393249512
+      },
+      "contact": true
+    },
+    {
+      "goal": "red",
+      "scoreOnce": true
+    },
+    {
+      "goal": "blue",
+      "scoreOnce": true
+    }
+  ],
+  "viewports": [
+    {
+      "width": 360,
+      "height": 740,
+      "overflow": false,
+      "buttons": [
+        {
+          "w": 160,
+          "h": 54
+        },
+        {
+          "w": 160,
+          "h": 54
+        },
+        {
+          "w": 160,
+          "h": 54
+        },
+        {
+          "w": 160,
+          "h": 54
+        }
+      ],
+      "canvas": {
+        "w": 334,
+        "h": 410
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "buttons": [
+        {
+          "w": 175,
+          "h": 54
+        },
+        {
+          "w": 175,
+          "h": 54
+        },
+        {
+          "w": 175,
+          "h": 54
+        },
+        {
+          "w": 175,
+          "h": 54
+        }
+      ],
+      "canvas": {
+        "w": 364,
+        "h": 514
+      }
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "overflow": false,
+      "buttons": [
+        {
+          "w": 195,
+          "h": 54
+        },
+        {
+          "w": 195,
+          "h": 54
+        },
+        {
+          "w": 195,
+          "h": 54
+        },
+        {
+          "w": 195,
+          "h": 54
+        }
+      ],
+      "canvas": {
+        "w": 404,
+        "h": 602
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "overflow": false,
+      "buttons": [
+        {
+          "w": 360,
+          "h": 54
+        },
+        {
+          "w": 360,
+          "h": 54
+        },
+        {
+          "w": 360,
+          "h": 54
+        },
+        {
+          "w": 360,
+          "h": 54
+        }
+      ],
+      "canvas": {
+        "w": 734,
+        "h": 670
+      }
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "buttons": [
+        {
+          "w": 310,
+          "h": 54
+        },
+        {
+          "w": 310,
+          "h": 54
+        },
+        {
+          "w": 310,
+          "h": 54
+        },
+        {
+          "w": 310,
+          "h": 54
+        }
+      ],
+      "canvas": {
+        "w": 634,
+        "h": 358
+      }
+    }
+  ],
+  "limitations": [
+    "Chromium touch emulation is not real iPhone/Android testing.",
+    "WebKit downloaded, but missing host libraries; dependency installer failed on setgroups/permission errors. Safari and real devices unverified.",
+    "Graybox only; no CPU, GLB, online or Crash fairness claims."
+  ],
+  "access": "deep-link gate holds simulation; existing consent/login flow unlocks it",
+  "multitouch": "two simultaneous blue touches rotate both physical colliders; touchCancel releases both",
+  "lifecycle": "pause freezes ball/ticks; resume advances; blur pauses and clears held controls",
+  "recording": "Normal serve + timed keyboard inputs, 70 browser screenshots; video assembled at 10fps, not a real-time performance benchmark.",
+  "runtime": {
+    "frameMsMedian": 16.600000001490116,
+    "frameMsP95": 19.100000001490116,
+    "renderer": {
+      "geometries": 46,
+      "textures": 0,
+      "calls": 46
+    }
+  },
+  "integration": "Built homepage -> Football route works; production has no QA hook; Cricket lobby loads; Cricket source unchanged.",
+  "errors": [],
+  "failedRequests": []
+}

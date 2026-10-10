@@ -1,0 +1,42 @@
+{
+  "project_id": "football-pinball",
+  "name": "Football Pinball",
+  "current_stage": "QA",
+  "status": "foundation_implemented_chromium_verified_safari_blocked",
+  "decisions": [
+    "User milestones 1\u20132 only",
+    "Existing Vite/JS/Three stack retained",
+    "Rapier 2D planar graybox; 3D ramp review deferred",
+    "No production assets or CPU in foundation"
+  ],
+  "bindings": {
+    "repository": "gthawani-del/socialcontests",
+    "branch": "feature/football-pinball-foundation",
+    "route": "/football-pinball"
+  },
+  "assets": {
+    "production": "not_started",
+    "graybox": "procedural primitives",
+    "homepage": "reused /homepage/pin-foot.webp"
+  },
+  "issues": [
+    "Real iPhone/Android QA unavailable",
+    "WebKit host dependencies could not be installed",
+    "Physics constants provisional; no claim of canonical cross-platform determinism"
+  ],
+  "qa": {
+    "unit_tests": 148,
+    "football_tests": 13,
+    "browser": "Chromium 153",
+    "results": "evidence/qa-results.json"
+  },
+  "release": {
+    "merged": false,
+    "deployed": false,
+    "approval_required": true
+  },
+  "lessons": [
+    "Verify real repository architecture before applying starter pack assumptions",
+    "Vite preview navigation needs directory slash on multi-page entry"
+  ]
+}
