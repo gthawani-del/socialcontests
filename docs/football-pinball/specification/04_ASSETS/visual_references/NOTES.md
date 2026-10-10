@@ -1,0 +1,2 @@
+# Visual reference mapping
+Homepage: user-approved compact text hero; PvP: user-supplied gameplay reference; Crash: user-supplied game reference (remove CASH OUT and currency); Arcade Rush: user-supplied gameplay reference; Penalty Shootout: left crop from earlier combined generated concept, NOT a separately uploaded high-resolution master. Obtain user approval before treating penalty visual as final. Images are conceptual only, not approved geometry/texture atlases.

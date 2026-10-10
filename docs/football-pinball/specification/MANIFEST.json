@@ -1,0 +1,107 @@
+[
+  {
+    "file": "README.md",
+    "bytes": 634,
+    "sha256": "f9f617a8b15aa1703dd8c6352d0f68a438bafb204abd7dd4af6b582f14ed1d0c"
+  },
+  {
+    "file": "07_CONFIG/mode_defaults.json",
+    "bytes": 693,
+    "sha256": "ca5c0210cd659ac5db874e7730dd0d3103194014689fde1f707eecf8b3e35483"
+  },
+  {
+    "file": "01_PRODUCT/IA_UX.md",
+    "bytes": 953,
+    "sha256": "5a7e6bcf7a482a72eb8713d0150eef9c33288876263c09a4273e9e35a5a4d537"
+  },
+  {
+    "file": "01_PRODUCT/PRD.md",
+    "bytes": 1079,
+    "sha256": "56924eeea7ca26c0a5f15b6821f428398e742d5edeaa3ff644f322603b53a66e"
+  },
+  {
+    "file": "06_QA/TEST_MATRIX.md",
+    "bytes": 1093,
+    "sha256": "d5e2217d2e55d5b45aaf9ed71f3ef42db9f9e1a9e6c1445240c203b57958d846"
+  },
+  {
+    "file": "02_MODES/ARCADE_RUSH.md",
+    "bytes": 800,
+    "sha256": "7710fbd8b970972494b4ac6c1056f554313aab6cac8e0f6cf9fbada034fe8621"
+  },
+  {
+    "file": "02_MODES/PVP.md",
+    "bytes": 1375,
+    "sha256": "3fc62c04854b3cd752c55fb987773529fc50436d4c7dafb6334a31ae61408445"
+  },
+  {
+    "file": "02_MODES/PENALTY.md",
+    "bytes": 1013,
+    "sha256": "5406e9beb5f9ecaf0489b7b41f31218ea92579aa48a6424e6079116ab05819d5"
+  },
+  {
+    "file": "02_MODES/CRASH.md",
+    "bytes": 2281,
+    "sha256": "3218b3262dd6ccbca9318dfa87b28eaf8d517aa9140a484d52fdc728d8c6ff8a"
+  },
+  {
+    "file": "03_ENGINE/ARCHITECTURE.md",
+    "bytes": 1226,
+    "sha256": "8a304608b89710e42488f5d0958a8011fec8f3fd08311606eeb9ab814322babb"
+  },
+  {
+    "file": "03_ENGINE/EVENTS_AND_FAIRNESS.md",
+    "bytes": 1076,
+    "sha256": "b6ae690518dfb5fd5a58c98a33a7edcc2bd51fa67dc2d141ec36e12a11545495"
+  },
+  {
+    "file": "04_ASSETS/HIGGSFIELD_BLENDER.md",
+    "bytes": 1157,
+    "sha256": "97bf8ae412a2fefc97ecf9fb3e826d68c6356252bacdca2c10633e4e7c6ca1de"
+  },
+  {
+    "file": "04_ASSETS/ASSET_MANIFEST.md",
+    "bytes": 815,
+    "sha256": "e2db6b784e1db972760a971ea001ed4488f165fc5132d30eb65a18b6345f8fbc"
+  },
+  {
+    "file": "05_WORK_AGENT/MILESTONES.md",
+    "bytes": 875,
+    "sha256": "3b3c1076e3b18f5f042361323bdb3409b1b8f98304b0a43c18fb68ee3f6cd6ec"
+  },
+  {
+    "file": "05_WORK_AGENT/WORK_PROMPT.md",
+    "bytes": 1132,
+    "sha256": "ab6c38c91340923de5673350548cc368b5ce03ffc26c6690ea8065b85d764177"
+  },
+  {
+    "file": "04_ASSETS/visual_references/NOTES.md",
+    "bytes": 472,
+    "sha256": "30fc34de7fb1856f363b470934bf7d329d304af2882b51fa55bf8712c3184f3c"
+  },
+  {
+    "file": "04_ASSETS/visual_references/crash_reference.jpeg",
+    "bytes": 829801,
+    "sha256": "9aad63b29da0ff4733e70f0b18755b397905b0648164eeb73e40e114c756aba3"
+  },
+  {
+    "file": "04_ASSETS/visual_references/pvp_reference.jpeg",
+    "bytes": 233106,
+    "sha256": "a797ce9278ee3f010cf5338046cbc3d9087e5e8d858a17f8ad665faa6dbfebce"
+  },
+  {
+    "file": "04_ASSETS/visual_references/penalty_shootout_reference.png",
+    "bytes": 1320398,
+    "sha256": "65cf232af45da9ffa9ede67431b26f8151307910ecd966213f29b3cd592b7527"
+  },
+  {
+    "file": "04_ASSETS/visual_references/arcade_rush_reference.jpeg",
+    "bytes": 267428,
+    "sha256": "ad79adbacc2d8b27821b71f807e220f279b12bee12289ab7228133e4bf61e0f6"
+  },
+  {
+    "file": "04_ASSETS/visual_references/homepage_reference.jpeg",
+    "bytes": 220304,
+    "sha256": "6e81a635d86143d1faaa21198188c4b39bbbbd8d144cab6c9748e1877dcb12a8"
+  }
+]

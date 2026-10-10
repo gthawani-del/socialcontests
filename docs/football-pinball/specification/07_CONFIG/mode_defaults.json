@@ -1,0 +1,34 @@
+{
+  "project": "football-pinball",
+  "repository": "socialcontests",
+  "route": "/football-pinball",
+  "modeIds": [
+    "pvp",
+    "crash",
+    "penalty",
+    "arcade-rush"
+  ],
+  "status": "proposed_not_implemented",
+  "crash": {
+    "bankAction": "BANK_POINTS",
+    "drainEndsRound": true,
+    "maxMultiplier": 10,
+    "multiplierFormula": "min(10,1+0.045*t+0.0015*t*t)",
+    "comboCap": 1.5,
+    "bankSameTickDrainPriority": true,
+    "currency": null
+  },
+  "penalty": {
+    "attempts": 5,
+    "goalPoints": 500
+  },
+  "arcadeRush": {
+    "durationSeconds": 90,
+    "maxSeconds": 120,
+    "maxTimeBonuses": 2
+  },
+  "pvp": {
+    "quickFirstToGoals": 3,
+    "classicHalfSeconds": 120
+  }
+}

@@ -1,0 +1,4 @@
+# GLB manifest / reuse
+Shared models: football sphere; left/right football boots with independent rotation pivots; rails; field; goals/nets; keeper; jersey-with-legs bumper actors; round/triangle targets; stadium shell; coin for PvP toss.
+PvP: mirrored two-goal board, 4 boots, team players, pass/skill/combo targets. Crash: wing ramps, combo-tier targets, goal-zone bumper, drain. Penalty: short lane, large keeper goal, corner targets, launch feed. Rush: combo/time/extra-ball/multiball targets, moving bumpers and launchers.
+Each GLB needs separate named mesh and pivot, metre units, consistent axes, UV/materials, documented bounds, collider proxy, optional animations, asset license/provenance, measured polycount/texture memory. Visuals are NOT source geometry. Text labels in DOM, not image baked into mesh.
