@@ -1,0 +1,41 @@
+{
+  "results": [
+    {
+      "w": 360,
+      "h": 740,
+      "lobby": true
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "lobby": true
+    },
+    {
+      "w": 430,
+      "h": 932,
+      "lobby": true
+    },
+    {
+      "w": 1440,
+      "h": 1000,
+      "lobby": true
+    },
+    {
+      "mode": "pvp",
+      "shell": true
+    },
+    {
+      "mode": "crash",
+      "shell": true
+    },
+    {
+      "mode": "penalty",
+      "shell": true
+    },
+    {
+      "mode": "arcade-rush",
+      "shell": true
+    }
+  ],
+  "errors": []
+}
