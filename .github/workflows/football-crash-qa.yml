@@ -5,6 +5,7 @@ on:
       - 'src/football-pinball/**'
       - 'tests/football-crash-motion.test.mjs'
       - '.github/workflows/football-crash-qa.yml'
+      - 'scripts/qa-football-crash-fix.mjs'
   workflow_dispatch:
 jobs:
   physics:
@@ -16,3 +17,17 @@ jobs:
           node-version: '22'
       - name: Check Crash collision and scoring
         run: node --test tests/football-crash-motion.test.mjs
+
+  browser:
+    needs: physics
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save playwright
+      - name: Headless Chromium flipper and audio QA
+        run: node scripts/qa-football-crash-fix.mjs
