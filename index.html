@@ -45,10 +45,10 @@
 <div id="main-content" tabindex="-1">
 <section class="hero" id="featured" aria-labelledby="page-title">
 <h1 id="page-title" class="sr-only">Infinite Pinball Worlds</h1>
-<img class="hero-art" src="/homepage/pin-cricket-hero-v2.webp" width="1800" height="600" alt="Pin Cricket — cricket meets pinball" fetchpriority="high">
+<div class="hero-slide" data-slide="0"><img class="hero-art" src="/homepage/pin-cricket-hero-v2.webp" width="1800" height="600" alt="Pin Cricket — cricket meets pinball" fetchpriority="high">
 <div class="hero-shade" aria-hidden="true"></div>
 <div class="hero-action"><a href="/cricket-pinball" class="primary">Play Now <span aria-hidden="true">→</span></a></div>
-<div class="hero-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+</div><div class="hero-slide" data-slide="1" hidden><img class="hero-art football-hero-art" src="/football-pinball/lobby/hero.webp" width="1800" height="600" alt="Football boot and ball on an illuminated pinball pitch"><div class="pin-foot-hero-title"><strong>PIN <em>FOOT</em></strong><span>FLIP. PASS. SCORE.</span></div><div class="hero-action"><a href="/football-pinball/" class="primary">Play Now <span aria-hidden="true">→</span></a></div></div><div class="hero-dots" aria-label="Featured games"><button data-hero-slide="0" aria-label="Show Pin Cricket" aria-pressed="true"></button><button data-hero-slide="1" aria-label="Show Pin Foot" aria-pressed="false"></button><button id="hero-pause" aria-label="Pause carousel">Ⅱ</button></div>
 </section>
 
 <nav class="categories" aria-label="World Categories">
@@ -67,7 +67,7 @@
 <div class="section-title"><h2 id="featured-worlds-title">Featured Worlds</h2><a href="#more-worlds">View All <span aria-hidden="true">→</span></a></div>
 <div class="feature-layout"><div class="cover-rail">
 <a class="cover" href="/cricket-pinball"><img src="/homepage/pin-cricket.webp" width="800" height="1200" loading="lazy" alt="Pin Cricket"><span class="card-action">Play →</span></a>
-<a class="cover" href="/football-pinball" aria-label="Football Pinball"><img src="/homepage/pin-foot.webp" width="800" height="1200" loading="lazy" alt="Football Pinball"><span class="card-action">Play →</span></a>
+<a class="cover" href="/football-pinball/" aria-label="Football Pinball"><img src="/homepage/pin-foot-cover-v2.webp" width="800" height="1200" loading="lazy" alt="Football Pinball"><span class="card-action">Play →</span></a>
 <a class="cover" href="/play?theme=bombay-1945"><img src="/homepage/bombay-1945.webp" width="800" height="1200" loading="lazy" alt="Bombay 1945"><span class="card-action">Play →</span></a>
 <a class="cover" href="/play?theme=paris"><img src="/homepage/paris-nights.webp" width="800" height="1200" loading="lazy" alt="Paris Nights"><span class="card-action">Play →</span></a>
 <a class="cover" href="/play?theme=bollywood"><img src="/homepage/bollywood-legends.webp" width="800" height="1200" loading="lazy" alt="Bollywood Legends"><span class="card-action">Play →</span></a>
@@ -82,10 +82,10 @@
 <article class="mini unavailable" aria-label="Tokyo Neon — Coming Soon"><img src="/homepage/tokyo-neon.webp" width="800" height="1200" loading="lazy" alt=""><span class="status">Coming Soon</span></article>
 <article class="mini unavailable" aria-label="Mumbai Monsoon — Coming Soon"><img src="/homepage/mumbai-monsoon.webp" width="800" height="1200" loading="lazy" alt=""><span class="status">Coming Soon</span></article>
 <article class="mini unavailable" aria-label="Ancient Egypt — Coming Soon"><img src="/homepage/ancient-egypt.webp" width="800" height="1200" loading="lazy" alt=""><span class="status">Coming Soon</span></article>
-<article class="mini unavailable" aria-label="Pin Foot — Coming Soon"><img src="/homepage/pin-foot.webp" width="800" height="1200" loading="lazy" alt=""><span class="category sports">Sports</span><span class="card-title">Pin Foot</span><span class="status">Coming Soon</span></article>
+<a class="mini" href="/football-pinball/" aria-label="Play Pin Foot"><img src="/homepage/pin-foot-cover-v2.webp" width="800" height="1200" loading="lazy" alt="Pin Foot"><span class="status">Play Now →</span></a>
 </div></section>
 
-<section class="sport-banner" id="sports" aria-labelledby="pin-foot-title"><div><span>Sports World</span><h2 id="pin-foot-title">Pin Foot</h2><p>Kick. Bump. Multiball.</p></div><span class="coming-badge">Coming Soon</span></section>
+<section class="sport-banner" id="sports" aria-labelledby="pin-foot-title"><div><span>Sports World</span><h2 id="pin-foot-title">Pin Foot</h2><p>Kick. Bump. Multiball.</p></div><a class="coming-badge" href="/football-pinball/">Play Now →</a></section>
 <section class="coming" id="coming-soon" aria-labelledby="coming-title"><div><span>Coming Soon</span><h2 id="coming-title">New Worlds. New Challenges.</h2></div><p>Infinite Pinball keeps expanding.</p></section>
 </div>
 

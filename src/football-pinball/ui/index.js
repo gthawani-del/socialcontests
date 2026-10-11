@@ -62,17 +62,13 @@ const header = (mode) =>
   `<header class="fp-topbar"><a class="fp-back" href="${mode ? "/football-pinball/" : "/"}" aria-label="${mode ? "Choose a football mode" : "Back to Infinite Pinball"}"><span aria-hidden="true">‹</span> ${mode ? "Modes" : "Games"}</a><div class="fp-wordmark">FOOTBALL<span>PINBALL</span></div><span class="fp-build-label">${mode ? "PLAY" : "FOUR MODES"}</span></header>`;
 
 export function renderLobby(root = document.querySelector("#footballApp")) {
-  root.className = "fp-lobby";
-  root.innerHTML = `${header()}<section class="fp-lobby-intro"><p class="fp-eyebrow">FOOTBALL PINBALL</p><h1>Choose your game.</h1><p>Choose a mode to see its rules and controls.</p></section><section class="fp-mode-grid" aria-label="Game modes">${Object.entries(
-    MODE_UI,
-  )
-    .map(
-      ([key, mode], index) =>
-        `<a class="fp-mode-card fp-accent-${mode.accent}" href="?mode=${key}"><div class="fp-card-image"><img src="/football-pinball/cards/${key}.png" alt="" loading="lazy"></div><div class="fp-card-top"><span class="fp-mode-icon">${icon(mode.icon)}</span><span class="fp-mode-number">0${index + 1}</span></div><h2>${mode.title}</h2><p>${mode.description}</p><div class="fp-card-footer"><span>${mode.tag}</span><span class="fp-card-arrow" aria-hidden="true">↗</span></div></a>`,
-    )
-    .join(
-      "",
-    )}</section><details class="fp-how"><summary>How to play</summary><p>Tap and hold a boot control to flip; release to return it. On a keyboard, use A and D for your left and right boots.</p><p>Each mode has its own scoring and match rules. Open its rules panel before playing.</p></details><p class="fp-lobby-note">Virtual points only. No deposits or withdrawals.</p>`;
+  root.className = "fp-lobby fp-lobby-art";
+  const order=['pvp','penalty','crash','arcade-rush'];
+  root.innerHTML = `<header class="fp-lobby-header"><a href="/" aria-label="Back to Infinite Pinball" class="fp-lobby-home">‹</a><div class="fp-wordmark">FOOTBALL<span>PINBALL</span></div><button class="fp-lobby-help" aria-label="How to play">${icon('goal')}</button></header><section class="fp-lobby-hero"><div><h1>FLIP. PASS. SCORE.</h1><i></i><p>Four ways to play. One game.</p></div></section><div class="fp-lobby-heading"><h2>CHOOSE A MODE</h2><button class="fp-lobby-help">HOW TO PLAY <span aria-hidden="true">›</span></button></div><section class="fp-mode-grid" aria-label="Game modes">${order.map(key=>{const mode=MODE_UI[key];return `<a class="fp-mode-card fp-accent-${mode.accent}" href="?mode=${key}"><div class="fp-lobby-card-art fp-art-${key}" role="img" aria-label="${mode.title} football pinball artwork"></div><div class="fp-lobby-card-copy"><span class="fp-mode-icon">${icon(mode.icon)}</span><div><h2>${mode.title}</h2><p>${mode.description}</p></div></div><div class="fp-card-footer"><span>${mode.tag}</span><span class="fp-card-arrow" aria-hidden="true">›</span></div></a>`;}).join('')}</section><p class="fp-lobby-note">Virtual points only. No deposits or withdrawals.</p><dialog id="fp-lobby-guide" class="fp-settings-dialog"><header><h2>How to play</h2><button id="fp-lobby-close" aria-label="Close help">×</button></header><p>Tap a boot to flip immediately. Release to return it. Use A and D on a keyboard.</p>${order.map(key=>`<h3>${MODE_UI[key].title}</h3><p>${MODE_UI[key].help}</p>`).join('')}<button id="fp-lobby-done">Done</button></dialog>`;
+  const guide=root.querySelector('#fp-lobby-guide');let opener;
+  root.querySelectorAll('.fp-lobby-help').forEach(button=>button.onclick=()=>{opener=button;guide.showModal();});
+  for(const id of ['fp-lobby-close','fp-lobby-done'])root.querySelector('#'+id).onclick=()=>guide.close();
+  guide.addEventListener('close',()=>opener?.focus());
 }
 
 const stat = (id, label, value, extra = "") =>

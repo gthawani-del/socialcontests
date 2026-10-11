@@ -150,3 +150,15 @@ function bindWorldSearch() {
     notice.textContent = count ? `${count} world${count === 1 ? '' : 's'} found` : 'No matching worlds. Try another name.';
   });
 }
+
+// Two real featured games; pause on hover/focus and respect reduced motion.
+const hero=document.querySelector('.hero');
+const slides=[...hero.querySelectorAll('.hero-slide')];
+const dots=[...hero.querySelectorAll('[data-hero-slide]')];
+let heroIndex=0,heroPaused=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function showHero(index){heroIndex=index;slides.forEach((slide,i)=>slide.hidden=i!==index);dots.forEach((dot,i)=>dot.setAttribute('aria-pressed',String(i===index)));}
+dots.forEach(dot=>dot.onclick=()=>showHero(Number(dot.dataset.heroSlide)));
+const pause=hero.querySelector('#hero-pause');
+function paintPause(){pause.textContent=heroPaused?'▶':'Ⅱ';pause.setAttribute('aria-label',heroPaused?'Play carousel':'Pause carousel');}
+pause.onclick=()=>{heroPaused=!heroPaused;paintPause();};paintPause();
+setInterval(()=>{if(!heroPaused&&!document.hidden&&!document.body.classList.contains('demo-locked')&&!hero.matches(':hover')&&!hero.contains(document.activeElement))showHero((heroIndex+1)%slides.length);},6500);

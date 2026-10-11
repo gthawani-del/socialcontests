@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "Four cards and no horizontal overflow at 360/390/430/1280",
+    "All mode links reach pre-game setup",
+    "Hero slide and CTA work; adjacent Cricket and Football covers have equal dimensions"
+  ],
+  "errors": []
+}

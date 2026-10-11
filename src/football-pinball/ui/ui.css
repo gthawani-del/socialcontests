@@ -725,3 +725,31 @@
 #footballApp.fp-game .fp-controls .fp-power-label{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;background:#091925e8;border-radius:4px;padding:2px 4px;min-height:0;font-size:11px;}
 #footballApp.fp-game .fp-controls .fp-power-label:empty{display:none;}
 #fp-multiball-badge{position:absolute;top:6px;left:50%;transform:translateX(-50%);background:#0b2d26e8;color:#b5ffe2;border-radius:12px;padding:4px 10px;font-size:12px;pointer-events:none;}
+
+/* Football landing page: supplied stadium-art direction, scoped away from gameplay. */
+#footballApp.fp-lobby-art{max-width:1000px;margin:auto;padding:0 0 max(16px,env(safe-area-inset-bottom));background:#09141c;}
+.fp-lobby-header{display:flex;justify-content:space-between;align-items:center;height:84px;padding:0 28px;background:#101d25;}
+.fp-lobby-home,.fp-lobby-help{min-width:44px;min-height:44px;display:grid;place-items:center;background:none;border:0;color:#e5edf2;cursor:pointer;text-decoration:none;}
+.fp-lobby-home{font-size:36px;}.fp-lobby-help svg{width:23px;height:23px;}
+#footballApp .fp-lobby-hero{display:flex;align-items:center;min-height:240px;background:#07111b url('/football-pinball/lobby/hero.webp') center/cover no-repeat;padding:30px;}
+#footballApp .fp-lobby-hero h1{font:500 clamp(18px,3vw,30px)/1.2 'Arial Narrow',system-ui,sans-serif;letter-spacing:3px;margin:0;text-align:left;}
+.fp-lobby-hero i{display:block;width:48px;height:3px;background:#f24e56;margin:14px 0;}
+.fp-lobby-hero p{color:#a2afb9;font-size:17px;margin:0;}
+.fp-lobby-heading{display:flex;justify-content:space-between;align-items:center;padding:24px 28px 18px;gap:12px;}
+#footballApp .fp-lobby-heading h2{font-size:22px;font-weight:500;letter-spacing:3px;margin:0;}
+.fp-lobby-heading .fp-lobby-help{display:flex;gap:8px;font-size:12px;letter-spacing:1px;color:#abb9c4;}
+#footballApp.fp-lobby-art .fp-mode-grid{padding:0 28px;gap:24px;}
+#footballApp.fp-lobby-art .fp-mode-card{padding:0;overflow:hidden;border-radius:12px;background:linear-gradient(#12202a,#0a141c);border-bottom-width:3px;}
+.fp-lobby-card-art{width:100%;aspect-ratio:2/1;background-image:url('/football-pinball/lobby/modes.webp');background-size:200% 200%;background-repeat:no-repeat;}
+.fp-art-pvp{background-position:0 0}.fp-art-penalty{background-position:100% 0}.fp-art-crash{background-position:0 100%}.fp-art-arcade-rush{background-position:100% 100%}
+.fp-lobby-card-copy{display:flex;gap:12px;align-items:flex-start;padding:18px 18px 4px;}
+#footballApp.fp-lobby-art .fp-mode-icon{color:white;flex:none;width:32px;height:32px;}
+#footballApp.fp-lobby-art .fp-mode-icon svg{width:30px;height:30px;}
+#footballApp.fp-lobby-art .fp-mode-card h2{font-size:20px;line-height:1.2;text-transform:uppercase;letter-spacing:.5px;margin:0 0 8px;font-weight:600;}
+#footballApp.fp-lobby-art .fp-mode-card p{font-size:14px;line-height:1.4;margin:0;color:#a8b4bf;min-height:40px;}
+#footballApp.fp-lobby-art .fp-card-footer{padding:8px 18px 16px;margin:0;display:flex;justify-content:space-between;align-items:center;gap:6px;}
+#footballApp.fp-lobby-art .fp-card-footer>span:first-child{font-size:10px;letter-spacing:2px;}
+#footballApp.fp-lobby-art .fp-card-arrow{width:40px;height:40px;border-radius:50%;background:#1b2b36;border:1px solid #30414c;display:grid;place-items:center;font-size:30px;color:#eef6fa;}
+#footballApp.fp-lobby-art .fp-lobby-note{padding:0 28px;font-size:12px;}
+#fp-lobby-close{width:44px;height:44px;background:none;border:0;color:white;font-size:28px;cursor:pointer;}#fp-lobby-done{min-height:44px;padding:8px 24px;background:#233e50;color:white;border:1px solid #617e91;border-radius:8px;cursor:pointer;}
+@media(max-width:600px){.fp-lobby-header{height:64px;padding:0 16px;}#footballApp.fp-lobby-art .fp-wordmark{font-size:20px;}#footballApp .fp-lobby-hero{min-height:150px;padding:16px;background-position:58% center;}#footballApp .fp-lobby-hero h1{font-size:17px;letter-spacing:1.5px;}.fp-lobby-hero p{font-size:12px;max-width:150px;}.fp-lobby-heading{padding:16px 16px 10px;}#footballApp .fp-lobby-heading h2{font-size:17px;letter-spacing:1.5px;}.fp-lobby-heading .fp-lobby-help{font-size:10px;letter-spacing:0;}#footballApp.fp-lobby-art .fp-mode-grid{padding:0 16px;gap:12px;}#footballApp.fp-lobby-art .fp-mode-card h2{font-size:14px;letter-spacing:0;}.fp-lobby-card-copy{padding:12px 10px 2px;gap:7px;}#footballApp.fp-lobby-art .fp-mode-icon{width:22px;height:24px;}#footballApp.fp-lobby-art .fp-mode-icon svg{width:22px;height:22px;}#footballApp.fp-lobby-art .fp-mode-card p{font-size:12px;min-height:50px;}#footballApp.fp-lobby-art .fp-card-footer{padding:4px 10px 12px;}#footballApp.fp-lobby-art .fp-card-footer>span:first-child{font-size:8px;letter-spacing:1px;}#footballApp.fp-lobby-art .fp-card-arrow{width:32px;height:32px;font-size:24px;}}
