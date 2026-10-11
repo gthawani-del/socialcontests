@@ -1,0 +1,6 @@
+# PvP Match
+Opponent: CPU Easy/Medium/Hard or online remote human. Arena: 4 boot flippers (2 each end), 2 goals, 2 bounded keepers, 1 ball, jersey-and-legs bumper players with defender/midfielder/striker roles, SKILL/PASS circles and COMBO triangles.
+Toss: authoritative heads/tails result, vertical flip animation matches result; winner chooses kickoff or side; other receives remainder. Classic halftime switches ends. CPU picks automatically.
+Formats proposed: Quick first to 3; Classic two 2-minute halves; Golden Goal first score; Ranked 3 minutes later. Goals decide winner: 1 physical goal = 1 goal, never multiplied.
+Arcade points proposed: boot strike 10, player bumper 20, pass chain 50, skill 75, perfect kick 100, keeper save 100, goal 500, super-shot goal +250. COMBO x2 for eligible arcade points for 5s, not football goals. SKILL next strike +25% bounded impulse; PASS physical redirected rebound to teammate. Player bumpers apply role-specific capped impulse from collision angle. Goal when entire ball crosses plane once.
+CPU sends same boot inputs as humans; vary reaction latency, aim error and tactics, not physics. Online server owns state/goals/toss; clients send ordered inputs and interpolate snapshots. Supabase polling cannot synchronize physics. Test symmetry, goal detection, simultaneous flips, toss, side switching, reconnect and keeper bounds.

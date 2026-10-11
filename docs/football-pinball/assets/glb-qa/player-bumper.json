@@ -1,0 +1,65 @@
+{
+  "name": "player-bumper",
+  "bounds": {
+    "min": [
+      -0.2883232831954956,
+      0,
+      -0.25699999928474426
+    ],
+    "max": [
+      0.2883232831954956,
+      1.0470000505447388,
+      0.25699999928474426
+    ]
+  },
+  "size": [
+    0.5766465663909912,
+    1.0470000505447388,
+    0.5139999985694885
+  ],
+  "meshes": [
+    {
+      "name": "MESH_Hair_Dark",
+      "vertices": 75,
+      "triangles": 98,
+      "uv": true,
+      "material": "Hair_Dark"
+    },
+    {
+      "name": "MESH_Shorts_Graphite",
+      "vertices": 864,
+      "triangles": 432,
+      "uv": true,
+      "material": "Shorts_Graphite"
+    },
+    {
+      "name": "MESH_Skin_Warm",
+      "vertices": 1899,
+      "triangles": 1100,
+      "uv": true,
+      "material": "Skin_Warm"
+    },
+    {
+      "name": "MESH_Team_Primary",
+      "vertices": 1652,
+      "triangles": 920,
+      "uv": true,
+      "material": "Team_Primary"
+    },
+    {
+      "name": "MESH_Trim_Ivory",
+      "vertices": 940,
+      "triangles": 1192,
+      "uv": true,
+      "material": "Trim_Ivory"
+    },
+    {
+      "name": "PRP_pedestal",
+      "vertices": 192,
+      "triangles": 124,
+      "uv": true,
+      "material": "Base_Steel"
+    }
+  ],
+  "drawCalls": 6
+}

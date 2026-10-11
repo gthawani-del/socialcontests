@@ -1,0 +1,44 @@
+{
+  "name": "stadium-tier",
+  "bounds": {
+    "min": [
+      -1,
+      0,
+      -0.5999999940395355
+    ],
+    "max": [
+      1,
+      0.8249999731779099,
+      0.6175000192597508
+    ]
+  },
+  "size": [
+    2,
+    0.8249999731779099,
+    1.2175000132992864
+  ],
+  "meshes": [
+    {
+      "name": "MESH_Brushed_Metal",
+      "vertices": 5400,
+      "triangles": 2700,
+      "uv": true,
+      "material": "Brushed_Metal"
+    },
+    {
+      "name": "MESH_Graphite",
+      "vertices": 648,
+      "triangles": 324,
+      "uv": true,
+      "material": "Graphite"
+    },
+    {
+      "name": "MESH_Team_Primary",
+      "vertices": 10368,
+      "triangles": 5184,
+      "uv": true,
+      "material": "Team_Primary"
+    }
+  ],
+  "drawCalls": 3
+}

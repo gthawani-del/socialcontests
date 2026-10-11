@@ -1,0 +1,557 @@
+/* Scoped to the Football module; the existing site and Cricket keep their own UI. */
+#footballApp.fp-lobby,
+#footballApp.fp-game {
+  --fp-accent: #71a9e1;
+  max-width: 920px;
+  height: auto;
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top) 20px max(20px, env(safe-area-inset-bottom));
+  display: block;
+  color: #edf0f2;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+#footballApp.fp-accent-blue,
+.fp-mode-card.fp-accent-blue {
+  --fp-accent: #71a9e1;
+}
+#footballApp.fp-accent-red,
+.fp-mode-card.fp-accent-red {
+  --fp-accent: #ee8e89;
+}
+#footballApp.fp-accent-gold,
+.fp-mode-card.fp-accent-gold {
+  --fp-accent: #ddbb75;
+}
+#footballApp.fp-accent-green,
+.fp-mode-card.fp-accent-green {
+  --fp-accent: #89bba2;
+}
+#footballApp .fp-topbar {
+  height: 78px;
+  border-bottom: 1px solid #29333e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+#footballApp .fp-back {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.fp-back > span {
+  font-size: 28px;
+}
+#footballApp .fp-wordmark {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-align: center;
+}
+.fp-wordmark > span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 5px;
+  margin-top: 2px;
+  font-weight: 500;
+}
+#footballApp .fp-build-label {
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  color: #a2b0bb;
+}
+.fp-lobby-intro {
+  padding: 42px 0 30px;
+}
+.fp-eyebrow {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #9faeb9;
+  margin: 0 0 10px;
+}
+#footballApp .fp-lobby-intro h1 {
+  font-size: clamp(28px, 5vw, 42px);
+  letter-spacing: -1.2px;
+  text-align: left;
+  margin: 0 0 10px;
+}
+.fp-lobby-intro > p:last-child {
+  font-size: 15px;
+  color: #aebbc6;
+  margin: 0;
+}
+.fp-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+#footballApp .fp-mode-card {
+  display: block;
+  border: 1px solid #34414d;
+  border-bottom: 3px solid var(--fp-accent);
+  border-radius: 12px;
+  background: #17222d;
+  padding: 22px;
+  color: #edf0f2;
+  transition: background 0.15s;
+}
+.fp-mode-card:hover {
+  background: #1e2c39 !important;
+}
+.fp-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+}
+.fp-mode-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--fp-accent);
+}
+.fp-mode-icon svg {
+  width: 34px;
+  height: 34px;
+}
+.fp-mode-number {
+  font-size: 11px;
+  color: #8394a2;
+  font-variant-numeric: tabular-nums;
+}
+.fp-mode-card h2 {
+  font-size: 20px;
+  margin: 0 0 9px;
+  letter-spacing: -0.3px;
+}
+.fp-mode-card p {
+  font-size: 13px;
+  color: #bac5cd;
+  line-height: 1.5;
+  margin: 0;
+  min-height: 39px;
+}
+.fp-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 22px;
+  gap: 6px;
+}
+.fp-card-footer > span:first-child {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #9eb0bd;
+}
+.fp-card-arrow {
+  font-size: 20px;
+  color: var(--fp-accent);
+}
+.fp-lobby-note {
+  font-size: 11px;
+  color: #a6b4be;
+  padding: 12px 0;
+}
+.fp-how {
+  border-top: 1px solid #34414d;
+  margin-top: 22px;
+  color: #c2cdd5;
+  font-size: 12px;
+}
+.fp-how summary {
+  padding: 14px 0;
+  cursor: pointer;
+  min-height: 44px;
+}
+.fp-how p {
+  font-size: 12px;
+  line-height: 1.7;
+  max-width: 650px;
+  margin: 0 0 12px;
+}
+.fp-how summary:focus-visible {
+  outline: 3px solid #f2cd78;
+  outline-offset: 2px;
+}
+#footballApp.fp-game {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 100dvh;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+#footballApp.fp-game .fp-topbar {
+  height: 58px;
+  flex-shrink: 0;
+}
+.fp-mode-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+#footballApp .fp-mode-heading h1 {
+  font-size: 16px;
+  text-align: left;
+  letter-spacing: -0.2px;
+}
+.fp-mode-heading > span {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--fp-accent);
+}
+.fp-hud {
+  display: flex;
+  gap: 6px;
+  min-height: 64px;
+}
+.fp-stat {
+  flex: 1;
+  min-width: 0;
+  background: #192631;
+  border: 1px solid #34414d;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 7px 3px;
+}
+.fp-stat > span {
+  font-size: 9px;
+  letter-spacing: 1.1px;
+  color: #b9c6d0;
+}
+.fp-stat strong {
+  font-size: 25px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+  line-height: 1.2;
+}
+.fp-stat.fp-blue strong {
+  color: #9bc5ff;
+}
+.fp-stat.fp-red strong {
+  color: #ffacaf;
+}
+.fp-game #fp-arena {
+  height: clamp(280px, calc(100dvh - 335px), 780px);
+  min-height: 280px;
+  flex-shrink: 0;
+  border-color: #43525e;
+}
+.fp-game #fp-status {
+  min-height: 24px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.fp-game .fp-controls {
+  display: grid;
+  gap: 8px;
+}
+.fp-game .fp-controls > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.fp-game .fp-controls button {
+  min-height: 56px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.fp-game .fp-controls button > span {
+  font-size: 20px;
+  padding: 0 8px;
+  color: #c0d9ed;
+}
+.fp-game .fp-actions {
+  min-height: 44px;
+  gap: 6px;
+}
+.fp-game .fp-actions button {
+  padding: 0 12px;
+  font-size: 12px;
+}
+.fp-game #fp-bank {
+  flex: 1;
+  background: #ddbb75;
+  color: #18232c;
+  font-weight: 750;
+  border-color: #ddbb75;
+}
+.fp-game .fp-how {
+  margin-top: 2px;
+}
+.fp-game .fp-results {
+  border: 1px solid var(--fp-accent);
+  border-radius: 10px;
+  padding: 22px;
+  background: #192631;
+  margin-bottom: 12px;
+}
+.fp-results h2 {
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+.fp-results p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #c2cdd5;
+}
+.fp-result-points {
+  font-size: 34px;
+}
+.fp-result-points small {
+  font-size: 12px;
+}
+.fp-results dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid #34414d;
+  font-size: 13px;
+}
+.fp-results dd {
+  margin: 0;
+  font-weight: 700;
+}
+.fp-game.fp-final-rush #fp-time {
+  color: #ddbb75;
+}
+@media (max-width: 480px) {
+  #footballApp.fp-lobby,
+  #footballApp.fp-game {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .fp-mode-grid {
+    gap: 10px;
+  }
+  #footballApp .fp-mode-card {
+    padding: 16px 13px;
+  }
+  .fp-mode-card h2 {
+    font-size: 17px;
+  }
+  .fp-mode-card p {
+    font-size: 12px;
+    min-height: 54px;
+  }
+  .fp-card-footer > span:first-child {
+    font-size: 8px;
+    letter-spacing: 0.8px;
+  }
+  .fp-card-top {
+    margin-bottom: 18px;
+  }
+  .fp-lobby-intro {
+    padding: 30px 0 24px;
+  }
+  .fp-stat strong {
+    font-size: 22px;
+  }
+  .fp-stat > span {
+    font-size: 8px;
+    letter-spacing: 0.6px;
+  }
+  .fp-build-label {
+    max-width: 48px;
+    line-height: 1.5;
+    text-align: right;
+  }
+  .fp-game .fp-controls button > span {
+    padding: 0 3px;
+  }
+}
+@media (max-width: 340px) {
+  .fp-mode-grid {
+    grid-template-columns: 1fr;
+  }
+  .fp-mode-card p {
+    min-height: 0;
+  }
+  .fp-card-top {
+    margin-bottom: 14px;
+  }
+  .fp-game .fp-actions button {
+    padding: 0 8px;
+    font-size: 11px;
+  }
+}
+@media (max-height: 600px) and (orientation: landscape) {
+  .fp-game #fp-arena {
+    height: 360px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fp-mode-card {
+    transition: none !important;
+  }
+}
+
+.fp-target-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.fp-target-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font: 700 8px system-ui;
+  letter-spacing: 0.4px;
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+  padding: 1px 3px;
+  background: #10202aa0;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.fp-setup {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-bottom: 4px;
+}
+.fp-setup label {
+  display: flex;
+  flex: 1;
+  min-width: 90px;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 10px;
+  color: #b5c3ce;
+}
+.fp-setup select {
+  width: 100%;
+  min-height: 38px;
+  color: #edf0f2;
+  background: #192631;
+  border: 1px solid #43525e;
+  border-radius: 5px;
+  padding: 6px;
+  font: 12px system-ui;
+}
+.fp-setup select:disabled {
+  opacity: 0.6;
+}
+.fp-toss {
+  text-align: center;
+  border: 1px solid #556677;
+  padding: 10px;
+  border-radius: 8px;
+}
+.fp-toss p {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+.fp-toss button {
+  min-height: 44px;
+  padding: 7px 12px;
+  border: 1px solid #62758a;
+  border-radius: 6px;
+  background: #23384b;
+  color: #e5edf4;
+  margin: 3px;
+  font-size: 12px;
+}
+.fp-toss[hidden] {
+  display: none;
+}
+.fp-game:has(.fp-setup:not([hidden]) label) #fp-arena {
+  height: clamp(280px, calc(100dvh - 397px), 740px);
+}
+.fp-network {
+  font-size: 12px;
+  color: #c3d0db;
+}
+.fp-network label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.fp-network input:not([type="checkbox"]) {
+  flex: 1;
+  min-width: 0;
+  min-height: 40px;
+  background: #192631;
+  border: 1px solid #43525e;
+  color: #edf0f2;
+  padding: 8px;
+  border-radius: 5px;
+}
+.fp-network p {
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+.fp-records h3 {
+  font-size: 15px;
+}
+.fp-records li {
+  font-size: 12px;
+  line-height: 1.8;
+}
+.fp-game .fp-actions {
+  flex-wrap: wrap;
+}
+.fp-game .fp-actions button {
+  min-height: 44px;
+}
+.fp-card-image {
+  height: 160px;
+  overflow: hidden;
+  border-radius: 7px;
+  margin-bottom: 12px;
+  background: #0d1821;
+}
+.fp-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 48%;
+}
+.fp-card-top {
+  margin-bottom: 12px;
+}
+@media (max-width: 480px) {
+  .fp-card-image {
+    height: 135px;
+  }
+  .fp-mode-icon {
+    width: 26px;
+    height: 26px;
+  }
+  .fp-mode-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.fp-setup[hidden] {
+  display: none;
+}
+.fp-quality {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.fp-quality select {
+  min-height: 44px;
+  background: #192631;
+  color: #edf0f2;
+  border: 1px solid #43525e;
+  border-radius: 5px;
+  padding: 8px;
+}

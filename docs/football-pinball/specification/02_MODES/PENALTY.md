@@ -1,0 +1,5 @@
+# Penalty Shootout
+Single-player against CPU keeper. Dedicated short shooting lane, 2 boot flippers, 1 ball feed, wide goal, four optional precision zones, physical keeper with bounded reach. Left/right boot timing and contact angle determine shot trajectory; no random scripted save/goal.
+Flow: select Rookie/Pro/Elite -> countdown -> feed ball -> kick -> classify goal/save/miss -> reset -> next of five -> result. Shot times out after 8s if stuck; one shot cannot score twice. Goal only when full ball crosses goal plane; save requires keeper collision.
+Proposed points: goal +500; top-corner +250; perfect kick +100; precision-zone +150; three-goal streak +100; five-goal streak +200. Primary score is goals out of 5, arcade points secondary. Later: Sudden Death, Time Attack 60s, Precision Challenge.
+Keeper difficulty adjusts reaction latency, bounded movement speed, reach and prediction error, not magic teleports. Tests: every target, save, miss, shot reset, score once, 5-shot summary and touch timing.

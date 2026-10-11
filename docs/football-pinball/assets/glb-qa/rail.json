@@ -1,0 +1,44 @@
+{
+  "name": "rail",
+  "bounds": {
+    "min": [
+      -0.5,
+      0,
+      -0.09000000357627869
+    ],
+    "max": [
+      0.5,
+      0.450000012293458,
+      0.09000000357627869
+    ]
+  },
+  "size": [
+    1,
+    0.450000012293458,
+    0.18000000715255737
+  ],
+  "meshes": [
+    {
+      "name": "Inner_strike_strip",
+      "vertices": 216,
+      "triangles": 108,
+      "uv": true,
+      "material": "Team_Primary"
+    },
+    {
+      "name": "MESH_Brushed_Metal",
+      "vertices": 432,
+      "triangles": 216,
+      "uv": true,
+      "material": "Brushed_Metal"
+    },
+    {
+      "name": "Rail_body",
+      "vertices": 216,
+      "triangles": 108,
+      "uv": true,
+      "material": "Graphite"
+    }
+  ],
+  "drawCalls": 3
+}

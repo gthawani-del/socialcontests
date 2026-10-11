@@ -1,0 +1,34 @@
+[
+  {
+    "file": "public/models/football/field.glb",
+    "bytes": 78932,
+    "sha256": "311a164fb09cd946ef26073170967659e5f3ed14d18643f4b10bcd8d7793fcf8",
+    "triangles": 1056,
+    "mesh_count": 3,
+    "material_names": [
+      "Pitch_Marking",
+      "Pitch_Stripe",
+      "Pitch_Green"
+    ],
+    "bounds": {
+      "min": [
+        -3.2,
+        -0.18,
+        -5.825
+      ],
+      "max": [
+        3.2,
+        0.021,
+        5.825
+      ]
+    },
+    "dimensions": [
+      6.4,
+      0.201,
+      11.65
+    ],
+    "uv_present_all_meshes": true,
+    "embedded_texture_bytes": 0,
+    "finite_geometry": true
+  }
+]

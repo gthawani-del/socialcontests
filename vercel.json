@@ -38,6 +38,10 @@
     {
       "source": "/cricket-pinball/admin",
       "destination": "/cricket-pinball/admin/index.html"
+    },
+    {
+      "source": "/football-pinball",
+      "destination": "/football-pinball/index.html"
     }
   ]
 }

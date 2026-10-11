@@ -1,0 +1,51 @@
+{
+  "name": "round-target",
+  "bounds": {
+    "min": [
+      -0.36000001430511475,
+      0,
+      -0.36000001430511475
+    ],
+    "max": [
+      0.36000001430511475,
+      0.25,
+      0.36000001430511475
+    ]
+  },
+  "size": [
+    0.7200000286102295,
+    0.25,
+    0.7200000286102295
+  ],
+  "meshes": [
+    {
+      "name": "Arrow",
+      "vertices": 42,
+      "triangles": 24,
+      "uv": true,
+      "material": "Marking"
+    },
+    {
+      "name": "Blue_strike_surface",
+      "vertices": 1056,
+      "triangles": 572,
+      "uv": true,
+      "material": "Team_Primary"
+    },
+    {
+      "name": "Lower_housing",
+      "vertices": 1056,
+      "triangles": 572,
+      "uv": true,
+      "material": "Graphite"
+    },
+    {
+      "name": "Steel_shoulder",
+      "vertices": 1056,
+      "triangles": 572,
+      "uv": true,
+      "material": "Brushed_Metal"
+    }
+  ],
+  "drawCalls": 4
+}

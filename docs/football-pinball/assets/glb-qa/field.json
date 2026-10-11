@@ -1,0 +1,44 @@
+{
+  "name": "field",
+  "bounds": {
+    "min": [
+      -3.200000047683716,
+      -0.18000000715255737,
+      -5.824999809265137
+    ],
+    "max": [
+      3.200000047683716,
+      0.020999999600462615,
+      5.825000077486038
+    ]
+  },
+  "size": [
+    6.400000095367432,
+    0.20100000675302,
+    11.649999886751175
+  ],
+  "meshes": [
+    {
+      "name": "MESH_Pitch_Marking",
+      "vertices": 1944,
+      "triangles": 972,
+      "uv": true,
+      "material": "Pitch_Marking"
+    },
+    {
+      "name": "MESH_Pitch_Stripe",
+      "vertices": 144,
+      "triangles": 72,
+      "uv": true,
+      "material": "Pitch_Stripe"
+    },
+    {
+      "name": "Pitch_base",
+      "vertices": 24,
+      "triangles": 12,
+      "uv": true,
+      "material": "Pitch_Green"
+    }
+  ],
+  "drawCalls": 3
+}

@@ -1,0 +1,4 @@
+# IA and UI
+Routes proposed (inspect actual Next.js structure): `/football-pinball`, `/football-pinball/pvp`, `/football-pinball/crash`, `/football-pinball/penalty`, `/football-pinball/arcade-rush`, `/football-pinball/how-to-play`.
+Landing: compact text-led hero, four cards only (PvP, Penalty, Crash, Arcade Rush). PvP opponent selection CPU/online belongs inside PvP. Correct Crash card description to 'Keep ball alive. Bank points.' No fake chat, fake money, decorative slogans or oversaturated neon.
+Mode HUD: score/time at top, flipper controls near thumbs with >=44px minimum, preferably >=56px; safe-area padding; no gameplay obstruction. PvP each device sees own goal at bottom by transforming camera and inputs over one authoritative simulation. Crash has multiplier + bank action. Penalty has attempts, streak and timing. Rush has timer, combo, multiball. Accessibility: contrast, mute, reduced motion, clear status without relying on colour.
