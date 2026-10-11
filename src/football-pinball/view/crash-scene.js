@@ -112,7 +112,10 @@ export async function createCrashView(container) {
     const state=motion.step(active&&!snapshot.paused?dt:0);
     ball.position.set(state.x,.16,state.z);
     if(active&&!snapshot.paused){ball.rotation.x+=dt*state.speed*.7;ball.rotation.z+=dt*state.speed*.4;}
-    for(let i=0;i<2;i++){const boot=board.userData.crashBoots?.[i];if(boot)boot.rotation.y=(i===0?-.3:Math.PI+.3)+(i===0?-1:1)*(state.flipperPhase[i]||0)*.75;}
+    for(let i=0;i<2;i++){
+      const boot=board.userData.crashBoots?.[i],physics=state.boots?.[i];
+      if(boot&&physics){boot.position.x=physics.x;boot.position.z=physics.z;boot.rotation.y=-physics.angle;}
+    }
     const power=state.powerActive?1:THREE.MathUtils.clamp(state.speed/15,0,1);
     const tint=new THREE.Color(power>=.9?'#ff681a':power>=.66?'#ffa733':power>=.31?'#37baff':'#e5f7ff');
     const history=active&&!reduced?state.history:[];
