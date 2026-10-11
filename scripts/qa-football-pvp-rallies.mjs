@@ -24,7 +24,7 @@ for(const format of ['classic','quick']) for(const strategy of format==='classic
     goals:e.events.filter(v=>v.type==='GOAL_SCORED').length,recoveries:e.events.filter(v=>v.type==='BALL_UNSTUCK').length});
   e.dispose();
 }
-const dir='docs/football-pinball/evidence-pvp-gameplay';await mkdir(dir,{recursive:true});
+const dir=process.argv[2]||'docs/football-pinball/evidence-pvp-gameplay';await mkdir(dir,{recursive:true});
 await writeFile(`${dir}/rallies.json`,JSON.stringify({method:'Production physics, 120 Hz, seeded default-medium CPU. Blue inputs are idle, periodic or proximity-triggered; no ball, score, clock or match-state overrides. First-to-three scenarios have a fifteen-minute diagnostic limit; this is not a gameplay time limit or a target match length. These are regression scenarios, not human balancing or device performance measurements.',results},null,2));
 console.table(results);
 assert(results.every(r=>r.state==='ended'),'every classic and quick match must complete');

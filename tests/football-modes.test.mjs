@@ -72,17 +72,15 @@ test("whole-ball goal crossing scores once and golden ends", async () => {
     e.dispose();
   }
 });
-test("above crossbar is not goal and keeper physical collision emits save", async () => {
+test("PvP above crossbar is not a goal and restarts without a keeper", async () => {
   const e = await setup();
   try {
     place(e, { x: 0, y: 4.9, vy: 3, height: 1.7 });
     steps(e, 15);
     assert.equal(e.score.blue, 0);
     assert.equal(e.state, "relaunch", "over-bar miss must promptly restart");
-    steps(e, 120);
-    place(e, { x: 0, y: 4.2, vy: 5, height: 0.13 });
-    steps(e, 10);
-    assert(e.events.some((v) => v.type === "KEEPER_SAVE"));
+    assert.equal(e.keepers.length, 0);
+    assert(!e.events.some((v) => v.type === "KEEPER_SAVE"));
   } finally {
     e.dispose();
   }
@@ -436,7 +434,7 @@ test("reset reconstructs canonical world without old contacts or moving-target s
     fresh.dispose();
   }
 });
-test("side swap reassigns player and keeper collider ownership", async () => {
+test("side swap reassigns player collider ownership without adding keepers", async () => {
   const e = await setup({ format: "classic" });
   try {
     e.activeTicks = 14399;
@@ -448,11 +446,7 @@ test("side swap reassigns player and keeper collider ownership", async () => {
         target.team,
       );
     }
-    for (const k of e.keepers)
-      assert.equal(
-        [...e.names.values()].find((n) => n.id === k.id).team,
-        k.team,
-      );
+    assert.equal(e.keepers.length, 0);
   } finally {
     e.dispose();
   }
@@ -576,6 +570,6 @@ test('each formation has a striker beyond midfield and role lanes do not overlap
   const players=e.targets.filter(t=>t.type==='player');
   for(const team of ['blue','red']){const side=players.filter(p=>p.team===team);assert.equal(side.length,3);assert.deepEqual(side.map(p=>p.role),['defender','midfielder','striker']);assert(side.find(p=>p.role==='striker').y*side[0].homeSign<0);}
   for(const a of players)for(const b of players)if(a.id!==b.id)assert(Math.hypot(a.x-b.x,a.y-b.y)>a.radius+b.radius+e.ballRadius*2);
-  assert.equal(e.keepers[0].height,1.45);assert.equal(e.keepers[0].width,.84);
+  assert.equal(e.keepers.length,0);
  }finally{e.dispose();}
 });

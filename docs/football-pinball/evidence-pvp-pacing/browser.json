@@ -1,0 +1,85 @@
+{
+  "method": "Chromium mobile viewport, software GPU. Real CDP touch input with ball-placement fixtures and manually stepped physics, followed by an unfrozen rendered rally. Six midfield player visuals and no keeper visuals; open-goal and half-second restart assertions. No physical iPhone or speaker-quality claim.",
+  "checks": [
+    {
+      "side": "left",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": -0.5369209051132202,
+          "y": 2.200000047683716,
+          "z": -11.798974990844727
+        },
+        "minVz": -12.514826774597168
+      },
+      "released": true,
+      "event": "touchEnd"
+    },
+    {
+      "side": "right",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": 0.312686026096344,
+          "y": 2.200000047683716,
+          "z": -11.807045936584473
+        },
+        "minVz": -12.297198295593262
+      },
+      "released": true,
+      "event": "touchCancel"
+    },
+    {
+      "slowBallRecovery": {
+        "recovered": true,
+        "speed": 5.994002819063813
+      }
+    },
+    {
+      "outOfPlay": {
+        "state": "relaunch",
+        "restart": {
+          "reason": "goal-line",
+          "team": "red"
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        }
+      },
+      "status": "Out of play. Opponent kickoff…"
+    },
+    {
+      "openGoal": {
+        "goals": 1,
+        "saves": 0,
+        "restartTicks": 60,
+        "restarted": true
+      }
+    },
+    {
+      "unfrozenRenderedRally": {
+        "ticks": 441,
+        "balls": [
+          {
+            "id": "ball-3",
+            "x": 0.01364490482956171,
+            "y": -3.139559030532837,
+            "height": 0.14872705936431885,
+            "vx": 2.2159817218780518,
+            "vy": 3.596860647201538,
+            "vheight": 0,
+            "radius": 0.15
+          }
+        ],
+        "state": "active"
+      }
+    }
+  ],
+  "errors": [],
+  "failedRequests": []
+}
