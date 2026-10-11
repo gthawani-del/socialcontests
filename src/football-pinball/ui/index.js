@@ -19,11 +19,11 @@ export const MODE_UI = Object.freeze({
   },
   crash: {
     title: "Crash",
-    tag: "Survival · Timing",
-    description: "Keep the ball alive. Bank points.",
+    tag: "Multiplier · Cash out",
+    description: "Cash out before the crash.",
     accent: "gold",
     icon: "rise",
-    help: "Build points by hitting targets while the survival multiplier rises. Bank Points secures your round and ends the run. Draining loses unbanked points. These are virtual points with no cash value.",
+    help: "The multiplier rises automatically. Cash out before the crash to secure your virtual stake multiplied by the exit value. Targets and boots are decorative and cannot change the outcome. Virtual points only; no deposits or withdrawals.",
   },
   "arcade-rush": {
     title: "Arcade Rush",

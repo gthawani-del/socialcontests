@@ -39,3 +39,9 @@ This implements auditable server-authoritative results. It is not independent fa
 ## Release gates
 
 Persistent production host, trusted identity integration, persistent result storage/global leaderboards, external signing-key provisioning and rotation, TLS/origins, load testing and physical mobile-device QA remain outstanding. Per-device local records are not a global leaderboard. No deployment or account system is implied by local service tests.
+
+## Conventional Crash rounds
+
+The new Crash screen uses `POST /crash/rounds` with `{stake:1..1000}`; it receives `roundId`, private capability `token`, public `commitment`, `startAt`, `serverNow` and state. `GET /crash/rounds/:id` and `POST /crash/rounds/:id/cashout` (empty body) require `Authorization: Bearer <token>`. `/api/crash/...` aliases also work. Threshold seed is revealed only after the round terminates. Stakes are free per-round virtual points; no wallet is credited. Results expire after five minutes; this is a single-process solo-round service, not public synchronized multiplayer or durable accounting.
+
+The legacy `/api/sessions` Crash physics API remains solely for compatibility. New UI uses the versioned threshold/cash-out service. Configure public HTTPS hosting and `VITE_FOOTBALL_SERVER_URL` to enable it; otherwise the new UI explicitly runs local practice. No public backend hosting is claimed by a static frontend deployment.

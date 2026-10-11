@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { createCrashRounds } from './crash-rounds.mjs';
 import { randomBytes, randomUUID, createHash, generateKeyPairSync, createPrivateKey, createPublicKey, sign, verify, timingSafeEqual } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -42,13 +43,14 @@ export async function verifySignedReplay(envelope, replay, publicKey) {
 }
 
 /** One canonical process, pinned engine. Production needs managed hosting, identity and persistent keys. */
-export async function createFootballService({ autoTick = true, maxSessions = 64, maxLifetimeMs = 30 * 60_000, idleMs = 120_000, reconnectMs = 30_000, resultRetentionMs = 5 * 60_000, allowedOrigins = [], privateKey, now = () => Date.now(), matchFactory = createMatch } = {}) {
+export async function createFootballService({ autoTick = true, maxSessions = 64, maxLifetimeMs = 30 * 60_000, idleMs = 120_000, reconnectMs = 30_000, resultRetentionMs = 5 * 60_000, allowedOrigins = [], privateKey, now = () => Date.now(), matchFactory = createMatch, crashOptions = {} } = {}) {
   const keys = privateKey ? { privateKey: createPrivateKey(privateKey) } : generateKeyPairSync('ed25519');
   if (keys.privateKey.asymmetricKeyType !== 'ed25519') throw Error('Signing key must be Ed25519');
   const publicKey = createPublicKey(keys.privateKey).export({ type: 'spki', format: 'pem' });
   const keyId = digest(publicKey).slice(0, 24);
   const implementationHash = await currentImplementationHash();
   const rooms = new Map();
+  const crashRounds = createCrashRounds({ ...crashOptions, maxRounds: maxSessions });
   const creationRates = new Map();
   let pendingCreates = 0;
   let stopped = false;
@@ -78,6 +80,7 @@ export async function createFootballService({ autoTick = true, maxSessions = 64,
   function terminate(room, team = 'blue') { if (room.engine.state !== 'ended') room.engine.forfeit(team); finalize(room); sendSnapshot(room); }
   function remove(room) { for (const player of room.players) for (const stream of player.streams) stream.end(); room.engine.dispose(); rooms.delete(room.id); }
   function cleanup() {
+    crashRounds.cleanup();
     for (const room of rooms.values()) {
       if (room.endedAt != null) { if (now() - room.endedAt >= resultRetentionMs) remove(room); continue; }
       const expired = room.players.find(p => p.disconnectedAt != null && now() - p.disconnectedAt >= reconnectMs);
@@ -99,6 +102,25 @@ export async function createFootballService({ autoTick = true, maxSessions = 64,
       if (origin) { response.setHeader('Access-Control-Allow-Origin', origin); response.setHeader('Vary', 'Origin'); }
       if (request.method === 'OPTIONS') { response.writeHead(204, { 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS', 'Access-Control-Allow-Headers': 'Authorization,Content-Type' }); response.end(); return; }
       const url = new URL(request.url, 'http://localhost');
+      const crashPath = url.pathname.replace(/^\/api\//, '/');
+      if (request.method === 'POST' && crashPath === '/crash/rounds') {
+        const input = await body(request);
+        if (!strictKeys(input, ['stake'])) throw fail(400, 'Invalid crash options');
+        const ip = request.socket.remoteAddress;
+        let creation = creationRates.get(ip);
+        if (!creation || now() - creation.at >= 60_000) { creation = { at: now(), count: 0 }; creationRates.set(ip, creation); }
+        if (++creation.count > 12) throw fail(429, 'Session creation rate limit exceeded');
+        return json(response, 201, crashRounds.create(input.stake));
+      }
+      const crashRoute = /^\/crash\/rounds\/([a-f0-9-]+)(?:\/(cashout))?$/.exec(crashPath);
+      if (crashRoute) {
+        if (request.method === 'GET' && !crashRoute[2]) return json(response, 200, crashRounds.get(crashRoute[1], bearer(request)));
+        if (request.method === 'POST' && crashRoute[2] === 'cashout') {
+          const input = await body(request); if (!strictKeys(input, [])) throw fail(400, 'Cashout accepts no client score or time');
+          return json(response, 200, crashRounds.cashout(crashRoute[1], bearer(request)));
+        }
+        throw fail(405, 'Method not allowed');
+      }
       if (request.method === 'GET' && url.pathname === '/api/health') return json(response, 200, { ok: true, physicsHz: 120, snapshotHz: 20, authority: 'server', productionReady: false });
       if (request.method === 'GET' && url.pathname === '/api/public-key') return json(response, 200, { algorithm: 'Ed25519', keyId, publicKey, implementationHash, persistent: Boolean(privateKey) });
       if (request.method === 'POST' && url.pathname === '/api/sessions') {

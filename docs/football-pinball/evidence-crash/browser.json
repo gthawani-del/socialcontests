@@ -1,0 +1,15 @@
+{
+  "checks": [
+    "server-owned cashout122 points; menu did not freeze time; terminal proof revealed",
+    "server crash zero payout; cashout unavailable after boundary",
+    "localpractice labelled; instant1x loss; no serverproof claim"
+  ],
+  "widths": [
+    360,
+    390,
+    430,
+    1000
+  ],
+  "errors": [],
+  "method": "Chromium SwiftShader. Real browser clicks and real HTTP service with injected server clock/seed for reproducible boundary cases. Static render for screenshots; not real-phone performance or human balancing."
+}

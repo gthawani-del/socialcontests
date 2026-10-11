@@ -1,18 +1,19 @@
 {
   "project_id": "football-pinball",
   "name": "Football Pinball",
-  "current_stage": "gameplay_validation",
-  "status": "gameplay_feedback_verified_release_pending",
+  "current_stage": "QA",
+  "status": "crash_solo_implementation_verified_hosting_pending",
   "decisions": [
     "User authorized all four variants after foundation",
     "Existing Vite/JS/Three stack retained",
     "Shared pinned Rapier3D engine120Hz; legacy2D foundation unchanged",
     "Server-authoritative HTTP inputs/SSE snapshots; no database physics polling",
-    "Rules football-3d-6: corrected formation, 0.11 PvP ball radius and stationary-ball recovery in timed modes. Crash survival rules preserved."
+    "Rules football-3d-6: corrected formation, 0.11 PvP ball radius and stationary-ball recovery in timed modes. Crash survival rules preserved.",
+    "11 October: user replaced skill/drain Crash with automatic multiplier and random threshold cashout. Virtual points only; shared PvP background/boots with separate Crash placements and right sidebar."
   ],
   "bindings": {
     "repository": "gthawani-del/socialcontests",
-    "branch": "fix/football-pvp-visual",
+    "branch": "feature/football-crash-multiplier",
     "route": "/football-pinball"
   },
   "assets": {
@@ -25,7 +26,7 @@
       "lighting": "Directional key/fill/rim and custom reflection environment",
       "shadows": "Contact shadows plus 2048/1024 dynamic shadow quality",
       "stadium": "Parameterized tier builder independent of gameplay dimensions",
-      "adoption": "PvP first; available to the other three modes",
+      "adoption": "PvP and new Crash renderer. Penalty and Arcade rebuilds remain pending.",
       "cabinet": "Reusable profiled chassis and raised side/rear walls; PvP adoption first"
     }
   },
@@ -37,7 +38,8 @@
     "Reward exchange, badge and cosmetic unlock rules unspecified",
     "Global authenticated leaderboard persistence pending",
     "Human gameplay balancing remains unverified: periodic-input simulations are not player testing.",
-    "Country/club selection remains CPU-only; online identity synchronization pending."
+    "Country/club selection remains CPU-only; online identity synchronization pending.",
+    "New Crash is solo free-point practice; synchronized public rounds, identity and persistent balances are not implemented."
   ],
   "qa": {
     "unit_tests": 189,
@@ -57,14 +59,20 @@
       "evidence-visual/full-rounds.json"
     ],
     "latest_scoped_tests": 56,
-    "full_round_simulations": 12
+    "full_round_simulations": 12,
+    "crash": {
+      "server_tests": 14,
+      "browser": "evidence-crash/browser.json",
+      "build": "passed",
+      "limits": "Software WebGL and injected server clock; physical phone testing not completed"
+    }
   },
   "release": {
-    "scope": "current PvP visual revision",
+    "scope": "Crash multiplier replacement",
     "merged": false,
     "deployed": false,
-    "approval_required": true,
-    "base_main": "9d9ebb3db6e4b0497885d6da5c7bb0fb841279b5"
+    "base_main": "35f2c48d3397d7683d851a8325264a5596290203",
+    "blocker": "Public persistent server hosting not configured; local practice only without URL"
   },
   "lessons": [
     "Verify real repository architecture before applying starter pack assumptions",

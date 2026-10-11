@@ -6,7 +6,7 @@ const server=await createServer({server:{host:'127.0.0.1',port:5223,hmr:false,wa
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
 const checks=[],errors=[],dir='docs/football-pinball/evidence-controls';await mkdir(dir,{recursive:true});
 try{
-for(const mode of ['penalty','crash','arcade-rush']){
+for(const mode of ['penalty','arcade-rush']){
  const page=await browser.newPage({viewport:{width:390,height:844},hasTouch:true,isMobile:true});page.setDefaultTimeout(60000);page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>sessionStorage.setItem('infinite-pinball-demo-access','granted'));
  await page.goto(`http://127.0.0.1:5223/football-pinball/?mode=${mode}&qa`);await page.waitForFunction(()=>window.__football);
