@@ -34,3 +34,9 @@
 .fp-crash .fc-game{height:clamp(430px,calc((100vw - 130px)*1.85),790px)}
 @media(min-width:700px){.fp-crash .fc-game{height:min(76svh,790px);min-height:520px}}
 @media(max-width:440px){.fp-crash .fc-game{height:clamp(430px,65svh,690px)}}
+
+/* Physical flipper controls remain within the board and above browser chrome. */
+.fp-crash .fc-flippers{position:absolute;bottom:8px;left:7px;right:7px;display:flex;justify-content:space-between;gap:12px;z-index:4;pointer-events:none}
+.fp-crash .fc-flippers button{pointer-events:auto;touch-action:none;user-select:none;width:46%;min-height:48px;border:1px solid #7ebfdd;border-radius:16px;background:linear-gradient(#21567cdd,#0c284cdd);color:white;font-size:11px;font-weight:850;letter-spacing:.5px;padding:8px 2px;box-shadow:0 2px 8px #0008}
+.fp-crash .fc-flippers button[data-held=true]{background:#3686bd;border-color:#d9f6ff;transform:translateY(2px)}
+.fp-crash .fc-flippers button:disabled{opacity:.55}
