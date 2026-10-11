@@ -14,9 +14,9 @@ export async function mountCrash() {
     <p>The multiplier rises automatically. Cash out before the crash to secure your virtual return. A crash before cashout returns zero.</p>
     <label>Round type<select id="fc-authority"><option value="server" ${server ? '' : 'disabled'}>Hosted practice${server ? '' : ' — unavailable'}</option><option value="local" selected>Local practice</option></select></label>
     <p class="fc-authority-note">Local practice runs on this device. It is not server-verified or provably fair.</p>
-    <label>Virtual stake<input id="fc-stake" type="number" inputmode="numeric" min="1" max="1000" step="1" value="100"></label><p class="fc-small">1–1,000 free points per round. No wallet, deposits or withdrawals.</p>
+
     <div class="fc-setup-actions"><div class="fp-actions"></div><button id="fc-enter">Continue</button></div></section>
-    <section class="fc-play" hidden><div class="fc-round-header"><span id="fc-mode-label">LOCAL PRACTICE</span><span>Stake <b id="fc-stake-label">100</b> pts</span></div><div class="fc-game"><div id="fc-arena"><div class="fc-live"><span id="fc-round-state">Ready</span><strong id="fc-multiplier">1.00×</strong><span id="fc-countdown"></span></div></div><aside class="fc-ladder" aria-label="Multiplier milestones">${crashMeterMarkup()}<button id="fc-cashout" disabled>Cash out <strong id="fc-return">100 pts</strong></button></aside></div><div class="fc-round-actions"><button id="fc-start">Start round</button></div><p id="fc-message" role="status" aria-live="polite">Cash out before the multiplier crashes.</p><button id="fc-config" class="fc-text-button">Change setup</button><p class="fc-small">Virtual points only. No cash prizes.</p><details id="fc-proof" hidden><summary>Round verification</summary><p id="fc-proof-text"></p></details></section>
+    <section class="fc-play" hidden><div class="fc-round-header"><span id="fc-mode-label">LOCAL PRACTICE</span><span>Stake <b id="fc-stake-label">100</b> pts</span></div><div class="fc-game"><div id="fc-arena"><div class="fc-live"><span id="fc-round-state">Ready</span><strong id="fc-multiplier">1.00×</strong><span id="fc-countdown"></span></div></div><aside class="fc-ladder" aria-label="Multiplier milestones">${crashMeterMarkup()}<button id="fc-cashout" disabled>Cash out <strong id="fc-return">100 pts</strong></button></aside></div><form class="fc-round-actions"><label for="fc-stake">Points stake<input id="fc-stake" type="number" inputmode="numeric" min="1" max="1000" step="1" required value="100" aria-describedby="fc-stake-help"></label><button id="fc-start" type="submit">Play</button><small id="fc-stake-help">1–1,000 free points per round</small></form><p id="fc-message" role="status" aria-live="polite">Cash out before the multiplier crashes.</p><p class="fc-small">Virtual points only. No cash prizes.</p><details id="fc-proof" hidden><summary>Round verification</summary><p id="fc-proof-text"></p></details></section>
     <dialog id="fc-menu-dialog"><h2>Game controls</h2><p>Opening this menu does not pause a round.</p><div id="fc-menu-audio"></div><button id="fc-close">Close</button></dialog>`;
   const q = s => root.querySelector(s);
   // Vector control artwork stays sharp at all phone resolutions.
@@ -40,9 +40,9 @@ export async function mountCrash() {
       if (snapshot.status === 'cashed_out') { say(`Cashed out at ${Number(snapshot.multiplier).toFixed(2)}×. Return: ${points(snapshot.payout)} virtual points.`); event('BANK_ACCEPTED'); }
       priorStatus = snapshot.status;
     }
-    q('#fc-start').hidden = !!active();
-    q('#fc-start').textContent = round && !active() ? 'Play again' : 'Start round';
-    q('#fc-config').disabled = !!active();
+    q('.fc-round-actions').hidden = !!active();
+    q('#fc-stake').disabled = !!active();
+    q('#fc-start').textContent = round && !active() ? 'Play again' : 'Play';
     if (!active()) {
       audio.update([], {state:'ended'});
       if (round.reveal) {
@@ -99,21 +99,23 @@ export async function mountCrash() {
   }
   q('#fc-authority').onchange = () => { q('.fc-authority-note').textContent = q('#fc-authority').value === 'server' ? 'The server determines the crash and cashout result. This is still free-point practice.' : 'Local practice runs on this device. It is not server-verified or provably fair.'; };
   q('#fc-enter').onclick = async () => {
-    const stake = Number(q('#fc-stake').value);
-    if (!Number.isInteger(stake) || stake < 1 || stake > 1000) { q('#fc-stake').setCustomValidity('Enter a whole number from 1 to 1,000.'); q('#fc-stake').reportValidity(); return; }
     authority = q('#fc-authority').value;
     q('#fc-mode-label').textContent = authority === 'server' ? 'HOSTED PRACTICE' : 'LOCAL PRACTICE';
-    q('#fc-stake-label').textContent = points(stake);
+    q('#fc-stake-label').textContent = points(Number(q('#fc-stake').value));
     q('.fc-setup').hidden = true; q('.fc-play').hidden = false;
     q('#fc-menu-audio').append(q('#fp-audio'));
     if (!view) { try { view = await createCrashView(q('#fc-arena')); } catch { say('3D artwork could not load. Round controls remain available.'); } }
     window.dispatchEvent(new Event('resize')); q('#fc-start').focus();
   };
   q('#fc-stake').oninput = () => q('#fc-stake').setCustomValidity('');
-  q('#fc-start').onclick = async () => {
+  q('.fc-round-actions').onsubmit = async e => {
+    e.preventDefault();
     if (busy || active()) return;
-    busy = true; q('#fc-start').disabled = true; q('#fc-proof').hidden = true; audio.reset(); priorStatus = null; eventId = 0;
     const stake = Number(q('#fc-stake').value);
+    if (!Number.isInteger(stake) || stake < 1 || stake > 1000) { q('#fc-stake').setCustomValidity('Enter a whole number from 1 to 1,000.'); q('#fc-stake').reportValidity(); return; }
+    q('#fc-stake').disabled = true;
+    q('#fc-stake-label').textContent = points(stake);
+    busy = true; q('#fc-start').disabled = true; q('#fc-proof').hidden = true; audio.reset(); priorStatus = null; eventId = 0;
     try {
       if (authority === 'server') {
         token = undefined;
@@ -130,7 +132,7 @@ export async function mountCrash() {
       }
       say('The multiplier starts after the countdown. Cash out before it crashes.');
     } catch(error) { say(`${error.message} No round was confirmed. Check the connection before retrying.`); }
-    finally { busy = false; q('#fc-start').disabled = false; }
+    finally { busy = false; q('#fc-start').disabled = false; q('#fc-stake').disabled = !!active(); }
   };
   q('#fc-cashout').onclick = async () => {
     if (busy || round?.status !== 'active') return;
@@ -143,11 +145,6 @@ export async function mountCrash() {
       }
     } catch { say('Cashout not confirmed. Reconnecting to obtain the server result…'); await poll(); }
     finally { busy = false; }
-  };
-  q('#fc-config').onclick = () => {
-    if (active()) return;
-    q('.fc-play').hidden = true; q('.fc-setup').hidden = false;
-    q('.fp-actions').append(q('#fp-audio')); round = undefined; priorStatus = null; audio.reset();
   };
   const dialog = q('#fc-menu-dialog');
   q('.fc-menu').onclick = () => { q('#fc-menu-audio').append(q('#fp-audio')); dialog.showModal(); };

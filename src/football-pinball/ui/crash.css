@@ -20,3 +20,12 @@
 .fp-crash[data-round-state=crashed] .fc-meter-title small{color:#ff8f95}
 .fp-crash[data-round-state=cashed_out] .fc-meter-title small{color:#78efac}
 @media(prefers-reduced-motion:reduce){.fc-meter-indicator{transition:none}}
+
+/* Generated faceplate, with live SVG values and cursor above it. */
+.fp-crash .fc-ladder{background:#070d12 url('/football-pinball/art/multiplier-panel.webp') center/100% 100% no-repeat;padding:14px 8px 12px;border:0;box-shadow:none}
+.fc-meter-title{font-size:9px;letter-spacing:0}.fc-meter-title small{font-size:9px}
+.fc-round-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:8px}
+.fc-round-actions label{display:grid;gap:5px;color:#b7ced8;font-size:12px}
+.fc-round-actions input{min-width:0;width:100%;height:48px;padding:8px 12px;border:1px solid #637f8a;border-radius:10px;background:#142b37;color:white;font-size:18px;color-scheme:dark}
+.fc-round-actions #fc-start{align-self:end;height:48px;background:linear-gradient(#ecd999,#b69952);border-color:#efda94;color:#10212a;font-weight:800}
+.fc-round-actions small{grid-column:1/-1;font-size:11px;color:#8ea9b8}

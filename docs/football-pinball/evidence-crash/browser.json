@@ -2,6 +2,7 @@
   "checks": [
     "server-owned cashout122 points; menu did not freeze time; terminal proof revealed",
     "SVG gauge rises through all9tiers with matching accessible value",
+    "inline stake rejects invalid values, locks during round and updates next-round stake to250",
     "server crash zero payout; cashout unavailable after boundary",
     "localpractice labelled; instant1x loss; no serverproof claim"
   ],
