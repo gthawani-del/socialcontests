@@ -7,13 +7,13 @@ export const CRASH_BOOTS=Object.freeze([{x:-1.25,z:4,rest:-.3,active:-1.05},{x:1
 const boots=CRASH_BOOTS;
 export function createCrashBallMotion(){
   const ball={x:0,z:2.8,vx:1.5,vz:-8.5},history=[],flipperPhase=[0,0],pressed=[false,false],angles=boots.map(b=>b.rest);
-  let accumulator=0,clock=0,score=0,hits=0,bootHits=0,lastRound=null,powerUntil=0,powerShots=0,feedback=null,seed=0x12345678,previousShot=[false,false],cooldown=[0,0];
+  let accumulator=0,clock=0,score=0,hits=0,bootHits=0,lastRound=null,powerUntil=0,powerShots=0,feedback=null,seed=0x12345678,previousShot=[false,false],cooldown=[0,0],lastImpact=null;
   const random=()=>{seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return (seed>>>0)/4294967296;};
   function reset(roundId){
     Object.assign(ball,{x:0,z:2.8,vx:1.5,vz:-8.5});
     accumulator=0;clock=0;score=0;hits=0;bootHits=0;history.length=0;
     pressed.fill(false);previousShot.fill(false);cooldown.fill(0);flipperPhase.fill(0);boots.forEach((b,i)=>angles[i]=b.rest);
-    powerUntil=0;powerShots=0;feedback=null;seed=0x12345678;
+    powerUntil=0;powerShots=0;feedback=null;lastImpact=null;seed=0x12345678;
     lastRound=roundId;
   }
   // Crash has no manual controls. The simulation anticipates ball arrival at each boot.
@@ -27,7 +27,7 @@ export function createCrashBallMotion(){
       cooldown[i]=Math.max(0,cooldown[i]-STEP);
     }
   }
-  function snapshot(){return {x:ball.x,z:ball.z,speed:Math.hypot(ball.vx,ball.vz),history,flipperPhase,boots:boots.map((b,i)=>({x:b.x,z:b.z,angle:angles[i],pressed:pressed[i],length:CRASH_BOOT_LENGTH})),score,hits,bootHits,powerShots,powerActive:clock<powerUntil,feedback,angles:[...angles]};}
+  function snapshot(){return {x:ball.x,z:ball.z,speed:Math.hypot(ball.vx,ball.vz),history,flipperPhase,boots:boots.map((b,i)=>({x:b.x,z:b.z,angle:angles[i],pressed:pressed[i],length:CRASH_BOOT_LENGTH})),score,hits,bootHits,powerShots,powerActive:clock<powerUntil,lastImpact,feedback,angles:[...angles]};}
   function step(dt,roundId){
     if(roundId!==undefined&&roundId!==lastRound)reset(roundId);
     accumulator=Math.min(.08,accumulator+clamp(dt,0,.05));
@@ -40,7 +40,7 @@ export function createCrashBallMotion(){
         angles[i]+=(target-angles[i])*Math.min(1,20*STEP);
         flipperPhase[i]=Math.abs(angles[i]-boot.rest)/Math.abs(boot.active-boot.rest);
       }
-      // Table slope returns the ball toward player-operated shoes.
+      // Table slope returns the ball toward automatically operated shoes.
       ball.vz+=2.8*STEP;
       ball.x+=ball.vx*STEP;ball.z+=ball.vz*STEP;
       if(ball.x< -2.85||ball.x>2.85){ball.x=clamp(ball.x,-2.85,2.85);ball.vx*=-.91;}
@@ -64,6 +64,7 @@ export function createCrashBallMotion(){
             const kick=Math.min(21,Math.max(5,-1.75*relative));
             ball.vx+=nx*kick;ball.vz=-Math.max(9,Math.abs(ball.vz)+kick*.45);
             bootHits++;
+            lastImpact={id:bootHits,side:i,x:ball.x,z:ball.z,speed:Math.hypot(ball.vx,ball.vz)};
             cooldown[i]=.3;
             // Sound consumers observe bootHits; one increment equals one actual contact.
             // Random bonus occurs only on a real boot-ball impact, never from a timer.
