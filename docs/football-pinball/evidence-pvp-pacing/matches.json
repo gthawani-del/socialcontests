@@ -1,0 +1,839 @@
+{
+  "method": "Production Rapier physics at 120 Hz, 36 first-to-three scenarios across all CPU difficulties and six seeds, plus nine timed rounds. Blue uses periodic/proximity-triggered taps (or idle in timed controls). No ball, score, clock or state overrides. Five-minute diagnostic limit; no new gameplay timeout. Match durations are simulated play, not human difficulty or iPhone performance measurements.",
+  "summary": {
+    "quickMatches": 36,
+    "medianSeconds": 86.925,
+    "p90Seconds": 146.53333333333333,
+    "shortestSeconds": 15.358333333333333,
+    "longestSeconds": 172.83333333333334,
+    "comparison": [
+      {
+        "seed": 11,
+        "beforeSeconds": 727.2666666666667,
+        "afterSeconds": 58.75
+      },
+      {
+        "seed": 22,
+        "beforeSeconds": 379.96666666666664,
+        "afterSeconds": 98.33333333333333
+      },
+      {
+        "seed": 33,
+        "beforeSeconds": 339.75,
+        "afterSeconds": 113.825
+      }
+    ]
+  },
+  "results": [
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "periodic",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 51.25,
+      "activeSeconds": 46.75,
+      "meanBallSpeed": 6.122773096137419,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 8,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "periodic",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 1
+      },
+      "elapsedSeconds": 61.43333333333333,
+      "activeSeconds": 57.43333333333333,
+      "meanBallSpeed": 5.636169151129579,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 4,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "periodic",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 72.05833333333334,
+      "activeSeconds": 67.55833333333334,
+      "meanBallSpeed": 5.769518373300623,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 9,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "periodic",
+      "seed": 44,
+      "state": "ended",
+      "score": {
+        "blue": 1,
+        "red": 3
+      },
+      "elapsedSeconds": 78.96666666666667,
+      "activeSeconds": 74.46666666666667,
+      "meanBallSpeed": 5.866221193971038,
+      "longestSlowSeconds": 0.475,
+      "goals": 4,
+      "bootShots": 11,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "periodic",
+      "seed": 55,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 146.53333333333333,
+      "activeSeconds": 142.03333333333333,
+      "meanBallSpeed": 5.055949237486578,
+      "longestSlowSeconds": 0.6916666666666667,
+      "goals": 5,
+      "bootShots": 18,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "periodic",
+      "seed": 66,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 1
+      },
+      "elapsedSeconds": 117.29166666666667,
+      "activeSeconds": 110.79166666666667,
+      "meanBallSpeed": 5.959563665593819,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 23,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "reactive",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 71.175,
+      "activeSeconds": 66.175,
+      "meanBallSpeed": 6.348092130539232,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 18,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "reactive",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 84.09166666666667,
+      "activeSeconds": 79.09166666666667,
+      "meanBallSpeed": 5.9046498397031755,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 14,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "reactive",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 1
+      },
+      "elapsedSeconds": 125.96666666666667,
+      "activeSeconds": 120.96666666666667,
+      "meanBallSpeed": 6.085467231786804,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 23,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "reactive",
+      "seed": 44,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 86.675,
+      "activeSeconds": 82.175,
+      "meanBallSpeed": 5.462099507236823,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 10,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "reactive",
+      "seed": 55,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 172.83333333333334,
+      "activeSeconds": 166.33333333333334,
+      "meanBallSpeed": 6.217957991418491,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 36,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "easy",
+      "strategy": "reactive",
+      "seed": 66,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 1
+      },
+      "elapsedSeconds": 63.641666666666666,
+      "activeSeconds": 58.641666666666666,
+      "meanBallSpeed": 5.272543597710869,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 11,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 1,
+        "red": 3
+      },
+      "elapsedSeconds": 58.75,
+      "activeSeconds": 54.25,
+      "meanBallSpeed": 6.395304620868646,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 11,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 98.33333333333333,
+      "activeSeconds": 93.33333333333333,
+      "meanBallSpeed": 6.321436834600749,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 17,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 113.825,
+      "activeSeconds": 108.325,
+      "meanBallSpeed": 6.112855897359523,
+      "longestSlowSeconds": 0.48333333333333334,
+      "goals": 5,
+      "bootShots": 27,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "seed": 44,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 1
+      },
+      "elapsedSeconds": 42.53333333333333,
+      "activeSeconds": 38.03333333333333,
+      "meanBallSpeed": 6.132127344618308,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 4,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "seed": 55,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 3
+      },
+      "elapsedSeconds": 15.358333333333333,
+      "activeSeconds": 11.358333333333333,
+      "meanBallSpeed": 7.903717890801405,
+      "longestSlowSeconds": 0.13333333333333333,
+      "goals": 3,
+      "bootShots": 5,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "seed": 66,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 34.3,
+      "activeSeconds": 29.8,
+      "meanBallSpeed": 5.5075567169158655,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 3,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 109.58333333333333,
+      "activeSeconds": 104.08333333333333,
+      "meanBallSpeed": 5.626009564762293,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 20,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 1
+      },
+      "elapsedSeconds": 89.6,
+      "activeSeconds": 85.6,
+      "meanBallSpeed": 6.511639894725391,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 16,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 102.89166666666667,
+      "activeSeconds": 98.39166666666667,
+      "meanBallSpeed": 5.136356546730373,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 15,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "seed": 44,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 0
+      },
+      "elapsedSeconds": 93.04166666666667,
+      "activeSeconds": 89.04166666666667,
+      "meanBallSpeed": 5.726101307198183,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 3,
+      "bootShots": 12,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "seed": 55,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 128.44166666666666,
+      "activeSeconds": 122.94166666666666,
+      "meanBallSpeed": 6.467861272955666,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 28,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "seed": 66,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 1
+      },
+      "elapsedSeconds": 40.9,
+      "activeSeconds": 36.4,
+      "meanBallSpeed": 7.145017747702417,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 12,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "periodic",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 1
+      },
+      "elapsedSeconds": 87.175,
+      "activeSeconds": 82.675,
+      "meanBallSpeed": 6.222145375349356,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 18,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "periodic",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 90.51666666666667,
+      "activeSeconds": 86.01666666666667,
+      "meanBallSpeed": 5.70874046953124,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 8,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "periodic",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 1,
+        "red": 3
+      },
+      "elapsedSeconds": 55.31666666666667,
+      "activeSeconds": 51.31666666666667,
+      "meanBallSpeed": 6.505873648591498,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 10,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "periodic",
+      "seed": 44,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 63.19166666666667,
+      "activeSeconds": 58.19166666666667,
+      "meanBallSpeed": 6.8169677483285245,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 8,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "periodic",
+      "seed": 55,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 103.13333333333334,
+      "activeSeconds": 97.63333333333334,
+      "meanBallSpeed": 5.883558397370312,
+      "longestSlowSeconds": 0.6916666666666667,
+      "goals": 5,
+      "bootShots": 23,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "periodic",
+      "seed": 66,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 1
+      },
+      "elapsedSeconds": 51.78333333333333,
+      "activeSeconds": 47.78333333333333,
+      "meanBallSpeed": 5.621252019240802,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 4,
+      "bootShots": 7,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "reactive",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 94.55833333333334,
+      "activeSeconds": 89.05833333333334,
+      "meanBallSpeed": 6.8255176766382,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 29,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "reactive",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 164.41666666666666,
+      "activeSeconds": 158.91666666666666,
+      "meanBallSpeed": 5.915991519721705,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 26,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "reactive",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 147.25,
+      "activeSeconds": 142.75,
+      "meanBallSpeed": 5.876354958085779,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 25,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "reactive",
+      "seed": 44,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 0
+      },
+      "elapsedSeconds": 57.05833333333333,
+      "activeSeconds": 52.55833333333333,
+      "meanBallSpeed": 6.3744086356313465,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 3,
+      "bootShots": 8,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "reactive",
+      "seed": 55,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 70.86666666666666,
+      "activeSeconds": 65.86666666666666,
+      "meanBallSpeed": 6.691559005034549,
+      "longestSlowSeconds": 0.55,
+      "goals": 5,
+      "bootShots": 14,
+      "keeperSaves": 0
+    },
+    {
+      "format": "quick",
+      "difficulty": "hard",
+      "strategy": "reactive",
+      "seed": 66,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 94.25,
+      "activeSeconds": 89.75,
+      "meanBallSpeed": 6.313158370958482,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 5,
+      "bootShots": 25,
+      "keeperSaves": 0
+    },
+    {
+      "format": "classic",
+      "difficulty": "medium",
+      "strategy": "idle",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 5,
+        "red": 14
+      },
+      "elapsedSeconds": 255.5,
+      "activeSeconds": 240,
+      "meanBallSpeed": 5.46775455707708,
+      "longestSlowSeconds": 0.5166666666666667,
+      "goals": 19,
+      "bootShots": 20,
+      "keeperSaves": 0
+    },
+    {
+      "format": "classic",
+      "difficulty": "medium",
+      "strategy": "idle",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 4,
+        "red": 12
+      },
+      "elapsedSeconds": 253.5,
+      "activeSeconds": 240,
+      "meanBallSpeed": 5.249453937058727,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 16,
+      "bootShots": 17,
+      "keeperSaves": 0
+    },
+    {
+      "format": "classic",
+      "difficulty": "medium",
+      "strategy": "idle",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 5,
+        "red": 9
+      },
+      "elapsedSeconds": 252.5,
+      "activeSeconds": 240,
+      "meanBallSpeed": 5.348686244745334,
+      "longestSlowSeconds": 0.6916666666666667,
+      "goals": 14,
+      "bootShots": 14,
+      "keeperSaves": 0
+    },
+    {
+      "format": "classic",
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 5,
+        "red": 7
+      },
+      "elapsedSeconds": 252.5,
+      "activeSeconds": 240,
+      "meanBallSpeed": 5.952508070808821,
+      "longestSlowSeconds": 0.6916666666666667,
+      "goals": 12,
+      "bootShots": 42,
+      "keeperSaves": 0
+    },
+    {
+      "format": "classic",
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 9,
+        "red": 12
+      },
+      "elapsedSeconds": 257,
+      "activeSeconds": 240,
+      "meanBallSpeed": 6.189389824080066,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 21,
+      "bootShots": 46,
+      "keeperSaves": 0
+    },
+    {
+      "format": "classic",
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 6,
+        "red": 6
+      },
+      "elapsedSeconds": 254,
+      "activeSeconds": 240,
+      "meanBallSpeed": 6.1202563649835255,
+      "longestSlowSeconds": 0.48333333333333334,
+      "goals": 12,
+      "bootShots": 44,
+      "keeperSaves": 0
+    },
+    {
+      "format": "classic",
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 8,
+        "red": 3
+      },
+      "elapsedSeconds": 253.5,
+      "activeSeconds": 240,
+      "meanBallSpeed": 5.938805146986788,
+      "longestSlowSeconds": 0.6916666666666667,
+      "goals": 11,
+      "bootShots": 46,
+      "keeperSaves": 0
+    },
+    {
+      "format": "classic",
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 8,
+        "red": 7
+      },
+      "elapsedSeconds": 254,
+      "activeSeconds": 240,
+      "meanBallSpeed": 6.315281410493697,
+      "longestSlowSeconds": 0.44166666666666665,
+      "goals": 15,
+      "bootShots": 43,
+      "keeperSaves": 0
+    },
+    {
+      "format": "classic",
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 8
+      },
+      "elapsedSeconds": 252.5,
+      "activeSeconds": 240,
+      "meanBallSpeed": 5.8859882624821225,
+      "longestSlowSeconds": 0.3416666666666667,
+      "goals": 11,
+      "bootShots": 42,
+      "keeperSaves": 0
+    }
+  ]
+}

@@ -219,7 +219,7 @@ async function mount(mode) {
             ? "Keep the ball alive. Bank before it drains."
             : "Play on.",
         relaunch: s.restart
-          ? `${s.restart.reason === "keeper-save" ? "Saved" : "Out of play"}. ${s.restart.team === sessionTeam ? "Your" : "Opponent"} kickoff…`
+          ? `Out of play. ${s.restart.team === sessionTeam ? "Your" : "Opponent"} kickoff…`
           : mode === "pvp" ? "Goal. Preparing kickoff…" : "Preparing the next ball…",
         halftime: "Half time. Teams change ends.",
         ended: "Round complete.",

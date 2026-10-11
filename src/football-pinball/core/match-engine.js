@@ -157,9 +157,7 @@ export class MatchEngine {
       );
       return { ...t, body };
     });
-    this.keepers = (
-      this.mode === "pvp" ? [-1, 1] : this.mode === "penalty" ? [1] : []
-    ).map((sign) => {
+    this.keepers = (this.mode === "penalty" ? [1] : []).map((sign) => {
       const keeperTuning =
         MODE_RULES.penalty.keeper[this.options.difficulty] ||
         MODE_RULES.penalty.keeper.pro;
@@ -170,9 +168,9 @@ export class MatchEngine {
         sign,
         x: 0,
         y: sign * 4.55,
-        width: this.mode === "penalty" ? keeperTuning.width : 0.84,
-        height: this.mode === "pvp" ? 1.45 : 0.7,
-        depth: this.mode === "pvp" ? 0.44 : 0.22,
+        width: keeperTuning.width,
+        height: 0.7,
+        depth: 0.22,
       };
       const body = this.world.createRigidBody(
         RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(
@@ -323,6 +321,7 @@ export class MatchEngine {
       previous: { x, y, height },
       lastBootTick: -999,
       stillTicks: 0,
+      incomingSpeed: Math.hypot(vx, vy),
       bootStrokes: new Map(),
     };
     this.balls.push(ball);
@@ -360,8 +359,7 @@ export class MatchEngine {
     const serve = MODE_RULES.pvp.kickoff,
       x = (this.rng() < .5 ? -1 : 1) *
         (serve.minOffset + this.rng() * (serve.maxOffset - serve.minOffset));
-    // Seeded left/right service lanes prevent a save from replaying the same
-    // closed path forever. Scoring still requires a physical goal crossing.
+    // Seeded service lanes vary the rally while keeping replay deterministic.
     this.addBall(x, 0, -Math.sign(x) * serve.lateralSpeed, direction * serve.speed);
     this.state = "active";
     this.emit("KICKOFF", { actorId: this.kickoffTeam });
@@ -599,14 +597,13 @@ export class MatchEngine {
   }
 
   restartPvp(ball, team, reason) {
-    if (reason !== "keeper-save")
-      this.emit("BALL_OUT_OF_PLAY", { ballId: ball.id, actorId: team, payload: { reason } });
+    this.emit("BALL_OUT_OF_PLAY", { ballId: ball.id, actorId: team, payload: { reason } });
     this.removeBalls();
     this.releaseInternal();
     this.kickoffTeam = team;
     this.restart = { reason, team };
     this.state = "relaunch";
-    this.transitionTick = this.tick + 120;
+    this.transitionTick = this.tick + MODE_RULES.pvp.restartTicks;
   }
 
   moveKeepers() {
@@ -623,27 +620,17 @@ export class MatchEngine {
         k.nextReaction = this.tick + reaction;
         const p = ball.body.translation(),
           v = ball.body.linvel();
-        const threatened = this.mode !== "pvp" ||
-          (-p.z * k.sign > (MODE_RULES.pvp.keeperThreatY[this.options.difficulty] || 3.7) &&
-            -v.z * k.sign > .2);
-        // Patrol the goal line, then react to shots past the boots. Camping
-        // in the centre permanently closed the gap between the two flippers.
-        k.targetX = threatened ? clamp(
+        k.targetX = clamp(
           p.x +
             v.x * 0.08 +
-            (this.rng() - 0.5) *
-              (this.mode === "penalty" ? tuning.error : 0.25),
+            (this.rng() - 0.5) * tuning.error,
           -0.66,
           0.66,
-        ) : Math.sin(this.activeTicks * P.step * MODE_RULES.pvp.keeperPatrolRate) * .66 * k.sign;
+        );
       }
       const speed =
-        this.mode === "penalty"
-          ? (
-              MODE_RULES.penalty.keeper[this.options.difficulty] ||
-              MODE_RULES.penalty.keeper.pro
-            ).speed
-          : 2.2;
+        (MODE_RULES.penalty.keeper[this.options.difficulty] ||
+          MODE_RULES.penalty.keeper.pro).speed;
       k.x += clamp(k.targetX - k.x, -speed * P.step, speed * P.step);
       k.body.setNextKinematicTranslation({ x: k.x, y: k.height / 2, z: -k.y });
     }
@@ -745,14 +732,8 @@ export class MatchEngine {
       return;
     }
     if (data.type === "keeper") {
-      if (this.mode === "penalty") {
-        this.emit("KEEPER_SAVE", { actorId: data.team, ballId: ball.id });
-        this.pendingSave = true;
-        return;
-      }
-      this.award(data.team, 100);
       this.emit("KEEPER_SAVE", { actorId: data.team, ballId: ball.id });
-      if (this.mode === "pvp") this.pendingSave = { ballId: ball.id, team: data.team };
+      this.pendingSave = true;
       return;
     }
     if (data.type === "player") {
@@ -771,7 +752,10 @@ export class MatchEngine {
       // Only the facing side can kick. Rear contacts remain physical rebounds.
       if (facing >= .15 && this.tick-last >= MODE_RULES.pvp.playerKickCooldown) {
         this.targetHits.set(data.id,this.tick);
-        const speed=MODE_RULES.pvp.playerKickSpeed[data.role];
+        // Role speeds are floors, not brakes. Use pre-contact speed so the
+        // collision solver cannot turn a strong boot shot into a weak pass.
+        const speed=Math.min(P.maxSpeed, Math.max(MODE_RULES.pvp.playerKickSpeed[data.role],
+          ball.incomingSpeed, Math.hypot(v.x,v.z)));
         ball.body.setLinvel({x:dx/length*speed,y:Math.max(0,Math.min(v.y,.65)),z:dz/length*speed},true);
         this.award(data.team,20);
         this.emit('PLAYER_KICK',{actorId:data.team,targetId:data.id,ballId:ball.id,payload:{role:data.role,receiverId:data.role==='striker'?null:receiver?.id||null,speed}});
@@ -798,7 +782,10 @@ export class MatchEngine {
           const dx = target.x - p.x,
             dz = -target.y - p.z,
             n = Math.hypot(dx, dz) || 1,
-            s = Math.min(10, Math.max(4, Math.hypot(v.x, v.z)));
+            s = this.mode === "pvp"
+              ? Math.min(P.maxSpeed, Math.max(MODE_RULES.pvp.playerKickSpeed.midfielder,
+                  ball.incomingSpeed, Math.hypot(v.x, v.z)))
+              : Math.min(10, Math.max(4, Math.hypot(v.x, v.z)));
           ball.body.setLinvel(
             { x: (dx / n) * s, y: v.y, z: (dz / n) * s },
             true,
@@ -863,7 +850,7 @@ export class MatchEngine {
       return this.end("goals", team);
     this.kickoffTeam = other(team);
     this.state = "relaunch";
-    this.transitionTick = this.tick + 120;
+    this.transitionTick = this.tick + MODE_RULES.pvp.restartTicks;
   }
   resolveShot(outcome, crossing = {}) {
     if (this.state !== "active") return;
@@ -998,6 +985,8 @@ export class MatchEngine {
     for (const b of this.balls) {
       const p = b.body.translation();
       b.previous = { x: p.x, y: -p.z, height: p.y };
+      const velocity = b.body.linvel();
+      b.incomingSpeed = Math.hypot(velocity.x, velocity.z);
       // A two-ended pinball table rolls gently down from midfield toward
       // each defending end. Without this, balls orbit midfield out of reach.
       if (this.mode === "pvp" && p.y < this.ballRadius + .06 && Math.abs(p.z) > .2) {
@@ -1036,9 +1025,11 @@ export class MatchEngine {
       // A resting ball must not consume a timed round. This never applies to Crash.
       if (this.mode === "pvp") {
         const rally = MODE_RULES.pvp.rally;
-        b.stillTicks = Math.hypot(v.x, v.z) < rally.slowSpeed && p.y < this.ballRadius + .15
-          ? b.stillTicks + 1 : 0;
-        if (b.stillTicks >= rally.recoveryTicks) {
+        b.stillTicks = Math.hypot(v.x, v.z) < rally.slowSpeed ? b.stillTicks + 1 : 0;
+        // A slow ball bouncing on top of a boot never reaches the pitch's
+        // height threshold. Give genuine flight longer, then free that trap.
+        const recoveryTicks = p.y < this.ballRadius + .15 ? rally.recoveryTicks : rally.airRecoveryTicks;
+        if (b.stillTicks >= recoveryTicks) {
           const planar = Math.hypot(v.x, v.z),
             dx = planar > .05 ? v.x / planar : p.x > 0 ? -.35 : .35,
             dz = planar > .05 ? v.z / planar : p.z > 0 ? -1 : 1,
@@ -1096,10 +1087,6 @@ export class MatchEngine {
     }
     if (this.mode === "penalty" && this.state === "active" && this.pendingSave)
       this.resolveShot("save");
-    if (this.mode === "pvp" && this.state === "active" && this.pendingSave) {
-      const saved = this.balls.find(b => b.id === this.pendingSave.ballId);
-      if (saved) this.restartPvp(saved, this.pendingSave.team, "keeper-save");
-    }
     if (
       this.mode === "penalty" &&
       this.state === "active" &&
