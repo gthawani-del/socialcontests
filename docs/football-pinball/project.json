@@ -1,13 +1,13 @@
 {
   "project_id": "football-pinball",
   "name": "Football Pinball",
-  "current_stage": "QA",
-  "status": "foundation_implemented_chromium_verified_safari_blocked",
+  "current_stage": "release_preparation",
+  "status": "four_modes_implemented_automated_qa_passed_release_gates_open",
   "decisions": [
-    "User milestones 1\u20132 only",
+    "User authorized all four variants after foundation",
     "Existing Vite/JS/Three stack retained",
-    "Rapier 2D planar graybox; 3D ramp review deferred",
-    "No production assets or CPU in foundation"
+    "Shared pinned Rapier3D engine120Hz; legacy2D foundation unchanged",
+    "Server-authoritative HTTP inputs/SSE snapshots; no database physics polling"
   ],
   "bindings": {
     "repository": "gthawani-del/socialcontests",
@@ -15,20 +15,28 @@
     "route": "/football-pinball"
   },
   "assets": {
-    "production": "not_started",
+    "production": "12 independent Higgsfield3DJutsu/Blender GLBs with editable sources and verified browser imports",
     "graybox": "procedural primitives",
     "homepage": "reused /homepage/pin-foot.webp"
   },
   "issues": [
-    "Real iPhone/Android QA unavailable",
-    "WebKit host dependencies could not be installed",
-    "Physics constants provisional; no claim of canonical cross-platform determinism"
+    "Physical iPhone/Android and Safari QA unavailable",
+    "Software GPU benchmark is slow; physical hardware performance unverified",
+    "Public authoritative hosting/TLS/identity/persistent keys/results not configured",
+    "Reward exchange, badge and cosmetic unlock rules unspecified",
+    "Global authenticated leaderboard persistence pending"
   ],
   "qa": {
-    "unit_tests": 148,
-    "football_tests": 13,
-    "browser": "Chromium 153",
-    "results": "evidence/qa-results.json"
+    "unit_tests": 189,
+    "football_engine_tests": 32,
+    "football_server_tests": 9,
+    "browser": "Chromium153 / SwiftShader",
+    "results": [
+      "evidence-modes/results.json",
+      "evidence-online/results.json",
+      "evidence-modes/performance.json",
+      "evidence-ui/results.json"
+    ]
   },
   "release": {
     "merged": false,

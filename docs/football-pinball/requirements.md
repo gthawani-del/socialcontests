@@ -1,37 +1,32 @@
-# Requirements traceability
+# Requirements traceability — four-mode implementation
 
-Source: entire Football_Pinball_Work_Starter_Pack_v2, supplemented by user's master instruction. M numbers below refer to that instruction. `Pending` means deliberately outside this assignment, not omitted. No proposed numbers are final game-balance commitments.
+Source: complete starter pack in `specification/`, plus the user's master instruction and subsequent authorization to implement all four variants. Numeric rules are the pack's proposed baseline; tuning remains subject to playtesting. No real-money features exist.
 
-| ID / source | Feature / implementation task | Milestone | Verification / status |
-|---|---|---|---|
-| F01 PRD, ARCHITECTURE | Existing repo, isolated route, access gate, shared Three.js | 1–2 | Build route, deep-link gate, homepage link browser tests |
-| F02 PRD, WORK_PROMPT | Shared fixed-step Rapier physics with rendering separate | 2 | Fixed-step equivalence, pause, capped delta, collision tests |
-| F03 PVP, ASSET_MANIFEST | Ball, rails, two goals, two blue/two red flippers | 2 | Ball moves; each boot contact changes velocity; rail/post collision; full-ball crossing; score once |
-| F04 IA_UX, TEST_MATRIX | Independent mobile controls, >=56px controls, safe areas | 2 | Multitouch; cancel/release/blur; widths 360/390/430; desktop/landscape |
-| F05 PRD | Pause/restart, loading/failure handling | 2 | Frozen simulation, cleared held inputs, reset scores, initialization errors |
-| F06 prior homepage request | Football entry adjacent to Cricket, linking /football-pinball | 2 | Reuse existing football artwork; link navigation test; Cricket href preserved |
-| U01 IA_UX | Four real mode cards, mode setup/tutorial/results, distinct HUDs | 3 | Pending: route flow, responsive layouts, accessible status, no fake actions |
-| A01 ASSET_MANIFEST | Independent boots/ball/player bumpers/keepers/goals/nets/rails/field/targets/ramps/stadium/coin | 4 | Pending: individual GLB loading/replacement, bounds, pivots, UV/material/collider checks |
-| A02 HIGGSFIELD_BLENDER | Jutsu -> Blender cleanup -> optimized GLBs; provenance/hashes | 4 | Pending: service check, per-asset viewer/animation/mobile FPS/memory evidence |
-| P01 PVP | CPU Easy/Medium/Hard, equal physical inputs | 5 | Pending: reaction delay, bounded errors, same physics, complete match |
-| P02 PVP | Authoritative toss, kickoff/side choice, halftime sides | 5/9 | Pending: both coin faces match result, state transitions and side mapping |
-| P03 PVP | Keepers, role bumpers, Skill/Pass/Combo targets | 5 | Pending: bounded keeper reach, capped impulse, rearm/dedupe, bonus expiry |
-| P04 PVP | Quick 3, Classic 2x120s, Golden Goal; goals separate from arcade points | 5 | Pending: timer/results/rewards; goals never multiplied; ranked format later |
-| C01 CRASH | One ball, physical drain, bank-or-lose virtual points | 6 | Pending: bank/drain ordering, same-tick drain wins, no post-drain/duplicate banks |
-| C02 CRASH, mode_defaults | Versioned fixed-point multiplier/base score/capped combos, target rearm | 6 | Pending: caps, rounding, example 2400, expiry, overflow and duplicate scoring |
-| C03 EVENTS_AND_FAIRNESS | Canonical server physics, input/collision ledger, signed bank/result, replay | 6/9 | Pending: tamper/clock/collision forgery, canonical replay, signature verification |
-| C04 CRASH | Seed commitment/reveal if RNG used; no multiplier physics changes | 6 | Pending: RNG draw verification; identical physics at different multipliers; no provably-fair claim |
-| N01 PENALTY | Five attempts, two boots, precision zones, physical reactive keeper | 7 | Pending: each zone, full-plane goal, save contact, miss/8s timeout, one resolution per shot |
-| N02 PENALTY | Rookie/Pro/Elite, streak/precision bonuses, goals primary | 7 | Pending: bounded latency/speed/reach; five-shot result; later variants separate |
-| R01 ARCADE_RUSH | 90s, relaunch after 1s with clock running, combos x2–x5 | 8 | Pending: timer, combo expiry/drain reset, terminal score lock |
-| R02 ARCADE_RUSH | +10s twice, 120s hard cap, 2–3 ball/10s multiball, Final Rush 15s | 8 | Pending: caps, unique IDs/hit dedupe, one event at a time, announced phase |
-| O01 ARCHITECTURE/PVP | Server-authoritative remote PvP, own-goal camera mapping | 9 | Pending: input order, snapshot interpolation, lag/reconnect, authoritative score |
-| S01 PRD | Audio/mute/settings, virtual rewards/cosmetics, no pay-to-win | 3/5–10 | Pending: implemented-only controls; no money/deposits/withdrawals |
-| Q01 TEST_MATRIX | Browser QA, loading, responsive, performance/memory, regressions | 2/10 | Foundation automated evidence; real devices/full release QA pending |
-| G01 user instruction | Feature branch, small commits, no main merge or production deploy | all | Commit review; stop at M2; later work requires approval |
+| Requirement | Implementation | Verification and status |
+|---|---|---|
+| Existing repository, route, access and Cricket preservation | `/football-pinball/`, existing Vite/Three shell and demo gate; isolated module | Build and existing Cricket unit suite pass; no Cricket gameplay source changes. Client demo gate is not production identity. |
+| Four-mode navigation, setup, HUDs, results | `ui/`, `main.js`; actual board captures on lobby cards | Chromium widths360/390/430/1440, four live mode routes, no overflow;56px controls. |
+| Shared fixed-step engine | `core/match-engine.js`, pinned Rapier3D0.19.3 at120Hz; renderer independent |32 engine tests: motion, contact, pause, bounded velocity, state transitions and replay. Legacy2D foundation retained separately. |
+| Independent production assets |12 GLBs in `public/models/football`; source `.blend`, scripts and provenance in assets docs | Higgsfield3DJutsu/Blender renders inspected; all12 load in actual Three.js; UV/bounds/material checks; runtime replacement tested. Optimized sports miniatures, not photoreal humans. |
+| PvP CPU and physical board |4 boots,2 goals/keepers, player bumpers, Skill/Pass/Combo; Easy/Medium/Hard | Actual all4 boot contact/loft tests, keeper collision, deterministic CPU inputs, Golden result browser test. |
+| Toss, side selection, kickoff, formats | Animated coin settles on engine face; quick first3, classic2×120s, golden goal; halftime ends | Engine tests for choice and side swaps; browser CPU and two-device toss/input flow. Goals never multiplied. |
+| Crash survival/bank/drain | Fixed-point multiplier capped10; combo capped1.5; collision rearm; bank-or-lose | Same-tick drain wins, duplicate/paused bank rejection, real target scoring and Bank button tested. No multiplier-dependent physics. |
+| Crash audit and signatures | Ordered inputs/events/final state, versioned immutable rules, SHA256 hashes, Ed25519 server result; trusted-key CLI | Canonical replay and tamper tests; server signed replay+CLI tests. Local practice is unverified. No cryptographic provable-fairness claim. Crash has no outcome RNG; server owns seed. |
+| Penalty Shootout | Dedicated shorter/narrower lane,2 boots,5attempts,8s limit; reactive keeper/difficulty; actual height-based zones | Physical saves,5corner goals,4800 fixture points, streak/precision, timeout/miss and one resolution per attempt. |
+| Arcade Rush |90s timer, combo2–5, moving target, ramp,1s drain relaunch; Final15 bonus×2 | Timer during relaunch, physical ramp lift, expiry and terminal score lock tests. Final multiplier is explicit baseline tuning. |
+| Extra time and multiball | +10s max2; hard120s cap;3unique balls for10s, one event at a time | Engine cap/deduplication/expiry tests and actual multiball target browser test. |
+| Leaderboard support | Top5 device scores, persisted in localStorage | Browser result/record test. Global authenticated persistent rankings are blocked on backend identity/storage decisions. No fake global standings. |
+| Online PvP | Same-repo Node authoritative service120Hz; SSE20Hz and ordered HTTP inputs; participant tokens; interpolated views | Two separate Chromium contexts: both teams' touch, matching scores, actual socket interruption, release/reconnect and resumed ordering. No database frame polling. |
+| Audio/settings | Synthesized event feedback, working mute; automatic/full/reduced graphics | Browser controls; resource stability measured across10restarts. Physical phone speaker quality unverified. |
+| Rewards/cosmetics | Match points, banked points and local records implemented | Currency exchange, badge thresholds and cosmetic unlock rules are **blocked: not specified**. No invented payouts or fake reward buttons. |
+| Performance/mobile release | Reduced detail lowers pixel density and hides stadium decoration without changing physics | SwiftShader software benchmark recorded; real iPhone/Android FPS, thermal/memory and Safari validation remain blocked by environment. |
+| GitHub/release | `feature/football-pinball-foundation`, reviewable commits | No main merge or production deployment. Hosting, TLS, real auth and durable keys/results require release work and deployment approval. |
 
-## Specification decisions
-- User's milestone order and explicit stop override ZIP WORK_PROMPT's mode-selector request and different numbering.
-- Numerics in mode docs/defaults are proposed; preserve sources and resolve balance at each later mode milestone.
-- Penalty visual is conceptual and not a final approved production master (visual_references/NOTES.md).
-- Graybox primitives are expressly authorized in M2; they are not substituted production art.
+## Explicit decisions and limitations
+
+- Existing vanilla JavaScript/Vite/Three architecture retained instead of introducing a second React/TypeScript application.
+- Local development QA hooks require `import.meta.env.DEV` and `?qa`; not exposed in the production bundle.
+- Out-of-play balls are logged: PvP visibly refeeds after2s; Penalty records a miss; Crash loses unbanked points; Rush uses its normal relaunch. This is operational baseline tuning, not hidden multiplier manipulation.
+- Penalty visual reference was labeled conceptual in the pack. The implemented arena uses the same restrained palette and independently authored assets; visual approval is still a human review gate.
+- Deterministic replay is verified on the pinned server runtime. This does not establish identical WASM behavior across every browser/runtime.
+- Browser goal/target placements and accelerated terminal clocks are explicitly labeled QA fixtures. They prove collision/scoring transitions, not human skill or physical-device performance.

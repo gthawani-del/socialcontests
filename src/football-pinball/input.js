@@ -5,10 +5,10 @@ export function bindInputs(root, engine, allowed) {
   const update = id => {
     const down = [...held.values()].includes(id);
     engine.setInput(id, down);
-    root.querySelector(`[data-boot="${id}"]`).setAttribute('aria-pressed', String(down));
+    root.querySelector(`[data-boot="${id}"]`)?.setAttribute('aria-pressed', String(down));
   };
   const release = token => { const id = held.get(token); held.delete(token); if (id) update(id); };
-  const press = (token, id) => { if (!allowed()) return; held.set(token, id); update(id); };
+  const press = (token, id) => { if (!allowed() || !root.querySelector(`[data-boot="${id}"]`)) return; held.set(token, id); update(id); };
   function clear() {
     held.clear(); engine.releaseInputs();
     root.querySelectorAll('[data-boot]').forEach(button => button.setAttribute('aria-pressed', 'false'));

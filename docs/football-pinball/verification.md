@@ -1,3 +1,5 @@
+> Historical Milestones1–2 record. The user subsequently authorized all four modes. Current status: [requirements](requirements.md), [four-mode report](four-mode-report.md) and [server setup](../../..//server/football-pinball/README.md).
+
 # Milestone 2 verification
 
 ## Delivered
