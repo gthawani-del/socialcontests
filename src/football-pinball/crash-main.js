@@ -99,7 +99,7 @@ export async function mountCrash() {
     const gameplay=view?.getGameStats?.();
     if(round?.roundId!==lastSoundRound){lastSoundRound=round?.roundId;lastKickHits=0;}
     if(round?.status==='active'&&gameplay?.bootHits>lastKickHits){
-      // One sample event for each physics-confirmed ball/boot impact.
+      // Only actual simulated shoe/ball contacts trigger the uploaded kick MP3.
       event('CRASH_SOCCER_KICK');
     }
     lastKickHits=gameplay?.bootHits||0;
