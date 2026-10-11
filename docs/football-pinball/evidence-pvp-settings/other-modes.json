@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "mode": "penalty",
+      "art": true,
+      "soundTogglePreservesIcon": true,
+      "actionLayout": "same row",
+      "widths": [
+        360,
+        390,
+        430
+      ],
+      "reducedMotion": true,
+      "continue": true
+    },
+    {
+      "mode": "arcade-rush",
+      "art": true,
+      "soundTogglePreservesIcon": true,
+      "actionLayout": "same row",
+      "widths": [
+        360,
+        390,
+        430
+      ],
+      "reducedMotion": true,
+      "continue": true
+    }
+  ],
+  "errors": []
+}

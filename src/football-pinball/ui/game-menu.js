@@ -1,5 +1,6 @@
 import { decoratePreflight } from './preflight-art.js';
 import { addTeamSelection } from './team-selection.js';
+import { decoratePvPPreflight } from './pvp-preflight.js';
 // Shared presentation shell: pre-game setup, an in-board start, and one control dial.
 export function addGameMenu(root, setup, mode = "pvp") {
   const trigger=root.querySelector('#fp-settings-open');
@@ -18,7 +19,8 @@ export function addGameMenu(root, setup, mode = "pvp") {
   const sound=document.createElement('button');sound.type='button';sound.id='fp-preflight-audio';sound.dataset.footballAudio='';
   const audio=root.querySelector('#fp-audio');sound.textContent=audio.textContent;sound.setAttribute('aria-pressed',audio.getAttribute('aria-pressed'));
   sound.onclick=()=>audio.click();preflight.insertBefore(sound,preflight.lastElementChild);
-  decoratePreflight(preflight,mode);
+  if(mode==='pvp') decoratePvPPreflight(preflight);
+  else decoratePreflight(preflight,mode);
   root.dataset.stage='setup';
   root.querySelector('#fp-enter-board').onclick=()=>{root.dataset.stage='play';const networkStatus=root.querySelector('#fp-network-status');if(networkStatus)help.insertBefore(networkStatus,help.querySelector('#fp-settings-done'));window.dispatchEvent(new Event('resize'));root.querySelector('#fp-serve').focus();};
   const start=root.querySelector('#fp-serve');start.textContent='Start game';root.querySelector('#fp-arena').append(start);

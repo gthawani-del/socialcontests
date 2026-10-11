@@ -1,0 +1,58 @@
+{
+  "method": "Chromium touch emulation and native keyboard input; session access fixture; real match toss and advancing render loop. Not a physical iPhone test.",
+  "checks": [
+    {
+      "width": 320,
+      "overflow": false,
+      "targetsAtLeast44px": true
+    },
+    {
+      "width": 360,
+      "overflow": false,
+      "targetsAtLeast44px": true
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "targetsAtLeast44px": true
+    },
+    {
+      "width": 430,
+      "overflow": false,
+      "targetsAtLeast44px": true
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "targetsAtLeast44px": true
+    },
+    {
+      "width": 1000,
+      "overflow": false,
+      "targetsAtLeast44px": true
+    },
+    {
+      "touchAndKeyboardSegments": true,
+      "clubsAndCountries": true,
+      "previewMatchesResolvedKit": true
+    },
+    {
+      "mutePersistsAcrossReload": true
+    },
+    {
+      "continuedAndStarted": true,
+      "options": {
+        "mode": "pvp",
+        "seed": 3666319089,
+        "difficulty": "hard",
+        "format": "golden",
+        "opponent": "cpu",
+        "call": "tails"
+      },
+      "selectedTeamsInHud": true,
+      "liveRenderedMatch": true,
+      "helpDialog": true
+    }
+  ],
+  "errors": []
+}

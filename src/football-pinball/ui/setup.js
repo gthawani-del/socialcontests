@@ -45,7 +45,7 @@ export function addSetup(root, mode, onlineAvailable = false) {
     },
     lock(locked) {
       if(locked && mode==='pvp') section.closest('dialog')?.close();
-      section.querySelectorAll("select").forEach((s) => (s.disabled = locked));
+      section.querySelectorAll("select[name], input[name]").forEach((s) => (s.disabled = locked));
     },
     section,
     toss,
