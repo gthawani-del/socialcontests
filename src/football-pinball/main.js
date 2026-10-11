@@ -5,6 +5,7 @@ import {
   renderGameShell,
   MODE_UI,
   updateHud,
+  updateShotPower,
   renderResults,
 } from "./ui/index.js";
 import { addGameMenu } from "./ui/game-menu.js";
@@ -205,7 +206,8 @@ async function mount(mode) {
       }
       root.dataset.matchState=s.state;
       view.draw(engine.renderSnapshot ? engine.renderSnapshot() : s);
-      audio.update(s.events);
+      audio.update(s.events,s);
+      if(mode==='pvp')updateShotPower(root,s,sessionTeam);
       const messages = {
         ready: "Ready when you are.",
         toss: "Coin toss…",

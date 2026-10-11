@@ -482,12 +482,11 @@ export async function createMatchView(container, mode) {
       } else m.position.y = target.height / 2;
       if (m.userData.team !== target.team) tint(m, target.team);
       if (art && target.type === "player" && !m.userData.numbered) {
-        const center=target.id.includes("center");
-        const number=target.team==='blue' ? (center?'8':target.x<0?'4':'6') : (center?'10':target.x<0?'7':'11');
+        const number={defender:'4',midfielder:'8',striker:'9'}[target.role]||'8';
         art.numberPlayer(m,number);
       }
       if (art && target.type === "player") jersey(m,target.team);
-      if (target.type === "player") m.rotation.y = target.y < 0 ? Math.PI : 0;
+      if (target.type === "player") m.rotation.y = target.homeSign < 0 ? Math.PI : 0;
       if (target.type !== "player") {
         let label = labels.get(target.id);
         if (!label) {

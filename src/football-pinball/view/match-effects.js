@@ -61,6 +61,8 @@ export function createMatchEffects(scene) {
       let x=target?.x??ball?.x??0,y=.08,z=-(target?.y??ball?.y??0),color=event.actorId==='red'?'#ff5363':'#52b7ff',size=.5;
       if(event.type==='GOAL_SCORED'){
         const far=s.defendingEnd?.[event.actorId]!=='far';z=far?-4.85:4.85;size=1.35;color='#ffcf55';
+      } else if(event.type==='PLAYER_KICK'){
+        size=.55;color=event.actorId==='red'?'#ff5363':'#52b7ff';
       } else if(event.type==='KEEPER_SAVE'){
         const keeper=s.keepers?.find(k=>k.team===event.actorId);x=keeper?.x??x;z=-(keeper?.y??0);size=.8;
       } else if(event.type==='TARGET_HIT'){y=(target?.height||.3)+.04;color=target?.type==='skill'?'#54bfff':target?.type==='pass'?'#ff6173':'#ffcf55';size=.65;}

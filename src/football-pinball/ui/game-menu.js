@@ -10,6 +10,9 @@ export function addGameMenu(root, setup) {
   preflight.innerHTML='<a href="/football-pinball/">‹ Game selection</a><p>FOOTBALL PINBALL</p><h1>PvP Match</h1><p>Set up your match before entering the board.</p><button id="fp-enter-board" type="button">Continue to board</button>';
   preflight.insertBefore(setup.section,preflight.lastElementChild);root.append(preflight);
   addTeamSelection(root, preflight, preflight.lastElementChild);
+  const sound=document.createElement('button');sound.type='button';sound.id='fp-preflight-audio';sound.dataset.footballAudio='';
+  const audio=root.querySelector('#fp-audio');sound.textContent=audio.textContent;sound.setAttribute('aria-pressed',audio.getAttribute('aria-pressed'));
+  sound.onclick=()=>audio.click();preflight.insertBefore(sound,preflight.lastElementChild);
   root.dataset.stage='setup';
   root.querySelector('#fp-enter-board').onclick=()=>{root.dataset.stage='play';const networkStatus=root.querySelector('#fp-network-status');if(networkStatus)help.insertBefore(networkStatus,help.querySelector('#fp-settings-done'));window.dispatchEvent(new Event('resize'));root.querySelector('#fp-serve').focus();};
   const start=root.querySelector('#fp-serve');start.textContent='Start match';root.querySelector('#fp-arena').append(start);

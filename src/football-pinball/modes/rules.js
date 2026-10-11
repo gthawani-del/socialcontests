@@ -1,5 +1,5 @@
 import { BOOTS, RAILS } from "./foundation.js";
-export const RULE_VERSION = "football-3d-7";
+export const RULE_VERSION = "football-3d-8";
 export const PHYSICS = Object.freeze({
   hz: 120,
   step: 1 / 120,
@@ -22,6 +22,8 @@ export const MODE_RULES = {
   pvp: {
     ballRadius: 0.11,
     maxBallLift: 2.2,
+    playerKickCooldown: 90,
+    playerKickSpeed: { defender: 6, midfielder: 7, striker: 9 },
     cpu: { holdTicks: 12, returnTicks: 12, reactionTicks: { easy: 36, medium: 20, hard: 10 } },
     quickGoals: 3,
     halfTicks: 14400,
@@ -236,21 +238,14 @@ export function geometryFor(mode) {
             ]
           : mode === "pvp"
             ? [
-                ...[-1, 1].flatMap((y) =>
-                  [-1, 1].map((x) => ({
-                    id: `player-${x}-${y}`,
-                    type: "player",
-                    role: y < 0 ? "defender" : "striker",
-                    team: y < 0 ? "blue" : "red",
-                    x: x * 1.4,
-                    y: y * 1.65,
-                    radius: 0.38,
-                    height: 1.45,
-                  })),
-                ),
-                // Red No.10 leads its wings toward midfield; blue No.8 sits behind its wings.
-                // These shared target coordinates also define the collision bodies.
-                ...[-1,1].map(sign=>({id:`player-center-${sign}`,type:'player',role:'midfielder',team:sign<0?'blue':'red',x:0,y:sign<0?-2.4:1.2,radius:.38,height:1.45})),
+                ...[-1, 1].flatMap(homeSign => [
+                  {role:'defender',x:homeSign*.85,y:homeSign*2.35},
+                  {role:'midfielder',x:-homeSign*1.25,y:homeSign*.55},
+                  {role:'striker',x:homeSign*.85,y:-homeSign*1.85},
+                ].map(position => ({
+                  ...position,id:`player-${position.role}-${homeSign}`,type:'player',
+                  homeSign,team:homeSign<0?'blue':'red',radius:.38,height:1.45,
+                }))),
                 {
                   id: "skill",
                   type: "skill",

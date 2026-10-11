@@ -169,9 +169,9 @@ export class MatchEngine {
         sign,
         x: 0,
         y: sign * 4.55,
-        width: this.mode === "penalty" ? keeperTuning.width : 0.72,
-        height: this.mode === "pvp" ? 1.15 : 0.7,
-        depth: this.mode === "pvp" ? 0.38 : 0.22,
+        width: this.mode === "penalty" ? keeperTuning.width : 0.84,
+        height: this.mode === "pvp" ? 1.45 : 0.7,
+        depth: this.mode === "pvp" ? 0.44 : 0.22,
       };
       const body = this.world.createRigidBody(
         RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(
@@ -463,7 +463,7 @@ export class MatchEngine {
         if (data.id === k.id) data.team = k.team;
     }
     for (const t of this.targets.filter((t) => t.type === "player")) {
-      t.team = t.y < 0 ? this.bottomTeam : other(this.bottomTeam);
+      t.team = t.homeSign < 0 ? this.bottomTeam : other(this.bottomTeam);
       for (const data of this.names.values())
         if (data.id === t.id) data.team = t.team;
     }
@@ -627,6 +627,7 @@ export class MatchEngine {
     const boot = this.boots.find((b) => b.id === data.id);
     if (boot) {
       this.lastTeam = boot.team;
+      ball.pendingBootStrike = {id:boot.id,team:boot.team};
       if (this.mode === "pvp") this.award(boot.team, 10);
       if (
         boot.pressed &&
@@ -665,16 +666,26 @@ export class MatchEngine {
       return;
     }
     if (data.type === "player") {
-      this.award(this.lastTeam, 20);
-      const p = ball.body.translation(),
-        v = ball.body.linvel(),
-        dx = p.x - data.x,
-        dz = p.z + data.y,
-        n = Math.hypot(dx, dz) || 1;
-      ball.body.setLinvel(
-        { x: v.x + (dx / n) * 1.2, y: v.y, z: v.z + (dz / n) * 1.2 },
-        true,
-      );
+      this.lastTeam = data.team;
+      const p = ball.body.translation(), v = ball.body.linvel();
+      const attack = -data.homeSign;
+      const receiver = this.targets.find(t => t.type === 'player' && t.team === data.team &&
+        t.role === (data.role === 'defender' ? 'midfielder' : 'striker'));
+      const destination = data.role === 'striker' || !receiver
+        ? {x: data.x > 0 ? -.62 : .62, y: attack * P.goalPlane}
+        : receiver;
+      const dx=destination.x-p.x, dz=-destination.y-p.z, length=Math.hypot(dx,dz)||1;
+      const nx=p.x-data.x, nz=p.z+data.y, normal=Math.hypot(nx,nz)||1;
+      const facing=(nx*dx+nz*dz)/(normal*length);
+      const last=this.targetHits.get(data.id)??-999;
+      // Only the facing side can kick. Rear contacts remain physical rebounds.
+      if (facing >= .15 && this.tick-last >= MODE_RULES.pvp.playerKickCooldown) {
+        this.targetHits.set(data.id,this.tick);
+        const speed=MODE_RULES.pvp.playerKickSpeed[data.role];
+        ball.body.setLinvel({x:dx/length*speed,y:Math.max(0,Math.min(v.y,.65)),z:dz/length*speed},true);
+        this.award(data.team,20);
+        this.emit('PLAYER_KICK',{actorId:data.team,targetId:data.id,ballId:ball.id,payload:{role:data.role,receiverId:data.role==='striker'?null:receiver?.id||null,speed}});
+      }
       return;
     }
     if (["skill", "pass", "combo"].includes(data.type)) {
@@ -692,7 +703,7 @@ export class MatchEngine {
         this.award(this.lastTeam, 50);
         const p = ball.body.translation(),
           v = ball.body.linvel(),
-          target = this.targets.find((t) => t.team === this.lastTeam);
+          target = this.targets.find((t) => t.type === "player" && t.team === this.lastTeam && t.role === "striker");
         if (target) {
           const dx = target.x - p.x,
             dz = -target.y - p.z,
@@ -932,6 +943,11 @@ export class MatchEngine {
           },
           true,
         );
+      if (b.pendingBootStrike) {
+        const velocity=b.body.linvel(), speed=Math.hypot(velocity.x,velocity.z);
+        this.emit('BOOT_STRIKE',{actorId:b.pendingBootStrike.team,targetId:b.pendingBootStrike.id,ballId:b.id,payload:{power:Math.round(Math.min(1,speed/P.maxSpeed)*100)}});
+        b.pendingBootStrike=null;
+      }
       for (const sign of [-1, 1]) {
         const plane =
             (sign < 0 ? Math.abs(this.geometry.nearPlane) : P.goalPlane) +

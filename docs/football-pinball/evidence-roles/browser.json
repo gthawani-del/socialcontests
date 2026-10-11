@@ -1,0 +1,117 @@
+{
+  "method": "Chromium mobile viewport, software GPU. Real CDP touch input with seeded ball-placement fixtures and manually stepped physics. Not physical-device performance, human balancing or speaker verification.",
+  "checks": [
+    {
+      "audio": "unlocked by browser gesture; crowd active"
+    },
+    {
+      "formation": [
+        {
+          "role": "defender",
+          "x": -0.85,
+          "y": -2.35,
+          "id": "player-defender--1",
+          "type": "player",
+          "homeSign": -1,
+          "team": "blue",
+          "radius": 0.38,
+          "height": 1.45
+        },
+        {
+          "role": "midfielder",
+          "x": 1.25,
+          "y": -0.55,
+          "id": "player-midfielder--1",
+          "type": "player",
+          "homeSign": -1,
+          "team": "blue",
+          "radius": 0.38,
+          "height": 1.45
+        },
+        {
+          "role": "striker",
+          "x": -0.85,
+          "y": 1.85,
+          "id": "player-striker--1",
+          "type": "player",
+          "homeSign": -1,
+          "team": "blue",
+          "radius": 0.38,
+          "height": 1.45
+        },
+        {
+          "role": "defender",
+          "x": 0.85,
+          "y": 2.35,
+          "id": "player-defender-1",
+          "type": "player",
+          "homeSign": 1,
+          "team": "red",
+          "radius": 0.38,
+          "height": 1.45
+        },
+        {
+          "role": "midfielder",
+          "x": -1.25,
+          "y": 0.55,
+          "id": "player-midfielder-1",
+          "type": "player",
+          "homeSign": 1,
+          "team": "red",
+          "radius": 0.38,
+          "height": 1.45
+        },
+        {
+          "role": "striker",
+          "x": 0.85,
+          "y": -1.85,
+          "id": "player-striker-1",
+          "type": "player",
+          "homeSign": 1,
+          "team": "red",
+          "radius": 0.38,
+          "height": 1.45
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": 0,
+          "y": 2.200000047683716,
+          "z": 0
+        },
+        "minVz": -1.9957088232040405
+      },
+      "released": true,
+      "event": "touchEnd"
+    },
+    {
+      "side": "right",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": 0,
+          "y": 2.200000047683716,
+          "z": 0
+        },
+        "minVz": -2.0067365169525146
+      },
+      "released": true,
+      "event": "touchCancel"
+    },
+    {
+      "power": "both meters reflect contact events",
+      "pause": "crowd stops",
+      "mute": "voices cleared",
+      "resume": "crowd resumes"
+    }
+  ],
+  "errors": []
+}

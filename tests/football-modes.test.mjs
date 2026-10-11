@@ -48,10 +48,11 @@ for (const id of ["blue-left", "blue-right", "red-left", "red-right"])
         height: 0.15,
       });
       e.setInput(id, true);
-      steps(e, 10);
+      let forward=false;
+      for(let i=0;i<10;i++){e.step();forward ||= -e.balls[0].body.linvel().z*sign>0;}
       assert(e.events.some((v) => v.type === "COLLISION" && v.targetId === id));
       assert(e.balls[0].body.translation().y > 0.15);
-      assert(-e.balls[0].body.linvel().z * sign > 0);
+      assert(forward, 'boot must launch forward before another player can redirect it');
     } finally {
       e.dispose();
     }
@@ -439,7 +440,7 @@ test("side swap reassigns player and keeper collider ownership", async () => {
     e.activeTicks = 14399;
     e.step();
     for (const target of e.targets.filter((t) => t.type === "player")) {
-      assert.equal(target.team, target.y < 0 ? "red" : "blue");
+      assert.equal(target.team, target.homeSign < 0 ? "red" : "blue");
       assert.equal(
         [...e.names.values()].find((n) => n.id === target.id).team,
         target.team,
@@ -545,4 +546,32 @@ test('PvP boot contact limits excessive lift without removing forward motion', a
     }
     assert(contact,'must exercise real Rapier contact');
   } finally {e.dispose();}
+});
+
+for(const swap of [false,true])for(const role of ['defender','midfielder','striker'])
+ test(`${role} uses physical front contact and correct team after side swap=${swap}`,async()=>{
+  const e=await setup();
+  try{
+   if(swap){e.bottomTeam='red';e.assignSides();}
+   const t=e.targets.find(t=>t.type==='player'&&t.team==='blue'&&t.role===role),attack=-t.homeSign;
+   const receiver=e.targets.find(r=>r.type==='player'&&r.team===t.team&&r.role===(role==='defender'?'midfielder':'striker'));
+   const dest=role==='striker'?{x:t.x>0?-.62:.62,y:attack*5}:receiver;
+   const dx=dest.x-t.x,dy=dest.y-t.y,n=Math.hypot(dx,dy),distance=t.radius+e.ballRadius+.035;
+   place(e,{x:t.x+dx/n*distance,y:t.y+dy/n*distance,height:e.ballRadius+.005,vx:-dx/n*3,vy:-dy/n*3});
+   let kick;
+   for(let i=0;i<16;i++){e.step();kick=e.events.find(v=>v.type==='PLAYER_KICK'&&v.targetId===t.id);if(kick)break;}
+   assert(kick,'real front contact triggers role kick');assert.equal(kick.actorId,'blue');assert.equal(kick.payload.role,role);
+   const v=e.balls[0].body.linvel();assert(v.x*dx-v.z*dy>0,'kick heads toward receiver or goal');
+   const count=e.events.filter(v=>v.type==='PLAYER_KICK').length;
+   // Duplicate notifications within cooldown must not award another kick.
+   e.collision(e.balls[0],t);assert.equal(e.events.filter(v=>v.type==='PLAYER_KICK').length,count);
+  }finally{e.dispose();}
+ });
+test('each formation has a striker beyond midfield and role lanes do not overlap',async()=>{
+ const e=await setup();try{
+  const players=e.targets.filter(t=>t.type==='player');
+  for(const team of ['blue','red']){const side=players.filter(p=>p.team===team);assert.equal(side.length,3);assert.deepEqual(side.map(p=>p.role),['defender','midfielder','striker']);assert(side.find(p=>p.role==='striker').y*side[0].homeSign<0);}
+  for(const a of players)for(const b of players)if(a.id!==b.id)assert(Math.hypot(a.x-b.x,a.y-b.y)>a.radius+b.radius+e.ballRadius*2);
+  assert.equal(e.keepers[0].height,1.45);assert.equal(e.keepers[0].width,.84);
+ }finally{e.dispose();}
 });

@@ -684,3 +684,8 @@
 #footballApp .fp-team-selection p{font-size:12px;}
 #footballApp[data-mode=pvp] .fp-team-name{min-width:0;}
 #footballApp[data-mode=pvp] .fp-team-name small{max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+#footballApp[data-mode=pvp] .fp-controls button{position:relative;}
+#footballApp[data-mode=pvp] .fp-power-ring{position:absolute;inset:-5px;width:calc(100% + 10px);height:calc(100% + 10px);pointer-events:none;transform:rotate(-90deg);}
+#footballApp[data-mode=pvp] .fp-power-ring circle{fill:none;stroke:#ffe18a;stroke-width:3;stroke-linecap:round;stroke-dasharray:var(--shot-power,0) 100;}
+#footballApp #fp-preflight-audio{margin:12px 0;min-height:44px;padding:10px 20px;}
