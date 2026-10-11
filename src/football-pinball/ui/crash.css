@@ -29,3 +29,8 @@
 .fc-round-actions input{min-width:0;width:100%;height:48px;padding:8px 12px;border:1px solid #637f8a;border-radius:10px;background:#142b37;color:white;font-size:18px;color-scheme:dark}
 .fc-round-actions #fc-start{align-self:end;height:48px;background:linear-gradient(#ecd999,#b69952);border-color:#efda94;color:#10212a;font-weight:800}
 .fc-round-actions small{grid-column:1/-1;font-size:11px;color:#8ea9b8}
+
+/* Taller crash playfield, keeping the stake and cash-out controls adjacent. */
+.fp-crash .fc-game{height:clamp(430px,calc((100vw - 130px)*1.85),790px)}
+@media(min-width:700px){.fp-crash .fc-game{height:min(76svh,790px);min-height:520px}}
+@media(max-width:440px){.fp-crash .fc-game{height:clamp(430px,65svh,690px)}}
