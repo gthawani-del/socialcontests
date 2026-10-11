@@ -1,0 +1,76 @@
+{
+  "method": "Chromium mobile viewport, software GPU. Real CDP touch input with ball-placement fixtures and manually stepped physics, followed by an unfrozen rendered rally. No physical iPhone or speaker-quality claim.",
+  "checks": [
+    {
+      "side": "left",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": -0.45051008462905884,
+          "y": 2.200000047683716,
+          "z": -11.802682876586914
+        },
+        "minVz": -12.51494312286377
+      },
+      "released": true,
+      "event": "touchEnd"
+    },
+    {
+      "side": "right",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": 0.3142241835594177,
+          "y": 2.200000047683716,
+          "z": -11.807001113891602
+        },
+        "minVz": -12.297077178955078
+      },
+      "released": true,
+      "event": "touchCancel"
+    },
+    {
+      "slowBallRecovery": {
+        "recovered": true,
+        "speed": 3.9805531501774465
+      }
+    },
+    {
+      "outOfPlay": {
+        "state": "relaunch",
+        "restart": {
+          "reason": "goal-line",
+          "team": "red"
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        }
+      },
+      "status": "Out of play. Opponent kickoff…"
+    },
+    {
+      "unfrozenRenderedRally": {
+        "ticks": 462,
+        "balls": [
+          {
+            "id": "ball-2",
+            "x": 1.3413267135620117,
+            "y": -3.3312768936157227,
+            "height": 0.1488603949546814,
+            "vx": -3.2402892112731934,
+            "vy": 1.6517574787139893,
+            "vheight": 0,
+            "radius": 0.15
+          }
+        ],
+        "state": "active"
+      }
+    }
+  ],
+  "errors": []
+}
