@@ -95,10 +95,10 @@ export function renderGameShell(
   const data = MODE_UI[mode];
   root.className = `fp-game fp-accent-${data.accent}`;
   root.dataset.mode = mode;
-  root.innerHTML = `${header(mode)}<div class="fp-mode-heading"><h1>${data.title}</h1><span id="fp-session-label">LOCAL PLAY</span></div><section class="fp-hud" aria-label="Game statistics">${hud(mode)}</section><div id="fp-arena"><p id="fp-loading" role="status">Preparing physics…</p></div><p id="fp-status" role="status">Preparing game…</p><section class="fp-controls" aria-label="Boot controls">${mode === "pvp" && localControls ? '<div class="fp-opponent-controls"><button data-boot="red-left" aria-pressed="false" disabled>Red left <kbd>J</kbd></button><button data-boot="red-right" aria-pressed="false" disabled>Red right <kbd>L</kbd></button></div>' : ""}<div><button data-boot="blue-left" aria-pressed="false" disabled><span aria-hidden="true">↖</span> Left boot <kbd>A</kbd></button><button data-boot="blue-right" aria-pressed="false" disabled>Right boot <span aria-hidden="true">↗</span> <kbd>D</kbd></button></div></section><nav class="fp-actions" aria-label="Game actions"><button id="fp-serve" disabled>Start</button>${mode === "crash" ? '<button id="fp-bank" disabled>Bank Points</button>' : ""}<button id="fp-pause" disabled>Pause</button><button id="fp-reset" disabled>Restart</button></nav><details class="fp-how"><summary>Rules & controls</summary><p>${data.help}</p><p>Tap to strike immediately; release to return the boot. Power rings show actual shot strength after contact. Keyboard: A / D.${localControls ? " Red team: J / L." : ""} Pause freezes play.</p></details><section id="fp-results" class="fp-results" aria-label="Match results" hidden></section>`;
-  if(mode === 'pvp') root.querySelectorAll('[data-boot]').forEach((button,index)=>{
+  root.innerHTML = `${header(mode)}<div class="fp-mode-heading"><h1>${data.title}</h1><span id="fp-session-label">LOCAL PLAY</span></div><section class="fp-hud" aria-label="Game statistics">${hud(mode)}</section><div id="fp-arena"><p id="fp-loading" role="status">Preparing physics…</p></div><p id="fp-status" role="status">Preparing game…</p><section class="fp-controls" aria-label="Boot controls">${mode === "pvp" && localControls ? '<div class="fp-opponent-controls"><button data-boot="red-left" aria-pressed="false" disabled>Red left <kbd>J</kbd></button><button data-boot="red-right" aria-pressed="false" disabled>Red right <kbd>L</kbd></button></div>' : ""}<div><button data-boot="blue-left" aria-pressed="false" disabled><span aria-hidden="true">↖</span> Left boot <kbd>A</kbd></button><button data-boot="blue-right" aria-pressed="false" disabled>Right boot <span aria-hidden="true">↗</span> <kbd>D</kbd></button></div></section><nav class="fp-actions" aria-label="Game actions"><button id="fp-serve" disabled>Start</button>${mode === "crash" ? '<button id="fp-bank" disabled>Bank Points</button>' : ""}<button id="fp-pause" disabled>Pause</button><button id="fp-reset" disabled>Restart</button></nav><details class="fp-how"><summary>Rules & controls</summary><p>${data.help}</p><p>Tap to strike immediately; release to return the boot. ${mode === "pvp" ? "Strength rings report the last hit, not charging. " : ""}Keyboard: A / D.${localControls ? " Red team: J / L." : ""} Pause freezes play.</p></details><section id="fp-results" class="fp-results" aria-label="Match results" hidden></section>`;
+  root.querySelectorAll('[data-boot]').forEach((button,index)=>{
     const name=button.dataset.boot.endsWith('left')?'Left boot':'Right boot';
-    button.innerHTML=`<svg class="fp-power-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" pathLength="100"/></svg><svg class="fp-boot-icon" viewBox="0 0 48 32" aria-hidden="true"><path d="M5 5h10l6 10 18 5q5 2 4 7H5q-3-7 0-22Z" fill="currentColor"/><path d="m17 11 7-2m-4 7 7-2m-2 7 7-2M7 27h33" fill="none" stroke="#0b1725" stroke-width="2"/></svg><span>Tap to flip<small class="fp-power-label">${name}</small></span>`;
+    button.innerHTML=`<svg class="fp-power-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" pathLength="100"/></svg><svg class="fp-boot-icon" viewBox="0 0 48 32" aria-hidden="true"><path d="M5 5h10l6 10 18 5q5 2 4 7H5q-3-7 0-22Z" fill="currentColor"/><path d="m17 11 7-2m-4 7 7-2m-2 7 7-2M7 27h33" fill="none" stroke="#0b1725" stroke-width="2"/></svg><span>${name}<small class="fp-power-label"></small></span>`;
   });
   if(mode==='pvp'){
     const arena=root.querySelector('#fp-arena');const controls=root.querySelector('.fp-controls');arena.append(controls,root.querySelector('#fp-status'));
@@ -125,7 +125,7 @@ export function updateHud(root, state = {}) {
   if (state.multiplier != null)
     set("fp-multiplier", `${Number(state.multiplier).toFixed(2)}×`);
   if (state.basePoints != null) set("fp-base", number(state.basePoints));
-  if (state.bankValue != null) set("fp-bank-value", number(state.bankValue));
+  if (state.bankValue != null) {set("fp-bank-value", number(state.bankValue));set("fp-bank-button-value", `${number(state.bankValue)} pts`);}
   if (state.points != null) set("fp-points", number(state.points));
   if (state.combo != null) set("fp-combo", `${state.combo}×`);
   if (state.shots != null)
@@ -135,7 +135,7 @@ export function updateHud(root, state = {}) {
     );
   if (state.goals != null) set("fp-goals", number(state.goals));
   if (state.streak != null) set("fp-streak", number(state.streak));
-  if (state.multiballRemaining != null) set("fp-multiball",state.multiballRemaining>0?`${Math.ceil(state.multiballRemaining)}s`:"—");
+  if (state.multiballRemaining != null) {set("fp-multiball",state.multiballRemaining>0?`${Math.ceil(state.multiballRemaining)}s`:"—"); const badge=root.querySelector("#fp-multiball-badge");if(badge){badge.hidden=state.multiballRemaining<=0;badge.textContent=`Multiball ${Math.ceil(state.multiballRemaining)}s`;}}
   if (state.status != null) set("fp-status", state.status);
   if (state.sessionLabel != null) set("fp-session-label", state.sessionLabel);
   if (state.paused != null) set("fp-pause", state.paused ? "Resume" : "Pause");
@@ -176,6 +176,6 @@ export function updateShotPower(root,s,sessionTeam='blue') {
     const event=s.events.findLast(e=>e.type==='BOOT_STRIKE'&&e.targetId===boot?.id);
     const power=event&&s.tick-event.tick<240?event.payload.power:0;
     button.style.setProperty('--shot-power',power);
-    const label=button.querySelector('.fp-power-label');if(label)label.textContent=power?`Power ${power}%`:(left?'Left boot':'Right boot');
+    const label=button.querySelector('.fp-power-label');if(label)label.textContent=power?`Strength ${power}%`:'';
   }
 }

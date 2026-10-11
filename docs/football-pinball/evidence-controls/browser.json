@@ -1,0 +1,40 @@
+{
+  "checks": [
+    {
+      "mode": "penalty",
+      "twoThumbPhysics": true,
+      "cancelReturnsBoots": true,
+      "menuPausesAndHelpResumes": true,
+      "widths": [
+        360,
+        390,
+        430
+      ]
+    },
+    {
+      "mode": "crash",
+      "twoThumbPhysics": true,
+      "cancelReturnsBoots": true,
+      "menuPausesAndHelpResumes": true,
+      "widths": [
+        360,
+        390,
+        430
+      ],
+      "bank": "ends round with positive banked points"
+    },
+    {
+      "mode": "arcade-rush",
+      "twoThumbPhysics": true,
+      "cancelReturnsBoots": true,
+      "menuPausesAndHelpResumes": true,
+      "widths": [
+        360,
+        390,
+        430
+      ]
+    }
+  ],
+  "errors": [],
+  "method": "Chromium software GPU; actual CDP two-touch input. Engine time frozen and stepped for reproducible input checks; Crash bank uses 100-point fixture. Not phone performance or human balancing."
+}

@@ -689,3 +689,39 @@
 #footballApp[data-mode=pvp] .fp-power-ring{position:absolute;inset:-5px;width:calc(100% + 10px);height:calc(100% + 10px);pointer-events:none;transform:rotate(-90deg);}
 #footballApp[data-mode=pvp] .fp-power-ring circle{fill:none;stroke:#ffe18a;stroke-width:3;stroke-linecap:round;stroke-dasharray:var(--shot-power,0) 100;}
 #footballApp #fp-preflight-audio{margin:12px 0;min-height:44px;padding:10px 20px;}
+
+/* Shared mobile control shell; physics and table artwork remain mode-specific. */
+#footballApp.fp-game{position:relative;padding:0 0 env(safe-area-inset-bottom);min-height:0;height:auto;}
+#footballApp.fp-game .fp-topbar{position:absolute;right:4px;top:4px;z-index:5;width:48px;height:48px;padding:0;gap:0;}
+#footballApp.fp-game .fp-topbar>.fp-back,#footballApp.fp-game .fp-topbar>.fp-wordmark,#footballApp.fp-game>.fp-mode-heading{display:none;}
+#footballApp.fp-game #fp-settings-open{width:48px;height:48px;border-radius:50%;background:#132533;border:1px solid #70899c;}
+#footballApp.fp-game .fp-hud{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));height:64px;padding:2px 56px 2px 4px;gap:4px;margin:0;}
+#footballApp.fp-game .fp-hud .fp-stat{padding:6px 3px;min-width:0;}
+#footballApp.fp-game .fp-hud .fp-stat>span{font-size:11px;letter-spacing:0;}
+#footballApp.fp-game .fp-hud .fp-stat>strong{font-size:24px;}
+#footballApp.fp-game .fp-team-name{font-size:11px;}
+#footballApp.fp-game .fp-team-name small{font-size:12px;}
+#footballApp.fp-game #fp-arena{position:relative;width:100%;height:min(calc(100svh - 64px - env(safe-area-inset-top) - env(safe-area-inset-bottom)),calc(100vw * 1.5));min-height:0;max-height:930px;aspect-ratio:auto;border:0;border-radius:0;}
+#footballApp.fp-game #fp-arena>.fp-controls{position:absolute;left:0;right:0;bottom:2.5%;padding:0 6px;z-index:3;pointer-events:none;}
+#footballApp.fp-game .fp-controls>div{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+#footballApp.fp-game .fp-controls [data-boot]{position:relative;flex:none;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;width:88px;height:88px;min-height:88px;border-radius:50%;border:2px solid #97d6ff;background:radial-gradient(ellipse at top,#155a9c,#061a36 80%);color:#fff;pointer-events:auto;touch-action:none;}
+#footballApp.fp-game .fp-controls [data-boot$=right]{border-color:#ffabb3;background:radial-gradient(ellipse at top,#86313c,#2b101a 80%);}
+#footballApp.fp-game .fp-controls [data-boot]>span{font-size:12px;letter-spacing:0;line-height:1.2;text-align:center;}
+#footballApp.fp-game .fp-controls .fp-power-label{display:block;font-size:11px;min-height:13px;margin-top:3px;}
+#footballApp.fp-game .fp-boot-icon{width:28px;height:23px;}
+#footballApp.fp-game .fp-power-ring{position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);pointer-events:none;transform:rotate(-90deg);}
+#footballApp.fp-game .fp-power-ring circle{fill:none;stroke:#ffe18a;stroke-width:3;stroke-linecap:round;stroke-dasharray:var(--shot-power,0) 100;}
+#footballApp.fp-game #fp-bank{flex:0 1 110px;min-width:88px;min-height:56px;border-radius:14px;border:1px solid #e9d295;background:#deca91;color:#10202b;font:700 14px system-ui;pointer-events:auto;}
+#fp-bank-button-value{display:block;font-size:13px;}
+#footballApp.fp-game #fp-arena>#fp-status{position:absolute;bottom:1px;left:100px;right:100px;margin:0;padding:2px;min-height:0;font-size:11px;text-align:center;pointer-events:none;}
+#footballApp.fp-game[data-mode=crash] #fp-status{bottom:98px;left:12px;right:12px;}
+#footballApp.fp-game #fp-arena>#fp-serve{position:absolute;z-index:4;left:50%;top:48%;transform:translate(-50%,-50%);min-width:160px;min-height:52px;border-radius:28px;border:1px solid #e9d295;background:#deca91;color:#10202b;font:700 16px system-ui;}
+#footballApp.fp-game:not([data-match-state=ready]) #fp-serve{display:none;}
+#footballApp.fp-game[data-stage=setup]{height:100svh;overflow:hidden;}
+#footballApp.fp-game[data-stage=setup]>.fp-topbar,#footballApp.fp-game[data-stage=setup]>.fp-hud,#footballApp.fp-game[data-stage=setup]>#fp-arena{visibility:hidden;}
+#footballApp.fp-game .fp-preflight{z-index:6;}
+#footballApp.fp-game .fp-settings-dialog .fp-stat{margin-top:10px;}
+#footballApp.fp-game button:focus-visible{outline:3px solid #ffe18a;outline-offset:3px;}
+#footballApp.fp-game .fp-controls .fp-power-label{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;background:#091925e8;border-radius:4px;padding:2px 4px;min-height:0;font-size:11px;}
+#footballApp.fp-game .fp-controls .fp-power-label:empty{display:none;}
+#fp-multiball-badge{position:absolute;top:6px;left:50%;transform:translateX(-50%);background:#0b2d26e8;color:#b5ffe2;border-radius:12px;padding:4px 10px;font-size:12px;pointer-events:none;}

@@ -7,8 +7,8 @@ export function addSetup(root, mode, onlineAvailable = false) {
       ? '<option value="rookie">Rookie</option><option value="pro">Pro</option><option value="elite">Elite</option>'
       : '<option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option>';
   section.innerHTML = `${["pvp", "penalty"].includes(mode) ? `<label>Difficulty<select name="difficulty">${difficulty}</select></label>` : ""}${mode === "pvp" ? `<label>Format<select name="format"><option value="quick">First to 3</option><option value="classic">Two 2-minute halves</option><option value="golden">Golden goal</option></select></label><label>Opponent<select name="opponent"><option value="cpu">CPU</option>${onlineAvailable ? '<option value="human">Online player</option>' : ""}</select></label><label>Toss call<select name="call"><option value="heads">Heads</option><option value="tails">Tails</option></select></label>` : ""}`;
-  if (section.innerHTML) {
-    if (mode === 'pvp') {
+  {
+    {
       const settings=document.createElement('dialog');settings.id='fp-settings-dialog';
       settings.className='fp-settings-dialog';settings.setAttribute('aria-labelledby','fp-settings-title');
       settings.innerHTML='<header><h2 id="fp-settings-title">Match settings</h2><button type="button" id="fp-settings-close" aria-label="Close match settings">×</button></header><p id="fp-settings-note">Choose settings before starting a match.</p>';
@@ -22,7 +22,7 @@ export function addSetup(root, mode, onlineAvailable = false) {
       const close=()=>settings.close();done.onclick=close;settings.querySelector('#fp-settings-close').onclick=close;
       settings.addEventListener('click',event=>{if(event.target===settings){const r=settings.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)close();}});
       settings.addEventListener('close',()=>{root.dispatchEvent(new Event('footballsettingsclose'));trigger.focus();});
-    } else root.querySelector(".fp-hud").before(section);
+    }
   }
   section.addEventListener("submit", (e) => e.preventDefault());
   const toss = document.createElement("section");

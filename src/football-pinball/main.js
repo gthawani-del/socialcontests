@@ -35,7 +35,7 @@ async function mount(mode) {
     root.querySelector(".fp-hud").before(connection);
   }
   const audio = createAudio(root);
-  if(mode==='pvp') {const menu=addGameMenu(root,setup);if(connection.parentElement)menu.preflight.insertBefore(connection,menu.preflight.lastElementChild);}
+  {const menu=addGameMenu(root,setup,mode);if(connection.parentElement)menu.preflight.insertBefore(connection,menu.preflight.lastElementChild);}
   let engine,
     view,
     inputs,

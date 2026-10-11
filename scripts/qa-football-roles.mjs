@@ -24,7 +24,7 @@ try{
  for(const team of ['blue','red'])assert(formation.some(t=>t.team===team&&t.role==='striker'&&t.y*t.homeSign<0));
  checks.push({formation});
  // Freeze real-time advance for reproducible contact fixtures, keeping browser controls live.
- await page.evaluate(()=>{window.__football.engine.advance=()=>{};});
+ await page.waitForFunction(()=>{const e=window.__football.engine;if(e.state==='active'&&e.balls.length){e.advance=()=>{};return true;}return false;});
  const cdp=await page.context().newCDPSession(page);
  for(const side of ['left','right']){
   const id=`blue-${side}`;
@@ -39,7 +39,7 @@ try{
   await cdp.send('Input.dispatchTouchEvent',{type:side==='left'?'touchEnd':'touchCancel',touchPoints:[]});
   const released=await page.evaluate(id=>{const e=window.__football.engine,b=e.boots.find(b=>b.id===id);for(let i=0;i<24;i++)e.step();return !b.pressed&&Math.abs(b.angle-b.rest)<1e-8;},id);
   assert(released);
-  await page.waitForFunction(id=>document.querySelector(`[data-boot=${id}] .fp-power-label`).textContent.startsWith('Power '),id);
+  await page.waitForFunction(id=>document.querySelector(`[data-boot=${id}] .fp-power-label`).textContent.startsWith('Strength '),id);
   checks.push({side,hit,released,event:side==='left'?'touchEnd':'touchCancel'});
  }
  await page.evaluate(()=>{const e=window.__football.engine;while(e.state==='relaunch')e.step();});
