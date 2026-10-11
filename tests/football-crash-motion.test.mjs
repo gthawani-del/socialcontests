@@ -33,3 +33,17 @@ test('New round clears autonomous gameplay state',()=>{
   assert.equal(s.powerActive,false);
   assert.equal(s.history.length,0);
 });
+
+test('Autonomous impacts expose feedback, and power trails never influence payout',()=>{
+  const {motion,maxHits,maxScore}=simulate(120);
+  const state=motion.snapshot();
+  assert.ok(maxHits>=2);
+  assert.ok(maxScore>=100);
+  assert.equal(typeof state.score,'number');
+  assert.ok(state.powerShots>=0);
+  assert.ok(state.lastImpact?.id>0);
+  // The cosmetic physics snapshot deliberately contains no crash odds, stake or payout.
+  assert.equal('multiplier' in state,false);
+  assert.equal('payout' in state,false);
+  assert.equal('stake' in state,false);
+});
