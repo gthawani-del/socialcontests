@@ -16,7 +16,7 @@ export async function mountCrash() {
     <p class="fc-authority-note">Local practice runs on this device. It is not server-verified or provably fair.</p>
 
     <div class="fc-setup-actions"><div class="fp-actions"></div><button id="fc-enter">Continue</button></div></section>
-    <section class="fc-play" hidden><div class="fc-round-header"><span id="fc-mode-label">LOCAL PRACTICE</span><span>Stake <b id="fc-stake-label">100</b> pts</span></div><div class="fc-game"><div id="fc-arena"><div class="fc-live"><span id="fc-round-state">Ready</span><span id="fc-board-score">BOARD SCORE 0</span><span id="fc-hit-feedback" aria-live="off"></span><strong id="fc-multiplier">1.00×</strong><span id="fc-countdown"></span></div><div class="fc-flippers" aria-label="Pinball flipper controls"><button type="button" id="fc-left-boot" aria-label="Left football boot flipper">LEFT BOOT</button><button type="button" id="fc-right-boot" aria-label="Right football boot flipper">RIGHT BOOT</button></div></div><aside class="fc-ladder" aria-label="Multiplier milestones">${crashMeterMarkup()}<button id="fc-cashout" disabled>Cash out <strong id="fc-return">100 pts</strong></button></aside></div><form class="fc-round-actions"><label for="fc-stake">Points stake<input id="fc-stake" type="number" inputmode="numeric" min="1" max="1000" step="1" required value="100" aria-describedby="fc-stake-help"></label><button id="fc-start" type="submit">Play</button><small id="fc-stake-help">1–1,000 free points per round</small></form><p id="fc-message" role="status" aria-live="polite">Cash out before the multiplier crashes.</p><p class="fc-small">Virtual points only. No cash prizes.</p><details id="fc-proof" hidden><summary>Round verification</summary><p id="fc-proof-text"></p></details></section>
+    <section class="fc-play" hidden><div class="fc-round-header"><span id="fc-mode-label">LOCAL PRACTICE</span><span>Stake <b id="fc-stake-label">100</b> pts</span></div><div class="fc-game"><div id="fc-arena"><div class="fc-live"><span id="fc-round-state">Ready</span><span id="fc-board-score">BOARD SCORE 0</span><span id="fc-hit-feedback" aria-live="off"></span><strong id="fc-multiplier">1.00×</strong><span id="fc-countdown"></span></div></div><aside class="fc-ladder" aria-label="Multiplier milestones">${crashMeterMarkup()}<button id="fc-cashout" disabled>Cash out <strong id="fc-return">100 pts</strong></button></aside></div><form class="fc-round-actions"><label for="fc-stake">Points stake<input id="fc-stake" type="number" inputmode="numeric" min="1" max="1000" step="1" required value="100" aria-describedby="fc-stake-help"></label><button id="fc-start" type="submit">Play</button><small id="fc-stake-help">1–1,000 free points per round</small></form><p id="fc-message" role="status" aria-live="polite">Cash out before the multiplier crashes.</p><p class="fc-small">Virtual points only. No cash prizes.</p><details id="fc-proof" hidden><summary>Round verification</summary><p id="fc-proof-text"></p></details></section>
     <dialog id="fc-menu-dialog"><h2>Game controls</h2><p>Opening this menu does not pause a round.</p><div id="fc-menu-audio"></div><button id="fc-close">Close</button></dialog>`;
   const q = s => root.querySelector(s);
   // Vector control artwork stays sharp at all phone resolutions.
@@ -105,7 +105,6 @@ export async function mountCrash() {
     lastKickHits=gameplay?.bootHits||0;
     q('#fc-board-score').textContent='BOARD SCORE '+(gameplay?.score||0).toLocaleString();
     q('#fc-hit-feedback').textContent=round?.status==='active'?(gameplay?.feedback?.text||''):'';
-    for(const side of ['left','right']) q('#fc-'+side+'-boot').disabled=round?.status!=='active';
     audio.update([], {state:round?.status === 'active' ? 'active' : 'ended'});
     frame = requestAnimationFrame(draw);
   }
@@ -158,34 +157,13 @@ export async function mountCrash() {
     } catch { say('Cashout not confirmed. Reconnecting to obtain the server result…'); await poll(); }
     finally { busy = false; }
   };
-  const held=[false,false];
-  const setBoot=(side,down)=>{
-    if(down&&round?.status!=='active')return;
-    held[side]=down;
-    view?.setFlipper(side,down);
-    q(side===0?'#fc-left-boot':'#fc-right-boot').dataset.held=String(down);
-  };
-  for(const [side,selector] of [[0,'#fc-left-boot'],[1,'#fc-right-boot']]){
-    const control=q(selector);
-    control.addEventListener('pointerdown',e=>{e.preventDefault();control.setPointerCapture?.(e.pointerId);setBoot(side,true);});
-    for(const name of ['pointerup','pointercancel','lostpointercapture'])control.addEventListener(name,()=>setBoot(side,false));
-  }
-  const keys=e=>{
-    const side=e.code==='ArrowLeft'||e.code==='KeyA'?0:e.code==='ArrowRight'||e.code==='KeyD'?1:-1;
-    if(side<0)return;
-    if(e.target?.matches?.('input,select,textarea'))return;
-    e.preventDefault();setBoot(side,e.type==='keydown');
-  };
-  window.addEventListener('keydown',keys);
-  window.addEventListener('keyup',keys);
-  window.addEventListener('blur',()=>{setBoot(0,false);setBoot(1,false);});
   const dialog = q('#fc-menu-dialog');
   q('.fc-menu').onclick = () => { q('#fc-menu-audio').append(q('#fp-audio')); dialog.showModal(); };
   dialog.addEventListener('close',()=>{if(!q('.fc-setup').hidden)q('.fp-actions').append(q('#fp-audio'));}); q('#fc-close').onclick = () => dialog.close();
   const visibility = () => { if (!document.hidden) poll(); };
   document.addEventListener('visibilitychange',visibility);
   pollTimer = setInterval(poll,250); draw();
-  const dispose = () => { stopped = true; cancelAnimationFrame(frame); clearInterval(pollTimer); document.removeEventListener('visibilitychange',visibility); view?.dispose(); audio.dispose(); window.removeEventListener('keydown',keys);window.removeEventListener('keyup',keys); };
+  const dispose = () => { stopped = true; cancelAnimationFrame(frame); clearInterval(pollTimer); document.removeEventListener('visibilitychange',visibility); view?.dispose(); audio.dispose(); };
   window.addEventListener('pagehide',event=>{if(!event.persisted)dispose();});
   if (import.meta.env.DEV && new URLSearchParams(location.search).has('qa')) window.__crash = {ready:true,snapshot:()=>round ? {...round} : null,get view(){return view;},get source(){return authority;},audio,dispose,setNextPracticeCrash(value){if(Number.isFinite(value)&&value>=1&&value<=100)nextPracticeCrash=value;}};
 }
