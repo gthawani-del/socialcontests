@@ -123,7 +123,7 @@ export function createAudio(root) {
     played++;
   }
   return {
-    update(events,state){if(state)playing=state.state==='active'&&!state.paused;ambience();for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
+    update(events,state){if(state){playing=state.state==='active'&&!state.paused;if(state.state==='crashed'||state.state==='cashed_out')pendingStart=false;}ambience();for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
     reset(){playing=false;pendingStart=false;stopCrowd();crowdOffset=0;lastEvent=0;cooldowns.clear();stop();},
     metrics:()=>({muted,played,activeVoices:voices.size,crowd:!!crowdSource,crowdStatus:crowdError?'error':crowdBuffer?'ready':crowdLoad?'loading':'idle',crowdError,crowdDuration:crowdBuffer?.duration||0,crowdStarts,crowdLevel,crashClipsLoaded:[...clips.keys()],state:context?.state||'locked'}),
     dispose(){disposed=true;pendingStart=false;download.abort();stopCrowd();context?.removeEventListener('statechange',ambience);document.removeEventListener('visibilitychange',visibility);stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
