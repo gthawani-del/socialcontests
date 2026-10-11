@@ -4,6 +4,7 @@ export function createAudio(root) {
   let crowdBuffer,crowdSource,crowdGain,crowdLoad,crowdError=null,crowdLevel=0,crowdOffset=0,crowdStarted=0,crowdStarts=0;
   const download=new AbortController();
   const voices=new Set(),cooldowns=new Map(),clips=new Map();
+  let pendingStart=false;
   let clipLoadStarted=false;
   function loadCrashClips(){
     if(clipLoadStarted||!context)return;
@@ -12,7 +13,7 @@ export function createAudio(root) {
       fetch('/football-pinball/audio/'+file,{signal:download.signal})
         .then(response=>{if(!response.ok)throw Error('Audio HTTP '+response.status);return response.arrayBuffer();})
         .then(data=>context.decodeAudioData(data))
-        .then(buffer=>{if(!disposed)clips.set(type,buffer);})
+        .then(buffer=>{if(!disposed){clips.set(type,buffer);if(type==='CRASH_GAME_START'&&pendingStart){pendingStart=false;clip(type,.9);played++;}}})
         .catch(()=>{});
     }
   }
@@ -100,7 +101,7 @@ export function createAudio(root) {
     if(muted||!context||context.state!=='running'||document.hidden)return;
     const now=context.currentTime,minGap=type==='COLLISION'?.075:.04;
     if(now-(cooldowns.get(type)??-10)<minGap)return;cooldowns.set(type,now);
-    if(type==='CRASH_GAME_START'){if(clip(type,.9))played++;return;}
+    if(type==='CRASH_GAME_START'){if(clip(type,.9))played++;else pendingStart=true;return;}
     if(type==='CRASH_SOCCER_KICK'){if(clip(type,.9))played++;return;}
     switch(type){
       case 'PLAYER_KICK':voice(110,.09,'triangle',.19,0,55);voice(1000,.045,'noise',.08);break;
@@ -123,8 +124,8 @@ export function createAudio(root) {
   }
   return {
     update(events,state){if(state)playing=state.state==='active'&&!state.paused;ambience();for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
-    reset(){playing=false;stopCrowd();crowdOffset=0;lastEvent=0;cooldowns.clear();stop();},
+    reset(){playing=false;pendingStart=false;stopCrowd();crowdOffset=0;lastEvent=0;cooldowns.clear();stop();},
     metrics:()=>({muted,played,activeVoices:voices.size,crowd:!!crowdSource,crowdStatus:crowdError?'error':crowdBuffer?'ready':crowdLoad?'loading':'idle',crowdError,crowdDuration:crowdBuffer?.duration||0,crowdStarts,crowdLevel,crashClipsLoaded:[...clips.keys()],state:context?.state||'locked'}),
-    dispose(){disposed=true;download.abort();stopCrowd();context?.removeEventListener('statechange',ambience);document.removeEventListener('visibilitychange',visibility);stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
+    dispose(){disposed=true;pendingStart=false;download.abort();stopCrowd();context?.removeEventListener('statechange',ambience);document.removeEventListener('visibilitychange',visibility);stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
   };
 }
