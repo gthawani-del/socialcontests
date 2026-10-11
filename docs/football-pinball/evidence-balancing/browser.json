@@ -1,0 +1,38 @@
+{
+  "method": "Chromium mobile viewport, software GPU. Real CDP touch input with seeded ball-placement fixtures and manually stepped physics. Not physical-device performance, human balancing or speaker verification.",
+  "checks": [
+    {
+      "side": "left",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": 0,
+          "y": 2.200000047683716,
+          "z": 0
+        },
+        "minVz": -1.9991493225097656
+      },
+      "released": true,
+      "event": "touchEnd"
+    },
+    {
+      "side": "right",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": 0,
+          "y": 2.200000047683716,
+          "z": 0
+        },
+        "minVz": -1.994518518447876
+      },
+      "released": true,
+      "event": "touchCancel"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,267 @@
+{
+  "method": "Nine complete seeded classic PvP engine rounds. Idle, periodic and proximity-triggered automated blue inputs; CPU red. No score, ball, clock or state overrides. Diagnostic comparison, not human balancing or a phone performance benchmark.",
+  "results": [
+    {
+      "strategy": "idle",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 1
+      },
+      "maxHeight": 2.9636011123657227,
+      "maxCpuHold": 620,
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 4,
+        "KICKOFF": 4,
+        "COLLISION": 164,
+        "TARGET_HIT": 37,
+        "COMBO_CHANGED": 7,
+        "BALL_UNSTUCK": 3,
+        "FLIP_DOWN": 18,
+        "FLIP_UP": 18,
+        "HALFTIME": 1,
+        "PERFECT_KICK": 2,
+        "KEEPER_SAVE": 3,
+        "GOAL_SCORED": 1,
+        "BALL_OUT_OF_PLAY": 1,
+        "ROUND_ENDED": 1
+      }
+    },
+    {
+      "strategy": "idle",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 1
+      },
+      "maxHeight": 0.6296948790550232,
+      "maxCpuHold": 800,
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 3,
+        "KICKOFF": 3,
+        "COLLISION": 172,
+        "TARGET_HIT": 37,
+        "COMBO_CHANGED": 7,
+        "BALL_UNSTUCK": 3,
+        "FLIP_DOWN": 20,
+        "FLIP_UP": 20,
+        "HALFTIME": 1,
+        "PERFECT_KICK": 3,
+        "KEEPER_SAVE": 3,
+        "GOAL_SCORED": 1,
+        "ROUND_ENDED": 1
+      }
+    },
+    {
+      "strategy": "idle",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 1
+      },
+      "maxHeight": 0.6296948790550232,
+      "maxCpuHold": 840,
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 3,
+        "KICKOFF": 3,
+        "COLLISION": 169,
+        "TARGET_HIT": 44,
+        "COMBO_CHANGED": 9,
+        "BALL_UNSTUCK": 4,
+        "FLIP_DOWN": 15,
+        "FLIP_UP": 15,
+        "HALFTIME": 1,
+        "GOAL_SCORED": 1,
+        "PERFECT_KICK": 2,
+        "KEEPER_SAVE": 1,
+        "ROUND_ENDED": 1
+      }
+    },
+    {
+      "strategy": "periodic",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 0
+      },
+      "maxHeight": 4.6184773445129395,
+      "maxCpuHold": 240,
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 19,
+        "KICKOFF": 19,
+        "FLIP_DOWN": 1073,
+        "FLIP_UP": 1073,
+        "COLLISION": 535,
+        "PERFECT_KICK": 54,
+        "TARGET_HIT": 116,
+        "COMBO_CHANGED": 7,
+        "KEEPER_SAVE": 2,
+        "BALL_OUT_OF_PLAY": 17,
+        "HALFTIME": 1,
+        "ROUND_ENDED": 1
+      }
+    },
+    {
+      "strategy": "periodic",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 0
+      },
+      "maxHeight": 2.163320779800415,
+      "maxCpuHold": 240,
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 5,
+        "KICKOFF": 5,
+        "FLIP_DOWN": 1057,
+        "FLIP_UP": 1057,
+        "COLLISION": 444,
+        "PERFECT_KICK": 23,
+        "TARGET_HIT": 157,
+        "COMBO_CHANGED": 6,
+        "KEEPER_SAVE": 3,
+        "BALL_OUT_OF_PLAY": 3,
+        "HALFTIME": 1,
+        "ROUND_ENDED": 1
+      }
+    },
+    {
+      "strategy": "periodic",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 0
+      },
+      "maxHeight": 2.163320779800415,
+      "maxCpuHold": 1900,
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 6,
+        "KICKOFF": 6,
+        "FLIP_DOWN": 1068,
+        "FLIP_UP": 1068,
+        "COLLISION": 353,
+        "PERFECT_KICK": 22,
+        "TARGET_HIT": 106,
+        "COMBO_CHANGED": 11,
+        "KEEPER_SAVE": 7,
+        "BALL_OUT_OF_PLAY": 4,
+        "HALFTIME": 1,
+        "BALL_UNSTUCK": 4,
+        "ROUND_ENDED": 1
+      }
+    },
+    {
+      "strategy": "reactive",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 1,
+        "red": 0
+      },
+      "maxHeight": 1.707359790802002,
+      "maxCpuHold": 200,
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 8,
+        "KICKOFF": 8,
+        "FLIP_DOWN": 124,
+        "COLLISION": 389,
+        "PERFECT_KICK": 32,
+        "FLIP_UP": 124,
+        "TARGET_HIT": 54,
+        "COMBO_CHANGED": 23,
+        "BALL_UNSTUCK": 2,
+        "BALL_OUT_OF_PLAY": 5,
+        "HALFTIME": 1,
+        "KEEPER_SAVE": 18,
+        "GOAL_SCORED": 1,
+        "ROUND_ENDED": 1
+      }
+    },
+    {
+      "strategy": "reactive",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 1
+      },
+      "maxHeight": 6.613286018371582,
+      "maxCpuHold": 140,
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 11,
+        "KICKOFF": 11,
+        "FLIP_DOWN": 116,
+        "COLLISION": 408,
+        "PERFECT_KICK": 38,
+        "FLIP_UP": 116,
+        "TARGET_HIT": 86,
+        "COMBO_CHANGED": 23,
+        "BALL_UNSTUCK": 1,
+        "BALL_OUT_OF_PLAY": 8,
+        "HALFTIME": 1,
+        "KEEPER_SAVE": 7,
+        "GOAL_SCORED": 1,
+        "ROUND_ENDED": 1
+      }
+    },
+    {
+      "strategy": "reactive",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 0
+      },
+      "maxHeight": 2.6858203411102295,
+      "maxCpuHold": 200,
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 8,
+        "KICKOFF": 8,
+        "FLIP_DOWN": 88,
+        "COLLISION": 350,
+        "PERFECT_KICK": 29,
+        "FLIP_UP": 88,
+        "TARGET_HIT": 94,
+        "COMBO_CHANGED": 17,
+        "BALL_UNSTUCK": 1,
+        "HALFTIME": 1,
+        "BALL_OUT_OF_PLAY": 6,
+        "KEEPER_SAVE": 9,
+        "ROUND_ENDED": 1
+      }
+    }
+  ]
+}

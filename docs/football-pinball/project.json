@@ -1,30 +1,43 @@
 {
   "project_id": "football-pinball",
   "name": "Football Pinball",
-  "current_stage": "release_preparation",
-  "status": "four_modes_implemented_automated_qa_passed_release_gates_open",
+  "current_stage": "gameplay_validation",
+  "status": "gameplay_feedback_verified_release_pending",
   "decisions": [
     "User authorized all four variants after foundation",
     "Existing Vite/JS/Three stack retained",
     "Shared pinned Rapier3D engine120Hz; legacy2D foundation unchanged",
-    "Server-authoritative HTTP inputs/SSE snapshots; no database physics polling"
+    "Server-authoritative HTTP inputs/SSE snapshots; no database physics polling",
+    "Rules football-3d-6: corrected formation, 0.11 PvP ball radius and stationary-ball recovery in timed modes. Crash survival rules preserved."
   ],
   "bindings": {
     "repository": "gthawani-del/socialcontests",
-    "branch": "feature/football-pinball-foundation",
+    "branch": "fix/football-pvp-visual",
     "route": "/football-pinball"
   },
   "assets": {
-    "production": "12 independent Higgsfield3DJutsu/Blender GLBs with editable sources and verified browser imports",
+    "production": "PvP: boot construction revision 8 (recessed opening, fitted tongue/panels/laces), player construction revision 7 (shorter neck, shaped limbs, asymmetric pose). Other modes retain existing models.",
     "graybox": "procedural primitives",
-    "homepage": "reused /homepage/pin-foot.webp"
+    "homepage": "reused /homepage/pin-foot.webp",
+    "crowd": "Generated crowd texture on individually stepped 3D tiers, batched into two draw calls",
+    "shared_visual_kit": {
+      "materials": "Leather, cloth, brushed metal, black cabinet and team palette",
+      "lighting": "Directional key/fill/rim and custom reflection environment",
+      "shadows": "Contact shadows plus 2048/1024 dynamic shadow quality",
+      "stadium": "Parameterized tier builder independent of gameplay dimensions",
+      "adoption": "PvP first; available to the other three modes",
+      "cabinet": "Reusable profiled chassis and raised side/rear walls; PvP adoption first"
+    }
   },
   "issues": [
+    "User visual approval for rebuilt PvP remains pending. Other three modes and lobby still need their own visual rebuild; this revision does not claim all four references are complete.",
     "Physical iPhone/Android and Safari QA unavailable",
     "Software GPU benchmark is slow; physical hardware performance unverified",
     "Public authoritative hosting/TLS/identity/persistent keys/results not configured",
     "Reward exchange, badge and cosmetic unlock rules unspecified",
-    "Global authenticated leaderboard persistence pending"
+    "Global authenticated leaderboard persistence pending",
+    "Human gameplay balancing remains unverified: periodic-input simulations are not player testing.",
+    "Country/club selection remains CPU-only; online identity synchronization pending."
   ],
   "qa": {
     "unit_tests": 189,
@@ -35,16 +48,28 @@
       "evidence-modes/results.json",
       "evidence-online/results.json",
       "evidence-modes/performance.json",
-      "evidence-ui/results.json"
-    ]
+      "evidence-ui/results.json",
+      "evidence-visual/results.json",
+      "evidence-visual/reference-results.json",
+      "evidence-visual/pvp-asset-results.json",
+      "evidence-visual/dial-results.json",
+      "evidence-feedback/results.json",
+      "evidence-visual/full-rounds.json"
+    ],
+    "latest_scoped_tests": 56,
+    "full_round_simulations": 12
   },
   "release": {
+    "scope": "current PvP visual revision",
     "merged": false,
     "deployed": false,
-    "approval_required": true
+    "approval_required": true,
+    "base_main": "9d9ebb3db6e4b0497885d6da5c7bb0fb841279b5"
   },
   "lessons": [
     "Verify real repository architecture before applying starter pack assumptions",
-    "Vite preview navigation needs directory slash on multi-page entry"
-  ]
+    "Vite preview navigation needs directory slash on multi-page entry",
+    "Functional QA and successful GLB loading do not establish visual fidelity. Inspect real browser frames beside supplied references before release."
+  ],
+  "visual_checklist": "visual-checklist.md"
 }

@@ -1,5 +1,5 @@
 import { BOOTS, RAILS } from "./foundation.js";
-export const RULE_VERSION = "football-3d-1";
+export const RULE_VERSION = "football-3d-7";
 export const PHYSICS = Object.freeze({
   hz: 120,
   step: 1 / 120,
@@ -20,6 +20,9 @@ export const PHYSICS = Object.freeze({
 export const MODE_IDS = ["pvp", "crash", "penalty", "arcade-rush"];
 export const MODE_RULES = {
   pvp: {
+    ballRadius: 0.11,
+    maxBallLift: 2.2,
+    cpu: { holdTicks: 12, returnTicks: 12, reactionTicks: { easy: 36, medium: 20, hard: 10 } },
     quickGoals: 3,
     halfTicks: 14400,
     comboTicks: 600,
@@ -121,8 +124,8 @@ export function geometryFor(mode) {
       (b) => ({
         ...b,
         ...(mode === "penalty" ? { x: Math.sign(b.x) * 1.65, y: -2.4 } : {}),
-        length: 1.55,
-        radius: 0.17,
+        length: mode === "pvp" ? 1.86 : 1.55,
+        radius: mode === "pvp" ? 0.35 : 0.17,
         height: 0,
         thickness: 0.26,
       }),
@@ -239,36 +242,40 @@ export function geometryFor(mode) {
                     type: "player",
                     role: y < 0 ? "defender" : "striker",
                     team: y < 0 ? "blue" : "red",
-                    x: x * 1.65,
-                    y: y * 1.7,
-                    radius: 0.32,
-                    height: 1.01,
+                    x: x * 1.4,
+                    y: y * 1.65,
+                    radius: 0.38,
+                    height: 1.45,
                   })),
                 ),
+                // Red No.10 leads its wings toward midfield; blue No.8 sits behind its wings.
+                // These shared target coordinates also define the collision bodies.
+                ...[-1,1].map(sign=>({id:`player-center-${sign}`,type:'player',role:'midfielder',team:sign<0?'blue':'red',x:0,y:sign<0?-2.4:1.2,radius:.38,height:1.45})),
                 {
                   id: "skill",
                   type: "skill",
-                  x: -1.45,
+                  x: -2.1,
                   y: 0,
-                  radius: 0.3,
-                  height: 0.12,
+                  radius: 0.4,
+                  height: 0.28,
                 },
                 {
                   id: "pass",
                   type: "pass",
-                  x: 1.45,
+                  x: 2.1,
                   y: 0,
-                  radius: 0.3,
-                  height: 0.12,
+                  radius: 0.4,
+                  height: 0.28,
                 },
                 {
                   id: "combo",
                   type: "combo",
-                  x: 0,
-                  y: 1.45,
+                  x: -2.3,
+                  y: -1.4,
                   radius: 0.3,
-                  height: 0.12,
+                  height: 0.22,
                 },
+                {id:'combo-right',type:'combo',x:2.3,y:-1.4,radius:.3,height:.22},
               ]
             : [],
   };

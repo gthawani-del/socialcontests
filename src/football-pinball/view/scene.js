@@ -1,5 +1,10 @@
+import { createMatchEffects } from './match-effects.js';
 import * as THREE from "three";
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+import { buildPvpArt } from "./pvp-art.js";
+import { createFootballVisualKit } from "./visual-kit.js";
 
 const PATH = "/models/football/";
 const assetNames = [
@@ -24,22 +29,28 @@ const colors = {
 };
 
 export async function createMatchView(container, mode) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: import.meta.env.DEV && new URLSearchParams(location.search).has("qa") });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
   renderer.setClearColor("#0d1821");
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMappingExposure = mode === "pvp" ? .92 : 1.1;
+  renderer.shadowMap.enabled = mode === "pvp";
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   container.append(renderer.domElement);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 80);
-  const ambient = new THREE.HemisphereLight(0xe1efff, 0x263e32, 2);
-  scene.add(ambient);
-  const key = new THREE.DirectionalLight(0xfff0d9, 3);
-  key.position.set(-5, 10, 6);
-  scene.add(key);
-  const fill = new THREE.DirectionalLight(0xbdd8ff, 1);
-  fill.position.set(5, 6, -5);
-  scene.add(fill);
+  const effects = createMatchEffects(scene);
+  const camera = new THREE.PerspectiveCamera(mode === "pvp" ? 45 : 35, 1, 0.1, 80);
+  const visualKit = mode === "pvp" ? createFootballVisualKit(scene, renderer) : null;
+  const art = visualKit ? buildPvpArt(scene, renderer, visualKit) : null;
+  if (art) { scene.background = new THREE.Color("#080e18"); scene.fog = new THREE.Fog("#080e18", 24, 42); }
+  if (!visualKit) {
+    const ambient = new THREE.HemisphereLight(0xe1efff, 0x263e32, 2);
+    const key = new THREE.DirectionalLight(0xfff0d9, 3);
+    key.position.set(-5, 10, 6);
+    const fill = new THREE.DirectionalLight(0xbdd8ff, 1);
+    fill.position.set(5, 6, -5);
+    scene.add(ambient, key, fill);
+  }
   const bounds = new Map();
   function cleanAsset(root) {
     const remove = [];
@@ -49,6 +60,10 @@ export async function createMatchView(container, mode) {
     });
     remove.forEach((o) => o.removeFromParent());
     return root;
+  }
+  function batchModel(root){
+    root.updateMatrixWorld(true);const groups=new Map();root.traverse(o=>{if(!o.isMesh||Array.isArray(o.material))return;let g=o.geometry.clone().applyMatrix4(o.matrixWorld);if(g.index){const flat=g.toNonIndexed();g.dispose();g=flat;}if(!g.attributes.uv)g.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(g.attributes.position.count*2),2));if(!groups.has(o.material))groups.set(o.material,[]);groups.get(o.material).push(g);});
+    const batched=new THREE.Group();for(const [material,parts] of groups){const geometry=mergeGeometries(parts,false);if(!geometry)throw Error('Model batching failed');batched.add(new THREE.Mesh(geometry,material));parts.forEach(g=>g.dispose());}root.traverse(o=>o.geometry?.dispose());return batched;
   }
   function measure(name, root) {
     const box = new THREE.Box3().setFromObject(root, true);
@@ -65,8 +80,9 @@ export async function createMatchView(container, mode) {
   await Promise.all(
     assetNames.map(async (name) => {
       try {
-        const gltf = await loader.loadAsync(`${PATH}${name}.glb`);
-        const root = cleanAsset(gltf.scene);
+        const gltf = await loader.loadAsync(`${PATH}${mode === "pvp" && name === "boot" ? "boot-reference" : mode === "pvp" && name === "player-bumper" ? "player-reference" : name}.glb`);
+        let root = cleanAsset(gltf.scene);
+        if(art && ["boot","player-bumper"].includes(name))root=batchModel(root);
         measure(name, root);
         models.set(name, root);
       } catch {
@@ -74,6 +90,7 @@ export async function createMatchView(container, mode) {
       }
     }),
   );
+  await art?.ready;
   const materials = new Map();
   function mat(color, metalness = 0) {
     const key = `${color}-${metalness}`;
@@ -104,13 +121,41 @@ export async function createMatchView(container, mode) {
           : o.material.clone();
       }
     });
+    if (art) clone.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;for(const m of Array.isArray(o.material)?o.material:[o.material]){if(/Team_Primary/.test(m.name)){m.metalness=name==='boot'?.5:.12;m.roughness=name==='boot'?.25:.58;}if(/Silver|Metal|Trim/.test(m.name)){m.metalness=.9;m.roughness=.23;}}}});
     tint(clone, team);
+    if(visualKit) visualKit.finish(clone,name,team);
+    if(art) art.dress(clone,name,team);
     clone.userData.assetName = name;
     clone.userData.team = team;
     if (!instances.has(name)) instances.set(name, new Set());
     instances.get(name).add(clone);
     parent.add(clone);
     return clone;
+  }
+  function jersey(root, team) {
+    const kit=container.closest('#footballApp')?.footballKits?.[team];
+    const primary=kit?.primary || colors[team], secondary=kit?.secondary || primary;
+    const key=primary+secondary+(kit?.pattern||'stripes');
+    if(root.userData.jerseyKey===key)return;
+    root.userData.jerseyKey=key;
+    root.traverse(o=>{if(!o.isMesh)return;
+      for(const material of Array.isArray(o.material)?o.material:[o.material]) {
+        if(material.name==='Team_Primary') {
+          material.color.set(primary);
+          material.onBeforeCompile=shader=>{
+            shader.uniforms.kitSecondary={value:new THREE.Color(secondary)};
+            shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 kitPosition;').replace('#include <begin_vertex>','#include <begin_vertex>\nkitPosition=position;');
+            shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 kitPosition; uniform vec3 kitSecondary;').replace('#include <color_fragment>',`#include <color_fragment>\ndiffuseColor.rgb=mix(diffuseColor.rgb,kitSecondary,${kit?.pattern==='checks'?'mod(floor(kitPosition.x*18.0)+floor(kitPosition.y*18.0),2.0)':'step(0.5,fract(kitPosition.x*18.0))'});`);
+          };
+          material.customProgramCacheKey=()=>key;
+          material.needsUpdate=true;
+        }
+        if(o.userData.shirtNumber) {
+          const c=new THREE.Color(primary);
+          material.color.set(c.r*.2126+c.g*.7152+c.b*.0722>.45?'#15202b':'#ffffff');
+        }
+      }
+    });
   }
   function tint(root, team) {
     if (!team) return;
@@ -140,7 +185,7 @@ export async function createMatchView(container, mode) {
     tossToken = null,
     coinFace = null;
   let fieldModel = null;
-  if (models.has("field")) fieldModel = model("field");
+  if (models.has("field")) { fieldModel = model("field"); if (art) fieldModel.visible=false; }
   else {
     const field = mesh(new THREE.BoxGeometry(6.4, 0.18, 11.65), "#183e30");
     field.position.y = -0.13;
@@ -198,6 +243,10 @@ export async function createMatchView(container, mode) {
     slowFrames = 0;
   function applyQuality(low) {
     reduced = low;
+    effects.setReduced(low);
+    art?.setReduced(low);
+    visualKit?.setReduced(low);
+    if(art) renderer.shadowMap.enabled=true;
     renderer.setPixelRatio(low ? 0.75 : Math.min(devicePixelRatio, 1.5));
     for (const tier of instances.get("stadium-tier") || []) tier.visible = !low;
     resize();
@@ -209,17 +258,47 @@ export async function createMatchView(container, mode) {
     camera.aspect = width / Math.max(1, height);
     const centerY = latest?.geometry.fieldCenterY || 0;
     const distance = Math.max(
-      mode === "penalty" ? 16 : 18,
-      (mode === "penalty" ? 7.5 : 9) / camera.aspect,
+      mode === "penalty" ? 16 : art ? 8 : 18,
+      (mode === "penalty" ? 7.5 : art ? 6.4 : 9) / camera.aspect,
     );
     camera.position.set(
       0,
       distance,
-      -centerY + distance * 0.32 * (viewTeam === "red" ? -1 : 1),
+      -centerY + distance * (art ? .7 : .32) * (viewTeam === "red" ? -1 : 1),
     );
     camera.up.set(0, 1, 0);
-    camera.lookAt(0, 0, -centerY);
+    camera.lookAt(0, 0, -centerY + (art ? (viewTeam === "red" ? -1.5 : 1.5) : 0));
     camera.updateProjectionMatrix();
+    if(art){
+      // Frame the physical cabinet and elevated goal crossbars, not the crowd.
+      // Refine distance rather than accepting the old 2.5% zoom-out overshoot.
+      const direction = viewTeam === "red" ? -1 : 1;
+      const anchors = [];
+      for (const x of [-3.85,3.85]) for (const z of [-6.1,6.1])
+        for (const y of [0,1.02]) anchors.push(new THREE.Vector3(x,y,z));
+      for (const x of [-1.23,1.23]) for (const z of [-5.15,5.15])
+        anchors.push(new THREE.Vector3(x,1.28,z));
+      function fits(distance) {
+        camera.position.set(0,distance,distance*.5*direction);
+        camera.lookAt(0,0,.5*direction);
+        camera.updateMatrixWorld();
+        return anchors.every(point => {
+          const p = point.clone().project(camera);
+          return Math.abs(p.x) <= .97 && Math.abs(p.y) <= .97 && p.z > -1 && p.z < 1;
+        });
+      }
+      let near = 5, far = 30;
+      for (let step=0;step<18;step++) {
+        const middle = (near+far)/2;
+        if (fits(middle)) far = middle; else near = middle;
+      }
+      fits(far);
+      // Keep the near cabinet edge beside the boot controls on tall screens.
+      // Shift the projection, preserving model proportions and physics coordinates.
+      const bottom = Math.min(...anchors.map(point => point.clone().project(camera).y));
+      camera.projectionMatrix.elements[9] += bottom + .94;
+      camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+    }
   }
   const observer = new ResizeObserver(resize);
   observer.observe(container);
@@ -235,7 +314,7 @@ export async function createMatchView(container, mode) {
       fieldModel.position.z = -(s.geometry.fieldCenterY + 0.3);
     }
     resize();
-    for (const rail of s.geometry.rails) {
+    for (const rail of art ? [] : s.geometry.rails) {
       const m = model(
         "rail",
         mode === "pvp"
@@ -275,14 +354,14 @@ export async function createMatchView(container, mode) {
           -sign * s.geometry.goalPlane,
         );
       }
-      line([
+      if (!art) line([
         [-1.7, sign * 4.95],
         [-1.7, sign * 3.95],
         [1.7, sign * 3.95],
         [1.7, sign * 4.95],
       ]);
     }
-    for (const x of [-1, 1]) {
+    for (const x of art ? [] : [-1, 1]) {
       for (let i = 0; i < 4; i++) {
         const tier = model("stadium-tier");
         if (tier) {
@@ -319,7 +398,9 @@ export async function createMatchView(container, mode) {
       if (!m) {
         m = new THREE.Group();
         scene.add(m);
-        if (!model("boot", boot.team, m)) {
+        const bootModel=model("boot", boot.team, m);
+        if(bootModel && art) {bootModel.scale.setScalar(1.2);visualKit.contact(m,2.3,.95,.81,-.067);}
+        if (!bootModel) {
           const proxy = mesh(
             new THREE.CapsuleGeometry(
               boot.radius || 0.16,
@@ -350,11 +431,15 @@ export async function createMatchView(container, mode) {
             new THREE.SphereGeometry(ball.radius || 0.13, 16, 12),
             "#f5f2de",
           );
+        if(art && m.userData.assetName) {
+          const size = bounds.get("football").size;
+          m.scale.setScalar((ball.radius * 2) / Math.max(size.x,size.y,size.z));
+        }
         ballMeshes.set(ball.id, m);
       }
       m.visible = true;
       m.position.set(ball.x, ball.height ?? 0.13, -ball.y);
-      m.rotation.set(-ball.y / 0.13, 0, -ball.x / 0.13);
+      m.rotation.set(-ball.y / ball.radius, 0, -ball.x / ball.radius);
     }
     for (const [id, m] of ballMeshes)
       if (!live.has(id)) {
@@ -380,7 +465,7 @@ export async function createMatchView(container, mode) {
               ? "triangle-target"
               : "round-target";
         m =
-          model(name, target.team) ||
+          model(name, target.team || (art ? (target.type === "pass" ? "red" : "blue") : undefined)) ||
           mesh(
             new THREE.CylinderGeometry(target.radius, target.radius, 0.18, 20),
             target.team ? colors[target.team] : colors.gold,
@@ -396,6 +481,12 @@ export async function createMatchView(container, mode) {
         m.position.y = -b.min.y * m.scale.y;
       } else m.position.y = target.height / 2;
       if (m.userData.team !== target.team) tint(m, target.team);
+      if (art && target.type === "player" && !m.userData.numbered) {
+        const center=target.id.includes("center");
+        const number=target.team==='blue' ? (center?'8':target.x<0?'4':'6') : (center?'10':target.x<0?'7':'11');
+        art.numberPlayer(m,number);
+      }
+      if (art && target.type === "player") jersey(m,target.team);
       if (target.type === "player") m.rotation.y = target.y < 0 ? Math.PI : 0;
       if (target.type !== "player") {
         let label = labels.get(target.id);
@@ -406,9 +497,9 @@ export async function createMatchView(container, mode) {
           labels.set(target.id, label);
         }
         const titles = {
-          skill: "SKILL",
-          pass: "PASS",
-          combo: "COMBO",
+          skill: art ? "★\nSKILL" : "SKILL",
+          pass: art ? "↑\nPASS" : "PASS",
+          combo: art ? "×2\nCOMBO" : "COMBO",
           time: "+10s",
           multiball: "MULTIBALL",
           goal: "GOAL",
@@ -417,7 +508,7 @@ export async function createMatchView(container, mode) {
         label.textContent = titles[target.type] || String(target.points || "•");
         const point = new THREE.Vector3(
           target.x,
-          target.height + 0.09,
+          target.height + (art ? .015 : .09),
           -target.y,
         ).project(camera);
         label.style.left = `${(point.x + 1) * 50}%`;
@@ -428,7 +519,7 @@ export async function createMatchView(container, mode) {
       let m = keeperMeshes.get(keeper.id);
       if (!m) {
         m =
-          model("keeper", keeper.team) ||
+          model(art ? "player-bumper" : "keeper", keeper.team) ||
           mesh(
             new THREE.BoxGeometry(keeper.width, keeper.height, 0.15),
             colors[keeper.team] || colors.red,
@@ -436,10 +527,17 @@ export async function createMatchView(container, mode) {
         keeperMeshes.set(keeper.id, m);
       }
       m.position.set(keeper.x, 0, -keeper.y);
-      if (m.userData.assetName)
+      if (m.userData.assetName && art) {
+        // A player's round base must not be flattened to the keeper's box collider.
+        const b=bounds.get(m.userData.assetName);
+        m.scale.setScalar(keeper.height/b.size.y);
+        m.position.y=-b.min.y*m.scale.y;
+      } else if (m.userData.assetName)
         fit(m, keeper.width, keeper.height, keeper.depth || 0.22);
       else m.position.y = keeper.height / 2;
       if (m.userData.team !== keeper.team) tint(m, keeper.team);
+      if(art && !m.userData.numbered) art.numberPlayer(m,"1");
+      if(art) jersey(m,keeper.team);
       m.rotation.y = keeper.y < 0 ? Math.PI : 0;
     }
     // Coin animation is cosmetic and derives its final face from authoritative toss state.
@@ -475,6 +573,7 @@ export async function createMatchView(container, mode) {
       slowFrames = delta > 45 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
       if (slowFrames >= 20) applyQuality(true);
     }
+    effects.update(s);
     renderer.render(scene, camera);
   }
   return {
@@ -492,8 +591,11 @@ export async function createMatchView(container, mode) {
     },
     getSnapshot: () => latest,
     metrics: () => ({
+      effects: effects.metrics(),
+      jerseys: Object.fromEntries([...targetMeshes,...keeperMeshes].filter(([,m])=>m.userData.jerseyKey).map(([id,m])=>[id,{team:m.userData.team,colours:m.userData.jerseyKey}])),
+      bootTeams: Object.fromEntries([...bootMeshes].map(([id,m])=>[id,m.userData.team])),
       assetsLoaded: [...models.keys()],
-      failedAssets: [...failedAssets],
+      failedAssets: [...failedAssets, ...(art?.failedAssets || [])],
       ...renderer.info.memory,
       drawCalls: renderer.info.render.calls,
       quality: reduced ? "low" : quality,
@@ -550,6 +652,9 @@ export async function createMatchView(container, mode) {
     dispose() {
       disposed = true;
       observer.disconnect();
+      effects.dispose();
+      art?.dispose();
+      visualKit?.dispose();
       const geometries = new Set(),
         mats = new Set();
       scene.traverse((o) => {

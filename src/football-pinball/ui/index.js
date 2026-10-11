@@ -7,7 +7,7 @@ export const MODE_UI = Object.freeze({
     description: "Defend your goal. Find the opening.",
     accent: "blue",
     icon: "match",
-    help: "Use the left and right boots to strike the ball. A goal counts only when the whole ball crosses the goal line. The view follows your defending end after side selection and halftime.",
+    help: "Use the left and right boots to strike the ball. A goal counts only when the whole ball crosses the goal line. The view follows your defending end after side selection and halftime. A ball resting for four seconds receives a small automatic nudge without bonus points.",
   },
   penalty: {
     title: "Penalty Shootout",
@@ -31,7 +31,7 @@ export const MODE_UI = Object.freeze({
     description: "90 seconds. Make every hit count.",
     accent: "green",
     icon: "clock",
-    help: "Hit targets, build combos and score before time runs out. A drain relaunches the ball while the timer continues. Time targets and multiball extend your scoring opportunities.",
+    help: "Hit targets, build combos and score before time runs out. A drain relaunches the ball while the timer continues. Time targets and multiball extend your scoring opportunities. A ball resting for four seconds receives a small automatic nudge without bonus points.",
   },
 });
 const symbols = {
@@ -79,7 +79,7 @@ const stat = (id, label, value, extra = "") =>
   `<div class="fp-stat ${extra}"><span>${label}</span><strong id="${id}">${value}</strong></div>`;
 function hud(mode) {
   if (mode === "pvp")
-    return `${stat("blueScore", "BLUE", "0", "fp-blue")}${stat("fp-time", "MATCH", "—")}${stat("redScore", "RED", "0", "fp-red")}`;
+    return `<div class="fp-stat fp-blue"><span class="fp-team-name">PLAYER 1<small>Blue team</small></span><strong id="blueScore">0</strong></div>${stat("fp-time", "MATCH", "—")}<div class="fp-stat fp-red"><strong id="redScore">0</strong><span class="fp-team-name">PLAYER 2<small>Red team</small></span></div>`;
   if (mode === "crash")
     return `${stat("fp-multiplier", "SURVIVAL", "1.00×")}${stat("fp-base", "BASE POINTS", "0")}${stat("fp-bank-value", "BANK VALUE", "0")}${stat("fp-combo", "COMBO", "1×")}`;
   if (mode === "penalty")
@@ -96,6 +96,16 @@ export function renderGameShell(
   root.className = `fp-game fp-accent-${data.accent}`;
   root.dataset.mode = mode;
   root.innerHTML = `${header(mode)}<div class="fp-mode-heading"><h1>${data.title}</h1><span id="fp-session-label">LOCAL PLAY</span></div><section class="fp-hud" aria-label="Game statistics">${hud(mode)}</section><div id="fp-arena"><p id="fp-loading" role="status">Preparing physics…</p></div><p id="fp-status" role="status">Preparing game…</p><section class="fp-controls" aria-label="Boot controls">${mode === "pvp" && localControls ? '<div class="fp-opponent-controls"><button data-boot="red-left" aria-pressed="false" disabled>Red left <kbd>J</kbd></button><button data-boot="red-right" aria-pressed="false" disabled>Red right <kbd>L</kbd></button></div>' : ""}<div><button data-boot="blue-left" aria-pressed="false" disabled><span aria-hidden="true">↖</span> Left boot <kbd>A</kbd></button><button data-boot="blue-right" aria-pressed="false" disabled>Right boot <span aria-hidden="true">↗</span> <kbd>D</kbd></button></div></section><nav class="fp-actions" aria-label="Game actions"><button id="fp-serve" disabled>Start</button>${mode === "crash" ? '<button id="fp-bank" disabled>Bank Points</button>' : ""}<button id="fp-pause" disabled>Pause</button><button id="fp-reset" disabled>Restart</button></nav><details class="fp-how"><summary>Rules & controls</summary><p>${data.help}</p><p>Hold the left or right boot, then release. Keyboard: A / D.${localControls ? " Red team: J / L." : ""} Pause freezes play.</p></details><section id="fp-results" class="fp-results" aria-label="Match results" hidden></section>`;
+  if(mode === 'pvp') root.querySelectorAll('[data-boot]').forEach((button,index)=>{
+    const name=button.dataset.boot.endsWith('left')?'Left boot':'Right boot';
+    button.innerHTML=`<svg class="fp-boot-icon" viewBox="0 0 48 32" aria-hidden="true"><path d="M5 5h10l6 10 18 5q5 2 4 7H5q-3-7 0-22Z" fill="currentColor"/><path d="m17 11 7-2m-4 7 7-2m-2 7 7-2M7 27h33" fill="none" stroke="#0b1725" stroke-width="2"/></svg><span>Tap to flip<small>${name}</small></span>`;
+  });
+  if(mode==='pvp'){
+    const arena=root.querySelector('#fp-arena');const controls=root.querySelector('.fp-controls');arena.append(controls,root.querySelector('#fp-status'));
+    const legend=document.createElement('section');legend.className='fp-table-guide';legend.setAttribute('aria-label','Table guide');
+    legend.innerHTML=[['Boots','Tap to strike'],['Players','Deflect & pass'],['Skill','Trigger a skill'],['Combo','Build a streak'],['Pass','Redirect ball']].map(([name,help])=>`<div><strong>${name}</strong><small>${help}</small></div>`).join('');
+    root.querySelector('.fp-actions').after(legend);
+  }
   return {
     arena: root.querySelector("#fp-arena"),
     status: root.querySelector("#fp-status"),

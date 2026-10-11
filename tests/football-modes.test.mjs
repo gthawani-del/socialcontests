@@ -511,3 +511,38 @@ test("Penalty dedicated lane uses configured near drain and actual boot contact"
     e.dispose();
   }
 });
+
+for (const difficulty of ['easy', 'medium', 'hard'])
+  test(`CPU ${difficulty} releases and rearms a boot while the ball stays nearby`, async () => {
+    const e = await setup({ opponent: 'cpu', difficulty });
+    try {
+      const boot = e.boots.find(b => b.team === 'red');
+      e.balls[0].body.setTranslation({x:boot.x, y:.11, z:-boot.y}, true);
+      const strokes=[];let held=0,maxHeld=0;
+      // Isolate CPU decisions; do not step physics, keeping the proximity stimulus constant.
+      for (let i=0;i<600;i++) {
+        e.tick++;e.cpu();held=boot.pressed?held+1:0;maxHeld=Math.max(maxHeld,held);
+      }
+      for (const event of e.events)
+        if(event.type==='FLIP_DOWN'&&event.actorId===boot.id)strokes.push(event.tick);
+      assert(strokes.length>=3,'CPU must take repeated strokes');
+      assert(maxHeld<=12,'CPU must release within 100ms');
+      assert(strokes.slice(1).every((tick,i)=>tick-strokes[i]>=24),'allow the boot to return');
+    } finally {e.dispose();}
+  });
+
+test('PvP boot contact limits excessive lift without removing forward motion', async () => {
+  const e=await setup();
+  try {
+    const boot=e.boots.find(b=>b.id==='blue-left');
+    place(e,{x:boot.x+Math.cos(boot.rest)*.95,y:boot.y+Math.sin(boot.rest)*.95+.31,height:.15});
+    e.setInput(boot.id,true);let contact=false;
+    for(let i=0;i<12;i++){
+      const before=e.events.length;e.step();
+      if(e.events.slice(before).some(v=>v.type==='COLLISION'&&v.targetId===boot.id)){
+        contact=true;const v=e.balls[0].body.linvel();assert(v.y<=2.20001);assert(v.z<0);break;
+      }
+    }
+    assert(contact,'must exercise real Rapier contact');
+  } finally {e.dispose();}
+});

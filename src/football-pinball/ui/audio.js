@@ -1,71 +1,62 @@
-/** Short synthesized match feedback. No external audio downloads. */
+/** Event-driven synthesized match sounds; no downloads or recurring API costs. */
 export function createAudio(root) {
-  let context,
-    muted = true,
-    lastEvent = 0;
-  try {
-    muted = localStorage.getItem("football-audio") !== "on";
-  } catch {}
-  const button = document.createElement("button");
-  button.id = "fp-audio";
-  button.type = "button";
-  root.querySelector(".fp-actions").append(button);
-  const activate = () => {
-    if (!muted) {
-      context ??= new (window.AudioContext || window.webkitAudioContext)();
-      context.resume();
+  let context,master,muted=true,lastEvent=0,played=0;
+  const voices=new Set(),cooldowns=new Map();
+  try{muted=localStorage.getItem('football-audio')!=='on';}catch{}
+  const button=document.createElement('button');button.id='fp-audio';button.type='button';root.querySelector('.fp-actions').append(button);
+  const label=()=>{button.textContent=muted?'Sound off':'Sound on';button.setAttribute('aria-pressed',String(!muted));};
+  const stop=()=>{for(const node of voices){try{node.stop();}catch{}}voices.clear();};
+  function activate(){
+    if(muted)return;
+    const Audio=window.AudioContext||window.webkitAudioContext;
+    if(!Audio){muted=true;button.disabled=true;label();return;}
+    context??=new Audio();
+    if(!master){master=context.createGain();master.gain.value=.35;master.connect(context.destination);}
+    context.resume().catch(()=>{});
+  }
+  root.addEventListener('pointerdown',activate);root.addEventListener('keydown',activate);
+  label();button.onclick=()=>{muted=!muted;if(muted)stop();else activate();try{localStorage.setItem('football-audio',muted?'off':'on');}catch{}label();};
+  function voice(frequency,duration=.1,kind='sine',volume=.15,delay=0,end=frequency){
+    if(voices.size>=20)return;
+    const start=context.currentTime+delay,gain=context.createGain();let source;
+    if(kind==='noise'){
+      source=context.createBufferSource();const buffer=context.createBuffer(1,Math.ceil(context.sampleRate*duration),context.sampleRate),data=buffer.getChannelData(0);
+      for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*.65;
+      source.buffer=buffer;const filter=context.createBiquadFilter();filter.type='lowpass';filter.frequency.value=frequency;source.connect(filter);filter.connect(gain);
+      source.onended=()=>{voices.delete(source);source.disconnect();filter.disconnect();gain.disconnect();};
+    }else{
+      source=context.createOscillator();source.type=kind;source.frequency.setValueAtTime(frequency,start);source.frequency.exponentialRampToValueAtTime(Math.max(20,end),start+duration);source.connect(gain);
+      source.onended=()=>{voices.delete(source);source.disconnect();gain.disconnect();};
     }
-  };
-  root.addEventListener("pointerdown", activate);
-  const label = () => {
-    button.textContent = muted ? "Sound off" : "Sound on";
-    button.setAttribute("aria-pressed", String(!muted));
-  };
-  label();
-  button.onclick = () => {
-    muted = !muted;
-    if (!muted) {
-      context ??= new (window.AudioContext || window.webkitAudioContext)();
-      context.resume();
+    gain.gain.setValueAtTime(.001,start);gain.gain.linearRampToValueAtTime(volume,start+.006);gain.gain.exponentialRampToValueAtTime(.001,start+duration);gain.connect(master);
+    voices.add(source);source.start(start);source.stop(start+duration);
+  }
+  function sound(type){
+    if(muted||!context||context.state!=='running'||document.hidden)return;
+    const now=context.currentTime,minGap=type==='COLLISION'?.075:.04;
+    if(now-(cooldowns.get(type)??-10)<minGap)return;cooldowns.set(type,now);
+    switch(type){
+      case 'FLIP_DOWN':voice(180,.045,'triangle',.12,0,75);break;
+      case 'COLLISION':voice(160,.045,'sine',.13,0,65);break;
+      case 'BALL_UNSTUCK':voice(440,.12,'sine',.1);break;
+      case 'TARGET_HIT':voice(680,.09,'sine',.15,0,1000);break;
+      case 'PERFECT_KICK':voice(260,.12,'triangle',.14,0,650);voice(1800,.05,'noise',.06);break;
+      case 'KEEPER_SAVE':voice(650,.12,'noise',.2);voice(100,.1,'sine',.12);break;
+      case 'KICKOFF':case 'HALFTIME':voice(2300,.18,'sine',.045);voice(2500,.15,'sine',.035,.22);break;
+      case 'GOAL_SCORED':
+        [523,659,784,1047].forEach((f,i)=>voice(f,.22,'triangle',.15,i*.11));voice(900,.7,'noise',.12);break;
+      case 'BANK_ACCEPTED':case 'MULTIBALL_STARTED':case 'TIME_EXTENDED':
+        [440,660,880].forEach((f,i)=>voice(f,.17,'sine',.13,i*.09));break;
+      case 'BALL_DRAINED':voice(200,.23,'triangle',.11,0,60);break;
+      case 'ROUND_ENDED':[660,523,784].forEach((f,i)=>voice(f,.25,'sine',.12,i*.15));break;
+      default:return;
     }
-    try {
-      localStorage.setItem("football-audio", muted ? "off" : "on");
-    } catch {}
-    label();
-  };
-  function tone(frequency, duration = 0.07) {
-    if (muted || !context || context.state !== "running") return;
-    const oscillator = context.createOscillator(),
-      gain = context.createGain();
-    oscillator.type = "sine";
-    oscillator.frequency.value = frequency;
-    gain.gain.setValueAtTime(0.07, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(
-      0.001,
-      context.currentTime + duration,
-    );
-    oscillator.connect(gain).connect(context.destination);
-    oscillator.start();
-    oscillator.stop(context.currentTime + duration);
+    played++;
   }
   return {
-    update(events) {
-      for (const event of events || []) {
-        if (event.eventId <= lastEvent) continue;
-        lastEvent = event.eventId;
-        if (event.type === "GOAL_SCORED") tone(660, 0.2);
-        else if (event.type === "TARGET_HIT") tone(440);
-        else if (event.type === "FLIP_DOWN") tone(150, 0.035);
-        else if (event.type === "BANK_ACCEPTED") tone(880, 0.25);
-      }
-    },
-    reset() {
-      lastEvent = 0;
-    },
-    dispose() {
-      root.removeEventListener("pointerdown", activate);
-      context?.close();
-      button.remove();
-    },
+    update(events){for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
+    reset(){lastEvent=0;cooldowns.clear();stop();},
+    metrics:()=>({muted,played,activeVoices:voices.size,state:context?.state||'locked'}),
+    dispose(){stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
   };
 }

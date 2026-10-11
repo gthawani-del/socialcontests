@@ -1,0 +1,528 @@
+{
+  "method": "Full engine rounds with periodic blue boot input; no state, score, ball placement or clock overrides. Not a human skill or rendering benchmark.",
+  "results": [
+    {
+      "mode": "pvp",
+      "seed": 11,
+      "state": "ended",
+      "tick": 31500,
+      "result": {
+        "reason": "time",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 0,
+        "shot": {
+          "index": 0,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": null
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 17400,
+          "red": 830
+        },
+        "tick": 31500
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 19,
+        "KICKOFF": 19,
+        "FLIP_DOWN": 1073,
+        "FLIP_UP": 1073,
+        "COLLISION": 535,
+        "PERFECT_KICK": 54,
+        "TARGET_HIT": 116,
+        "COMBO_CHANGED": 7,
+        "KEEPER_SAVE": 2,
+        "BALL_OUT_OF_PLAY": 17,
+        "HALFTIME": 1,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 1
+    },
+    {
+      "mode": "pvp",
+      "seed": 22,
+      "state": "ended",
+      "tick": 29820,
+      "result": {
+        "reason": "time",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 0,
+        "shot": {
+          "index": 0,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": null
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 11000,
+          "red": 5740
+        },
+        "tick": 29820
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 5,
+        "KICKOFF": 5,
+        "FLIP_DOWN": 1057,
+        "FLIP_UP": 1057,
+        "COLLISION": 444,
+        "PERFECT_KICK": 23,
+        "TARGET_HIT": 157,
+        "COMBO_CHANGED": 6,
+        "KEEPER_SAVE": 3,
+        "BALL_OUT_OF_PLAY": 3,
+        "HALFTIME": 1,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 1
+    },
+    {
+      "mode": "pvp",
+      "seed": 33,
+      "state": "ended",
+      "tick": 29940,
+      "result": {
+        "reason": "time",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 0,
+        "shot": {
+          "index": 0,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": null
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 11910,
+          "red": 1235
+        },
+        "tick": 29940
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "TOSS_DECIDED": 1,
+        "TOSS_CHOICE": 1,
+        "BALL_LAUNCHED": 6,
+        "KICKOFF": 6,
+        "FLIP_DOWN": 1068,
+        "FLIP_UP": 1068,
+        "COLLISION": 353,
+        "PERFECT_KICK": 22,
+        "TARGET_HIT": 106,
+        "COMBO_CHANGED": 11,
+        "KEEPER_SAVE": 7,
+        "BALL_OUT_OF_PLAY": 4,
+        "HALFTIME": 1,
+        "BALL_UNSTUCK": 4,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 479
+    },
+    {
+      "mode": "penalty",
+      "seed": 11,
+      "state": "ended",
+      "tick": 1483,
+      "result": {
+        "reason": "five-attempts",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 0,
+        "shot": {
+          "index": 5,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": "save"
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 0,
+          "red": 0
+        },
+        "tick": 1483
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "BALL_LAUNCHED": 5,
+        "ATTEMPT_STARTED": 5,
+        "FLIP_DOWN": 31,
+        "FLIP_UP": 31,
+        "COLLISION": 16,
+        "PERFECT_KICK": 5,
+        "BALL_OUT_OF_PLAY": 1,
+        "ATTEMPT_RESOLVED": 5,
+        "KEEPER_SAVE": 4,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 0
+    },
+    {
+      "mode": "penalty",
+      "seed": 22,
+      "state": "ended",
+      "tick": 1483,
+      "result": {
+        "reason": "five-attempts",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 0,
+        "shot": {
+          "index": 5,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": "save"
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 0,
+          "red": 0
+        },
+        "tick": 1483
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "BALL_LAUNCHED": 5,
+        "ATTEMPT_STARTED": 5,
+        "FLIP_DOWN": 31,
+        "FLIP_UP": 31,
+        "COLLISION": 16,
+        "PERFECT_KICK": 5,
+        "BALL_OUT_OF_PLAY": 1,
+        "ATTEMPT_RESOLVED": 5,
+        "KEEPER_SAVE": 4,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 0
+    },
+    {
+      "mode": "penalty",
+      "seed": 33,
+      "state": "ended",
+      "tick": 1483,
+      "result": {
+        "reason": "five-attempts",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 0,
+        "shot": {
+          "index": 5,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": "save"
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 0,
+          "red": 0
+        },
+        "tick": 1483
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "BALL_LAUNCHED": 5,
+        "ATTEMPT_STARTED": 5,
+        "FLIP_DOWN": 31,
+        "FLIP_UP": 31,
+        "COLLISION": 16,
+        "PERFECT_KICK": 5,
+        "BALL_OUT_OF_PLAY": 1,
+        "ATTEMPT_RESOLVED": 5,
+        "KEEPER_SAVE": 4,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 0
+    },
+    {
+      "mode": "crash",
+      "seed": 11,
+      "state": "ended",
+      "tick": 447,
+      "result": {
+        "reason": "drained",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 100,
+        "shot": {
+          "index": 0,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": null
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 0,
+          "red": 0
+        },
+        "tick": 447
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "BALL_LAUNCHED": 1,
+        "FLIP_DOWN": 10,
+        "FLIP_UP": 10,
+        "COLLISION": 4,
+        "TARGET_HIT": 1,
+        "PERFECT_KICK": 1,
+        "BALL_OUT_OF_PLAY": 1,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 0
+    },
+    {
+      "mode": "crash",
+      "seed": 22,
+      "state": "ended",
+      "tick": 447,
+      "result": {
+        "reason": "drained",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 100,
+        "shot": {
+          "index": 0,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": null
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 0,
+          "red": 0
+        },
+        "tick": 447
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "BALL_LAUNCHED": 1,
+        "FLIP_DOWN": 10,
+        "FLIP_UP": 10,
+        "COLLISION": 4,
+        "TARGET_HIT": 1,
+        "PERFECT_KICK": 1,
+        "BALL_OUT_OF_PLAY": 1,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 0
+    },
+    {
+      "mode": "crash",
+      "seed": 33,
+      "state": "ended",
+      "tick": 447,
+      "result": {
+        "reason": "drained",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 100,
+        "shot": {
+          "index": 0,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": null
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 0,
+          "red": 0
+        },
+        "tick": 447
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "BALL_LAUNCHED": 1,
+        "FLIP_DOWN": 10,
+        "FLIP_UP": 10,
+        "COLLISION": 4,
+        "TARGET_HIT": 1,
+        "PERFECT_KICK": 1,
+        "BALL_OUT_OF_PLAY": 1,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 0
+    },
+    {
+      "mode": "arcade-rush",
+      "seed": 11,
+      "state": "ended",
+      "tick": 13380,
+      "result": {
+        "reason": "time",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 0,
+        "shot": {
+          "index": 0,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": null
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 3450,
+          "red": 0
+        },
+        "tick": 13380
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "BALL_LAUNCHED": 19,
+        "FLIP_DOWN": 456,
+        "FLIP_UP": 456,
+        "COLLISION": 148,
+        "MULTIBALL_STARTED": 6,
+        "TARGET_HIT": 28,
+        "TIME_EXTENDED": 2,
+        "PERFECT_KICK": 1,
+        "BALL_DRAINED": 16,
+        "MULTIBALL_ENDED": 5,
+        "BALL_UNSTUCK": 3,
+        "BALL_OUT_OF_PLAY": 1,
+        "FINAL_RUSH": 1,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 478
+    },
+    {
+      "mode": "arcade-rush",
+      "seed": 22,
+      "state": "ended",
+      "tick": 13380,
+      "result": {
+        "reason": "time",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 0,
+        "shot": {
+          "index": 0,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": null
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 3450,
+          "red": 0
+        },
+        "tick": 13380
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "BALL_LAUNCHED": 19,
+        "FLIP_DOWN": 456,
+        "FLIP_UP": 456,
+        "COLLISION": 148,
+        "MULTIBALL_STARTED": 6,
+        "TARGET_HIT": 28,
+        "TIME_EXTENDED": 2,
+        "PERFECT_KICK": 1,
+        "BALL_DRAINED": 16,
+        "MULTIBALL_ENDED": 5,
+        "BALL_UNSTUCK": 3,
+        "BALL_OUT_OF_PLAY": 1,
+        "FINAL_RUSH": 1,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 478
+    },
+    {
+      "mode": "arcade-rush",
+      "seed": 33,
+      "state": "ended",
+      "tick": 13380,
+      "result": {
+        "reason": "time",
+        "winner": null,
+        "bankedPoints": 0,
+        "basePoints": 0,
+        "shot": {
+          "index": 0,
+          "total": 5,
+          "goals": 0,
+          "streak": 0,
+          "outcome": null
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        },
+        "points": {
+          "blue": 3450,
+          "red": 0
+        },
+        "tick": 13380
+      },
+      "events": {
+        "MATCH_CREATED": 1,
+        "BALL_LAUNCHED": 19,
+        "FLIP_DOWN": 456,
+        "FLIP_UP": 456,
+        "COLLISION": 148,
+        "MULTIBALL_STARTED": 6,
+        "TARGET_HIT": 28,
+        "TIME_EXTENDED": 2,
+        "PERFECT_KICK": 1,
+        "BALL_DRAINED": 16,
+        "MULTIBALL_ENDED": 5,
+        "BALL_UNSTUCK": 3,
+        "BALL_OUT_OF_PLAY": 1,
+        "FINAL_RUSH": 1,
+        "ROUND_ENDED": 1
+      },
+      "maxSlowTicks": 478
+    }
+  ]
+}

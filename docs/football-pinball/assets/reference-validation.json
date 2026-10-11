@@ -1,0 +1,73 @@
+[
+  {
+    "file": "public/models/football/boot-reference.glb",
+    "bytes": 472548,
+    "sha256": "80a7c28d6f1cc5459997a6238e3f0090a7068c441f6bcfa7bcc036b15e342eaa",
+    "triangles": 16336,
+    "mesh_count": 78,
+    "material_names": [
+      "Trim_Silver",
+      "Laces_Ivory",
+      "Boot_Stitch",
+      "Boot_Panels",
+      "Team_Primary",
+      "Sole_Graphite",
+      "Boot_Lining"
+    ],
+    "bounds": {
+      "min": [
+        -0.099219,
+        -0.0175,
+        -0.284168
+      ],
+      "max": [
+        1.449608,
+        0.569947,
+        0.284168
+      ]
+    },
+    "dimensions": [
+      1.548827,
+      0.587447,
+      0.568336
+    ],
+    "uv_present_all_meshes": true,
+    "embedded_texture_bytes": 0,
+    "finite_geometry": true
+  },
+  {
+    "file": "public/models/football/player-reference.glb",
+    "bytes": 377056,
+    "sha256": "ffbcbd56e65664a2281c28afa23511fca93e14a2eb3a995c9ee6e92d1eafb3c1",
+    "triangles": 12207,
+    "mesh_count": 46,
+    "material_names": [
+      "Skin_Warm",
+      "Hair_Dark",
+      "Shorts_Graphite",
+      "Trim_Ivory",
+      "Team_Primary",
+      "Base_Steel"
+    ],
+    "bounds": {
+      "min": [
+        -0.25,
+        0.0,
+        -0.25
+      ],
+      "max": [
+        0.25,
+        0.976624,
+        0.25
+      ]
+    },
+    "dimensions": [
+      0.5,
+      0.976624,
+      0.5
+    ],
+    "uv_present_all_meshes": true,
+    "embedded_texture_bytes": 0,
+    "finite_geometry": true
+  }
+]

@@ -1,0 +1,260 @@
+{
+  "method": "Mobile Chromium. Target and goal placement fixtures test actual physics. Arcade timer runs every tick. WebGL rendered for proof; continuous render disabled for software GPU. Audio graph verified, subjective listening not performed.",
+  "results": [
+    {
+      "mode": "pvp",
+      "feedback": {
+        "before": 0,
+        "once": 1,
+        "twice": 1,
+        "effects": {
+          "triggered": 1,
+          "activeRings": 1,
+          "particles": 12,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "audio": {
+          "muted": false,
+          "played": 3,
+          "activeVoices": 4,
+          "state": "running"
+        }
+      }
+    },
+    {
+      "mode": "pvp",
+      "terminal": {
+        "snapshot": "ended",
+        "result": {
+          "reason": "goals",
+          "winner": "blue",
+          "bankedPoints": 0,
+          "basePoints": 0,
+          "shot": {
+            "index": 0,
+            "total": 5,
+            "goals": 0,
+            "streak": 0,
+            "outcome": null
+          },
+          "score": {
+            "blue": 1,
+            "red": 0
+          },
+          "points": {
+            "blue": 745,
+            "red": 0
+          },
+          "tick": 1140
+        },
+        "effects": {
+          "triggered": 3,
+          "activeRings": 3,
+          "particles": 36,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "audio": {
+          "muted": false,
+          "played": 15,
+          "activeVoices": 8,
+          "state": "running"
+        }
+      }
+    },
+    {
+      "mode": "pvp",
+      "restart": true,
+      "reducedGraphics": true
+    },
+    {
+      "mode": "crash",
+      "feedback": {
+        "before": 0,
+        "once": 1,
+        "twice": 1,
+        "effects": {
+          "triggered": 1,
+          "activeRings": 1,
+          "particles": 12,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "audio": {
+          "muted": false,
+          "played": 2,
+          "activeVoices": 2,
+          "state": "running"
+        }
+      }
+    },
+    {
+      "mode": "crash",
+      "terminal": {
+        "snapshot": "ended",
+        "result": {
+          "reason": "banked",
+          "winner": null,
+          "bankedPoints": 56,
+          "basePoints": 50,
+          "shot": {
+            "index": 0,
+            "total": 5,
+            "goals": 0,
+            "streak": 0,
+            "outcome": null
+          },
+          "score": {
+            "blue": 0,
+            "red": 0
+          },
+          "points": {
+            "blue": 0,
+            "red": 0
+          },
+          "tick": 266
+        },
+        "effects": {
+          "triggered": 1,
+          "activeRings": 1,
+          "particles": 12,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "audio": {
+          "muted": false,
+          "played": 5,
+          "activeVoices": 6,
+          "state": "running"
+        }
+      }
+    },
+    {
+      "mode": "crash",
+      "restart": true,
+      "reducedGraphics": true
+    },
+    {
+      "mode": "penalty",
+      "terminal": {
+        "snapshot": "ended",
+        "result": {
+          "reason": "five-attempts",
+          "winner": null,
+          "bankedPoints": 0,
+          "basePoints": 0,
+          "shot": {
+            "index": 5,
+            "total": 5,
+            "goals": 5,
+            "streak": 5,
+            "outcome": "goal"
+          },
+          "score": {
+            "blue": 5,
+            "red": 0
+          },
+          "points": {
+            "blue": 4800,
+            "red": 0
+          },
+          "tick": 692
+        },
+        "effects": {
+          "triggered": 1,
+          "activeRings": 1,
+          "particles": 12,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "audio": {
+          "muted": false,
+          "played": 2,
+          "activeVoices": 8,
+          "state": "running"
+        }
+      }
+    },
+    {
+      "mode": "penalty",
+      "restart": true,
+      "reducedGraphics": true
+    },
+    {
+      "mode": "arcade-rush",
+      "feedback": {
+        "before": 0,
+        "once": 2,
+        "twice": 2,
+        "effects": {
+          "triggered": 2,
+          "activeRings": 2,
+          "particles": 24,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "audio": {
+          "muted": false,
+          "played": 3,
+          "activeVoices": 5,
+          "state": "running"
+        }
+      }
+    },
+    {
+      "mode": "arcade-rush",
+      "terminal": {
+        "snapshot": "ended",
+        "result": {
+          "reason": "time",
+          "winner": null,
+          "bankedPoints": 0,
+          "basePoints": 0,
+          "shot": {
+            "index": 0,
+            "total": 5,
+            "goals": 0,
+            "streak": 0,
+            "outcome": null
+          },
+          "score": {
+            "blue": 0,
+            "red": 0
+          },
+          "points": {
+            "blue": 18400,
+            "red": 0
+          },
+          "tick": 13380
+        },
+        "effects": {
+          "triggered": 2,
+          "activeRings": 2,
+          "particles": 24,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "audio": {
+          "muted": false,
+          "played": 11,
+          "activeVoices": 10,
+          "state": "running"
+        }
+      }
+    },
+    {
+      "mode": "arcade-rush",
+      "restart": true,
+      "reducedGraphics": true
+    }
+  ],
+  "errors": []
+}

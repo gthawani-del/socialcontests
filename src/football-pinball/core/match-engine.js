@@ -50,6 +50,7 @@ export class MatchEngine {
     if (!["quick", "classic", "golden"].includes(this.options.format))
       throw Error("Invalid format");
     this.mode = this.options.mode;
+    this.ballRadius = MODE_RULES[this.mode].ballRadius || P.ballRadius;
     this.geometry = geometryFor(this.mode);
     this.world = new RAPIER.World({
       x: 0,
@@ -123,8 +124,8 @@ export class MatchEngine {
         RAPIER.RigidBodyDesc.kinematicPositionBased(),
       );
       this.collider(
-        RAPIER.ColliderDesc.roundCuboid(0.705, 0.06, 0.1, 0.07)
-          .setTranslation(P.bootOffset, P.bootCenterHeight, 0)
+        RAPIER.ColliderDesc.roundCuboid(b.length / 2 - 0.07, 0.06, b.radius - 0.07, 0.07)
+          .setTranslation(this.mode === "pvp" ? P.bootOffset * 1.2 : P.bootOffset, P.bootCenterHeight, 0)
           .setRestitution(0.8)
           .setFriction(0.05),
         b,
@@ -169,8 +170,8 @@ export class MatchEngine {
         x: 0,
         y: sign * 4.55,
         width: this.mode === "penalty" ? keeperTuning.width : 0.72,
-        height: 0.7,
-        depth: 0.22,
+        height: this.mode === "pvp" ? 1.15 : 0.7,
+        depth: this.mode === "pvp" ? 0.38 : 0.22,
       };
       const body = this.world.createRigidBody(
         RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(
@@ -292,7 +293,7 @@ export class MatchEngine {
     b.body.setNextKinematicTranslation(p);
     b.body.setNextKinematicRotation(q);
   }
-  addBall(x = 0, y = 0, vx = 0, vy = 0, height = P.ballRadius, vheight = 0) {
+  addBall(x = 0, y = 0, vx = 0, vy = 0, height = this.ballRadius, vheight = 0) {
     const id = `ball-${++this.nextBall}`;
     const body = this.world.createRigidBody(
       RAPIER.RigidBodyDesc.dynamic()
@@ -303,7 +304,7 @@ export class MatchEngine {
         .setCanSleep(false),
     );
     const c = this.collider(
-      RAPIER.ColliderDesc.ball(P.ballRadius)
+      RAPIER.ColliderDesc.ball(this.ballRadius)
         .setRestitution(0.78)
         .setFriction(0.005)
         .setDensity(1)
@@ -317,6 +318,7 @@ export class MatchEngine {
       collider: c.handle,
       previous: { x, y, height },
       lastBootTick: -999,
+      stillTicks: 0,
     };
     this.balls.push(ball);
     this.emit("BALL_LAUNCHED", { ballId: id });
@@ -499,23 +501,32 @@ export class MatchEngine {
   }
   cpu() {
     if (this.mode !== "pvp") return;
-    if (this.options.opponent !== "cpu" || this.tick < this.cpuNext) return;
-    const level =
-      { easy: 36, medium: 20, hard: 10 }[this.options.difficulty] || 20;
+    if (this.options.opponent !== "cpu") return;
+    const tuning = MODE_RULES.pvp.cpu;
+    const boots = this.boots.filter((b) => b.team === "red");
+    // Release on physics ticks, independently of the difficulty's reaction delay.
+    // A fresh stroke needs both a release and enough time to return to rest.
+    for (const b of boots)
+      if (b.pressed && this.tick - b.strokeTick >= tuning.holdTicks)
+        this.flip(b.id, false);
+    if (this.tick < this.cpuNext) return;
+    const level = tuning.reactionTicks[this.options.difficulty] || 20;
     this.cpuNext = this.tick + level;
     const ball = this.balls[0];
     if (!ball) return;
     const p = ball.body.translation();
-    for (const b of this.boots.filter((b) => b.team === "red")) {
+    for (const b of boots) {
+      if (b.pressed || this.tick - b.strokeTick < tuning.holdTicks + tuning.returnTicks)
+        continue;
       const dy = -p.z - b.y;
-      this.flip(
-        b.id,
+      if (
         Math.abs(dy) < 1.2 &&
-          Math.abs(p.x - b.x) < 1.8 &&
-          this.rng() > (this.options.difficulty === "easy" ? 0.3 : 0.05),
-      );
+        Math.abs(p.x - b.x) < 1.8 &&
+        this.rng() > (this.options.difficulty === "easy" ? 0.3 : 0.05)
+      ) this.flip(b.id, true);
     }
   }
+
   moveKeepers() {
     const ball = this.balls[0];
     for (const k of this.keepers) {
@@ -897,6 +908,21 @@ export class MatchEngine {
       const p = b.body.translation(),
         v = b.body.linvel(),
         speed = Math.hypot(v.x, v.y, v.z);
+      // Sustained contacts with rounded kinematic boots can keep injecting lift
+      // after the collision-start event. Limit ascent every PvP physics tick.
+      if (this.mode === "pvp" && v.y > MODE_RULES.pvp.maxBallLift) {
+        v.y = MODE_RULES.pvp.maxBallLift;
+        b.body.setLinvel(v, true);
+      }
+      // A resting ball must not consume a timed round. This never applies to Crash.
+      if (this.mode === "pvp" || this.mode === "arcade-rush") {
+        b.stillTicks = speed < .06 ? b.stillTicks + 1 : 0;
+        if (b.stillTicks >= 480) {
+          b.stillTicks = 0;
+          b.body.setLinvel({x: p.x > 0 ? -1.6 : 1.6, y: 1.5, z: p.z > 0 ? -2 : 2}, true);
+          this.emit("BALL_UNSTUCK", {ballId:b.id});
+        }
+      }
       if (speed > P.maxSpeed)
         b.body.setLinvel(
           {
@@ -909,15 +935,15 @@ export class MatchEngine {
       for (const sign of [-1, 1]) {
         const plane =
             (sign < 0 ? Math.abs(this.geometry.nearPlane) : P.goalPlane) +
-            P.ballRadius,
+            this.ballRadius,
           y = -p.z;
         if (b.previous.y * sign <= plane && y * sign > plane) {
           const f = (sign * plane - b.previous.y) / (y - b.previous.y),
             x = b.previous.x + f * (p.x - b.previous.x),
             height = b.previous.height + f * (p.y - b.previous.height);
           if (
-            Math.abs(x) + P.ballRadius <= P.goalHalfWidth &&
-            height + P.ballRadius <= P.goalHeight
+            Math.abs(x) + this.ballRadius <= P.goalHalfWidth &&
+            height + this.ballRadius <= P.goalHeight
           ) {
             this.goal(b, sign, { x, height });
             break;
@@ -1073,7 +1099,7 @@ export class MatchEngine {
           vx: v.x,
           vy: -v.z,
           vheight: v.y,
-          radius: P.ballRadius,
+          radius: this.ballRadius,
         };
       }),
       boots: this.boots.map(({ body, ...b }) => ({ ...b })),

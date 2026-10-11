@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "separate four-mode selector and pre-match setup",
+    "start overlay disappears during play",
+    "no horizontal controls or guide below board",
+    "real touch press/release",
+    "dial pauses local match; closing/help returns to play",
+    "sound toggle",
+    "restart and exit cancellations preserve match",
+    "confirmed restart returns to ready",
+    "390/430/1440 layouts and controls fit",
+    "no runtime errors"
+  ],
+  "errors": [],
+  "scope": "Local PvP in Chromium with software rendering. Demo access fixture; online server and physical device performance not tested."
+}

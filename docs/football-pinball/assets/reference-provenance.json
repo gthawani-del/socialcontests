@@ -1,0 +1,43 @@
+[
+  {
+    "name": "boot",
+    "projectId": "da328c33-2e7b-4f8e-a09e-1331e3f234ed",
+    "revision": 8,
+    "glb": "public/models/football/boot-reference.glb",
+    "bytes": 472548,
+    "sha256": "80a7c28d6f1cc5459997a6238e3f0090a7068c441f6bcfa7bcc036b15e342eaa",
+    "source": "docs/football-pinball/assets/source/boot-reference.blend",
+    "visualApproval": false,
+    "scripts": [
+      "scripts/football-assets/boot-sculpt.py",
+      "scripts/football-assets/boot-panel-fit.py",
+      "scripts/football-assets/boot-mobile-budget.py",
+      "scripts/football-assets/boot-construction.py",
+      "scripts/football-assets/boot-construction-fit.py"
+    ]
+  },
+  {
+    "name": "player",
+    "projectId": "894e51a0-472f-4923-bc5c-a3bddb8cb211",
+    "revision": 7,
+    "glb": "public/models/football/player-reference.glb",
+    "bytes": 377056,
+    "sha256": "ffbcbd56e65664a2281c28afa23511fca93e14a2eb3a995c9ee6e92d1eafb3c1",
+    "source": "docs/football-pinball/assets/source/player-reference.blend",
+    "visualApproval": false,
+    "scripts": [
+      "scripts/football-assets/player-reference-refine.py",
+      "scripts/football-assets/player-kit.py",
+      "scripts/football-assets/player-construction.py",
+      "scripts/football-assets/player-sleeve-fit.py"
+    ]
+  },
+  {
+    "name": "stadium-crowd",
+    "file": "public/football-pinball/art/stadium-crowd.png",
+    "method": "built-in image generation",
+    "usage": "Background texture on stepped 3D grandstands, batched into two draw calls. No flattened gameplay table.",
+    "prompt": "Wide 3:1 landscape seamless horizontal football stadium crowd texture, front view slightly elevated, packed steep seating, diverse adult cheering crowd in navy/red/white shirts, cool night stadium light and restrained shadows. Fill edge-to-edge with staggered crowd rows. No sky, pitch, rails, boards, text, logos or UI. Photographic detail, no cartoon figures.",
+    "sha256": "2ac12b1870307b3b8aecb15ac29d5f6b4ef25f5aa257c4f41319d67e8330844e"
+  }
+]

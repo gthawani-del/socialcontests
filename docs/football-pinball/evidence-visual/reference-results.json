@@ -1,0 +1,72 @@
+{
+  "access": "Direct PvP URL shows disclaimer; invalid credentials rejected; explicit demo login succeeds.",
+  "note": "Real start/toss/choice flow. No ball-placement fixture in these screenshots. Full-detail captures use software Chromium, not physical-device FPS evidence. The red-view image is an explicit camera-only fixture.",
+  "results": [
+    {
+      "width": 390,
+      "height": 844,
+      "controls": [
+        {
+          "y": 392.015625,
+          "bottom": 480.015625,
+          "height": 88,
+          "width": 88
+        },
+        {
+          "y": 392.015625,
+          "bottom": 480.015625,
+          "height": 88,
+          "width": 88
+        }
+      ],
+      "loadedAssets": 12,
+      "fullDrawCalls": 173,
+      "lowDrawCalls": 173,
+      "errors": []
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "controls": [
+        {
+          "y": 431.796875,
+          "bottom": 519.796875,
+          "height": 88,
+          "width": 88
+        },
+        {
+          "y": 431.796875,
+          "bottom": 519.796875,
+          "height": 88,
+          "width": 88
+        }
+      ],
+      "loadedAssets": 12,
+      "fullDrawCalls": 173,
+      "lowDrawCalls": 173,
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "controls": [
+        {
+          "y": 620.828125,
+          "bottom": 708.828125,
+          "height": 88,
+          "width": 88
+        },
+        {
+          "y": 620.828125,
+          "bottom": 708.828125,
+          "height": 88,
+          "width": 88
+        }
+      ],
+      "loadedAssets": 12,
+      "fullDrawCalls": 173,
+      "lowDrawCalls": 173,
+      "errors": []
+    }
+  ]
+}

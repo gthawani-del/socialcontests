@@ -1,0 +1,17 @@
+{
+  "fixtureNote": "Ball placement is an explicit physics test fixture; touch is real Chromium mobile input.",
+  "results": [
+    {
+      "check": "mobile touch changes actual boot angle, makes physics contact and releases",
+      "passed": true
+    },
+    {
+      "check": "golden goal physics crossing updates HUD and final result once (seeded fixture)",
+      "passed": true
+    },
+    {
+      "check": "no runtime errors",
+      "passed": true
+    }
+  ]
+}

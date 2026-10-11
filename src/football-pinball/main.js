@@ -7,6 +7,7 @@ import {
   updateHud,
   renderResults,
 } from "./ui/index.js";
+import { addGameMenu } from "./ui/game-menu.js";
 import { addSetup } from "./ui/setup.js";
 import { saveRecord, renderRecords } from "./ui/records.js";
 import { createAudio } from "./ui/audio.js";
@@ -33,6 +34,7 @@ async function mount(mode) {
     root.querySelector(".fp-hud").before(connection);
   }
   const audio = createAudio(root);
+  if(mode==='pvp') {const menu=addGameMenu(root,setup);if(connection.parentElement)menu.preflight.insertBefore(connection,menu.preflight.lastElementChild);}
   let engine,
     view,
     inputs,
@@ -81,8 +83,24 @@ async function mount(mode) {
     inputs = bindInputs(
       root,
       control,
-      () => engine.state === "active" && !engine.paused,
+      () => engine.state === "active" && !engine.paused && !root.querySelector("dialog[open]") && root.dataset.stage !== "setup",
     );
+    let resumeAfterSettings = false, panelSession = false;
+    root.addEventListener('footballsettingsopen', () => {
+      inputs.clear();
+      if(!panelSession) resumeAfterSettings = engine.authority !== 'server' && !['ready','ended'].includes(engine.state) && !engine.paused;
+      panelSession=true;
+      if (resumeAfterSettings) engine.setPaused(true);
+      root.querySelector('#fp-settings-note').textContent = engine.authority === 'server'
+        ? 'Live online match continues. Match options are locked.'
+        : engine.state === 'active' ? 'Match paused. Match options unlock after restart.' : 'Choose settings before starting a match.';
+    });
+    root.addEventListener('footballsettingsclose', () => {
+      if(root.querySelector('dialog[open]'))return;
+      panelSession=false;
+      if (resumeAfterSettings && !['ready','ended'].includes(engine.state)) engine.setPaused(false);
+      resumeAfterSettings = false;
+    });
     root.querySelector("#fp-serve").onclick = async () => {
       if (engine.authority === "server") {
         if (engine.team === "blue") command({ type: "start" });
@@ -185,6 +203,7 @@ async function mount(mode) {
         lastSide = side;
         inputs.clear();
       }
+      root.dataset.matchState=s.state;
       view.draw(engine.renderSnapshot ? engine.renderSnapshot() : s);
       audio.update(s.events);
       const messages = {
@@ -271,9 +290,9 @@ async function mount(mode) {
           title:
             mode === "pvp"
               ? result.winner === "blue"
-                ? "Blue wins"
+                ? `${root.querySelector(".fp-blue .fp-team-name small")?.textContent || "Blue"} wins`
                 : result.winner === "red"
-                  ? "Red wins"
+                  ? `${root.querySelector(".fp-red .fp-team-name small")?.textContent || "Red"} wins`
                   : "Draw"
               : mode === "crash"
                 ? result.reason === "banked"
@@ -331,6 +350,7 @@ async function mount(mode) {
           return engine;
         },
         view,
+        audio,
         snapshot: () => engine.snapshot(),
       };
     window.addEventListener(
