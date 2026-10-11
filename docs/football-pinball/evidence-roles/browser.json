@@ -2,7 +2,7 @@
   "method": "Chromium mobile viewport, software GPU. Real CDP touch input with seeded ball-placement fixtures and manually stepped physics. Not physical-device performance, human balancing or speaker verification.",
   "checks": [
     {
-      "audio": "unlocked by browser gesture; synthetic crowd absent"
+      "audio": "unlocked by browser gesture; recorded crowd active"
     },
     {
       "formation": [
@@ -81,11 +81,11 @@
         "moved": true,
         "contact": true,
         "velocity": {
-          "x": -0.03211752325296402,
+          "x": -0.02363738790154457,
           "y": 2.200000047683716,
-          "z": -0.8589838743209839
+          "z": -0.8674337267875671
         },
-        "minVz": -5.4955058097839355
+        "minVz": -5.502521514892578
       },
       "released": true,
       "event": "touchEnd"
@@ -97,11 +97,11 @@
         "moved": true,
         "contact": true,
         "velocity": {
-          "x": -0.18501557409763336,
+          "x": -0.16194207966327667,
           "y": 2.200000047683716,
-          "z": -0.717871367931366
+          "z": -0.7730994820594788
         },
-        "minVz": -5.354227066040039
+        "minVz": -5.406617164611816
       },
       "released": true,
       "event": "touchCancel"
@@ -110,7 +110,7 @@
       "power": "both meters reflect contact events",
       "pause": "crowd stops",
       "mute": "voices cleared",
-      "resume": "effects available; synthetic crowd absent"
+      "resume": "recorded crowd resumes"
     }
   ],
   "errors": []

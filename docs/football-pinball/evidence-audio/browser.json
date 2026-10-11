@@ -1,0 +1,29 @@
+{
+  "initial": {
+    "muted": false,
+    "played": 0,
+    "activeVoices": 0,
+    "crowd": true,
+    "crowdStatus": "ready",
+    "crowdError": null,
+    "crowdDuration": 39.28798185941043,
+    "crowdStarts": 1,
+    "crowdLevel": 1.3969905318340625,
+    "state": "running"
+  },
+  "checks": [
+    "gesture unlock",
+    "decoded uploaded MP3",
+    "nonzero audio output",
+    "full real-time loop with no duplicate source",
+    "pause/resume",
+    "mute/unmute",
+    "simulated visibility event",
+    "restart",
+    "round end",
+    "dispose",
+    "one download per match UI"
+  ],
+  "errors": [],
+  "limits": "Chromium Web Audio checks with a shared-audio fixture; visibility is simulated. Does not establish physical-phone speaker comfort or Safari behavior."
+}

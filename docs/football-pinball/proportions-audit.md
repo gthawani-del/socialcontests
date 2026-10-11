@@ -23,3 +23,9 @@ Scope: reported PvP height regression, small ball, apparent oversized boots, and
 - Physical-phone performance, speaker comfort and human balance remain unverified. Browser automation does not establish these.
 - A larger collider changes match behavior; seeded tests pass but a human play session is still needed for balance.
 - No homepage, Cricket, team selection, access gate or disclaimer changes in this patch.
+
+## Crowd recording follow-up
+
+The user uploaded `public/football-pinball/audio/crowd-cheering.mp3` in commit a10fa29. The missing-file dependency is resolved. The 785,760-byte stereo MP3 is 39.288 seconds long (24 kHz); source mean/peak measurements are -37.2/-17.8 dBFS. The shared audio module now decodes it once per game UI, applies 80 ms boundary fades in memory, and limits ambience gain by RMS and peak headroom. The original upload is unchanged. There is no synthetic crowd fallback.
+
+See `evidence-audio/browser.json`: actual decoded output and a complete real-time loop are checked, along with pause, mute, visibility handling, restart, round end and disposal. The PvP browser integration also passes with recorded ambience. Frontend build passes. Physical-phone speaker comfort and Safari behavior still require device testing.

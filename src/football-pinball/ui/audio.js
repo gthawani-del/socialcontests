@@ -1,24 +1,66 @@
-/** Event-driven synthesized match sounds; no downloads or recurring API costs. */
+/** Local crowd recording plus event-driven match effects. */
 export function createAudio(root) {
-  let context,master,muted=false,lastEvent=0,played=0;
+  let context,master,muted=false,lastEvent=0,played=0,playing=false,disposed=false;
+  let crowdBuffer,crowdSource,crowdGain,crowdLoad,crowdError=null,crowdLevel=0,crowdOffset=0,crowdStarted=0,crowdStarts=0;
+  const download=new AbortController();
   const voices=new Set(),cooldowns=new Map();
   try{muted=localStorage.getItem('football-audio')==='off';}catch{}
   const button=document.createElement('button');button.id='fp-audio';button.type='button';button.dataset.footballAudio='';root.querySelector('.fp-actions').append(button);
   const label=()=>{for(const b of root.querySelectorAll('[data-football-audio]')){(b.querySelector('[data-audio-label]')||b).textContent=muted?'Sound off':'Sound on';b.setAttribute('aria-pressed',String(!muted));}};
   const stop=()=>{for(const node of voices){try{node.stop();}catch{}}voices.clear();};
-  // Crowd recording is intentionally absent until the supplied audio is available.
-  const visibility=()=>{if(document.hidden)stop();};
+  function stopCrowd(){
+    if(!crowdSource)return;
+    crowdOffset=(crowdOffset+context.currentTime-crowdStarted)%crowdBuffer.duration;
+    crowdSource.stop();crowdSource.disconnect();crowdSource=null;
+    crowdGain.disconnect();crowdGain=null;
+  }
+  function ambience(){
+    const on=!disposed&&playing&&!muted&&!document.hidden&&context?.state==='running';
+    if(!on){stopCrowd();return;}
+    if(!crowdBuffer||crowdSource)return;
+    crowdSource=context.createBufferSource();crowdGain=context.createGain();
+    crowdSource.buffer=crowdBuffer;crowdSource.loop=true;
+    crowdGain.gain.setValueAtTime(0,context.currentTime);
+    crowdGain.gain.linearRampToValueAtTime(crowdLevel,context.currentTime+.15);
+    crowdSource.connect(crowdGain);crowdGain.connect(context.destination);
+    crowdStarted=context.currentTime;crowdSource.start(0,crowdOffset);crowdStarts++;
+  }
+  function loadCrowd(){
+    if(crowdLoad||disposed)return;
+    crowdLoad=fetch('/football-pinball/audio/crowd-cheering.mp3',{signal:download.signal})
+      .then(r=>{if(!r.ok)throw Error('Crowd audio HTTP '+r.status);return r.arrayBuffer();})
+      .then(data=>context.decodeAudioData(data))
+      .then(buffer=>{
+        if(disposed)return;
+        // Soften the recorded loop boundary without modifying the uploaded file.
+        const fade=Math.min(Math.floor(buffer.sampleRate*.08),Math.floor(buffer.length/2));
+        let sum=0,peak=0;
+        for(let c=0;c<buffer.numberOfChannels;c++){
+          const data=buffer.getChannelData(c);
+          for(let i=0;i<data.length;i++){
+            data[i]*=Math.min(1,i/fade,(data.length-1-i)/fade);
+            sum+=data[i]*data[i];peak=Math.max(peak,Math.abs(data[i]));
+          }
+        }
+        const rms=Math.sqrt(sum/(buffer.length*buffer.numberOfChannels));
+        // A quiet bed, with capped gain and peak headroom; effects retain their own mix.
+        crowdLevel=Math.min(4,.02/Math.max(rms,.0001),.18/Math.max(peak,.0001));
+        crowdBuffer=buffer;ambience();
+      }).catch(error=>{if(!disposed)crowdError=error.message;});
+  }
+  const visibility=()=>{if(document.hidden)stop();ambience();};
   document.addEventListener('visibilitychange',visibility);
   function activate(){
     if(muted)return;
     const Audio=window.AudioContext||window.webkitAudioContext;
     if(!Audio){muted=true;button.disabled=true;label();return;}
-    context??=new Audio();
+    if(!context){context=new Audio();context.addEventListener('statechange',ambience);}
     if(!master){master=context.createGain();master.gain.value=.22;master.connect(context.destination);}
-    context.resume().catch(()=>{});
+    context.resume().then(ambience).catch(()=>{});
+    loadCrowd();
   }
   root.addEventListener('pointerdown',activate);root.addEventListener('keydown',activate);
-  label();button.onclick=()=>{muted=!muted;if(muted)stop();else activate();try{localStorage.setItem('football-audio',muted?'off':'on');}catch{}label();};
+  label();button.onclick=()=>{muted=!muted;if(muted)stop();else activate();try{localStorage.setItem('football-audio',muted?'off':'on');}catch{}label();ambience();};
   function voice(frequency,duration=.1,kind='sine',volume=.15,delay=0,end=frequency){
     if(voices.size>=20)return;
     const start=context.currentTime+delay,gain=context.createGain();let source;
@@ -58,9 +100,9 @@ export function createAudio(root) {
     played++;
   }
   return {
-    update(events,state){for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
-    reset(){lastEvent=0;cooldowns.clear();stop();},
-    metrics:()=>({muted,played,activeVoices:voices.size,crowd:false,state:context?.state||'locked'}),
-    dispose(){document.removeEventListener('visibilitychange',visibility);stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
+    update(events,state){if(state)playing=state.state==='active'&&!state.paused;ambience();for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
+    reset(){playing=false;stopCrowd();crowdOffset=0;lastEvent=0;cooldowns.clear();stop();},
+    metrics:()=>({muted,played,activeVoices:voices.size,crowd:!!crowdSource,crowdStatus:crowdError?'error':crowdBuffer?'ready':crowdLoad?'loading':'idle',crowdError,crowdDuration:crowdBuffer?.duration||0,crowdStarts,crowdLevel,state:context?.state||'locked'}),
+    dispose(){disposed=true;download.abort();stopCrowd();context?.removeEventListener('statechange',ambience);document.removeEventListener('visibilitychange',visibility);stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
   };
 }
