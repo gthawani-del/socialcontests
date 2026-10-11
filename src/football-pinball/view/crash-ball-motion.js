@@ -50,6 +50,7 @@ export function createCrashBallMotion(){
             ball.vx+=nx*kick;ball.vz+=nz*kick;
             if(pressed[i])ball.vz-=2.8;
             bootHits++;
+            // Sound consumers observe bootHits; one increment equals one actual contact.
             // Random bonus occurs only on a real boot-ball impact, never from a timer.
             if(pressed[i] && !previousShot[i] && random()<.18){
               const shotSpeed=Math.hypot(ball.vx,ball.vz)||1;
