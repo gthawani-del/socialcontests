@@ -16,13 +16,30 @@ export async function mountCrash() {
     <p class="fc-authority-note">Local practice runs on this device. It is not server-verified or provably fair.</p>
 
     <div class="fc-setup-actions"><div class="fp-actions"></div><button id="fc-enter">Continue</button></div></section>
-    <section class="fc-play" hidden><div class="fc-round-header"><span id="fc-mode-label">LOCAL PRACTICE</span><span>Stake <b id="fc-stake-label">100</b> pts</span></div><div class="fc-game"><div id="fc-arena"><div class="fc-live"><span id="fc-round-state">Ready</span><strong id="fc-multiplier">1.00×</strong><span id="fc-countdown"></span></div></div><aside class="fc-ladder" aria-label="Multiplier milestones">${crashMeterMarkup()}<button id="fc-cashout" disabled>Cash out <strong id="fc-return">100 pts</strong></button></aside></div><form class="fc-round-actions"><label for="fc-stake">Points stake<input id="fc-stake" type="number" inputmode="numeric" min="1" max="1000" step="1" required value="100" aria-describedby="fc-stake-help"></label><button id="fc-start" type="submit">Play</button><small id="fc-stake-help">1–1,000 free points per round</small></form><p id="fc-message" role="status" aria-live="polite">Cash out before the multiplier crashes.</p><p class="fc-small">Virtual points only. No cash prizes.</p><details id="fc-proof" hidden><summary>Round verification</summary><p id="fc-proof-text"></p></details></section>
+    <section class="fc-play" hidden><div class="fc-round-header"><span id="fc-mode-label">LOCAL PRACTICE</span><span>Stake <b id="fc-stake-label">100</b> pts</span></div><div class="fc-game"><div id="fc-arena"><div class="fc-live"><span id="fc-round-state">Ready</span><span id="fc-board-score">BOARD SCORE 0</span><span id="fc-hit-feedback" aria-live="off"></span><strong id="fc-multiplier">1.00×</strong><span id="fc-countdown"></span></div><div class="fc-flippers" aria-label="Pinball flipper controls"><button type="button" id="fc-left-boot" aria-label="Left football boot flipper">LEFT BOOT</button><button type="button" id="fc-right-boot" aria-label="Right football boot flipper">RIGHT BOOT</button></div></div><aside class="fc-ladder" aria-label="Multiplier milestones">${crashMeterMarkup()}<button id="fc-cashout" disabled>Cash out <strong id="fc-return">100 pts</strong></button></aside></div><form class="fc-round-actions"><label for="fc-stake">Points stake<input id="fc-stake" type="number" inputmode="numeric" min="1" max="1000" step="1" required value="100" aria-describedby="fc-stake-help"></label><button id="fc-start" type="submit">Play</button><small id="fc-stake-help">1–1,000 free points per round</small></form><p id="fc-message" role="status" aria-live="polite">Cash out before the multiplier crashes.</p><p class="fc-small">Virtual points only. No cash prizes.</p><details id="fc-proof" hidden><summary>Round verification</summary><p id="fc-proof-text"></p></details></section>
     <dialog id="fc-menu-dialog"><h2>Game controls</h2><p>Opening this menu does not pause a round.</p><div id="fc-menu-audio"></div><button id="fc-close">Close</button></dialog>`;
   const q = s => root.querySelector(s);
   // Vector control artwork stays sharp at all phone resolutions.
   q('.fc-menu').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m9 3-.5 2-2 .9-1.9-.6-2 3.4 1.5 1.5v2.3L2.6 14l2 3.4 2-.6 1.9 1 .5 2.2h4l.6-2.2 1.9-1 2 .6 2-3.4-1.5-1.5v-2.3l1.5-1.5-2-3.4-2 .6-1.9-.9L13 3Z"/><circle cx="11" cy="11.5" r="3"/></svg>';
   const audio = createAudio(root);
   const updateMeter=bindCrashMeter(root);
+  // Short one-shot clips share the existing game's mute preference.
+  const crashClips={
+    start:new Audio('/football-pinball/audio/Game-start.mp3'),
+    kick:Array.from({length:3},()=>new Audio('/football-pinball/audio/Soccer-kick.mp3'))
+  };
+  crashClips.start.preload='auto';
+  for(const clip of crashClips.kick)clip.preload='auto';
+  let lastKickHits=0,lastSoundRound=null,nextKick=0,lastKickAt=0;
+  const soundEnabled=()=>!document.hidden&&!audio.metrics().muted;
+  const playClip=(clip,volume)=>{
+    if(!soundEnabled())return;
+    clip.volume=volume;clip.currentTime=0;clip.play().catch(()=>{});
+  };
+  const stopClips=()=>{
+    crashClips.start.pause();
+    for(const clip of crashClips.kick)clip.pause();
+  };
   let view, round, token, authority = 'local', busy = false, stopped = false;
   let frame = 0, pollTimer = 0, pollBusy = false, eventId = 0, priorStatus;
   let localCrashAt = 0, clockOffset = 0, lastPollAt = 0, nextPracticeCrash;
@@ -36,8 +53,9 @@ export async function mountCrash() {
     round = snapshot;
     if (snapshot.serverNow) clockOffset = snapshot.serverNow - Date.now();
     if (snapshot.status !== priorStatus) {
-      if (snapshot.status === 'crashed') { say('Crashed. This round returned 0 points.'); event('BALL_DRAINED'); }
-      if (snapshot.status === 'cashed_out') { say(`Cashed out at ${Number(snapshot.multiplier).toFixed(2)}×. Return: ${points(snapshot.payout)} virtual points.`); event('BANK_ACCEPTED'); }
+      if (snapshot.status === 'active') playClip(crashClips.start,.65);
+      if (snapshot.status === 'crashed') { stopClips(); say('Crashed. This round returned 0 points.'); event('BALL_DRAINED'); }
+      if (snapshot.status === 'cashed_out') { stopClips(); say(`Cashed out at ${Number(snapshot.multiplier).toFixed(2)}×. Return: ${points(snapshot.payout)} virtual points.`); event('BANK_ACCEPTED'); }
       priorStatus = snapshot.status;
     }
     q('.fc-round-actions').hidden = !!active();
@@ -93,7 +111,17 @@ export async function mountCrash() {
     q('#fc-cashout').disabled = busy || round?.status !== 'active' || (authority === 'server' && Date.now()-lastPollAt > 2500);
     root.dataset.roundState = round?.status || 'idle';
     updateMeter(multiplier,round?.status);
-    view?.update({multiplier,state:round?.status || 'ready'});
+    view?.update({multiplier,state:round?.status || 'ready',roundId:round?.roundId});
+    const gameplay=view?.getGameStats?.();
+    if(round?.roundId!==lastSoundRound){lastSoundRound=round?.roundId;lastKickHits=0;stopClips();}
+    if(round?.status==='active'&&gameplay?.bootHits>lastKickHits){
+      const at=performance.now();
+      if(at-lastKickAt>=85){playClip(crashClips.kick[nextKick++%crashClips.kick.length],.45);lastKickAt=at;}
+    }
+    lastKickHits=gameplay?.bootHits||0;
+    q('#fc-board-score').textContent='BOARD SCORE '+(gameplay?.score||0).toLocaleString();
+    q('#fc-hit-feedback').textContent=round?.status==='active'?(gameplay?.feedback?.text||''):'';
+    for(const side of ['left','right']) q('#fc-'+side+'-boot').disabled=round?.status!=='active';
     audio.update([], {state:round?.status === 'active' ? 'active' : 'ended'});
     frame = requestAnimationFrame(draw);
   }
@@ -146,13 +174,34 @@ export async function mountCrash() {
     } catch { say('Cashout not confirmed. Reconnecting to obtain the server result…'); await poll(); }
     finally { busy = false; }
   };
+  const held=[false,false];
+  const setBoot=(side,down)=>{
+    if(down&&round?.status!=='active')return;
+    held[side]=down;
+    view?.setFlipper(side,down);
+    q(side===0?'#fc-left-boot':'#fc-right-boot').dataset.held=String(down);
+  };
+  for(const [side,selector] of [[0,'#fc-left-boot'],[1,'#fc-right-boot']]){
+    const control=q(selector);
+    control.addEventListener('pointerdown',e=>{e.preventDefault();control.setPointerCapture?.(e.pointerId);setBoot(side,true);});
+    for(const name of ['pointerup','pointercancel','lostpointercapture'])control.addEventListener(name,()=>setBoot(side,false));
+  }
+  const keys=e=>{
+    const side=e.code==='ArrowLeft'||e.code==='KeyA'?0:e.code==='ArrowRight'||e.code==='KeyD'?1:-1;
+    if(side<0)return;
+    if(e.target?.matches?.('input,select,textarea'))return;
+    e.preventDefault();setBoot(side,e.type==='keydown');
+  };
+  window.addEventListener('keydown',keys);
+  window.addEventListener('keyup',keys);
+  window.addEventListener('blur',()=>{setBoot(0,false);setBoot(1,false);});
   const dialog = q('#fc-menu-dialog');
   q('.fc-menu').onclick = () => { q('#fc-menu-audio').append(q('#fp-audio')); dialog.showModal(); };
   dialog.addEventListener('close',()=>{if(!q('.fc-setup').hidden)q('.fp-actions').append(q('#fp-audio'));}); q('#fc-close').onclick = () => dialog.close();
   const visibility = () => { if (!document.hidden) poll(); };
   document.addEventListener('visibilitychange',visibility);
   pollTimer = setInterval(poll,250); draw();
-  const dispose = () => { stopped = true; cancelAnimationFrame(frame); clearInterval(pollTimer); document.removeEventListener('visibilitychange',visibility); view?.dispose(); audio.dispose(); };
+  const dispose = () => { stopped = true;stopClips(); cancelAnimationFrame(frame); clearInterval(pollTimer); document.removeEventListener('visibilitychange',visibility); view?.dispose(); audio.dispose(); window.removeEventListener('keydown',keys);window.removeEventListener('keyup',keys); };
   window.addEventListener('pagehide',event=>{if(!event.persisted)dispose();});
   if (import.meta.env.DEV && new URLSearchParams(location.search).has('qa')) window.__crash = {ready:true,snapshot:()=>round ? {...round} : null,get view(){return view;},get source(){return authority;},audio,dispose,setNextPracticeCrash(value){if(Number.isFinite(value)&&value>=1&&value<=100)nextPracticeCrash=value;}};
 }
