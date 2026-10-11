@@ -9,6 +9,7 @@ const failures=[];
 try{
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   page.on('pageerror',error=>failures.push(error.message));
+  await page.addInitScript(()=>sessionStorage.setItem('infinite-pinball-demo-access','granted'));
   await page.goto('http://127.0.0.1:5264/football-pinball/?mode=crash&qa');
   await page.waitForFunction(()=>window.__crash?.ready);
   await page.locator('#fc-enter').click();
