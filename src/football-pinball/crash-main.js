@@ -1,5 +1,6 @@
 import {crashMeterMarkup,bindCrashMeter} from './ui/crash-meter.js';
 import './ui/crash.css';
+import './ui/crash-intro.css';
 import { createAudio } from './ui/audio.js';
 import { createCrashView } from './view/crash-scene.js';
 
@@ -9,19 +10,34 @@ export async function mountCrash() {
   const server = (import.meta.env.VITE_FOOTBALL_SERVER_URL || '').replace(/\/$/, '');
   root.className = 'fp-crash';
   root.dataset.mode = 'crash';
+  root.dataset.screen = 'intro';
   root.innerHTML = `<header class="fc-header"><a href="/football-pinball/" aria-label="Game selection">‹ Modes</a><h1>FOOTBALL <span>CRASH</span></h1><button class="fc-menu" aria-label="Game controls">⚙</button></header>
-    <section class="fc-setup"><p class="fc-kicker">MULTIPLIER CHALLENGE</p><h2>Know when to cash out.</h2><div class="fc-preview" aria-hidden="true"><svg viewBox="0 0 320 130" fill="none"><path d="M20 112H300M20 112V14" stroke="#3e6471"/><path d="M24 106Q154 106 284 20" stroke="#65d4b3" stroke-width="5"/><circle cx="284" cy="20" r="9" fill="#e7f9f1"/><path d="m276 16 8-5 8 5-3 10h-10Z" fill="#173b42"/></svg><strong>1.00× → ?</strong></div>
-    <p>The multiplier rises automatically. Cash out before the crash to secure your virtual return. A crash before cashout returns zero.</p>
-    <label>Round type<select id="fc-authority"><option value="server" ${server ? '' : 'disabled'}>Hosted practice${server ? '' : ' — unavailable'}</option><option value="local" selected>Local practice</option></select></label>
-    <p class="fc-authority-note">Local practice runs on this device. It is not server-verified or provably fair.</p>
-
-    <div class="fc-setup-actions"><div class="fp-actions"></div><button id="fc-enter">Continue</button></div></section>
+    <section class="fc-setup" aria-labelledby="fc-intro-title">
+      <div class="fc-intro-hero">
+        <img class="fc-intro-art" src="/football-pinball/art/crash-intro-stadium.webp" width="1200" height="1032" alt="" fetchpriority="high" draggable="false">
+        <div class="fc-intro-heading"><p class="fc-kicker">MULTIPLIER CHALLENGE</p><h2 id="fc-intro-title"><span>Know when</span><span>to cash</span><span>out.</span></h2></div>
+        <svg class="fc-intro-curve" viewBox="0 0 430 370" fill="none" aria-hidden="true"><path d="M82 299C161 255 241 159 358 143" stroke="currentColor" stroke-width="2.5"/><circle cx="82" cy="299" r="4" fill="#f3f4e9"/><circle cx="358" cy="143" r="4" fill="currentColor"/><text x="27" y="312" fill="#f3f4e9">1.00×</text><text class="fc-curve-unknown" x="369" y="150" fill="currentColor">?</text></svg>
+        <p class="fc-intro-caption">Multiplier rises automatically.</p>
+      </div>
+      <div class="fc-intro-content">
+        <ul class="fc-intro-rules">
+          <li><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="17"/><path d="m12 28 16-16M15 12h13v13"/></svg><div><h3>Cash out before the crash</h3><p>Secure your virtual return.</p></div></li>
+          <li><svg class="fc-rule-warning" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M17 5a3.4 3.4 0 0 1 6 0l15 27a3 3 0 0 1-3 4H5a3 3 0 0 1-3-4Z"/><path d="M20 14v10m0 5v1"/></svg><div><h3>Crash before cashout?</h3><p>Your return is zero.</p></div></li>
+        </ul>
+        <div class="fc-setup-actions"><div class="fp-actions"></div><button id="fc-enter" type="button"><span>Continue</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7"/></svg></button></div>
+      </div>
+    </section>
     <section class="fc-play" hidden><div class="fc-round-header"><span id="fc-mode-label">LOCAL PRACTICE</span><span>Stake <b id="fc-stake-label">100</b> pts</span></div><div class="fc-game"><div id="fc-arena"><div class="fc-live"><span id="fc-round-state">Ready</span><span id="fc-board-score">BOARD SCORE 0</span><span id="fc-hit-feedback" aria-live="off"></span><strong id="fc-multiplier">1.00×</strong><span id="fc-countdown"></span></div></div><aside class="fc-ladder" aria-label="Multiplier milestones">${crashMeterMarkup()}<button id="fc-cashout" disabled>Cash out <strong id="fc-return">100 pts</strong></button></aside></div><form class="fc-round-actions"><label for="fc-stake">Points stake<input id="fc-stake" type="number" inputmode="numeric" min="1" max="1000" step="1" required value="100" aria-describedby="fc-stake-help"></label><button id="fc-start" type="submit">Play</button><small id="fc-stake-help">1–1,000 free points per round</small></form><p id="fc-message" role="status" aria-live="polite">Cash out before the multiplier crashes.</p><p class="fc-small">Virtual points only. No cash prizes.</p><details id="fc-proof" hidden><summary>Round verification</summary><p id="fc-proof-text"></p></details></section>
-    <dialog id="fc-menu-dialog"><h2>Game controls</h2><p>Opening this menu does not pause a round.</p><div id="fc-menu-audio"></div><button id="fc-close">Close</button></dialog>`;
+    <dialog id="fc-menu-dialog" aria-labelledby="fc-menu-title"><h2 id="fc-menu-title">Game controls</h2><p>Opening this menu does not pause a round.</p><div id="fc-practice-settings"><label for="fc-authority">Round type</label><select id="fc-authority" aria-describedby="fc-authority-note"><option value="server" ${server ? '' : 'disabled'}>Hosted practice${server ? '' : ' — unavailable'}</option><option value="local" selected>Local practice</option></select><p class="fc-authority-note" id="fc-authority-note">Local practice runs on this device. It is not server-verified or provably fair.</p></div><div id="fc-menu-audio"></div><button id="fc-close">Close</button></dialog>`;
   const q = s => root.querySelector(s);
   // Vector control artwork stays sharp at all phone resolutions.
   q('.fc-menu').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m9 3-.5 2-2 .9-1.9-.6-2 3.4 1.5 1.5v2.3L2.6 14l2 3.4 2-.6 1.9 1 .5 2.2h4l.6-2.2 1.9-1 2 .6 2-3.4-1.5-1.5v-2.3l1.5-1.5-2-3.4-2 .6-1.9-.9L13 3Z"/><circle cx="11" cy="11.5" r="3"/></svg>';
   const audio = createAudio(root);
+  // Keep the existing audio handler and state; only replace its presentation.
+  const soundButton = q('#fp-audio');
+  const soundLabel = soundButton.textContent;
+  soundButton.innerHTML = '<svg class="fc-sound-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true"><path d="M4 10h5l7-6v20l-7-6H4Z"/><path class="fc-sound-waves" d="M20 9a8 8 0 0 1 0 10m3-13a12 12 0 0 1 0 16"/></svg><span data-audio-label></span><span class="fc-sound-switch" aria-hidden="true"></span>';
+  q('[data-audio-label]').textContent = soundLabel;
   const updateMeter=bindCrashMeter(root);
   let lastKickHits=0,lastSoundRound=null;
   let view, round, token, authority = 'local', busy = false, stopped = false;
@@ -114,6 +130,8 @@ export async function mountCrash() {
     q('#fc-mode-label').textContent = authority === 'server' ? 'HOSTED PRACTICE' : 'LOCAL PRACTICE';
     q('#fc-stake-label').textContent = points(Number(q('#fc-stake').value));
     q('.fc-setup').hidden = true; q('.fc-play').hidden = false;
+    root.dataset.screen = 'play';
+    q('#fc-practice-settings').hidden = true;
     q('#fc-menu-audio').append(q('#fp-audio'));
     if (!view) { try { view = await createCrashView(q('#fc-arena')); } catch { say('3D artwork could not load. Round controls remain available.'); } }
     window.dispatchEvent(new Event('resize')); q('#fc-start').focus();

@@ -1,0 +1,183 @@
+@font-face {
+  font-family: 'Football Display';
+  src: url('/football-pinball/fonts/barlow-condensed-extrabold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Intro styles are scoped so the live board retains its existing layout. */
+#footballApp.fp-crash[data-screen=intro] {
+  --fc-lime: #d7f95b;
+  --fc-ink: #0c1112;
+  max-width: 520px;
+  padding: env(safe-area-inset-top) 0 max(24px, env(safe-area-inset-bottom));
+  background: var(--fc-ink);
+  color: #f3f4e9;
+}
+
+.fp-crash[data-screen=intro] :is(button, a):focus-visible {
+  outline-color: var(--fc-lime);
+}
+
+#footballApp.fp-crash[data-screen=intro] .fc-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  height: 64px;
+  padding: 0 18px;
+  border-bottom: 1px solid #334548;
+  background: #10191c;
+}
+
+#footballApp.fp-crash[data-screen=intro] .fc-header a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+}
+
+#footballApp.fp-crash[data-screen=intro] h1 {
+  font: 800 25px/.94 'Football Display', 'Arial Narrow', sans-serif;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+#footballApp.fp-crash[data-screen=intro] h1 span {
+  margin-top: 5px;
+  color: var(--fc-lime);
+  font: 700 10px/1 system-ui, sans-serif;
+  letter-spacing: 5px;
+  padding-left: 5px;
+}
+
+.fp-crash[data-screen=intro] .fc-menu {
+  justify-self: end;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+}
+
+.fp-crash[data-screen=intro] .fc-menu svg { width: 25px; height: 25px; }
+.fp-crash .fc-setup { max-width: none; margin: 0; }
+
+.fc-intro-hero {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 430 / 385;
+  container-type: inline-size;
+}
+
+.fc-intro-art, .fc-intro-curve {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.fc-intro-art { z-index: -1; }
+.fc-intro-curve { color: var(--fc-lime); }
+.fc-intro-curve text { font: 750 15px system-ui, sans-serif; }
+.fc-intro-curve .fc-curve-unknown { font-size: 30px; font-weight: 800; }
+.fc-intro-heading { position: relative; z-index: 1; padding: 23px 5.4% 0; }
+
+.fp-crash .fc-setup .fc-kicker {
+  margin: 0 0 10px;
+  color: var(--fc-lime);
+  font-size: clamp(9px, 2.45cqi, 13px);
+  font-weight: 750;
+  letter-spacing: 3px;
+  line-height: 1.3;
+}
+
+.fp-crash .fc-setup h2 {
+  margin: 0;
+  font: 800 clamp(45px, 15.2cqi, 80px)/.91 'Football Display', 'Arial Narrow', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -.6px;
+}
+
+.fc-intro-heading h2 span { display: block; }
+.fc-intro-heading h2 span:last-child { color: var(--fc-lime); }
+
+.fp-crash .fc-setup .fc-intro-caption {
+  position: absolute;
+  bottom: 0;
+  left: 5.4%;
+  margin: 0;
+  color: #bdc9cd;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.fc-intro-content { padding: 0 5.4%; }
+.fc-intro-rules { list-style: none; margin: 12px 0 0; padding: 0; }
+.fc-intro-rules li {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  align-items: center;
+  gap: 15px;
+  min-height: 82px;
+  padding: 15px 0;
+  border-bottom: 1px solid #334548;
+}
+
+.fc-intro-rules svg { width: 35px; height: 35px; stroke: var(--fc-lime); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fc-intro-rules .fc-rule-warning { stroke: #f4c15e; }
+.fc-intro-rules li > div { padding-left: 15px; border-left: 1px solid #334548; }
+.fc-intro-rules h3 { margin: 0; font-size: 15px; font-weight: 750; line-height: 1.35; }
+.fp-crash .fc-setup .fc-intro-rules p { margin: 4px 0 0; font-size: 14px; color: #bdc9cd; line-height: 1.4; }
+.fp-crash .fc-setup-actions { display: grid; grid-template-columns: 1fr; gap: 16px; margin: 0; }
+.fp-crash .fc-setup-actions .fp-actions { padding: 4px 0; border-bottom: 1px solid #334548; }
+
+.fp-crash #fp-audio {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #f3f4e9;
+  font-size: 16px;
+  font-weight: 650;
+  text-align: left;
+}
+
+.fc-sound-icon { width: 27px; height: 27px; margin: 0 7px 0 2px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.fc-sound-switch { position: relative; flex: 0 0 46px; height: 26px; margin-left: auto; border-radius: 20px; background: #526266; }
+.fc-sound-switch::after { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; border-radius: 50%; background: #fff; }
+#fp-audio[aria-pressed=true] .fc-sound-switch { background: #d7f95b; }
+#fp-audio[aria-pressed=true] .fc-sound-switch::after { transform: translateX(20px); }
+#fp-audio[aria-pressed=false] .fc-sound-waves { visibility: hidden; }
+
+.fp-crash .fc-setup #fc-enter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 56px;
+  padding: 12px 48px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--fc-lime);
+  color: var(--fc-ink);
+  font-size: 21px;
+  font-weight: 800;
+}
+
+#fc-enter svg { position: absolute; right: 17px; width: 25px; height: 25px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.fp-crash #fc-practice-settings label { display: block; margin: 16px 0 8px; font-size: 14px; }
+.fp-crash #fc-authority { width: 100%; min-height: 48px; padding: 10px; border: 1px solid #637f8a; border-radius: 8px; background: #172c38; color: #fff; color-scheme: dark; }
+
+@media (max-width: 359px) {
+  .fc-intro-heading { padding-top: 18px; }
+  .fc-intro-rules li { grid-template-columns: 34px 1fr; gap: 10px; }
+  .fc-intro-rules li > div { padding-left: 10px; }
+  .fc-intro-rules h3 { font-size: 14px; }
+}

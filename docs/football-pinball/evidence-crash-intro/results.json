@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "WebP hero and local display font loaded; round selector absent from intro",
+    "No horizontal overflow; 44px touch targets at 320, 390, 430, 1000 and landscape 844px",
+    "Sound toggles actual audio state, persists after reload and survives settings reparenting",
+    "Continue enters real board; local round starts, cashes out and exposes Play again"
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "method": "Chromium with mobile touch emulation; real page controls; demo-access fixture and deterministic local crash threshold. Not physical iPhone validation."
+}
