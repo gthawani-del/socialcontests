@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createCrashBallMotion } from './crash-ball-motion.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -73,6 +74,7 @@ export async function createCrashView(container) {
     const target=props.bumper({face:faces[x<0?0:x>0?1:2],light:colour,radius:x===0?.65:.55});target.position.set(x,.02,z);board.add(target);
     kit.contact(board,1.1,1.1,x,.012,z);
   }
+  board.userData.crashBoots=[];
   for(const side of [-1,1]){
     const curve=new THREE.CatmullRomCurve3([[side*2.7,.15,-3.8],[side*2.5,.15,-.8],[side*2.2,.15,.4]].map(p=>new THREE.Vector3(...p)));
     mesh(new THREE.TubeGeometry(curve,24,.07,8,false),gold,0,0,0);
@@ -82,7 +84,7 @@ export async function createCrashView(container) {
     }
     const wing=props.wing({face:faces[side<0?0:1],light:side<0?blue:red});wing.position.set(side*2.25,.02,-.25);wing.rotation.y=side*.25;board.add(wing);
     const boot=model('boot-reference',side*1.25,.08,4,2.3,side<0?'blue':'red');
-    if(boot)boot.rotation.y=side<0?-.3:Math.PI+.3;
+    if(boot){boot.rotation.y=side<0?-.3:Math.PI+.3;board.userData.crashBoots.push(boot);}
   }
   const ball=model('football',0,.2,2.8,.55)||mesh(new THREE.SphereGeometry(.18,20,16),new THREE.MeshStandardMaterial({color:'white',roughness:.4}),0,.2,2.8);
   const corners=[];for(const x of [-3.85,3.85])for(const z of [-6.1,6.1])for(const y of [0,1.1])corners.push(new THREE.Vector3(x,y,z));
@@ -92,16 +94,40 @@ export async function createCrashView(container) {
     let lo=5,hi=40;for(let n=0;n<22;n++){const mid=(lo+hi)/2;if(fits(mid))hi=mid;else lo=mid;}fits(hi);composer.render();
   }
   const observer=new ResizeObserver(resize);observer.observe(container);resize();
-  let motion=0,lastTime=performance.now();
+  const motion=createCrashBallMotion();
+  const flame=new THREE.PointLight('#ff741c',0,2.4);board.add(flame);
+  const trailCount=22, trailPositions=new Float32Array(trailCount*3),trailColors=new Float32Array(trailCount*3);
+  const trailGeometry=new THREE.BufferGeometry();
+  trailGeometry.setAttribute('position',new THREE.BufferAttribute(trailPositions,3));
+  trailGeometry.setAttribute('color',new THREE.BufferAttribute(trailColors,3));
+  const trailMaterial=new THREE.PointsMaterial({size:.14,vertexColors:true,transparent:true,opacity:.9,depthWrite:false,blending:THREE.AdditiveBlending});
+  const trail=new THREE.Points(trailGeometry,trailMaterial);trail.frustumCulled=false;board.add(trail);
+  let lastTime=performance.now();
   function update(snapshot={}){
     if(disposed)return;latest=snapshot;const now=performance.now(),dt=Math.min(.05,(now-lastTime)/1000);lastTime=now;
     const active=['active','running','rising'].includes(snapshot.state);
-    if(active&&!snapshot.paused&&!matchMedia('(prefers-reduced-motion: reduce)').matches){motion+=dt;ball.position.set(Math.sin(motion*2.1)*1.8,.16,Math.cos(motion*1.3)*3.1);ball.rotation.x+=dt*4;ball.rotation.z+=dt*2;}
-    amber.emissiveIntensity=snapshot.state==='crashed'?.2:active?1.5+Math.sin(motion*4)*.2:1;
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const state=motion.step(active&&!snapshot.paused?dt:0);
+    ball.position.set(state.x,.16,state.z);
+    if(active&&!snapshot.paused){ball.rotation.x+=dt*state.speed*.7;ball.rotation.z+=dt*state.speed*.4;}
+    for(let i=0;i<2;i++){const boot=board.userData.crashBoots?.[i];if(boot)boot.rotation.y=(i===0?-.3:Math.PI+.3)+(state.flipperPhase[i]||0);}
+    const power=THREE.MathUtils.clamp(state.speed/15,0,1);
+    const tint=new THREE.Color(power>=.9?'#ff681a':power>=.66?'#ffa733':power>=.31?'#37baff':'#e5f7ff');
+    const history=active&&!reduced?state.history:[];
+    for(let i=0;i<history.length&&i<trailCount;i++){
+      const h=history[i],fade=1-i/trailCount,offset=i*3;
+      trailPositions[offset]=h.x;trailPositions[offset+1]=.17+Math.sin(i*2.7)*.035*power;trailPositions[offset+2]=h.z;
+      trailColors[offset]=tint.r*fade;trailColors[offset+1]=tint.g*fade;trailColors[offset+2]=tint.b*fade;
+    }
+    trailGeometry.setDrawRange(0,history.length);trailGeometry.attributes.position.needsUpdate=true;trailGeometry.attributes.color.needsUpdate=true;
+    trailMaterial.size=power>=.9?.34:power>=.66?.24:power>=.31?.15:.09;
+    flame.position.set(state.x,.3,state.z);flame.intensity=active&&!reduced&&power>=.9?power*3:0;
+    ball.scale.setScalar(power>=.9&&!reduced?1.05:1);
+    amber.emissiveIntensity=snapshot.state==='crashed'?.2:active?1.5+Math.sin(now*.004)*.2:1;
     composer.render();
   }
   return {update,setQuality(value){renderer.setPixelRatio(value==='low'?1:Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=value!=='low';kit.setReduced(value==='low');bloom.enabled=value!=='low';resize();},
     metrics(){return {failedAssets:[...failures],canvas:{width:container.clientWidth,height:container.clientHeight},state:latest.state,cosmetic:true,props:{bumpers:6,wings:2},bloom:bloom.enabled};},
-    dispose(){if(disposed)return;disposed=true;observer.disconnect();const geometry=new Set(),materials=new Set();for(const root of [scene,...models.values()])root.traverse(o=>{if(o.geometry)geometry.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])materials.add(m);});geometry.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());kit.dispose();composer.dispose();bloom.dispose();renderer.dispose();renderer.domElement.remove();}
+    dispose(){if(disposed)return;disposed=true;observer.disconnect();trailGeometry.dispose();trailMaterial.dispose();const geometry=new Set(),materials=new Set();for(const root of [scene,...models.values()])root.traverse(o=>{if(o.geometry)geometry.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])materials.add(m);});geometry.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());kit.dispose();composer.dispose();bloom.dispose();renderer.dispose();renderer.domElement.remove();}
   };
 }
