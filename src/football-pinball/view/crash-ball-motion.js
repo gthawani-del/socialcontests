@@ -27,28 +27,29 @@ export function createCrashBallMotion(){
         angles[i]+=(target-angles[i])*Math.min(1,20*STEP);
         flipperPhase[i]=Math.abs(angles[i]-boot.rest)/Math.abs(boot.active-boot.rest);
       }
+      // Table slope returns the ball toward player-operated shoes.
+      ball.vz+=2.8*STEP;
       ball.x+=ball.vx*STEP;ball.z+=ball.vz*STEP;
       if(ball.x< -2.85||ball.x>2.85){ball.x=clamp(ball.x,-2.85,2.85);ball.vx*=-.91;}
       if(ball.z< -4.45){ball.z=-4.45;ball.vz=Math.abs(ball.vz)*.94;}
       for(let i=0;i<2;i++){
         const boot=boots[i],ang=angles[i],prev=before[i];
         // Boot sweeps a line segment about its pivot; contact produces a normal impulse.
-        const length=1.18;
+        const length=1.65;
         const tipX=boot.x+Math.cos(ang)*length,tipZ=boot.z+Math.sin(ang)*length;
         const dx=tipX-boot.x,dz=tipZ-boot.z,den=dx*dx+dz*dz;
         const t=clamp(((ball.x-boot.x)*dx+(ball.z-boot.z)*dz)/den,0,1);
         const cx=boot.x+t*dx,cz=boot.z+t*dz,sepX=ball.x-cx,sepZ=ball.z-cz;
-        const dist=Math.hypot(sepX,sepZ),limit=RADIUS+.15;
+        const dist=Math.hypot(sepX,sepZ),limit=RADIUS+.22;
         if(dist<limit){
           const nx=dist>.0001?sepX/dist:0,nz=dist>.0001?sepZ/dist:-1;
           const angular=(ang-prev)/STEP;
           const surfaceVx=-Math.sin(ang)*length*t*angular,surfaceVz=Math.cos(ang)*length*t*angular;
           const relative=(ball.vx-surfaceVx)*nx+(ball.vz-surfaceVz)*nz;
           ball.x=cx+nx*limit;ball.z=cz+nz*limit;
-          if(relative<0){
-            const kick=Math.min(21,-1.75*relative);
-            ball.vx+=nx*kick;ball.vz+=nz*kick;
-            if(pressed[i])ball.vz-=2.8;
+          if(relative<0 && pressed[i]){
+            const kick=Math.min(21,Math.max(5,-1.75*relative));
+            ball.vx+=nx*kick;ball.vz=-Math.max(9,Math.abs(ball.vz)+kick*.45);
             bootHits++;
             // Sound consumers observe bootHits; one increment equals one actual contact.
             // Random bonus occurs only on a real boot-ball impact, never from a timer.

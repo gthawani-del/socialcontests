@@ -3,7 +3,28 @@ export function createAudio(root) {
   let context,master,muted=false,lastEvent=0,played=0,playing=false,disposed=false;
   let crowdBuffer,crowdSource,crowdGain,crowdLoad,crowdError=null,crowdLevel=0,crowdOffset=0,crowdStarted=0,crowdStarts=0;
   const download=new AbortController();
-  const voices=new Set(),cooldowns=new Map();
+  const voices=new Set(),cooldowns=new Map(),clips=new Map();
+  let pendingStart=false;
+  let clipLoadStarted=false;
+  function loadCrashClips(){
+    if(clipLoadStarted||!context)return;
+    clipLoadStarted=true;
+    for(const [type,file] of [['CRASH_GAME_START','Game-start.mp3'],['CRASH_SOCCER_KICK','Soccer-kick.mp3']]){
+      fetch('/football-pinball/audio/'+file,{signal:download.signal})
+        .then(response=>{if(!response.ok)throw Error('Audio HTTP '+response.status);return response.arrayBuffer();})
+        .then(data=>context.decodeAudioData(data))
+        .then(buffer=>{if(!disposed){clips.set(type,buffer);if(type==='CRASH_GAME_START'&&pendingStart){pendingStart=false;clip(type,.9);played++;}}})
+        .catch(()=>{});
+    }
+  }
+  function clip(type,volume){
+    const buffer=clips.get(type);if(!buffer)return false;
+    const source=context.createBufferSource(),gain=context.createGain();
+    source.buffer=buffer;gain.gain.value=volume;
+    source.connect(gain);gain.connect(master);voices.add(source);
+    source.onended=()=>{voices.delete(source);source.disconnect();gain.disconnect();};
+    source.start();return true;
+  }
   try{muted=localStorage.getItem('football-audio')==='off';}catch{}
   const button=document.createElement('button');button.id='fp-audio';button.type='button';button.dataset.footballAudio='';root.querySelector('.fp-actions').append(button);
   const label=()=>{for(const b of root.querySelectorAll('[data-football-audio]')){(b.querySelector('[data-audio-label]')||b).textContent=muted?'Sound off':'Sound on';b.setAttribute('aria-pressed',String(!muted));}};
@@ -57,7 +78,7 @@ export function createAudio(root) {
     if(!context){context=new Audio();context.addEventListener('statechange',ambience);}
     if(!master){master=context.createGain();master.gain.value=.22;master.connect(context.destination);}
     context.resume().then(ambience).catch(()=>{});
-    loadCrowd();
+    loadCrowd();loadCrashClips();
   }
   root.addEventListener('pointerdown',activate);root.addEventListener('keydown',activate);
   label();button.onclick=()=>{muted=!muted;if(muted)stop();else activate();try{localStorage.setItem('football-audio',muted?'off':'on');}catch{}label();ambience();};
@@ -80,6 +101,8 @@ export function createAudio(root) {
     if(muted||!context||context.state!=='running'||document.hidden)return;
     const now=context.currentTime,minGap=type==='COLLISION'?.075:.04;
     if(now-(cooldowns.get(type)??-10)<minGap)return;cooldowns.set(type,now);
+    if(type==='CRASH_GAME_START'){if(clip(type,.9))played++;else pendingStart=true;return;}
+    if(type==='CRASH_SOCCER_KICK'){if(clip(type,.9))played++;return;}
     switch(type){
       case 'PLAYER_KICK':voice(110,.09,'triangle',.19,0,55);voice(1000,.045,'noise',.08);break;
       case 'FLIP_DOWN':voice(180,.045,'triangle',.12,0,75);break;
@@ -100,9 +123,9 @@ export function createAudio(root) {
     played++;
   }
   return {
-    update(events,state){if(state)playing=state.state==='active'&&!state.paused;ambience();for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
-    reset(){playing=false;stopCrowd();crowdOffset=0;lastEvent=0;cooldowns.clear();stop();},
-    metrics:()=>({muted,played,activeVoices:voices.size,crowd:!!crowdSource,crowdStatus:crowdError?'error':crowdBuffer?'ready':crowdLoad?'loading':'idle',crowdError,crowdDuration:crowdBuffer?.duration||0,crowdStarts,crowdLevel,state:context?.state||'locked'}),
-    dispose(){disposed=true;download.abort();stopCrowd();context?.removeEventListener('statechange',ambience);document.removeEventListener('visibilitychange',visibility);stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
+    update(events,state){if(state){playing=state.state==='active'&&!state.paused;if(state.state==='crashed'||state.state==='cashed_out')pendingStart=false;}ambience();for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
+    reset(){playing=false;pendingStart=false;stopCrowd();crowdOffset=0;lastEvent=0;cooldowns.clear();stop();},
+    metrics:()=>({muted,played,activeVoices:voices.size,crowd:!!crowdSource,crowdStatus:crowdError?'error':crowdBuffer?'ready':crowdLoad?'loading':'idle',crowdError,crowdDuration:crowdBuffer?.duration||0,crowdStarts,crowdLevel,crashClipsLoaded:[...clips.keys()],state:context?.state||'locked'}),
+    dispose(){disposed=true;pendingStart=false;download.abort();stopCrowd();context?.removeEventListener('statechange',ambience);document.removeEventListener('visibilitychange',visibility);stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
   };
 }
