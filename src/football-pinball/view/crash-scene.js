@@ -113,7 +113,7 @@ export async function createCrashView(container) {
     ball.position.set(state.x,.16,state.z);
     if(active&&!snapshot.paused){ball.rotation.x+=dt*state.speed*.7;ball.rotation.z+=dt*state.speed*.4;}
     for(let i=0;i<2;i++){const boot=board.userData.crashBoots?.[i];if(boot)boot.rotation.y=(i===0?-.3:Math.PI+.3)+(i===0?-1:1)*(state.flipperPhase[i]||0)*.75;}
-    const power=THREE.MathUtils.clamp(state.speed/15,0,1);
+    const power=state.powerActive?1:THREE.MathUtils.clamp(state.speed/15,0,1);
     const tint=new THREE.Color(power>=.9?'#ff681a':power>=.66?'#ffa733':power>=.31?'#37baff':'#e5f7ff');
     const history=active&&!reduced?state.history:[];
     for(let i=0;i<history.length&&i<trailCount;i++){
@@ -128,7 +128,7 @@ export async function createCrashView(container) {
     amber.emissiveIntensity=snapshot.state==='crashed'?.2:active?1.5+Math.sin(now*.004)*.2:1;
     composer.render();
   }
-  return {update,setFlipper(side,pressed){motion.input(side,pressed);},setQuality(value){renderer.setPixelRatio(value==='low'?1:Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=value!=='low';kit.setReduced(value==='low');bloom.enabled=value!=='low';resize();},
+  return {update,setFlipper(side,pressed){motion.input(side,pressed);},getGameStats(){const {score,hits,bootHits,powerShots,powerActive,feedback}=motion.snapshot();return {score,hits,bootHits,powerShots,powerActive,feedback};},setQuality(value){renderer.setPixelRatio(value==='low'?1:Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=value!=='low';kit.setReduced(value==='low');bloom.enabled=value!=='low';resize();},
     metrics(){return {failedAssets:[...failures],canvas:{width:container.clientWidth,height:container.clientHeight},state:latest.state,cosmetic:true,physics:motion.snapshot(),props:{bumpers:6,wings:2},bloom:bloom.enabled};},
     dispose(){if(disposed)return;disposed=true;observer.disconnect();trailGeometry.dispose();trailMaterial.dispose();const geometry=new Set(),materials=new Set();for(const root of [scene,...models.values()])root.traverse(o=>{if(o.geometry)geometry.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])materials.add(m);});geometry.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());kit.dispose();composer.dispose();bloom.dispose();renderer.dispose();renderer.domElement.remove();}
   };
