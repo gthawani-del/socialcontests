@@ -1,0 +1,44 @@
+{
+  "name": "coin",
+  "bounds": {
+    "min": [
+      -0.25,
+      0,
+      -0.25
+    ],
+    "max": [
+      0.25,
+      0.03999999910593033,
+      0.25
+    ]
+  },
+  "size": [
+    0.5,
+    0.03999999910593033,
+    0.5
+  ],
+  "meshes": [
+    {
+      "name": "MESH_Brushed_Metal",
+      "vertices": 1536,
+      "triangles": 1024,
+      "uv": true,
+      "material": "Brushed_Metal"
+    },
+    {
+      "name": "MESH_Coin_Alloy",
+      "vertices": 4224,
+      "triangles": 2292,
+      "uv": true,
+      "material": "Coin_Alloy"
+    },
+    {
+      "name": "MESH_Marking",
+      "vertices": 102,
+      "triangles": 52,
+      "uv": true,
+      "material": "Marking"
+    }
+  ],
+  "drawCalls": 3
+}

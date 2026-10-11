@@ -1,0 +1,44 @@
+{
+  "name": "goal",
+  "bounds": {
+    "min": [
+      -1.20499999076128,
+      -1.0430811769879256e-8,
+      -0.05000000447034836
+    ],
+    "max": [
+      1.2049999237060547,
+      1.2597488164901733,
+      0.671999990940094
+    ]
+  },
+  "size": [
+    2.4099999144673347,
+    1.259748826920985,
+    0.7219999954104424
+  ],
+  "meshes": [
+    {
+      "name": "MESH_Foot_Graphite",
+      "vertices": 432,
+      "triangles": 216,
+      "uv": true,
+      "material": "Foot_Graphite"
+    },
+    {
+      "name": "MESH_Frame_White",
+      "vertices": 160,
+      "triangles": 120,
+      "uv": true,
+      "material": "Frame_White"
+    },
+    {
+      "name": "MESH_Net_Ivory",
+      "vertices": 2094,
+      "triangles": 1620,
+      "uv": true,
+      "material": "Net_Ivory"
+    }
+  ],
+  "drawCalls": 3
+}

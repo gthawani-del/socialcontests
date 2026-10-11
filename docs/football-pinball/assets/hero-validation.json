@@ -1,0 +1,167 @@
+[
+  {
+    "file": "public/models/football/boot.glb",
+    "bytes": 91652,
+    "sha256": "3c9e1ebad61b6cd30410fea9f0a4a4441c6e597080f4e32de82a3fcd82348083",
+    "triangles": 2260,
+    "mesh_count": 4,
+    "material_names": [
+      "Team_Primary",
+      "Laces_Ivory",
+      "Sole_Graphite",
+      "Trim_Silver"
+    ],
+    "bounds": {
+      "min": [
+        -0.1,
+        -0.075,
+        -0.169986
+      ],
+      "max": [
+        1.45,
+        0.374996,
+        0.169986
+      ]
+    },
+    "dimensions": [
+      1.55,
+      0.449996,
+      0.339973
+    ],
+    "uv_present_all_meshes": true,
+    "embedded_texture_bytes": 0,
+    "finite_geometry": true
+  },
+  {
+    "file": "public/models/football/football.glb",
+    "bytes": 31660,
+    "sha256": "fb1167b261a7eea59122f66a327d8d2a829dad0838abfa383fa88b9b11dfdbf4",
+    "triangles": 980,
+    "mesh_count": 2,
+    "material_names": [
+      "Panel_Black",
+      "Panel_Ivory"
+    ],
+    "bounds": {
+      "min": [
+        -0.129244,
+        -0.13,
+        -0.127392
+      ],
+      "max": [
+        0.129244,
+        0.13,
+        0.127392
+      ]
+    },
+    "dimensions": [
+      0.258488,
+      0.26,
+      0.254784
+    ],
+    "uv_present_all_meshes": true,
+    "embedded_texture_bytes": 0,
+    "finite_geometry": true
+  },
+  {
+    "file": "public/models/football/goal.glb",
+    "bytes": 102612,
+    "sha256": "afc21ebaf923579cfbd463b8eaa65b3281ccb43b70515f52af5b33292aac4412",
+    "triangles": 1956,
+    "mesh_count": 3,
+    "material_names": [
+      "Foot_Graphite",
+      "Frame_White",
+      "Net_Ivory"
+    ],
+    "bounds": {
+      "min": [
+        -1.205,
+        -0.0,
+        -0.05
+      ],
+      "max": [
+        1.205,
+        1.259749,
+        0.672
+      ]
+    },
+    "dimensions": [
+      2.41,
+      1.259749,
+      0.722
+    ],
+    "uv_present_all_meshes": true,
+    "embedded_texture_bytes": 0,
+    "finite_geometry": true
+  },
+  {
+    "file": "public/models/football/player-bumper.glb",
+    "bytes": 211200,
+    "sha256": "c25ff6a86b725c066f17b30b0068b57f815360e323ef656661b8d916c2422cc6",
+    "triangles": 3866,
+    "mesh_count": 6,
+    "material_names": [
+      "Hair_Dark",
+      "Shorts_Graphite",
+      "Skin_Warm",
+      "Team_Primary",
+      "Trim_Ivory",
+      "Base_Steel"
+    ],
+    "bounds": {
+      "min": [
+        -0.288323,
+        0.0,
+        -0.257
+      ],
+      "max": [
+        0.288323,
+        1.047,
+        0.257
+      ]
+    },
+    "dimensions": [
+      0.576647,
+      1.047,
+      0.514
+    ],
+    "uv_present_all_meshes": true,
+    "embedded_texture_bytes": 0,
+    "finite_geometry": true
+  },
+  {
+    "file": "public/models/football/keeper.glb",
+    "bytes": 124488,
+    "sha256": "1c64133b5b6ea8243613b4a2176e6c39e83ec8da0bbcd821293e3163428219cd",
+    "triangles": 2546,
+    "mesh_count": 5,
+    "material_names": [
+      "Gloves_Ivory",
+      "Hair_Dark",
+      "Shorts_Graphite",
+      "Skin_Warm",
+      "Team_Primary"
+    ],
+    "bounds": {
+      "min": [
+        -0.565,
+        0.01,
+        -0.08
+      ],
+      "max": [
+        0.565,
+        1.047,
+        0.1625
+      ]
+    },
+    "dimensions": [
+      1.13,
+      1.037,
+      0.2425
+    ],
+    "uv_present_all_meshes": true,
+    "embedded_texture_bytes": 0,
+    "finite_geometry": true
+  }
+]

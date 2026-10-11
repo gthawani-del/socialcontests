@@ -1,0 +1,58 @@
+{
+  "name": "keeper",
+  "bounds": {
+    "min": [
+      -0.5650000497698784,
+      0.009999997913837433,
+      -0.07999999821186066
+    ],
+    "max": [
+      0.565000057220459,
+      1.0470000505447388,
+      0.16250000149011612
+    ]
+  },
+  "size": [
+    1.1300001069903374,
+    1.0370000526309013,
+    0.24249999970197678
+  ],
+  "meshes": [
+    {
+      "name": "MESH_Gloves_Ivory",
+      "vertices": 616,
+      "triangles": 880,
+      "uv": true,
+      "material": "Gloves_Ivory"
+    },
+    {
+      "name": "MESH_Hair_Dark",
+      "vertices": 75,
+      "triangles": 98,
+      "uv": true,
+      "material": "Hair_Dark"
+    },
+    {
+      "name": "MESH_Shorts_Graphite",
+      "vertices": 512,
+      "triangles": 288,
+      "uv": true,
+      "material": "Shorts_Graphite"
+    },
+    {
+      "name": "MESH_Skin_Warm",
+      "vertices": 1035,
+      "triangles": 676,
+      "uv": true,
+      "material": "Skin_Warm"
+    },
+    {
+      "name": "MESH_Team_Primary",
+      "vertices": 952,
+      "triangles": 604,
+      "uv": true,
+      "material": "Team_Primary"
+    }
+  ],
+  "drawCalls": 5
+}

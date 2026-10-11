@@ -1,0 +1,580 @@
+{
+  "round-target": {
+    "projectId": "29637d61-954d-4932-b47b-138bb4816088",
+    "projectUrl": "https://higgsfield.ai/3d-jutsu/29637d61-954d-4932-b47b-138bb4816088",
+    "revision": 1,
+    "operationId": "build-asset-01",
+    "glb": "public/models/football/round-target.glb",
+    "source": "docs/football-pinball/assets/round-target.blend",
+    "script": "scripts/football-assets/secondary-round-target.py",
+    "audit": {
+      "asset": "ASSET_round-target",
+      "rootLocation": [
+        0,
+        0,
+        0
+      ],
+      "rootScale": [
+        1,
+        1,
+        1
+      ],
+      "bounds": [
+        [
+          -0.36000001430511475,
+          -0.36000001430511475,
+          0
+        ],
+        [
+          0.36000001430511475,
+          0.36000001430511475,
+          0.25
+        ]
+      ],
+      "meshes": [
+        {
+          "name": "Arrow",
+          "triangles": 24,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Marking"
+          ]
+        },
+        {
+          "name": "Blue_strike_surface",
+          "triangles": 572,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Team_Primary"
+          ]
+        },
+        {
+          "name": "Lower_housing",
+          "triangles": 572,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Graphite"
+          ]
+        },
+        {
+          "name": "Steel_shoulder",
+          "triangles": 572,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Brushed_Metal"
+          ]
+        }
+      ],
+      "imageNodes": 0
+    }
+  },
+  "triangle-target": {
+    "projectId": "f69e9e62-4be3-4f93-83d4-eb800591bff0",
+    "projectUrl": "https://higgsfield.ai/3d-jutsu/f69e9e62-4be3-4f93-83d4-eb800591bff0",
+    "revision": 2,
+    "operationId": "fix-topology-02",
+    "glb": "public/models/football/triangle-target.glb",
+    "source": "docs/football-pinball/assets/triangle-target.blend",
+    "script": "scripts/football-assets/secondary-triangle-target.py",
+    "audit": {
+      "asset": "ASSET_triangle-target",
+      "rootLocation": [
+        0,
+        0,
+        0
+      ],
+      "rootScale": [
+        1,
+        1,
+        1
+      ],
+      "bounds": [
+        [
+          -0.32499998807907104,
+          -0.2800000011920929,
+          0
+        ],
+        [
+          0.32499998807907104,
+          0.2800000011920929,
+          0.2199999988079071
+        ]
+      ],
+      "meshes": [
+        {
+          "name": "Housing",
+          "triangles": 8,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Graphite"
+          ]
+        },
+        {
+          "name": "MESH_Brushed_Metal",
+          "triangles": 428,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Brushed_Metal"
+          ]
+        },
+        {
+          "name": "Strike_surface",
+          "triangles": 8,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Team_Primary"
+          ]
+        }
+      ],
+      "imageNodes": 0
+    }
+  },
+  "rail": {
+    "projectId": "3d604b64-362e-46a0-bdcd-63acf3dea626",
+    "projectUrl": "https://higgsfield.ai/3d-jutsu/3d604b64-362e-46a0-bdcd-63acf3dea626",
+    "revision": 1,
+    "operationId": "build-asset-01",
+    "glb": "public/models/football/rail.glb",
+    "source": "docs/football-pinball/assets/rail.blend",
+    "script": "scripts/football-assets/secondary-rail.py",
+    "audit": {
+      "asset": "ASSET_rail",
+      "rootLocation": [
+        0,
+        0,
+        0
+      ],
+      "rootScale": [
+        1,
+        1,
+        1
+      ],
+      "bounds": [
+        [
+          -0.5,
+          -0.09000000357627869,
+          0
+        ],
+        [
+          0.5,
+          0.09000000357627869,
+          0.45000001788139343
+        ]
+      ],
+      "meshes": [
+        {
+          "name": "Inner_strike_strip",
+          "triangles": 108,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Team_Primary"
+          ]
+        },
+        {
+          "name": "MESH_Brushed_Metal",
+          "triangles": 216,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Brushed_Metal"
+          ]
+        },
+        {
+          "name": "Rail_body",
+          "triangles": 108,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Graphite"
+          ]
+        }
+      ],
+      "imageNodes": 0
+    }
+  },
+  "stadium-tier": {
+    "projectId": "133b6a48-e408-4aea-9abb-f594ccfc93d8",
+    "projectUrl": "https://higgsfield.ai/3d-jutsu/133b6a48-e408-4aea-9abb-f594ccfc93d8",
+    "revision": 1,
+    "operationId": "build-asset-01",
+    "glb": "public/models/football/stadium-tier.glb",
+    "source": "docs/football-pinball/assets/stadium-tier.blend",
+    "script": "scripts/football-assets/secondary-stadium-tier.py",
+    "audit": {
+      "asset": "ASSET_stadium-tier",
+      "rootLocation": [
+        0,
+        0,
+        0
+      ],
+      "rootScale": [
+        1,
+        1,
+        1
+      ],
+      "bounds": [
+        [
+          -1,
+          -0.6175000071525574,
+          0
+        ],
+        [
+          1,
+          0.6000000238418579,
+          0.824999988079071
+        ]
+      ],
+      "meshes": [
+        {
+          "name": "MESH_Brushed_Metal",
+          "triangles": 2700,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Brushed_Metal"
+          ]
+        },
+        {
+          "name": "MESH_Graphite",
+          "triangles": 324,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Graphite"
+          ]
+        },
+        {
+          "name": "MESH_Team_Primary",
+          "triangles": 5184,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Team_Primary"
+          ]
+        }
+      ],
+      "imageNodes": 0
+    }
+  },
+  "ramp": {
+    "projectId": "da0acfbc-47d3-498c-bdd5-fe4ef3178b48",
+    "projectUrl": "https://higgsfield.ai/3d-jutsu/da0acfbc-47d3-498c-bdd5-fe4ef3178b48",
+    "revision": 2,
+    "operationId": "fix-topology-02",
+    "glb": "public/models/football/ramp.glb",
+    "source": "docs/football-pinball/assets/ramp.blend",
+    "script": "scripts/football-assets/secondary-ramp.py",
+    "audit": {
+      "asset": "ASSET_ramp",
+      "rootLocation": [
+        0,
+        0,
+        0
+      ],
+      "rootScale": [
+        1,
+        1,
+        1
+      ],
+      "bounds": [
+        [
+          -0.3499999940395355,
+          -1,
+          0
+        ],
+        [
+          0.3499999940395355,
+          1,
+          0.5249999761581421
+        ]
+      ],
+      "meshes": [
+        {
+          "name": "MESH_Team_Primary",
+          "triangles": 264,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Team_Primary"
+          ]
+        },
+        {
+          "name": "Ramp_deck",
+          "triangles": 132,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Brushed_Metal"
+          ]
+        }
+      ],
+      "imageNodes": 0
+    }
+  },
+  "coin": {
+    "projectId": "237f4baa-f84a-4571-84b7-9a6c4be151a3",
+    "projectUrl": "https://higgsfield.ai/3d-jutsu/237f4baa-f84a-4571-84b7-9a6c4be151a3",
+    "revision": 3,
+    "operationId": "fix-rim-overlap-03",
+    "glb": "public/models/football/coin.glb",
+    "source": "docs/football-pinball/assets/coin.blend",
+    "script": "scripts/football-assets/secondary-coin.py",
+    "audit": {
+      "asset": "ASSET_coin",
+      "rootLocation": [
+        0,
+        0,
+        0
+      ],
+      "rootScale": [
+        1,
+        1,
+        1
+      ],
+      "bounds": [
+        [
+          -0.25,
+          -0.25,
+          0
+        ],
+        [
+          0.25,
+          0.25,
+          0.03999999910593033
+        ]
+      ],
+      "meshes": [
+        {
+          "name": "MESH_Brushed_Metal",
+          "triangles": 1024,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Brushed_Metal"
+          ]
+        },
+        {
+          "name": "MESH_Coin_Alloy",
+          "triangles": 2292,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Coin_Alloy"
+          ]
+        },
+        {
+          "name": "MESH_Marking",
+          "triangles": 52,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Marking"
+          ]
+        }
+      ],
+      "imageNodes": 0
+    }
+  },
+  "field": {
+    "projectId": "60b1854b-f405-4599-8eed-6a21bc11a649",
+    "projectUrl": "https://higgsfield.ai/3d-jutsu/60b1854b-f405-4599-8eed-6a21bc11a649",
+    "revision": 4,
+    "operationId": "field-depth-separation-04",
+    "glb": "public/models/football/field.glb",
+    "source": "docs/football-pinball/assets/field.blend",
+    "script": "scripts/football-assets/secondary-field.py",
+    "audit": {
+      "asset": "ASSET_field",
+      "rootLocation": [
+        0,
+        0,
+        0
+      ],
+      "rootScale": [
+        1,
+        1,
+        1
+      ],
+      "bounds": [
+        [
+          -3.200000047683716,
+          -5.825000286102295,
+          -0.18000000715255737
+        ],
+        [
+          3.200000047683716,
+          5.824999809265137,
+          0.021
+        ]
+      ],
+      "meshes": [
+        {
+          "name": "MESH_Pitch_Marking",
+          "triangles": 972,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Pitch_Marking"
+          ]
+        },
+        {
+          "name": "MESH_Pitch_Stripe",
+          "triangles": 72,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Pitch_Stripe"
+          ]
+        },
+        {
+          "name": "Pitch_base",
+          "triangles": 12,
+          "uvLayers": 1,
+          "degenerateFaces": 0,
+          "nonManifoldEdges": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "materials": [
+            "Pitch_Green"
+          ]
+        }
+      ],
+      "imageNodes": 0
+    },
+    "depthSeparation": {
+      "stripeTop": 0.01,
+      "markingTop": 0.021
+    }
+  }
+}

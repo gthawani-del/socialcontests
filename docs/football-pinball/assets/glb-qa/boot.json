@@ -1,0 +1,51 @@
+{
+  "name": "boot",
+  "bounds": {
+    "min": [
+      -0.10000000149011612,
+      -0.07500000298023224,
+      -0.16998647153377533
+    ],
+    "max": [
+      1.4500000476837158,
+      0.3749959170818329,
+      0.16998647153377533
+    ]
+  },
+  "size": [
+    1.550000049173832,
+    0.4499959200620651,
+    0.33997294306755066
+  ],
+  "meshes": [
+    {
+      "name": "HERO_upper",
+      "vertices": 330,
+      "triangles": 476,
+      "uv": true,
+      "material": "Team_Primary"
+    },
+    {
+      "name": "MESH_Laces_Ivory",
+      "vertices": 384,
+      "triangles": 288,
+      "uv": true,
+      "material": "Laces_Ivory"
+    },
+    {
+      "name": "MESH_Sole_Graphite",
+      "vertices": 1256,
+      "triangles": 1276,
+      "uv": true,
+      "material": "Sole_Graphite"
+    },
+    {
+      "name": "MESH_Trim_Silver",
+      "vertices": 284,
+      "triangles": 220,
+      "uv": true,
+      "material": "Trim_Silver"
+    }
+  ],
+  "drawCalls": 4
+}

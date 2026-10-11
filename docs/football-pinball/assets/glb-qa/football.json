@@ -1,0 +1,37 @@
+{
+  "name": "football",
+  "bounds": {
+    "min": [
+      -0.12924419343471527,
+      -0.12999999523162842,
+      -0.12739220261573792
+    ],
+    "max": [
+      0.12924419343471527,
+      0.12999999523162842,
+      0.12739220261573792
+    ]
+  },
+  "size": [
+    0.25848838686943054,
+    0.25999999046325684,
+    0.25478440523147583
+  ],
+  "meshes": [
+    {
+      "name": "MESH_Panel_Black",
+      "vertices": 428,
+      "triangles": 620,
+      "uv": true,
+      "material": "Panel_Black"
+    },
+    {
+      "name": "MESH_Panel_Ivory",
+      "vertices": 260,
+      "triangles": 360,
+      "uv": true,
+      "material": "Panel_Ivory"
+    }
+  ],
+  "drawCalls": 2
+}

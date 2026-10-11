@@ -1,0 +1,44 @@
+{
+  "name": "triangle-target",
+  "bounds": {
+    "min": [
+      -0.32499998807907104,
+      0,
+      -0.2800000011920929
+    ],
+    "max": [
+      0.32499998807907104,
+      0.22000000346451998,
+      0.2800000011920929
+    ]
+  },
+  "size": [
+    0.6499999761581421,
+    0.22000000346451998,
+    0.5600000023841858
+  ],
+  "meshes": [
+    {
+      "name": "Housing",
+      "vertices": 18,
+      "triangles": 8,
+      "uv": true,
+      "material": "Graphite"
+    },
+    {
+      "name": "MESH_Brushed_Metal",
+      "vertices": 810,
+      "triangles": 428,
+      "uv": true,
+      "material": "Brushed_Metal"
+    },
+    {
+      "name": "Strike_surface",
+      "vertices": 18,
+      "triangles": 8,
+      "uv": true,
+      "material": "Team_Primary"
+    }
+  ],
+  "drawCalls": 3
+}
