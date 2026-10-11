@@ -1,0 +1,25 @@
+{
+  "fixtureNote": "Two isolated browser contexts and genuine HTTP/SSE transport. Goal tests place the authoritative ball near goal planes then let physics cross. These fixture sessions are not canonical-replay evidence; clean unmodified rounds are covered by server tests.",
+  "results": [
+    {
+      "check": "Two independent browser contexts host/join one authoritative match; only toss winner chooses",
+      "passed": true
+    },
+    {
+      "check": "Real mobile touch moves actual owned server flippers on both sides and streams to opponent; release clears",
+      "passed": true
+    },
+    {
+      "check": "Both physical goal directions score exactly once and both clients show matching score (server ball-placement fixture)",
+      "passed": true
+    },
+    {
+      "check": "Forced SSE socket interruption releases held server input; EventSource reconnects and ordered controls recover",
+      "passed": true
+    },
+    {
+      "check": "No browser runtime errors, asset failures or mobile horizontal overflow",
+      "passed": true
+    }
+  ]
+}
