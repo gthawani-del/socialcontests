@@ -24,26 +24,10 @@ try{
   await page.locator('#fc-start').click();
   await page.waitForFunction(()=>__crash.snapshot()?.status==='active',{timeout:8000});
   await page.waitForFunction(()=>__crash.audio.metrics().played>=1,{timeout:5000});
-  // Exercise real mobile pointer taps independently; holding both keys hides timing faults.
-  const touch=async selector=>{
-    const b=await page.locator(selector).boundingBox();
-    await page.mouse.move(b.x+b.width/2,b.y+b.height/2);
-    await page.mouse.down();
-    await page.waitForTimeout(170);
-    await page.mouse.up();
-  };
-  let hitStart=await page.evaluate(()=>__crash.view.metrics().physics.bootHits);
-  for(let i=0;i<160;i++){
-    const state=await page.evaluate(()=>__crash.view.metrics().physics);
-    if(state.z>2.4&&state.z<4.6){
-      await touch(state.x<0?'#fc-left-boot':'#fc-right-boot');
-    }else await page.waitForTimeout(120);
-    const current=await page.evaluate(()=>__crash.view.metrics().physics.bootHits);
-    if(current>hitStart)break;
-  }
-  await page.waitForFunction(()=>__crash.view.metrics().physics.bootHits>0,{timeout:5000});
+  assert.equal(await page.locator('#fc-left-boot,#fc-right-boot').count(),0,'no manual flipper controls');
+  await page.waitForFunction(()=>__crash.view.metrics().physics.bootHits>=2,{timeout:60000});
   const stats=await page.evaluate(()=>({physics:__crash.view.metrics().physics,audio:__crash.audio.metrics(),scroll:document.documentElement.scrollWidth,width:innerWidth}));
-  assert.ok(stats.physics.bootHits>0,'physical ball contact from held flippers');
+  assert.ok(stats.physics.bootHits>0,'automatic shoe-to-ball collisions');
   assert.ok(stats.audio.played>=2,'start and collision audio events played');
   assert.ok(stats.scroll<=stats.width,'mobile layout should not overflow horizontally');
   assert.deepEqual(failures,[]);
