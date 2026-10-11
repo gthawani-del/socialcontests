@@ -42,6 +42,22 @@
     {
       "source": "/football-pinball",
       "destination": "/football-pinball/index.html"
+    },
+    {
+      "source": "/football-pinball/crash",
+      "destination": "/football-pinball/index.html"
+    },
+    {
+      "source": "/football-pinball/pvp",
+      "destination": "/football-pinball/index.html"
+    },
+    {
+      "source": "/football-pinball/penalty",
+      "destination": "/football-pinball/index.html"
+    },
+    {
+      "source": "/football-pinball/arcade-rush",
+      "destination": "/football-pinball/index.html"
     }
   ]
 }
