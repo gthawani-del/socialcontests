@@ -95,7 +95,9 @@ export async function createCrashView(container) {
   }
   const observer=new ResizeObserver(resize);observer.observe(container);resize();
   const motion=createCrashBallMotion();
-  let currentRound=null;
+  let currentRound=null,lastImpactId=0;
+  const impactLight=new THREE.PointLight('#ffc476',0,2.2);board.add(impactLight);
+  let impactFlash=0;
   const flame=new THREE.PointLight('#ff741c',0,2.4);board.add(flame);
   const trailCount=22, trailPositions=new Float32Array(trailCount*3),trailColors=new Float32Array(trailCount*3);
   const trailGeometry=new THREE.BufferGeometry();
@@ -108,7 +110,7 @@ export async function createCrashView(container) {
     if(disposed)return;latest=snapshot;const now=performance.now(),dt=Math.min(.05,(now-lastTime)/1000);lastTime=now;
     const active=['active','running','rising'].includes(snapshot.state);
     const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(snapshot.roundId!==currentRound){currentRound=snapshot.roundId;motion.reset(currentRound);}
+    if(snapshot.roundId!==currentRound){currentRound=snapshot.roundId;motion.reset(currentRound);lastImpactId=0;impactFlash=0;}
     const state=motion.step(active&&!snapshot.paused?dt:0);
     ball.position.set(state.x,.16,state.z);
     if(active&&!snapshot.paused){ball.rotation.x+=dt*state.speed*.7;ball.rotation.z+=dt*state.speed*.4;}
@@ -116,6 +118,9 @@ export async function createCrashView(container) {
       const boot=board.userData.crashBoots?.[i],physics=state.boots?.[i];
       if(boot&&physics){boot.position.x=physics.x;boot.position.z=physics.z;boot.rotation.y=-physics.angle;}
     }
+    if(active&&state.lastImpact?.id>lastImpactId){lastImpactId=state.lastImpact.id;impactFlash=1;impactLight.position.set(state.lastImpact.x,.35,state.lastImpact.z);}
+    impactFlash=Math.max(0,impactFlash-dt*5);
+    impactLight.intensity=reduced?0:impactFlash*2.8;
     const power=state.powerActive?1:THREE.MathUtils.clamp(state.speed/15,0,1);
     const tint=new THREE.Color(power>=.9?'#ff681a':power>=.66?'#ffa733':power>=.31?'#37baff':'#e5f7ff');
     const history=active&&!reduced?state.history:[];
@@ -131,7 +136,7 @@ export async function createCrashView(container) {
     amber.emissiveIntensity=snapshot.state==='crashed'?.2:active?1.5+Math.sin(now*.004)*.2:1;
     composer.render();
   }
-  return {update,getGameStats(){const {score,hits,bootHits,powerShots,powerActive,feedback}=motion.snapshot();return {score,hits,bootHits,powerShots,powerActive,feedback};},setQuality(value){renderer.setPixelRatio(value==='low'?1:Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=value!=='low';kit.setReduced(value==='low');bloom.enabled=value!=='low';resize();},
+  return {update,getGameStats(){const {score,hits,bootHits,powerShots,powerActive,lastImpact,feedback}=motion.snapshot();return {score,hits,bootHits,powerShots,powerActive,lastImpact,feedback};},setQuality(value){renderer.setPixelRatio(value==='low'?1:Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=value!=='low';kit.setReduced(value==='low');bloom.enabled=value!=='low';resize();},
     metrics(){return {failedAssets:[...failures],canvas:{width:container.clientWidth,height:container.clientHeight},state:latest.state,cosmetic:true,physics:motion.snapshot(),props:{bumpers:6,wings:2},bloom:bloom.enabled};},
     dispose(){if(disposed)return;disposed=true;observer.disconnect();trailGeometry.dispose();trailMaterial.dispose();const geometry=new Set(),materials=new Set();for(const root of [scene,...models.values()])root.traverse(o=>{if(o.geometry)geometry.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])materials.add(m);});geometry.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());kit.dispose();composer.dispose();bloom.dispose();renderer.dispose();renderer.domElement.remove();}
   };
