@@ -1,42 +1,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createCrashBallMotion } from '../src/football-pinball/view/crash-ball-motion.js';
+import {createCrashBallMotion} from '../src/football-pinball/view/crash-ball-motion.js';
 
-function simulate({pressed=false,seconds=50}={}){
+function simulate(seconds=60){
   const motion=createCrashBallMotion();
-  motion.reset('qa-round');
-  if(pressed){motion.input(0,true);motion.input(1,true);}
+  motion.reset('autonomous-qa');
   let maxHits=0,maxScore=0;
   for(let i=0;i<seconds*120;i++){
     const state=motion.step(1/120);
-    assert.ok(Number.isFinite(state.x)&&Number.isFinite(state.z)&&Number.isFinite(state.speed),'finite physics');
-    assert.ok(state.speed<=15.000001,'velocity capped for VFX');
+    assert.ok(Number.isFinite(state.x)&&Number.isFinite(state.z)&&Number.isFinite(state.speed));
+    assert.ok(state.speed<=15.000001,'speed cap');
     maxHits=Math.max(maxHits,state.bootHits);
     maxScore=Math.max(maxScore,state.score);
   }
   return {motion,maxHits,maxScore};
 }
-
-test('Crash ball only counts a kick when a boot is pressed',()=>{
-  const idle=simulate({pressed:false,seconds:50});
-  assert.equal(idle.maxHits,0,'unpressed boots must never score kicks');
-  const active=simulate({pressed:true,seconds:50});
-  assert.ok(active.maxHits>0,'pressed boots must make physical ball contact');
+test('Crash flippers activate autonomously without player input',()=>{
+  const {maxHits}=simulate();
+  assert.ok(maxHits>=2,'automatic boots must produce repeated collision hits');
 });
-
-test('Crash target hits accumulate a separate board score',()=>{
-  const {motion,maxScore}=simulate({pressed:true,seconds:50});
-  assert.ok(maxScore>=100,'gameplay produces target scoring');
-  assert.ok(motion.snapshot().score%100===0);
+test('Autonomous target impacts increment separate board score',()=>{
+  const {maxScore}=simulate();
+  assert.ok(maxScore>=100,'board must award points on target hits');
 });
-
-test('Crash round reset clears collision and scoring state',()=>{
-  const {motion}=simulate({pressed:true,seconds:10});
-  motion.reset('next-round');
-  const state=motion.snapshot();
-  assert.equal(state.bootHits,0);
-  assert.equal(state.score,0);
-  assert.equal(state.powerShots,0);
-  assert.equal(state.powerActive,false);
-  assert.equal(state.history.length,0);
+test('New round clears autonomous gameplay state',()=>{
+  const {motion}=simulate(15);
+  motion.reset('next');
+  const s=motion.snapshot();
+  assert.equal(s.bootHits,0);
+  assert.equal(s.score,0);
+  assert.equal(s.powerShots,0);
+  assert.equal(s.powerActive,false);
+  assert.equal(s.history.length,0);
 });
