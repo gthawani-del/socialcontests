@@ -5,15 +5,17 @@ const STEP=1/120, RADIUS=.18;
 const boots=[{x:-1.25,z:4,rest:-.3,active:-1.05},{x:1.25,z:4,rest:Math.PI+.3,active:Math.PI+1.05}];
 export function createCrashBallMotion(){
   const ball={x:0,z:2.8,vx:1.5,vz:-8.5},history=[],flipperPhase=[0,0],pressed=[false,false],angles=boots.map(b=>b.rest);
-  let accumulator=0,clock=0,score=0,hits=0,bootHits=0,lastRound=null;
+  let accumulator=0,clock=0,score=0,hits=0,bootHits=0,lastRound=null,powerUntil=0,powerShots=0,feedback=null,seed=0x12345678,previousShot=[false,false];
+  const random=()=>{seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return (seed>>>0)/4294967296;};
   function reset(roundId){
     Object.assign(ball,{x:0,z:2.8,vx:1.5,vz:-8.5});
     accumulator=0;clock=0;score=0;hits=0;bootHits=0;history.length=0;
-    pressed.fill(false);flipperPhase.fill(0);boots.forEach((b,i)=>angles[i]=b.rest);
+    pressed.fill(false);previousShot.fill(false);flipperPhase.fill(0);boots.forEach((b,i)=>angles[i]=b.rest);
+    powerUntil=0;powerShots=0;feedback=null;seed=0x12345678;
     lastRound=roundId;
   }
   function input(side,down){if(side===0||side===1)pressed[side]=Boolean(down);}
-  function snapshot(){return {x:ball.x,z:ball.z,speed:Math.hypot(ball.vx,ball.vz),history,flipperPhase,score,hits,bootHits,angles:[...angles]};}
+  function snapshot(){return {x:ball.x,z:ball.z,speed:Math.hypot(ball.vx,ball.vz),history,flipperPhase,score,hits,bootHits,powerShots,powerActive:clock<powerUntil,feedback,angles:[...angles]};}
   function step(dt,roundId){
     if(roundId!==undefined&&roundId!==lastRound)reset(roundId);
     accumulator=Math.min(.08,accumulator+clamp(dt,0,.05));
@@ -48,19 +50,29 @@ export function createCrashBallMotion(){
             ball.vx+=nx*kick;ball.vz+=nz*kick;
             if(pressed[i])ball.vz-=2.8;
             bootHits++;
+            // Random bonus occurs only on a real boot-ball impact, never from a timer.
+            if(pressed[i] && !previousShot[i] && random()<.18){
+              const shotSpeed=Math.hypot(ball.vx,ball.vz)||1;
+              ball.vx=ball.vx/shotSpeed*15;ball.vz=ball.vz/shotSpeed*15;
+              powerUntil=clock+1.4;powerShots++;
+              feedback={text:'POWER SHOT!',until:clock+1.2,sequence:bootHits};
+            }
+            previousShot[i]=true;
           }
         }
       }
+      for(let i=0;i<2;i++)if(!pressed[i])previousShot[i]=false;
       // A ball that gets past the boots drains and is re-served for visual continuity.
       if(ball.z>5.05){ball.x=0;ball.z=2.8;ball.vx=1.5;ball.vz=-8.5;history.length=0;}
       for(const [x,z,r] of targets){
         const dx=ball.x-x,dz=ball.z-z,d=Math.hypot(dx,dz),limit=r+RADIUS;
         if(d>0&&d<limit){
           const nx=dx/d,nz=dz/d,dot=ball.vx*nx+ball.vz*nz;
-          if(dot<0){ball.vx-=2.05*dot*nx;ball.vz-=2.05*dot*nz;hits++;score+=100;}
+          if(dot<0){ball.vx-=2.05*dot*nx;ball.vz-=2.05*dot*nz;hits++;const award=Math.abs(x)<.2?500:100;score+=award;feedback={text:'+'+award,until:clock+.85,sequence:hits};}
           ball.x=x+nx*limit;ball.z=z+nz*limit;
         }
       }
+      if(feedback && clock>feedback.until)feedback=null;
       const speed=Math.hypot(ball.vx,ball.vz);
       if(speed>15){ball.vx*=15/speed;ball.vz*=15/speed;}
       if(speed<2){ball.vz-=1.5*STEP;}
