@@ -6,3 +6,5 @@ Turf texture: public/football-pinball/art/turf-detail.webp, 512 × 512, generate
 Prompt: Flat orthographic seamless football turf albedo texture, finely detailed emerald/olive short grass, subtle horizontal mowing bands, evenly lit; no pitch lines, objects, lettering, shadows or perspective. Pitch lines remain deterministic canvas graphics.
 
 Low quality disables bloom. Real-phone GPU performance still requires physical-device testing.
+
+Second model pass: reusable arcade-props.js provides turned-metal bumpers with domed caps, dual light rings and star inserts, plus bevelled wing panels with recessed faces and metal fasteners. Crash opts into these props; other modes are unchanged. A more oblique camera exposes the model depth.

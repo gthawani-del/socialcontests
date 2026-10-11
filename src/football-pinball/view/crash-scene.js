@@ -7,6 +7,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createFootballVisualKit } from './visual-kit.js';
 import { addFootballCabinet } from './cabinet-kit.js';
+import { createArcadeProps } from './arcade-props.js';
 import { addCrowdTiers } from './stadium-kit.js';
 
 // Cosmetic board only. Nothing here chooses the crash point or changes payout.
@@ -25,7 +26,7 @@ export async function createCrashView(container) {
   const gold=kit.metal.clone(); gold.color.set('#b99750');gold.roughness=.27;
   addFootballCabinet(board,{metal:gold,black:kit.black});
   const amber=new THREE.MeshStandardMaterial({color:'#ffd471',emissive:'#ff9f28',emissiveIntensity:1.7,roughness:.28});
-  const textures=[]; const failures=[]; const rings=[]; let disposed=false,latest={state:'ready',multiplier:1};
+  const textures=[]; const failures=[]; let disposed=false,latest={state:'ready',multiplier:1};
   function mesh(geometry,material,x,y,z){const m=new THREE.Mesh(geometry,material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;board.add(m);return m;}
   const blue=amber.clone();blue.color.set('#55bdff');blue.emissive.set('#0088ff');
   const red=amber.clone();red.color.set('#ff7772');red.emissive.set('#ff1230');
@@ -64,16 +65,12 @@ export async function createCrashView(container) {
   mesh(new THREE.BoxGeometry(2.7,.045,.055),amber,0,1.15,-4.65);
   for(const side of [-1,1])mesh(new THREE.BoxGeometry(.055,1.15,.055),amber,side*1.32,.58,-4.65);
 
+  const props=createArcadeProps({metal:gold,black:kit.black});
+  const faces=['#073e94','#8b101e','#8a5710'].map(color=>new THREE.MeshPhysicalMaterial({color,metalness:.55,roughness:.24,clearcoat:1}));
   const positions=[[-1.45,-2.25],[0,-2.65],[1.45,-2.25],[-1.25,1.1],[1.25,1.1],[0,-.1]];
   for(const [x,z] of positions){
     const colour=x<0?blue:x>0?red:amber;
-    mesh(new THREE.CylinderGeometry(.55,.61,.22,40),gold,x,.14,z);
-    mesh(new THREE.CylinderGeometry(.48,.52,.2,40),kit.black,x,.34,z);
-    const face=new THREE.MeshPhysicalMaterial({color:x<0?'#073e94':x>0?'#8b101e':'#8a5710',metalness:.55,roughness:.24,clearcoat:1});
-    mesh(new THREE.CylinderGeometry(.45,.45,.08,40),face,x,.48,z);
-    const icon=new THREE.Shape();icon.moveTo(0,-.2);icon.lineTo(.2,.02);icon.lineTo(.08,.02);icon.lineTo(.08,.2);icon.lineTo(-.08,.2);icon.lineTo(-.08,.02);icon.lineTo(-.2,.02);icon.closePath();
-    const symbol=mesh(new THREE.ShapeGeometry(icon),new THREE.MeshBasicMaterial({color:'#ffffff',side:THREE.DoubleSide}),x,.527,z);symbol.rotation.x=Math.PI/2;
-    const ring=mesh(new THREE.TorusGeometry(.49,.04,8,40),colour,x,.5,z);ring.rotation.x=-Math.PI/2;rings.push(ring);
+    const target=props.bumper({face:faces[x<0?0:x>0?1:2],light:colour,radius:x===0?.65:.55});target.position.set(x,.02,z);board.add(target);
     kit.contact(board,1.1,1.1,x,.012,z);
   }
   for(const side of [-1,1]){
@@ -83,17 +80,15 @@ export async function createCrashView(container) {
       const shape=new THREE.Shape();shape.moveTo(-.17,.05);shape.lineTo(0,.26);shape.lineTo(.17,.05);shape.lineTo(.17,-.08);shape.lineTo(0,.1);shape.lineTo(-.17,-.08);shape.closePath();
       const arrow=mesh(new THREE.ShapeGeometry(shape),side<0?blue:red,side*2.05,.012,2.9-n*.95);arrow.rotation.x=-Math.PI/2;
     }
-    const wing=mesh(new THREE.BoxGeometry(.7,.2,1.2),kit.black,side*2.25,.24,-.25);wing.rotation.y=side*.25;
-    const rim=mesh(new THREE.BoxGeometry(.74,.035,1.24),side<0?blue:red,side*2.25,.36,-.25);rim.rotation.y=side*.25;
-    const face=mesh(new THREE.BoxGeometry(.62,.035,1.1),kit.black,side*2.25,.385,-.25);face.rotation.y=side*.25;
-    const boot=model('boot-reference',side*1.25,.08,4,2.05,side<0?'blue':'red');
+    const wing=props.wing({face:faces[side<0?0:1],light:side<0?blue:red});wing.position.set(side*2.25,.02,-.25);wing.rotation.y=side*.25;board.add(wing);
+    const boot=model('boot-reference',side*1.25,.08,4,2.3,side<0?'blue':'red');
     if(boot)boot.rotation.y=side<0?-.3:Math.PI+.3;
   }
   const ball=model('football',0,.2,2.8,.55)||mesh(new THREE.SphereGeometry(.18,20,16),new THREE.MeshStandardMaterial({color:'white',roughness:.4}),0,.2,2.8);
   const corners=[];for(const x of [-3.85,3.85])for(const z of [-6.1,6.1])for(const y of [0,1.1])corners.push(new THREE.Vector3(x,y,z));
   function resize(){
     if(disposed)return;const w=Math.max(1,container.clientWidth),h=Math.max(1,container.clientHeight);renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();
-    const fits=d=>{camera.position.set(0,d,d*.36);camera.lookAt(0,0,0);camera.updateMatrixWorld();return corners.every(p=>{const q=p.clone().project(camera);return Math.abs(q.x)<.975&&Math.abs(q.y)<.975;});};
+    const fits=d=>{camera.position.set(0,d,d*.62);camera.lookAt(0,0,0);camera.updateMatrixWorld();return corners.every(p=>{const q=p.clone().project(camera);return Math.abs(q.x)<.975&&Math.abs(q.y)<.975;});};
     let lo=5,hi=40;for(let n=0;n<22;n++){const mid=(lo+hi)/2;if(fits(mid))hi=mid;else lo=mid;}fits(hi);composer.render();
   }
   const observer=new ResizeObserver(resize);observer.observe(container);resize();
@@ -106,7 +101,7 @@ export async function createCrashView(container) {
     composer.render();
   }
   return {update,setQuality(value){renderer.setPixelRatio(value==='low'?1:Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=value!=='low';kit.setReduced(value==='low');bloom.enabled=value!=='low';resize();},
-    metrics(){return {failedAssets:[...failures],canvas:{width:container.clientWidth,height:container.clientHeight},state:latest.state,cosmetic:true};},
+    metrics(){return {failedAssets:[...failures],canvas:{width:container.clientWidth,height:container.clientHeight},state:latest.state,cosmetic:true,props:{bumpers:6,wings:2},bloom:bloom.enabled};},
     dispose(){if(disposed)return;disposed=true;observer.disconnect();const geometry=new Set(),materials=new Set();for(const root of [scene,...models.values()])root.traverse(o=>{if(o.geometry)geometry.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])materials.add(m);});geometry.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());kit.dispose();composer.dispose();bloom.dispose();renderer.dispose();renderer.domElement.remove();}
   };
 }
