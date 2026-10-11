@@ -2,7 +2,9 @@
 const targets=[[-1.45,-2.25,.52],[0,-2.65,.58],[1.45,-2.25,.52],[-1.25,1.1,.52],[1.25,1.1,.52],[0,-.1,.62]];
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 const STEP=1/120, RADIUS=.18;
-const boots=[{x:-1.25,z:4,rest:-.3,active:-1.05},{x:1.25,z:4,rest:Math.PI+.3,active:Math.PI+1.05}];
+export const CRASH_BOOT_LENGTH=1.65;
+export const CRASH_BOOTS=Object.freeze([{x:-1.25,z:4,rest:-.3,active:-1.05},{x:1.25,z:4,rest:Math.PI+.3,active:Math.PI+1.05}]);
+const boots=CRASH_BOOTS;
 export function createCrashBallMotion(){
   const ball={x:0,z:2.8,vx:1.5,vz:-8.5},history=[],flipperPhase=[0,0],pressed=[false,false],angles=boots.map(b=>b.rest);
   let accumulator=0,clock=0,score=0,hits=0,bootHits=0,lastRound=null,powerUntil=0,powerShots=0,feedback=null,seed=0x12345678,previousShot=[false,false];
@@ -15,7 +17,7 @@ export function createCrashBallMotion(){
     lastRound=roundId;
   }
   function input(side,down){if(side===0||side===1)pressed[side]=Boolean(down);}
-  function snapshot(){return {x:ball.x,z:ball.z,speed:Math.hypot(ball.vx,ball.vz),history,flipperPhase,score,hits,bootHits,powerShots,powerActive:clock<powerUntil,feedback,angles:[...angles]};}
+  function snapshot(){return {x:ball.x,z:ball.z,speed:Math.hypot(ball.vx,ball.vz),history,flipperPhase,boots:boots.map((b,i)=>({x:b.x,z:b.z,angle:angles[i],pressed:pressed[i],length:CRASH_BOOT_LENGTH})),score,hits,bootHits,powerShots,powerActive:clock<powerUntil,feedback,angles:[...angles]};}
   function step(dt,roundId){
     if(roundId!==undefined&&roundId!==lastRound)reset(roundId);
     accumulator=Math.min(.08,accumulator+clamp(dt,0,.05));
@@ -35,7 +37,7 @@ export function createCrashBallMotion(){
       for(let i=0;i<2;i++){
         const boot=boots[i],ang=angles[i],prev=before[i];
         // Boot sweeps a line segment about its pivot; contact produces a normal impulse.
-        const length=1.65;
+        const length=CRASH_BOOT_LENGTH;
         const tipX=boot.x+Math.cos(ang)*length,tipZ=boot.z+Math.sin(ang)*length;
         const dx=tipX-boot.x,dz=tipZ-boot.z,den=dx*dx+dz*dz;
         const t=clamp(((ball.x-boot.x)*dx+(ball.z-boot.z)*dz)/den,0,1);
