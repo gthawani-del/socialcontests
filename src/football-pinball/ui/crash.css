@@ -40,3 +40,6 @@
 .fp-crash .fc-flippers button{pointer-events:auto;touch-action:none;user-select:none;width:46%;min-height:48px;border:1px solid #7ebfdd;border-radius:16px;background:linear-gradient(#21567cdd,#0c284cdd);color:white;font-size:11px;font-weight:850;letter-spacing:.5px;padding:8px 2px;box-shadow:0 2px 8px #0008}
 .fp-crash .fc-flippers button[data-held=true]{background:#3686bd;border-color:#d9f6ff;transform:translateY(2px)}
 .fp-crash .fc-flippers button:disabled{opacity:.55}
+
+.fp-crash #fc-board-score{display:block;color:#f8d988;font-size:11px;font-weight:800;letter-spacing:1px;margin:4px auto}
+.fp-crash #fc-hit-feedback{display:block;color:#ffb64e;font-size:13px;font-weight:850;min-height:16px;text-shadow:0 0 8px #ff602a}
