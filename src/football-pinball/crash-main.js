@@ -1,3 +1,4 @@
+import {crashMeterMarkup,bindCrashMeter} from './ui/crash-meter.js';
 import './ui/crash.css';
 import { createAudio } from './ui/audio.js';
 import { createCrashView } from './view/crash-scene.js';
@@ -15,12 +16,13 @@ export async function mountCrash() {
     <p class="fc-authority-note">Local practice runs on this device. It is not server-verified or provably fair.</p>
     <label>Virtual stake<input id="fc-stake" type="number" inputmode="numeric" min="1" max="1000" step="1" value="100"></label><p class="fc-small">1–1,000 free points per round. No wallet, deposits or withdrawals.</p>
     <div class="fc-setup-actions"><div class="fp-actions"></div><button id="fc-enter">Continue</button></div></section>
-    <section class="fc-play" hidden><div class="fc-round-header"><span id="fc-mode-label">LOCAL PRACTICE</span><span>Stake <b id="fc-stake-label">100</b> pts</span></div><div class="fc-game"><div id="fc-arena"><div class="fc-live"><span id="fc-round-state">Ready</span><strong id="fc-multiplier">1.00×</strong><span id="fc-countdown"></span></div></div><aside class="fc-ladder" aria-label="Multiplier milestones">${[100,50,20,10,5,2,1].map(x=>`<span data-milestone="${x}">${x.toFixed(2)}×</span>`).join('')}<button id="fc-cashout" disabled>Cash out <strong id="fc-return">100 pts</strong></button></aside></div><div class="fc-round-actions"><button id="fc-start">Start round</button></div><p id="fc-message" role="status" aria-live="polite">Cash out before the multiplier crashes.</p><button id="fc-config" class="fc-text-button">Change setup</button><p class="fc-small">Virtual points only. No cash prizes.</p><details id="fc-proof" hidden><summary>Round verification</summary><p id="fc-proof-text"></p></details></section>
+    <section class="fc-play" hidden><div class="fc-round-header"><span id="fc-mode-label">LOCAL PRACTICE</span><span>Stake <b id="fc-stake-label">100</b> pts</span></div><div class="fc-game"><div id="fc-arena"><div class="fc-live"><span id="fc-round-state">Ready</span><strong id="fc-multiplier">1.00×</strong><span id="fc-countdown"></span></div></div><aside class="fc-ladder" aria-label="Multiplier milestones">${crashMeterMarkup()}<button id="fc-cashout" disabled>Cash out <strong id="fc-return">100 pts</strong></button></aside></div><div class="fc-round-actions"><button id="fc-start">Start round</button></div><p id="fc-message" role="status" aria-live="polite">Cash out before the multiplier crashes.</p><button id="fc-config" class="fc-text-button">Change setup</button><p class="fc-small">Virtual points only. No cash prizes.</p><details id="fc-proof" hidden><summary>Round verification</summary><p id="fc-proof-text"></p></details></section>
     <dialog id="fc-menu-dialog"><h2>Game controls</h2><p>Opening this menu does not pause a round.</p><div id="fc-menu-audio"></div><button id="fc-close">Close</button></dialog>`;
   const q = s => root.querySelector(s);
   // Vector control artwork stays sharp at all phone resolutions.
   q('.fc-menu').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m9 3-.5 2-2 .9-1.9-.6-2 3.4 1.5 1.5v2.3L2.6 14l2 3.4 2-.6 1.9 1 .5 2.2h4l.6-2.2 1.9-1 2 .6 2-3.4-1.5-1.5v-2.3l1.5-1.5-2-3.4-2 .6-1.9-.9L13 3Z"/><circle cx="11" cy="11.5" r="3"/></svg>';
   const audio = createAudio(root);
+  const updateMeter=bindCrashMeter(root);
   let view, round, token, authority = 'local', busy = false, stopped = false;
   let frame = 0, pollTimer = 0, pollBusy = false, eventId = 0, priorStatus;
   let localCrashAt = 0, clockOffset = 0, lastPollAt = 0, nextPracticeCrash;
@@ -90,7 +92,7 @@ export async function mountCrash() {
     // If hosted updates are stale, don't present an apparently actionable confirmed cashout.
     q('#fc-cashout').disabled = busy || round?.status !== 'active' || (authority === 'server' && Date.now()-lastPollAt > 2500);
     root.dataset.roundState = round?.status || 'idle';
-    for (const item of root.querySelectorAll('[data-milestone]')) item.classList.toggle('fc-reached',multiplier >= Number(item.dataset.milestone));
+    updateMeter(multiplier,round?.status);
     view?.update({multiplier,state:round?.status || 'ready'});
     audio.update([], {state:round?.status === 'active' ? 'active' : 'ended'});
     frame = requestAnimationFrame(draw);
