@@ -23,6 +23,23 @@ export async function mountCrash() {
   q('.fc-menu').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m9 3-.5 2-2 .9-1.9-.6-2 3.4 1.5 1.5v2.3L2.6 14l2 3.4 2-.6 1.9 1 .5 2.2h4l.6-2.2 1.9-1 2 .6 2-3.4-1.5-1.5v-2.3l1.5-1.5-2-3.4-2 .6-1.9-.9L13 3Z"/><circle cx="11" cy="11.5" r="3"/></svg>';
   const audio = createAudio(root);
   const updateMeter=bindCrashMeter(root);
+  // Short one-shot clips share the existing game's mute preference.
+  const crashClips={
+    start:new Audio('/football-pinball/audio/Game-start.mp3'),
+    kick:Array.from({length:3},()=>new Audio('/football-pinball/audio/Soccer-kick.mp3'))
+  };
+  crashClips.start.preload='auto';
+  for(const clip of crashClips.kick)clip.preload='auto';
+  let lastKickHits=0,lastSoundRound=null,nextKick=0,lastKickAt=0;
+  const soundEnabled=()=>!document.hidden&&!audio.metrics().muted;
+  const playClip=(clip,volume)=>{
+    if(!soundEnabled())return;
+    clip.volume=volume;clip.currentTime=0;clip.play().catch(()=>{});
+  };
+  const stopClips=()=>{
+    crashClips.start.pause();
+    for(const clip of crashClips.kick)clip.pause();
+  };
   let view, round, token, authority = 'local', busy = false, stopped = false;
   let frame = 0, pollTimer = 0, pollBusy = false, eventId = 0, priorStatus;
   let localCrashAt = 0, clockOffset = 0, lastPollAt = 0, nextPracticeCrash;
@@ -36,8 +53,9 @@ export async function mountCrash() {
     round = snapshot;
     if (snapshot.serverNow) clockOffset = snapshot.serverNow - Date.now();
     if (snapshot.status !== priorStatus) {
-      if (snapshot.status === 'crashed') { say('Crashed. This round returned 0 points.'); event('BALL_DRAINED'); }
-      if (snapshot.status === 'cashed_out') { say(`Cashed out at ${Number(snapshot.multiplier).toFixed(2)}×. Return: ${points(snapshot.payout)} virtual points.`); event('BANK_ACCEPTED'); }
+      if (snapshot.status === 'active') playClip(crashClips.start,.65);
+      if (snapshot.status === 'crashed') { stopClips(); say('Crashed. This round returned 0 points.'); event('BALL_DRAINED'); }
+      if (snapshot.status === 'cashed_out') { stopClips(); say(`Cashed out at ${Number(snapshot.multiplier).toFixed(2)}×. Return: ${points(snapshot.payout)} virtual points.`); event('BANK_ACCEPTED'); }
       priorStatus = snapshot.status;
     }
     q('.fc-round-actions').hidden = !!active();
@@ -95,6 +113,12 @@ export async function mountCrash() {
     updateMeter(multiplier,round?.status);
     view?.update({multiplier,state:round?.status || 'ready',roundId:round?.roundId});
     const gameplay=view?.getGameStats?.();
+    if(round?.roundId!==lastSoundRound){lastSoundRound=round?.roundId;lastKickHits=0;stopClips();}
+    if(round?.status==='active'&&gameplay?.bootHits>lastKickHits){
+      const at=performance.now();
+      if(at-lastKickAt>=85){playClip(crashClips.kick[nextKick++%crashClips.kick.length],.45);lastKickAt=at;}
+    }
+    lastKickHits=gameplay?.bootHits||0;
     q('#fc-board-score').textContent='BOARD SCORE '+(gameplay?.score||0).toLocaleString();
     q('#fc-hit-feedback').textContent=round?.status==='active'?(gameplay?.feedback?.text||''):'';
     for(const side of ['left','right']) q('#fc-'+side+'-boot').disabled=round?.status!=='active';
@@ -177,7 +201,7 @@ export async function mountCrash() {
   const visibility = () => { if (!document.hidden) poll(); };
   document.addEventListener('visibilitychange',visibility);
   pollTimer = setInterval(poll,250); draw();
-  const dispose = () => { stopped = true; cancelAnimationFrame(frame); clearInterval(pollTimer); document.removeEventListener('visibilitychange',visibility); view?.dispose(); audio.dispose(); window.removeEventListener('keydown',keys);window.removeEventListener('keyup',keys); };
+  const dispose = () => { stopped = true;stopClips(); cancelAnimationFrame(frame); clearInterval(pollTimer); document.removeEventListener('visibilitychange',visibility); view?.dispose(); audio.dispose(); window.removeEventListener('keydown',keys);window.removeEventListener('keyup',keys); };
   window.addEventListener('pagehide',event=>{if(!event.persisted)dispose();});
   if (import.meta.env.DEV && new URLSearchParams(location.search).has('qa')) window.__crash = {ready:true,snapshot:()=>round ? {...round} : null,get view(){return view;},get source(){return authority;},audio,dispose,setNextPracticeCrash(value){if(Number.isFinite(value)&&value>=1&&value<=100)nextPracticeCrash=value;}};
 }
