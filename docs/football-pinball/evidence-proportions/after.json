@@ -1,0 +1,982 @@
+{
+  "checks": [
+    {
+      "viewport": [
+        360,
+        780
+      ],
+      "arena": {
+        "x": 0,
+        "y": 64,
+        "width": 360,
+        "height": 648,
+        "top": 64,
+        "right": 360,
+        "bottom": 712,
+        "left": 0
+      },
+      "overflow": false,
+      "metrics": {
+        "effects": {
+          "triggered": 0,
+          "activeRings": 0,
+          "particles": 0,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "jerseys": {
+          "player-defender--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-midfielder--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-striker--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-defender-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "player-midfielder-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "player-striker-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "keeper--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "keeper-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          }
+        },
+        "bootTeams": {
+          "blue-left": "blue",
+          "blue-right": "blue",
+          "red-left": "red",
+          "red-right": "red"
+        },
+        "assetsLoaded": [
+          "boot",
+          "football",
+          "goal",
+          "player-bumper",
+          "round-target",
+          "keeper",
+          "triangle-target",
+          "stadium-tier",
+          "ramp",
+          "field",
+          "rail",
+          "coin"
+        ],
+        "failedAssets": [],
+        "geometries": 102,
+        "textures": 19,
+        "drawCalls": 175,
+        "quality": "high",
+        "coinVisible": false,
+        "coinFace": null,
+        "coinRotation": 0,
+        "coinHeight": 0,
+        "assetBounds": {
+          "boot": {
+            "min": [
+              -0.09921910613775253,
+              -0.017499998211860657,
+              -0.28416821360588074
+            ],
+            "size": [
+              1.548827312886715,
+              0.5874470621347427,
+              0.5683364272117615
+            ]
+          },
+          "football": {
+            "min": [
+              -0.12924419343471527,
+              -0.12999999523162842,
+              -0.12739220261573792
+            ],
+            "size": [
+              0.25848838686943054,
+              0.25999999046325684,
+              0.25478440523147583
+            ]
+          },
+          "goal": {
+            "min": [
+              -1.20499999076128,
+              -1.0430811769879256e-8,
+              -0.05000000447034836
+            ],
+            "size": [
+              2.4099999144673347,
+              1.259748826920985,
+              0.7219999954104424
+            ]
+          },
+          "player-bumper": {
+            "min": [
+              -0.25,
+              0,
+              -0.25
+            ],
+            "size": [
+              0.5,
+              0.9766244888305664,
+              0.5
+            ]
+          },
+          "round-target": {
+            "min": [
+              -0.36000001430511475,
+              0,
+              -0.36000001430511475
+            ],
+            "size": [
+              0.7200000286102295,
+              0.25,
+              0.7200000286102295
+            ]
+          },
+          "keeper": {
+            "min": [
+              -0.5650000497698784,
+              0.009999997913837433,
+              -0.07999999821186066
+            ],
+            "size": [
+              1.1300001069903374,
+              1.0370000526309013,
+              0.24249999970197678
+            ]
+          },
+          "triangle-target": {
+            "min": [
+              -0.32499998807907104,
+              0,
+              -0.2800000011920929
+            ],
+            "size": [
+              0.6499999761581421,
+              0.22000000346451998,
+              0.5600000023841858
+            ]
+          },
+          "stadium-tier": {
+            "min": [
+              -1,
+              0,
+              -0.5999999940395355
+            ],
+            "size": [
+              2,
+              0.8249999731779099,
+              1.2175000132992864
+            ]
+          },
+          "ramp": {
+            "min": [
+              -0.3499999940395355,
+              0,
+              -1
+            ],
+            "size": [
+              0.699999988079071,
+              0.5249999761581421,
+              2
+            ]
+          },
+          "field": {
+            "min": [
+              -3.200000047683716,
+              -0.18000000715255737,
+              -5.824999809265137
+            ],
+            "size": [
+              6.400000095367432,
+              0.20100000675302,
+              11.649999886751175
+            ]
+          },
+          "rail": {
+            "min": [
+              -0.5,
+              0,
+              -0.09000000357627869
+            ],
+            "size": [
+              1,
+              0.450000012293458,
+              0.18000000715255737
+            ]
+          },
+          "coin": {
+            "min": [
+              -0.25,
+              0,
+              -0.25
+            ],
+            "size": [
+              0.5,
+              0.03999999910593033,
+              0.5
+            ]
+          }
+        }
+      },
+      "radius": 0.15,
+      "audio": {
+        "muted": false,
+        "played": 1,
+        "activeVoices": 2,
+        "crowd": false,
+        "state": "running"
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "arena": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 702,
+        "top": 64,
+        "right": 390,
+        "bottom": 766,
+        "left": 0
+      },
+      "overflow": false,
+      "metrics": {
+        "effects": {
+          "triggered": 0,
+          "activeRings": 0,
+          "particles": 0,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "jerseys": {
+          "player-defender--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-midfielder--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-striker--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-defender-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "player-midfielder-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "player-striker-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "keeper--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "keeper-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          }
+        },
+        "bootTeams": {
+          "blue-left": "blue",
+          "blue-right": "blue",
+          "red-left": "red",
+          "red-right": "red"
+        },
+        "assetsLoaded": [
+          "boot",
+          "football",
+          "goal",
+          "player-bumper",
+          "round-target",
+          "keeper",
+          "triangle-target",
+          "stadium-tier",
+          "ramp",
+          "field",
+          "rail",
+          "coin"
+        ],
+        "failedAssets": [],
+        "geometries": 102,
+        "textures": 19,
+        "drawCalls": 175,
+        "quality": "high",
+        "coinVisible": false,
+        "coinFace": null,
+        "coinRotation": 0,
+        "coinHeight": 0,
+        "assetBounds": {
+          "boot": {
+            "min": [
+              -0.09921910613775253,
+              -0.017499998211860657,
+              -0.28416821360588074
+            ],
+            "size": [
+              1.548827312886715,
+              0.5874470621347427,
+              0.5683364272117615
+            ]
+          },
+          "football": {
+            "min": [
+              -0.12924419343471527,
+              -0.12999999523162842,
+              -0.12739220261573792
+            ],
+            "size": [
+              0.25848838686943054,
+              0.25999999046325684,
+              0.25478440523147583
+            ]
+          },
+          "goal": {
+            "min": [
+              -1.20499999076128,
+              -1.0430811769879256e-8,
+              -0.05000000447034836
+            ],
+            "size": [
+              2.4099999144673347,
+              1.259748826920985,
+              0.7219999954104424
+            ]
+          },
+          "player-bumper": {
+            "min": [
+              -0.25,
+              0,
+              -0.25
+            ],
+            "size": [
+              0.5,
+              0.9766244888305664,
+              0.5
+            ]
+          },
+          "round-target": {
+            "min": [
+              -0.36000001430511475,
+              0,
+              -0.36000001430511475
+            ],
+            "size": [
+              0.7200000286102295,
+              0.25,
+              0.7200000286102295
+            ]
+          },
+          "keeper": {
+            "min": [
+              -0.5650000497698784,
+              0.009999997913837433,
+              -0.07999999821186066
+            ],
+            "size": [
+              1.1300001069903374,
+              1.0370000526309013,
+              0.24249999970197678
+            ]
+          },
+          "triangle-target": {
+            "min": [
+              -0.32499998807907104,
+              0,
+              -0.2800000011920929
+            ],
+            "size": [
+              0.6499999761581421,
+              0.22000000346451998,
+              0.5600000023841858
+            ]
+          },
+          "stadium-tier": {
+            "min": [
+              -1,
+              0,
+              -0.5999999940395355
+            ],
+            "size": [
+              2,
+              0.8249999731779099,
+              1.2175000132992864
+            ]
+          },
+          "ramp": {
+            "min": [
+              -0.3499999940395355,
+              0,
+              -1
+            ],
+            "size": [
+              0.699999988079071,
+              0.5249999761581421,
+              2
+            ]
+          },
+          "field": {
+            "min": [
+              -3.200000047683716,
+              -0.18000000715255737,
+              -5.824999809265137
+            ],
+            "size": [
+              6.400000095367432,
+              0.20100000675302,
+              11.649999886751175
+            ]
+          },
+          "rail": {
+            "min": [
+              -0.5,
+              0,
+              -0.09000000357627869
+            ],
+            "size": [
+              1,
+              0.450000012293458,
+              0.18000000715255737
+            ]
+          },
+          "coin": {
+            "min": [
+              -0.25,
+              0,
+              -0.25
+            ],
+            "size": [
+              0.5,
+              0.03999999910593033,
+              0.5
+            ]
+          }
+        }
+      },
+      "radius": 0.15,
+      "audio": {
+        "muted": false,
+        "played": 1,
+        "activeVoices": 2,
+        "crowd": false,
+        "state": "running"
+      }
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "arena": {
+        "x": 0,
+        "y": 64,
+        "width": 430,
+        "height": 774,
+        "top": 64,
+        "right": 430,
+        "bottom": 838,
+        "left": 0
+      },
+      "overflow": false,
+      "metrics": {
+        "effects": {
+          "triggered": 0,
+          "activeRings": 0,
+          "particles": 0,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "jerseys": {
+          "player-defender--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-midfielder--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-striker--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-defender-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "player-midfielder-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "player-striker-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "keeper--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "keeper-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          }
+        },
+        "bootTeams": {
+          "blue-left": "blue",
+          "blue-right": "blue",
+          "red-left": "red",
+          "red-right": "red"
+        },
+        "assetsLoaded": [
+          "boot",
+          "football",
+          "goal",
+          "player-bumper",
+          "round-target",
+          "keeper",
+          "triangle-target",
+          "stadium-tier",
+          "ramp",
+          "field",
+          "rail",
+          "coin"
+        ],
+        "failedAssets": [],
+        "geometries": 102,
+        "textures": 19,
+        "drawCalls": 175,
+        "quality": "high",
+        "coinVisible": false,
+        "coinFace": null,
+        "coinRotation": 0,
+        "coinHeight": 0,
+        "assetBounds": {
+          "boot": {
+            "min": [
+              -0.09921910613775253,
+              -0.017499998211860657,
+              -0.28416821360588074
+            ],
+            "size": [
+              1.548827312886715,
+              0.5874470621347427,
+              0.5683364272117615
+            ]
+          },
+          "football": {
+            "min": [
+              -0.12924419343471527,
+              -0.12999999523162842,
+              -0.12739220261573792
+            ],
+            "size": [
+              0.25848838686943054,
+              0.25999999046325684,
+              0.25478440523147583
+            ]
+          },
+          "goal": {
+            "min": [
+              -1.20499999076128,
+              -1.0430811769879256e-8,
+              -0.05000000447034836
+            ],
+            "size": [
+              2.4099999144673347,
+              1.259748826920985,
+              0.7219999954104424
+            ]
+          },
+          "player-bumper": {
+            "min": [
+              -0.25,
+              0,
+              -0.25
+            ],
+            "size": [
+              0.5,
+              0.9766244888305664,
+              0.5
+            ]
+          },
+          "round-target": {
+            "min": [
+              -0.36000001430511475,
+              0,
+              -0.36000001430511475
+            ],
+            "size": [
+              0.7200000286102295,
+              0.25,
+              0.7200000286102295
+            ]
+          },
+          "keeper": {
+            "min": [
+              -0.5650000497698784,
+              0.009999997913837433,
+              -0.07999999821186066
+            ],
+            "size": [
+              1.1300001069903374,
+              1.0370000526309013,
+              0.24249999970197678
+            ]
+          },
+          "triangle-target": {
+            "min": [
+              -0.32499998807907104,
+              0,
+              -0.2800000011920929
+            ],
+            "size": [
+              0.6499999761581421,
+              0.22000000346451998,
+              0.5600000023841858
+            ]
+          },
+          "stadium-tier": {
+            "min": [
+              -1,
+              0,
+              -0.5999999940395355
+            ],
+            "size": [
+              2,
+              0.8249999731779099,
+              1.2175000132992864
+            ]
+          },
+          "ramp": {
+            "min": [
+              -0.3499999940395355,
+              0,
+              -1
+            ],
+            "size": [
+              0.699999988079071,
+              0.5249999761581421,
+              2
+            ]
+          },
+          "field": {
+            "min": [
+              -3.200000047683716,
+              -0.18000000715255737,
+              -5.824999809265137
+            ],
+            "size": [
+              6.400000095367432,
+              0.20100000675302,
+              11.649999886751175
+            ]
+          },
+          "rail": {
+            "min": [
+              -0.5,
+              0,
+              -0.09000000357627869
+            ],
+            "size": [
+              1,
+              0.450000012293458,
+              0.18000000715255737
+            ]
+          },
+          "coin": {
+            "min": [
+              -0.25,
+              0,
+              -0.25
+            ],
+            "size": [
+              0.5,
+              0.03999999910593033,
+              0.5
+            ]
+          }
+        }
+      },
+      "radius": 0.15,
+      "audio": {
+        "muted": false,
+        "played": 1,
+        "activeVoices": 0,
+        "crowd": false,
+        "state": "running"
+      }
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "arena": {
+        "x": 112,
+        "y": 64,
+        "width": 620,
+        "height": 326,
+        "top": 64,
+        "right": 732,
+        "bottom": 390,
+        "left": 112
+      },
+      "overflow": false,
+      "metrics": {
+        "effects": {
+          "triggered": 0,
+          "activeRings": 0,
+          "particles": 0,
+          "capacity": 96,
+          "reduced": false,
+          "reducedMotion": false
+        },
+        "jerseys": {
+          "player-defender--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-midfielder--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-striker--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "player-defender-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "player-midfielder-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "player-striker-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          },
+          "keeper--1": {
+            "team": "blue",
+            "colours": "#1766cc#1766ccstripes"
+          },
+          "keeper-1": {
+            "team": "red",
+            "colours": "#eeeeea#eeeeeastripes"
+          }
+        },
+        "bootTeams": {
+          "blue-left": "blue",
+          "blue-right": "blue",
+          "red-left": "red",
+          "red-right": "red"
+        },
+        "assetsLoaded": [
+          "boot",
+          "football",
+          "goal",
+          "player-bumper",
+          "round-target",
+          "keeper",
+          "triangle-target",
+          "stadium-tier",
+          "ramp",
+          "field",
+          "rail",
+          "coin"
+        ],
+        "failedAssets": [],
+        "geometries": 102,
+        "textures": 19,
+        "drawCalls": 175,
+        "quality": "high",
+        "coinVisible": false,
+        "coinFace": null,
+        "coinRotation": 0,
+        "coinHeight": 0,
+        "assetBounds": {
+          "boot": {
+            "min": [
+              -0.09921910613775253,
+              -0.017499998211860657,
+              -0.28416821360588074
+            ],
+            "size": [
+              1.548827312886715,
+              0.5874470621347427,
+              0.5683364272117615
+            ]
+          },
+          "football": {
+            "min": [
+              -0.12924419343471527,
+              -0.12999999523162842,
+              -0.12739220261573792
+            ],
+            "size": [
+              0.25848838686943054,
+              0.25999999046325684,
+              0.25478440523147583
+            ]
+          },
+          "goal": {
+            "min": [
+              -1.20499999076128,
+              -1.0430811769879256e-8,
+              -0.05000000447034836
+            ],
+            "size": [
+              2.4099999144673347,
+              1.259748826920985,
+              0.7219999954104424
+            ]
+          },
+          "player-bumper": {
+            "min": [
+              -0.25,
+              0,
+              -0.25
+            ],
+            "size": [
+              0.5,
+              0.9766244888305664,
+              0.5
+            ]
+          },
+          "round-target": {
+            "min": [
+              -0.36000001430511475,
+              0,
+              -0.36000001430511475
+            ],
+            "size": [
+              0.7200000286102295,
+              0.25,
+              0.7200000286102295
+            ]
+          },
+          "keeper": {
+            "min": [
+              -0.5650000497698784,
+              0.009999997913837433,
+              -0.07999999821186066
+            ],
+            "size": [
+              1.1300001069903374,
+              1.0370000526309013,
+              0.24249999970197678
+            ]
+          },
+          "triangle-target": {
+            "min": [
+              -0.32499998807907104,
+              0,
+              -0.2800000011920929
+            ],
+            "size": [
+              0.6499999761581421,
+              0.22000000346451998,
+              0.5600000023841858
+            ]
+          },
+          "stadium-tier": {
+            "min": [
+              -1,
+              0,
+              -0.5999999940395355
+            ],
+            "size": [
+              2,
+              0.8249999731779099,
+              1.2175000132992864
+            ]
+          },
+          "ramp": {
+            "min": [
+              -0.3499999940395355,
+              0,
+              -1
+            ],
+            "size": [
+              0.699999988079071,
+              0.5249999761581421,
+              2
+            ]
+          },
+          "field": {
+            "min": [
+              -3.200000047683716,
+              -0.18000000715255737,
+              -5.824999809265137
+            ],
+            "size": [
+              6.400000095367432,
+              0.20100000675302,
+              11.649999886751175
+            ]
+          },
+          "rail": {
+            "min": [
+              -0.5,
+              0,
+              -0.09000000357627869
+            ],
+            "size": [
+              1,
+              0.450000012293458,
+              0.18000000715255737
+            ]
+          },
+          "coin": {
+            "min": [
+              -0.25,
+              0,
+              -0.25
+            ],
+            "size": [
+              0.5,
+              0.03999999910593033,
+              0.5
+            ]
+          }
+        }
+      },
+      "radius": 0.15,
+      "audio": {
+        "muted": false,
+        "played": 1,
+        "activeVoices": 0,
+        "crowd": false,
+        "state": "running"
+      }
+    }
+  ],
+  "errors": [],
+  "method": "Chromium mobile emulation, software WebGL; ball fixed at centre for visual comparison. Not a physical-phone audio or performance test."
+}

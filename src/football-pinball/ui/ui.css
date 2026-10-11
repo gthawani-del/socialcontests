@@ -789,3 +789,8 @@
 @media(prefers-reduced-motion:reduce){.fp-setup-heading,.fp-setup-art,.fp-setup-instructions,.fp-setup-ball{animation:none!important}.fp-setup-actions button{transition:none!important}}
 #footballApp .fp-setup-heading{justify-content:flex-start;flex-shrink:0;}
 #footballApp .fp-setup-art{flex-shrink:0;}
+
+/* PvP portrait framing: keep the playable cabinet tall, independent of menu content. */
+#footballApp.fp-game[data-mode="pvp"] #fp-arena {
+  height:min(calc(100svh - 64px - env(safe-area-inset-top) - env(safe-area-inset-bottom)), calc(100vw * 1.8));
+}

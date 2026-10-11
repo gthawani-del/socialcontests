@@ -18,8 +18,8 @@ try{
  await page.waitForFunction(()=>['countdown','active'].includes(window.__football.snapshot().state)||(!document.querySelector('#fp-toss-choices').hidden&&!document.querySelector('#fp-toss').hidden));
  if(await page.locator('#fp-toss-choices').isVisible())await page.click('[data-choice=kickoff]');
  await page.waitForFunction(()=>window.__football.snapshot().state==='active');
- await page.waitForFunction(()=>window.__football.audio.metrics().state==='running'&&window.__football.audio.metrics().crowd);
- checks.push({audio:'unlocked by browser gesture; crowd active'});
+ await page.waitForFunction(()=>window.__football.audio.metrics().state==='running'&&!window.__football.audio.metrics().crowd);
+ checks.push({audio:'unlocked by browser gesture; synthetic crowd absent'});
  const formation=await page.evaluate(()=>window.__football.snapshot().targets.filter(t=>t.type==='player'));
  for(const team of ['blue','red'])assert(formation.some(t=>t.team===team&&t.role==='striker'&&t.y*t.homeSign<0));
  checks.push({formation});
@@ -53,8 +53,8 @@ try{
  await page.click('#fp-settings-open');await page.waitForFunction(()=>!window.__football.audio.metrics().crowd);
  await page.click('#fp-audio');assert.equal(await page.evaluate(()=>window.__football.audio.metrics().muted),true);
  assert.equal(await page.evaluate(()=>window.__football.audio.metrics().activeVoices),0);
- await page.click('#fp-audio');await page.click('#fp-dial-close');await page.waitForFunction(()=>window.__football.audio.metrics().crowd);
- checks.push({power:'both meters reflect contact events',pause:'crowd stops',mute:'voices cleared',resume:'crowd resumes'});
+ await page.click('#fp-audio');await page.click('#fp-dial-close');await page.waitForFunction(()=>window.__football.audio.metrics().state==='running'&&!window.__football.audio.metrics().crowd);
+ checks.push({power:'both meters reflect contact events',pause:'crowd stops',mute:'voices cleared',resume:'effects available; synthetic crowd absent'});
  assert.deepEqual(errors,[]);
  await writeFile(`${dir}/browser.json`,JSON.stringify({method:'Chromium mobile viewport, software GPU. Real CDP touch input with seeded ball-placement fixtures and manually stepped physics. Not physical-device performance, human balancing or speaker verification.',checks,errors},null,2));console.log(JSON.stringify(checks));
 }finally{await browser.close();await server.close();}

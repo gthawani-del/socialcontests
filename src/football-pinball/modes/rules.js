@@ -1,5 +1,5 @@
 import { BOOTS, RAILS } from "./foundation.js";
-export const RULE_VERSION = "football-3d-8";
+export const RULE_VERSION = "football-3d-9";
 export const PHYSICS = Object.freeze({
   hz: 120,
   step: 1 / 120,
@@ -20,7 +20,7 @@ export const PHYSICS = Object.freeze({
 export const MODE_IDS = ["pvp", "crash", "penalty", "arcade-rush"];
 export const MODE_RULES = {
   pvp: {
-    ballRadius: 0.11,
+    ballRadius: 0.15,
     maxBallLift: 2.2,
     playerKickCooldown: 90,
     playerKickSpeed: { defender: 6, midfielder: 7, striker: 9 },

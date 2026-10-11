@@ -1,34 +1,24 @@
 /** Event-driven synthesized match sounds; no downloads or recurring API costs. */
 export function createAudio(root) {
-  let context,master,muted=false,lastEvent=0,played=0,crowd,playing=false;
+  let context,master,muted=false,lastEvent=0,played=0;
   const voices=new Set(),cooldowns=new Map();
   try{muted=localStorage.getItem('football-audio')==='off';}catch{}
   const button=document.createElement('button');button.id='fp-audio';button.type='button';button.dataset.footballAudio='';root.querySelector('.fp-actions').append(button);
   const label=()=>{for(const b of root.querySelectorAll('[data-football-audio]')){(b.querySelector('[data-audio-label]')||b).textContent=muted?'Sound off':'Sound on';b.setAttribute('aria-pressed',String(!muted));}};
   const stop=()=>{for(const node of voices){try{node.stop();}catch{}}voices.clear();};
-  function ambience(){
-    const on=playing&&!muted&&!document.hidden&&context?.state==='running';
-    if(!on&&crowd){crowd.source.stop();crowd.source.disconnect();crowd.filter.disconnect();crowd.gain.disconnect();crowd=null;}
-    if(on&&!crowd){
-      const source=context.createBufferSource(),filter=context.createBiquadFilter(),gain=context.createGain();
-      const buffer=context.createBuffer(1,context.sampleRate*2,context.sampleRate),data=buffer.getChannelData(0);
-      for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*(.65+.2*Math.sin(i/context.sampleRate*Math.PI));
-      source.buffer=buffer;source.loop=true;filter.type='bandpass';filter.frequency.value=650;filter.Q.value=.5;
-      gain.gain.value=.035;source.connect(filter);filter.connect(gain);gain.connect(master);source.start();crowd={source,filter,gain};
-    }
-  }
-  const visibility=()=>{if(document.hidden)stop();ambience();};
+  // Crowd recording is intentionally absent until the supplied audio is available.
+  const visibility=()=>{if(document.hidden)stop();};
   document.addEventListener('visibilitychange',visibility);
   function activate(){
     if(muted)return;
     const Audio=window.AudioContext||window.webkitAudioContext;
     if(!Audio){muted=true;button.disabled=true;label();return;}
     context??=new Audio();
-    if(!master){master=context.createGain();master.gain.value=.35;master.connect(context.destination);}
+    if(!master){master=context.createGain();master.gain.value=.22;master.connect(context.destination);}
     context.resume().catch(()=>{});
   }
   root.addEventListener('pointerdown',activate);root.addEventListener('keydown',activate);
-  label();button.onclick=()=>{muted=!muted;if(muted)stop();else activate();try{localStorage.setItem('football-audio',muted?'off':'on');}catch{}label();ambience();};
+  label();button.onclick=()=>{muted=!muted;if(muted)stop();else activate();try{localStorage.setItem('football-audio',muted?'off':'on');}catch{}label();};
   function voice(frequency,duration=.1,kind='sine',volume=.15,delay=0,end=frequency){
     if(voices.size>=20)return;
     const start=context.currentTime+delay,gain=context.createGain();let source;
@@ -58,7 +48,7 @@ export function createAudio(root) {
       case 'KEEPER_SAVE':voice(650,.12,'noise',.2);voice(100,.1,'sine',.12);break;
       case 'KICKOFF':case 'HALFTIME':voice(2300,.18,'sine',.045);voice(2500,.15,'sine',.035,.22);break;
       case 'GOAL_SCORED':
-        [523,659,784,1047].forEach((f,i)=>voice(f,.22,'triangle',.15,i*.11));voice(900,.7,'noise',.12);break;
+        [523,659,784,1047].forEach((f,i)=>voice(f,.22,'triangle',.15,i*.11));break;
       case 'BANK_ACCEPTED':case 'MULTIBALL_STARTED':case 'TIME_EXTENDED':
         [440,660,880].forEach((f,i)=>voice(f,.17,'sine',.13,i*.09));break;
       case 'BALL_DRAINED':voice(200,.23,'triangle',.11,0,60);break;
@@ -68,9 +58,9 @@ export function createAudio(root) {
     played++;
   }
   return {
-    update(events,state){if(state)playing=state.state==='active'&&!state.paused;ambience();for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
-    reset(){playing=false;ambience();lastEvent=0;cooldowns.clear();stop();},
-    metrics:()=>({muted,played,activeVoices:voices.size,crowd:!!crowd,state:context?.state||'locked'}),
-    dispose(){playing=false;ambience();document.removeEventListener('visibilitychange',visibility);stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
+    update(events,state){for(const event of events||[]){if(event.eventId<=lastEvent)continue;lastEvent=event.eventId;sound(event.type);}},
+    reset(){lastEvent=0;cooldowns.clear();stop();},
+    metrics:()=>({muted,played,activeVoices:voices.size,crowd:false,state:context?.state||'locked'}),
+    dispose(){document.removeEventListener('visibilitychange',visibility);stop();root.removeEventListener('pointerdown',activate);root.removeEventListener('keydown',activate);context?.close();button.remove();},
   };
 }

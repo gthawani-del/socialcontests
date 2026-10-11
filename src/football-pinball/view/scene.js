@@ -279,7 +279,7 @@ export async function createMatchView(container, mode) {
       for (const x of [-1.23,1.23]) for (const z of [-5.15,5.15])
         anchors.push(new THREE.Vector3(x,1.28,z));
       function fits(distance) {
-        camera.position.set(0,distance,distance*.5*direction);
+        camera.position.set(0,distance,distance*.25*direction);
         camera.lookAt(0,0,.5*direction);
         camera.updateMatrixWorld();
         return anchors.every(point => {
