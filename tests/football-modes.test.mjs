@@ -78,6 +78,8 @@ test("above crossbar is not goal and keeper physical collision emits save", asyn
     place(e, { x: 0, y: 4.9, vy: 3, height: 1.7 });
     steps(e, 15);
     assert.equal(e.score.blue, 0);
+    assert.equal(e.state, "relaunch", "over-bar miss must promptly restart");
+    steps(e, 120);
     place(e, { x: 0, y: 4.2, vy: 5, height: 0.13 });
     steps(e, 10);
     assert(e.events.some((v) => v.type === "KEEPER_SAVE"));
@@ -518,7 +520,9 @@ for (const difficulty of ['easy', 'medium', 'hard'])
     const e = await setup({ opponent: 'cpu', difficulty });
     try {
       const boot = e.boots.find(b => b.team === 'red');
-      e.balls[0].body.setTranslation({x:boot.x, y:.11, z:-boot.y}, true);
+      const spin = Math.sign(boot.active - boot.rest);
+      place(e, {x: boot.x + Math.cos(boot.rest) * .9 - Math.sin(boot.rest) * spin * .45,
+        y: boot.y + Math.sin(boot.rest) * .9 + Math.cos(boot.rest) * spin * .45, height: .15});
       const strokes=[];let held=0,maxHeld=0;
       // Isolate CPU decisions; do not step physics, keeping the proximity stimulus constant.
       for (let i=0;i<600;i++) {

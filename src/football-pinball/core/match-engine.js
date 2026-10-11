@@ -123,7 +123,7 @@ export class MatchEngine {
       const body = this.world.createRigidBody(
         RAPIER.RigidBodyDesc.kinematicPositionBased(),
       );
-      this.collider(
+      const collider = this.collider(
         RAPIER.ColliderDesc.roundCuboid(b.length / 2 - 0.07, 0.06, b.radius - 0.07, 0.07)
           .setTranslation(this.mode === "pvp" ? P.bootOffset * 1.2 : P.bootOffset, P.bootCenterHeight, 0)
           .setRestitution(0.8)
@@ -131,7 +131,8 @@ export class MatchEngine {
         b,
         body,
       );
-      return { ...b, body, angle: b.rest, pressed: false, strokeTick: -999 };
+      return { ...b, body, collider: collider.handle, angle: b.rest, previousAngle: b.rest,
+        pressed: false, strokeTick: -999, cpuStrikeTick: null };
     });
     this.targets = this.geometry.targets.map((t) => {
       const body = t.moving
@@ -267,9 +268,12 @@ export class MatchEngine {
     this.inputOrder = 0;
     this.cpuNext = 0;
     this.pendingBank = false;
+    this.restart = null;
     for (const b of this.boots) {
       b.pressed = false;
       b.angle = b.rest;
+      b.previousAngle = b.rest;
+      b.cpuStrikeTick = null;
       b.team = b.id.startsWith("blue") ? "blue" : "red";
       this.pose(b, true);
     }
@@ -319,6 +323,7 @@ export class MatchEngine {
       previous: { x, y, height },
       lastBootTick: -999,
       stillTicks: 0,
+      bootStrokes: new Map(),
     };
     this.balls.push(ball);
     this.emit("BALL_LAUNCHED", { ballId: id });
@@ -332,6 +337,7 @@ export class MatchEngine {
     this.balls = [];
   }
   launch() {
+    this.restart = null;
     if (this.mode === "penalty") {
       this.removeBalls();
       this.shot.index++;
@@ -351,7 +357,12 @@ export class MatchEngine {
     }
     this.removeBalls();
     const direction = this.kickoffTeam === this.bottomTeam ? -1 : 1;
-    this.addBall(-0.85, 0, 0.2, direction * 4);
+    const serve = MODE_RULES.pvp.kickoff,
+      x = (this.rng() < .5 ? -1 : 1) *
+        (serve.minOffset + this.rng() * (serve.maxOffset - serve.minOffset));
+    // Seeded left/right service lanes prevent a save from replaying the same
+    // closed path forever. Scoring still requires a physical goal crossing.
+    this.addBall(x, 0, -Math.sign(x) * serve.lateralSpeed, direction * serve.speed);
     this.state = "active";
     this.emit("KICKOFF", { actorId: this.kickoffTeam });
   }
@@ -480,7 +491,10 @@ export class MatchEngine {
     return true;
   }
   releaseInternal() {
-    for (const b of this.boots) this.flip(b.id, false);
+    for (const b of this.boots) {
+      this.flip(b.id, false);
+      b.cpuStrikeTick = null;
+    }
   }
   releaseInputs() {
     for (const b of this.boots) if (b.pressed) this.setInput(b.id, false);
@@ -506,25 +520,93 @@ export class MatchEngine {
     const boots = this.boots.filter((b) => b.team === "red");
     // Release on physics ticks, independently of the difficulty's reaction delay.
     // A fresh stroke needs both a release and enough time to return to rest.
-    for (const b of boots)
+    for (const b of boots) {
       if (b.pressed && this.tick - b.strokeTick >= tuning.holdTicks)
         this.flip(b.id, false);
+      if (b.cpuStrikeTick !== null && this.tick >= b.cpuStrikeTick) {
+        const ball = this.balls[0];
+        b.cpuStrikeTick = null;
+        if (ball && !b.pressed && this.tick - b.strokeTick >= tuning.holdTicks + tuning.returnTicks) {
+          const p = ball.body.translation(), local = this.bootApproach(b, p);
+          if (p.y < P.bootCenterHeight + P.bootHalfHeight + this.ballRadius &&
+              local.along > -this.ballRadius && local.along < b.length + this.ballRadius &&
+              local.front >= -this.ballRadius && local.front < b.radius + this.ballRadius + .45)
+            this.flip(b.id, true);
+        }
+      }
+    }
     if (this.tick < this.cpuNext) return;
     const level = tuning.reactionTicks[this.options.difficulty] || 20;
     this.cpuNext = this.tick + level;
     const ball = this.balls[0];
     if (!ball) return;
-    const p = ball.body.translation();
+    const p = ball.body.translation(), v = ball.body.linvel();
     for (const b of boots) {
       if (b.pressed || this.tick - b.strokeTick < tuning.holdTicks + tuning.returnTicks)
         continue;
-      const dy = -p.z - b.y;
-      if (
-        Math.abs(dy) < 1.2 &&
-        Math.abs(p.x - b.x) < 1.8 &&
-        this.rng() > (this.options.difficulty === "easy" ? 0.3 : 0.05)
-      ) this.flip(b.id, true);
+      const local = this.bootApproach(b, p),
+        closing = v.x * local.nx - v.z * local.ny,
+        distance = local.front - b.radius - this.ballRadius,
+        contactTime = distance <= .08 ? 0 : closing < -.1 ? distance / -closing : Infinity,
+        along = local.along + (v.x * Math.cos(b.rest) - v.z * Math.sin(b.rest)) * contactTime;
+      // Schedule the swing near predicted contact, not merely when the ball
+      // enters a broad proximity zone. Reaction sampling still sets difficulty.
+      if (contactTime <= .5 && local.front >= -this.ballRadius &&
+          along >= .1 && along <= b.length &&
+          this.rng() > (this.options.difficulty === "easy" ? .3 : .05))
+        b.cpuStrikeTick = this.tick + Math.max(1, Math.round((contactTime - .035) / P.step));
     }
+  }
+
+  bootApproach(boot, p) {
+    const spin = Math.sign(boot.active - boot.rest),
+      nx = -Math.sin(boot.rest) * spin, ny = Math.cos(boot.rest) * spin,
+      dx = p.x - boot.x, dy = -p.z - boot.y;
+    return { nx, ny, front: dx * nx + dy * ny,
+      along: dx * Math.cos(boot.rest) + dy * Math.sin(boot.rest) };
+  }
+
+  strikePvpBoot(ball, boot) {
+    const tuning = MODE_RULES.pvp.bootShot;
+    if (!boot.pressed || this.tick - boot.strokeTick > tuning.strokeTicks ||
+        boot.angle === boot.previousAngle || ball.bootStrokes.get(boot.id) === boot.strokeTick)
+      return false;
+    const p = ball.body.translation(), local = this.bootApproach(boot, p);
+    // A backside rebound or a ball over the boot is not a powered shot.
+    if (local.front < 0 || p.y > P.bootCenterHeight + P.bootHalfHeight + this.ballRadius)
+      return false;
+    const spin = Math.sign(boot.active - boot.rest), v = ball.body.linvel(),
+      planar = Math.hypot(v.x, v.z),
+      forward = planar > .1 && v.z * Math.sign(boot.y) / planar > .55,
+      x = forward ? v.x / planar : -Math.sin(boot.angle) * spin,
+      z = forward ? v.z / planar : -Math.cos(boot.angle) * spin,
+      speed = Math.min(P.maxSpeed, (tuning.minSpeed +
+        (tuning.maxSpeed - tuning.minSpeed) * clamp(local.along / boot.length, 0, 1)) *
+        (this.skill[boot.team] ? 1.25 : 1));
+    ball.body.setLinvel({ x: x * speed, y: tuning.lift, z: z * speed }, true);
+    ball.bootStrokes.set(boot.id, boot.strokeTick);
+    ball.lastBootTick = this.tick;
+    ball.stillTicks = 0;
+    this.lastTeam = boot.team;
+    this.award(boot.team, MODE_RULES.pvp.points.boot);
+    ball.pendingBootStrike = { id: boot.id, team: boot.team };
+    if (this.skill[boot.team]) { ball.superShot = true; this.skill[boot.team] = false; }
+    if (this.tick - boot.strokeTick <= 4) {
+      this.award(boot.team, MODE_RULES.pvp.points.perfect);
+      this.emit("PERFECT_KICK", { ballId: ball.id, actorId: boot.team });
+    }
+    return true;
+  }
+
+  restartPvp(ball, team, reason) {
+    if (reason !== "keeper-save")
+      this.emit("BALL_OUT_OF_PLAY", { ballId: ball.id, actorId: team, payload: { reason } });
+    this.removeBalls();
+    this.releaseInternal();
+    this.kickoffTeam = team;
+    this.restart = { reason, team };
+    this.state = "relaunch";
+    this.transitionTick = this.tick + 120;
   }
 
   moveKeepers() {
@@ -541,14 +623,19 @@ export class MatchEngine {
         k.nextReaction = this.tick + reaction;
         const p = ball.body.translation(),
           v = ball.body.linvel();
-        k.targetX = clamp(
+        const threatened = this.mode !== "pvp" ||
+          (-p.z * k.sign > (MODE_RULES.pvp.keeperThreatY[this.options.difficulty] || 3.7) &&
+            -v.z * k.sign > .2);
+        // Patrol the goal line, then react to shots past the boots. Camping
+        // in the centre permanently closed the gap between the two flippers.
+        k.targetX = threatened ? clamp(
           p.x +
             v.x * 0.08 +
             (this.rng() - 0.5) *
               (this.mode === "penalty" ? tuning.error : 0.25),
           -0.66,
           0.66,
-        );
+        ) : Math.sin(this.activeTicks * P.step * MODE_RULES.pvp.keeperPatrolRate) * .66 * k.sign;
       }
       const speed =
         this.mode === "penalty"
@@ -627,8 +714,11 @@ export class MatchEngine {
     const boot = this.boots.find((b) => b.id === data.id);
     if (boot) {
       this.lastTeam = boot.team;
+      if (this.mode === "pvp") {
+        this.strikePvpBoot(ball, boot);
+        return;
+      }
       ball.pendingBootStrike = {id:boot.id,team:boot.team};
-      if (this.mode === "pvp") this.award(boot.team, 10);
       if (
         boot.pressed &&
         this.tick - boot.strokeTick <= 16 &&
@@ -647,7 +737,6 @@ export class MatchEngine {
           this.skill[boot.team] = false;
         }
         if (this.tick - boot.strokeTick <= 8) {
-          if (this.mode === "pvp") this.award(boot.team, 100);
           if (this.mode === "penalty") this.shotPerfect = true;
           if (this.mode === "arcade-rush") this.rushAward(150);
           this.emit("PERFECT_KICK", { ballId: ball.id, actorId: boot.team });
@@ -663,6 +752,7 @@ export class MatchEngine {
       }
       this.award(data.team, 100);
       this.emit("KEEPER_SAVE", { actorId: data.team, ballId: ball.id });
+      if (this.mode === "pvp") this.pendingSave = { ballId: ball.id, team: data.team };
       return;
     }
     if (data.type === "player") {
@@ -896,6 +986,7 @@ export class MatchEngine {
     this.cpu();
     this.moveKeepers();
     for (const b of this.boots) {
+      b.previousAngle = b.angle;
       const target = b.pressed ? b.active : b.rest;
       b.angle += clamp(
         target - b.angle,
@@ -907,6 +998,12 @@ export class MatchEngine {
     for (const b of this.balls) {
       const p = b.body.translation();
       b.previous = { x: p.x, y: -p.z, height: p.y };
+      // A two-ended pinball table rolls gently down from midfield toward
+      // each defending end. Without this, balls orbit midfield out of reach.
+      if (this.mode === "pvp" && p.y < this.ballRadius + .06 && Math.abs(p.z) > .2) {
+        const v = b.body.linvel();
+        b.body.setLinvel({ ...v, z: v.z + Math.sign(p.z) * MODE_RULES.pvp.tableSlope * P.step }, true);
+      }
     }
     this.world.step(this.queue);
     this.queue.drainCollisionEvents((a, b, started) => {
@@ -915,18 +1012,43 @@ export class MatchEngine {
         data = this.names.get(ball?.collider === a ? b : a);
       if (ball && data) this.collision(ball, data);
     });
+    // A ball can already be touching a stationary boot when the user presses.
+    // Collision-start events alone miss that legitimate swing.
+    if (this.mode === "pvp") for (const ball of this.balls) for (const boot of this.boots) {
+      if (!boot.pressed || boot.angle === boot.previousAngle) continue;
+      let touching = false;
+      this.world.contactPair(this.world.getCollider(ball.collider), this.world.getCollider(boot.collider),
+        manifold => { if (manifold.numSolverContacts() > 0) touching = true; });
+      if (touching) this.strikePvpBoot(ball, boot);
+    }
     for (const b of [...this.balls]) {
       const p = b.body.translation(),
-        v = b.body.linvel(),
-        speed = Math.hypot(v.x, v.y, v.z);
+        v = b.body.linvel();
       // Sustained contacts with rounded kinematic boots can keep injecting lift
       // after the collision-start event. Limit ascent every PvP physics tick.
       if (this.mode === "pvp" && v.y > MODE_RULES.pvp.maxBallLift) {
         v.y = MODE_RULES.pvp.maxBallLift;
         b.body.setLinvel(v, true);
       }
+      // Recompute after limiting lift; using the old 3D speed robbed the
+      // horizontal shot of power even when its new speed was already legal.
+      const speed = Math.hypot(v.x, v.y, v.z);
       // A resting ball must not consume a timed round. This never applies to Crash.
-      if (this.mode === "pvp" || this.mode === "arcade-rush") {
+      if (this.mode === "pvp") {
+        const rally = MODE_RULES.pvp.rally;
+        b.stillTicks = Math.hypot(v.x, v.z) < rally.slowSpeed && p.y < this.ballRadius + .15
+          ? b.stillTicks + 1 : 0;
+        if (b.stillTicks >= rally.recoveryTicks) {
+          const planar = Math.hypot(v.x, v.z),
+            dx = planar > .05 ? v.x / planar : p.x > 0 ? -.35 : .35,
+            dz = planar > .05 ? v.z / planar : p.z > 0 ? -1 : 1,
+            length = Math.hypot(dx, dz);
+          b.body.setLinvel({ x: dx / length * rally.recoverySpeed, y: .6,
+            z: dz / length * rally.recoverySpeed }, true);
+          b.stillTicks = 0;
+          this.emit("BALL_UNSTUCK", { ballId: b.id });
+        }
+      } else if (this.mode === "arcade-rush") {
         b.stillTicks = speed < .06 ? b.stillTicks + 1 : 0;
         if (b.stillTicks >= 480) {
           b.stillTicks = 0;
@@ -965,11 +1087,19 @@ export class MatchEngine {
             break;
           }
         }
+        if (this.mode === "pvp" && y * sign > plane) {
+          this.restartPvp(b, sign < 0 ? this.bottomTeam : other(this.bottomTeam), "goal-line");
+          break;
+        }
       }
       if (this.state !== "active") break;
     }
     if (this.mode === "penalty" && this.state === "active" && this.pendingSave)
       this.resolveShot("save");
+    if (this.mode === "pvp" && this.state === "active" && this.pendingSave) {
+      const saved = this.balls.find(b => b.id === this.pendingSave.ballId);
+      if (saved) this.restartPvp(saved, this.pendingSave.team, "keeper-save");
+    }
     if (
       this.mode === "penalty" &&
       this.state === "active" &&
@@ -985,17 +1115,14 @@ export class MatchEngine {
           -p.z < this.geometry.nearPlane - 1.2 ||
           p.y < -0.5
         ) {
-          this.emit("BALL_OUT_OF_PLAY", { ballId: b.id });
+          if (this.mode !== "pvp") this.emit("BALL_OUT_OF_PLAY", { ballId: b.id });
           if (this.mode === "penalty") this.resolveShot("miss");
           else if (this.mode === "crash") {
             this.pendingBank = false;
             this.end("drained");
           } else if (this.mode === "arcade-rush") this.goal(b, -1);
           else {
-            this.removeBalls();
-            this.releaseInternal();
-            this.state = "relaunch";
-            this.transitionTick = this.tick + 120;
+            this.restartPvp(b, other(this.lastTeam), "sideline");
           }
           break;
         }
@@ -1102,6 +1229,7 @@ export class MatchEngine {
         [other(this.bottomTeam)]: "far",
       },
       kickoffTeam: this.kickoffTeam,
+      restart: this.restart ? { ...this.restart } : null,
       toss: this.toss ? { ...this.toss } : null,
       result: this.result,
       balls: this.balls.map((b) => {

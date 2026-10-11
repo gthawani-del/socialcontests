@@ -7,7 +7,7 @@ export const MODE_UI = Object.freeze({
     description: "Defend your goal. Find the opening.",
     accent: "blue",
     icon: "match",
-    help: "Use the left and right boots to strike the ball. Defenders clear to midfielders, midfielders pass to strikers, and strikers shoot at goal. Players kick only from their facing side, with a short cooldown. The boot rings show actual shot power after contact. A goal counts only when the whole ball crosses the goal line. The view follows your defending end after side selection and halftime. A ball resting for four seconds receives a small automatic nudge without bonus points.",
+    help: "Tap a boot as the ball arrives, then release to prepare the next shot. A moving boot powers the ball toward the opposing goal; holding it up only blocks. Defenders clear to midfielders, midfielders pass to strikers, and strikers shoot at goal. Players kick only from their facing side, with a short cooldown. Boot rings show power from actual swings. A goal counts when the whole ball crosses between the posts below the bar. A miss escaping behind the goal restarts for the defending team; post rebounds stay in play. A goalkeeper save collects the ball and restarts for that team. The view follows your defending end after side selection and halftime. A ball moving too slowly for 0.6 seconds receives a recovery nudge without bonus points.",
   },
   penalty: {
     title: "Penalty Shootout",

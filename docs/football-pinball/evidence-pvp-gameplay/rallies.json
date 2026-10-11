@@ -1,0 +1,209 @@
+{
+  "method": "Production physics, 120 Hz, seeded default-medium CPU. Blue inputs are idle, periodic or proximity-triggered; no ball, score, clock or match-state overrides. First-to-three scenarios have a fifteen-minute diagnostic limit; this is not a gameplay time limit or a target match length. These are regression scenarios, not human balancing or device performance measurements.",
+  "results": [
+    {
+      "format": "classic",
+      "strategy": "idle",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 0
+      },
+      "elapsedSeconds": 255.5,
+      "activeSeconds": 240,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 6,
+      "minRecordedPower": 66,
+      "goals": 0,
+      "recoveries": 35
+    },
+    {
+      "format": "classic",
+      "strategy": "idle",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 1
+      },
+      "elapsedSeconds": 249.5,
+      "activeSeconds": 240,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 13,
+      "minRecordedPower": 65,
+      "goals": 1,
+      "recoveries": 39
+    },
+    {
+      "format": "classic",
+      "strategy": "idle",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 1
+      },
+      "elapsedSeconds": 255.5,
+      "activeSeconds": 240,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 19,
+      "minRecordedPower": 64,
+      "goals": 1,
+      "recoveries": 40
+    },
+    {
+      "format": "classic",
+      "strategy": "periodic",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 1,
+        "red": 1
+      },
+      "elapsedSeconds": 261.5,
+      "activeSeconds": 240,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 44,
+      "minRecordedPower": 62,
+      "goals": 2,
+      "recoveries": 34
+    },
+    {
+      "format": "classic",
+      "strategy": "periodic",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 1,
+        "red": 1
+      },
+      "elapsedSeconds": 260.5,
+      "activeSeconds": 240,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 40,
+      "minRecordedPower": 62,
+      "goals": 2,
+      "recoveries": 24
+    },
+    {
+      "format": "classic",
+      "strategy": "periodic",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 1
+      },
+      "elapsedSeconds": 258.5,
+      "activeSeconds": 240,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 53,
+      "minRecordedPower": 62,
+      "goals": 3,
+      "recoveries": 22
+    },
+    {
+      "format": "classic",
+      "strategy": "reactive",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 1,
+        "red": 1
+      },
+      "elapsedSeconds": 255.5,
+      "activeSeconds": 240,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 46,
+      "minRecordedPower": 62,
+      "goals": 2,
+      "recoveries": 25
+    },
+    {
+      "format": "classic",
+      "strategy": "reactive",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 1,
+        "red": 0
+      },
+      "elapsedSeconds": 257.5,
+      "activeSeconds": 240,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 59,
+      "minRecordedPower": 62,
+      "goals": 1,
+      "recoveries": 23
+    },
+    {
+      "format": "classic",
+      "strategy": "reactive",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 1,
+        "red": 0
+      },
+      "elapsedSeconds": 258.5,
+      "activeSeconds": 240,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 49,
+      "minRecordedPower": 62,
+      "goals": 1,
+      "recoveries": 19
+    },
+    {
+      "format": "quick",
+      "strategy": "periodic",
+      "seed": 11,
+      "state": "ended",
+      "score": {
+        "blue": 3,
+        "red": 2
+      },
+      "elapsedSeconds": 727.2666666666667,
+      "activeSeconds": 693.7666666666667,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 81,
+      "minRecordedPower": 62,
+      "goals": 5,
+      "recoveries": 107
+    },
+    {
+      "format": "quick",
+      "strategy": "periodic",
+      "seed": 22,
+      "state": "ended",
+      "score": {
+        "blue": 2,
+        "red": 3
+      },
+      "elapsedSeconds": 379.96666666666664,
+      "activeSeconds": 354.46666666666664,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 66,
+      "minRecordedPower": 62,
+      "goals": 5,
+      "recoveries": 42
+    },
+    {
+      "format": "quick",
+      "strategy": "periodic",
+      "seed": 33,
+      "state": "ended",
+      "score": {
+        "blue": 0,
+        "red": 3
+      },
+      "elapsedSeconds": 339.75,
+      "activeSeconds": 323.25,
+      "longestSlowSeconds": 0.5916666666666667,
+      "strikes": 52,
+      "minRecordedPower": 62,
+      "goals": 3,
+      "recoveries": 43
+    }
+  ]
+}
