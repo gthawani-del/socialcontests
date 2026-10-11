@@ -4,7 +4,7 @@ export function createAudio(root) {
   const voices=new Set(),cooldowns=new Map();
   try{muted=localStorage.getItem('football-audio')==='off';}catch{}
   const button=document.createElement('button');button.id='fp-audio';button.type='button';button.dataset.footballAudio='';root.querySelector('.fp-actions').append(button);
-  const label=()=>{for(const b of root.querySelectorAll('[data-football-audio]')){b.textContent=muted?'Sound off':'Sound on';b.setAttribute('aria-pressed',String(!muted));}};
+  const label=()=>{for(const b of root.querySelectorAll('[data-football-audio]')){(b.querySelector('[data-audio-label]')||b).textContent=muted?'Sound off':'Sound on';b.setAttribute('aria-pressed',String(!muted));}};
   const stop=()=>{for(const node of voices){try{node.stop();}catch{}}voices.clear();};
   function ambience(){
     const on=playing&&!muted&&!document.hidden&&context?.state==='running';

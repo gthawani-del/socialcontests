@@ -753,3 +753,39 @@
 #footballApp.fp-lobby-art .fp-lobby-note{padding:0 28px;font-size:12px;}
 #fp-lobby-close{width:44px;height:44px;background:none;border:0;color:white;font-size:28px;cursor:pointer;}#fp-lobby-done{min-height:44px;padding:8px 24px;background:#233e50;color:white;border:1px solid #617e91;border-radius:8px;cursor:pointer;}
 @media(max-width:600px){.fp-lobby-header{height:64px;padding:0 16px;}#footballApp.fp-lobby-art .fp-wordmark{font-size:20px;}#footballApp .fp-lobby-hero{min-height:150px;padding:16px;background-position:58% center;}#footballApp .fp-lobby-hero h1{font-size:17px;letter-spacing:1.5px;}.fp-lobby-hero p{font-size:12px;max-width:150px;}.fp-lobby-heading{padding:16px 16px 10px;}#footballApp .fp-lobby-heading h2{font-size:17px;letter-spacing:1.5px;}.fp-lobby-heading .fp-lobby-help{font-size:10px;letter-spacing:0;}#footballApp.fp-lobby-art .fp-mode-grid{padding:0 16px;gap:12px;}#footballApp.fp-lobby-art .fp-mode-card h2{font-size:14px;letter-spacing:0;}.fp-lobby-card-copy{padding:12px 10px 2px;gap:7px;}#footballApp.fp-lobby-art .fp-mode-icon{width:22px;height:24px;}#footballApp.fp-lobby-art .fp-mode-icon svg{width:22px;height:22px;}#footballApp.fp-lobby-art .fp-mode-card p{font-size:12px;min-height:50px;}#footballApp.fp-lobby-art .fp-card-footer{padding:4px 10px 12px;}#footballApp.fp-lobby-art .fp-card-footer>span:first-child{font-size:8px;letter-spacing:1px;}#footballApp.fp-lobby-art .fp-card-arrow{width:32px;height:32px;font-size:24px;}}
+
+/* Shared SVG setup presentation, no animation or layout changes to the board. */
+#footballApp[data-stage=setup] .fp-preflight{gap:14px;padding:20px max(18px,env(safe-area-inset-left)) max(18px,env(safe-area-inset-bottom));background:radial-gradient(ellipse at top right,#193447,#0b1620 60%);}
+#footballApp .fp-preflight>a{display:flex;align-items:center;gap:6px;font-size:13px;min-height:36px;}
+.fp-preflight svg{width:24px;height:24px;flex:none;}
+.fp-setup-heading{display:flex;align-items:center;gap:12px;}
+.fp-setup-emblem{display:grid;place-items:center;width:52px;height:52px;border-radius:15px;border:1px solid #4d788b;background:#173444;color:#e7cd93;}
+.fp-setup-emblem svg{width:30px;height:30px;}
+.fp-setup-tag{font-size:10px;letter-spacing:2px;color:#b6cddc;}
+#footballApp .fp-preflight h1{font-size:26px;line-height:1.2;margin:3px 0 0;}
+.fp-setup-art{border:1px solid #294652;border-radius:16px;background:linear-gradient(130deg,#112a35,#081923);overflow:hidden;}
+.fp-setup-art>svg{display:block;width:100%;height:130px;}
+#footballApp .fp-preflight>p{font-size:13px;}
+#footballApp .fp-preflight .fp-setup{margin:0;gap:12px;}
+#footballApp .fp-preflight label{font-size:12px;color:#c3d4df;}
+#footballApp .fp-preflight select{min-height:46px;border:1px solid #4a6575;border-radius:10px;background:#172d3b;color:#f5f9fc;padding:8px 10px;font:14px system-ui;color-scheme:dark;}
+#footballApp .fp-preflight .fp-team-selection h2{font-size:17px;margin-bottom:10px;}
+#footballApp .fp-preflight .fp-team-selection p{font-size:11px;line-height:1.45;}
+.fp-setup-instructions{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 0;border-top:1px solid #29414f;}
+.fp-setup-instructions>div{display:flex;gap:8px;align-items:center;color:#78c2ee;}
+.fp-setup-instructions strong,.fp-setup-instructions small{display:block;}
+.fp-setup-instructions strong{font-size:12px;color:#f1f6fa;}
+.fp-setup-instructions small{font-size:11px;color:#afc3d0;margin-top:3px;}
+.fp-setup-actions{display:grid;grid-template-columns:minmax(112px,1fr) minmax(150px,1.5fr);gap:10px;position:sticky;bottom:0;margin-top:auto;padding:10px 0 2px;background:#0b1620;z-index:1;}
+#footballApp .fp-preflight #fp-preflight-audio,#footballApp .fp-preflight #fp-enter-board{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-width:0;min-height:52px;margin:0;padding:10px;border-radius:12px;font:600 14px system-ui;cursor:pointer;transition:transform 140ms ease,background 140ms ease;}
+#footballApp .fp-preflight #fp-preflight-audio{background:#193646;color:#e9f6fd;border:1px solid #6492aa;}
+#footballApp .fp-preflight #fp-preflight-audio[aria-pressed=false]{background:#142530;color:#bacbd6;border-color:#405967;}
+#footballApp .fp-preflight #fp-enter-board{background:#e5c985;color:#101d26;border:1px solid #f8dfa3;}
+.fp-setup-actions button:active{transform:scale(.97);}
+.fp-setup-heading,.fp-setup-art,.fp-setup-instructions{animation:fp-setup-enter 220ms ease-out both;}.fp-setup-art{animation-delay:40ms;}.fp-setup-instructions{animation-delay:80ms;}
+.fp-setup-ball{animation:fp-setup-kick 600ms cubic-bezier(.2,.7,.3,1) 120ms both;}
+@keyframes fp-setup-enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fp-setup-kick{from{transform:translateY(16px)}to{transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.fp-setup-heading,.fp-setup-art,.fp-setup-instructions,.fp-setup-ball{animation:none!important}.fp-setup-actions button{transition:none!important}}
+#footballApp .fp-setup-heading{justify-content:flex-start;flex-shrink:0;}
+#footballApp .fp-setup-art{flex-shrink:0;}

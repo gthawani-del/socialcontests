@@ -1,3 +1,4 @@
+import { decoratePreflight } from './preflight-art.js';
 import { addTeamSelection } from './team-selection.js';
 // Shared presentation shell: pre-game setup, an in-board start, and one control dial.
 export function addGameMenu(root, setup, mode = "pvp") {
@@ -12,11 +13,12 @@ export function addGameMenu(root, setup, mode = "pvp") {
   preflight.querySelector('h1').textContent=root.querySelector('.fp-mode-heading h1').textContent;
   preflight.querySelectorAll('p')[1].textContent='Choose your options, then continue to the board.';
   if(mode==='pvp') addTeamSelection(root, preflight, preflight.lastElementChild);
-  const hint=document.createElement('p');hint.textContent='Tap a boot to flip immediately; release to return it. Use both thumbs. '+(mode==='pvp'?'Players pass and shoot automatically on contact. Strength appears after a hit.':mode==='crash'?'Bank secures virtual points and ends the run.':'Time contact with the ball; holding does not charge a shot.');preflight.insertBefore(hint,preflight.lastElementChild);
+  const hint=document.createElement('div');hint.className='fp-setup-instructions';hint.textContent='Tap a boot to flip immediately; release to return it. Use both thumbs. '+(mode==='pvp'?'Players pass and shoot automatically on contact. Strength appears after a hit.':mode==='crash'?'Bank secures virtual points and ends the run.':'Time contact with the ball; holding does not charge a shot.');preflight.insertBefore(hint,preflight.lastElementChild);
   if(mode==='arcade-rush'){const badge=document.createElement('span');badge.id='fp-multiball-badge';badge.hidden=true;root.querySelector('#fp-arena').append(badge);}
   const sound=document.createElement('button');sound.type='button';sound.id='fp-preflight-audio';sound.dataset.footballAudio='';
   const audio=root.querySelector('#fp-audio');sound.textContent=audio.textContent;sound.setAttribute('aria-pressed',audio.getAttribute('aria-pressed'));
   sound.onclick=()=>audio.click();preflight.insertBefore(sound,preflight.lastElementChild);
+  decoratePreflight(preflight,mode);
   root.dataset.stage='setup';
   root.querySelector('#fp-enter-board').onclick=()=>{root.dataset.stage='play';const networkStatus=root.querySelector('#fp-network-status');if(networkStatus)help.insertBefore(networkStatus,help.querySelector('#fp-settings-done'));window.dispatchEvent(new Event('resize'));root.querySelector('#fp-serve').focus();};
   const start=root.querySelector('#fp-serve');start.textContent='Start game';root.querySelector('#fp-arena').append(start);

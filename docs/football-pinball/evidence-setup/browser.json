@@ -1,0 +1,53 @@
+{
+  "checks": [
+    {
+      "mode": "pvp",
+      "svg": true,
+      "soundTogglePreservesIcon": true,
+      "sameRowWidths": [
+        360,
+        390,
+        430
+      ],
+      "reducedMotion": true,
+      "continue": true
+    },
+    {
+      "mode": "penalty",
+      "svg": true,
+      "soundTogglePreservesIcon": true,
+      "sameRowWidths": [
+        360,
+        390,
+        430
+      ],
+      "reducedMotion": true,
+      "continue": true
+    },
+    {
+      "mode": "crash",
+      "svg": true,
+      "soundTogglePreservesIcon": true,
+      "sameRowWidths": [
+        360,
+        390,
+        430
+      ],
+      "reducedMotion": true,
+      "continue": true
+    },
+    {
+      "mode": "arcade-rush",
+      "svg": true,
+      "soundTogglePreservesIcon": true,
+      "sameRowWidths": [
+        360,
+        390,
+        430
+      ],
+      "reducedMotion": true,
+      "continue": true
+    }
+  ],
+  "errors": []
+}
