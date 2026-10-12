@@ -1,0 +1,135 @@
+{
+  "layouts": [
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "play": {
+        "x": 18,
+        "y": 755.03125,
+        "width": 354,
+        "height": 54,
+        "top": 755.03125,
+        "right": 372,
+        "bottom": 809.03125,
+        "left": 18
+      },
+      "targets": [
+        44,
+        44,
+        48,
+        48,
+        48,
+        48,
+        48,
+        48,
+        54,
+        48,
+        48
+      ]
+    },
+    {
+      "name": "small",
+      "width": 320,
+      "height": 568,
+      "overflow": false,
+      "play": {
+        "x": 14,
+        "y": 701.578125,
+        "width": 292,
+        "height": 54,
+        "top": 701.578125,
+        "right": 306,
+        "bottom": 755.578125,
+        "left": 14
+      },
+      "targets": [
+        44,
+        44,
+        48,
+        48,
+        48,
+        48,
+        48,
+        48,
+        54,
+        48,
+        48
+      ]
+    },
+    {
+      "name": "desktop",
+      "width": 1365,
+      "height": 900,
+      "overflow": false,
+      "play": {
+        "x": 799.828125,
+        "y": 544.953125,
+        "width": 466.65625,
+        "height": 56,
+        "top": 544.953125,
+        "right": 1266.484375,
+        "bottom": 600.953125,
+        "left": 799.828125
+      },
+      "targets": [
+        44,
+        52,
+        52,
+        52,
+        52,
+        52,
+        52,
+        52,
+        56,
+        52,
+        52
+      ]
+    },
+    {
+      "name": "landscape",
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "play": {
+        "x": 434,
+        "y": 502.375,
+        "width": 386,
+        "height": 56,
+        "top": 502.375,
+        "right": 820,
+        "bottom": 558.375,
+        "left": 434
+      },
+      "targets": [
+        44,
+        52,
+        52,
+        52,
+        52,
+        52,
+        52,
+        52,
+        56,
+        52,
+        52
+      ]
+    }
+  ],
+  "errors": [],
+  "lobbyModelRequests": 0,
+  "accessGate": true,
+  "allSelections": true,
+  "dynamicSummary": true,
+  "helpAndFocusReturn": true,
+  "keyboardSelection": true,
+  "preferences": true,
+  "playRouteAndSettings": true,
+  "practiceRoutes": [
+    "bat",
+    "bowl"
+  ],
+  "previewFailureFallback": true,
+  "browser": "Headless Chromium; simulated touch viewports. No gameplay physics changed or tested."
+}
