@@ -7,7 +7,7 @@
     "bottom": 528.1875,
     "height": 364.390625,
     "viewportHeight": 626,
-    "scoreBottom": 63.5,
+    "scoreBottom": 0,
     "overflow": false
   },
   {
@@ -18,7 +18,7 @@
     "bottom": 458.1875,
     "height": 356.390625,
     "viewportHeight": 494,
-    "scoreBottom": 63.5,
+    "scoreBottom": 0,
     "overflow": false
   },
   {
@@ -29,18 +29,18 @@
     "bottom": 376.390625,
     "height": 326.796875,
     "viewportHeight": 354,
-    "scoreBottom": 101.5,
+    "scoreBottom": 0,
     "overflow": false
   },
   {
     "name": "desktop",
-    "x": 352.5,
-    "y": 322.796875,
-    "right": 732.5,
-    "bottom": 687.1875,
+    "x": 327.5,
+    "y": 289.796875,
+    "right": 707.5,
+    "bottom": 654.1875,
     "height": 364.390625,
-    "viewportHeight": 790,
-    "scoreBottom": 110,
+    "viewportHeight": 856,
+    "scoreBottom": 0,
     "overflow": false
   }
 ]

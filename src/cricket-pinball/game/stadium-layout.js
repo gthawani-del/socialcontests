@@ -110,5 +110,9 @@ export function createStadiumTable(base) {
   table.launcher.deliveryTypes.SLOWER = {...table.launcher.deliveryTypes.PACE,speedMultiplier:.76};
   table.launcher.deliveryTypes.FLIGHTED = {...table.launcher.deliveryTypes.PACE,speedMultiplier:.78};
   table.launcher.deliveryTypes.FLIPPER = {...table.launcher.deliveryTypes.PACE,speedMultiplier:1.1};
+  table.fielders = [
+    {id:'cover', label:'COVER', x:-.85, z:-.65, radius:.14, reach:.65},
+    {id:'midwicket', label:'MIDWICKET', x:.85, z:-.65, radius:.14, reach:.65}
+  ];
   return table;
 }

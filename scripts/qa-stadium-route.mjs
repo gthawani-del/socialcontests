@@ -7,6 +7,7 @@ const server = process.env.QA_URL ? null : await preview({ preview: { host: '127
 const browser = await chromium.launch({ headless: true, ...(process.env.QA_URL && process.env.HTTPS_PROXY ? {proxy: {server: process.env.HTTPS_PROXY}} : {}), ...(bundle ? { args: bundle.args } : {}), ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, ignoreHTTPSErrors: Boolean(process.env.QA_URL) });
+if(process.env.QA_LOW_GRAPHICS)await page.addInitScript(()=>{localStorage.setItem('cricket-quality','low');Object.defineProperty(window,'devicePixelRatio',{get:()=>.5});});
   // Reuse reviewed layout captures when a software-rendered screenshot stalls.
   const capture = options => process.env.QA_SKIP_SCREENSHOTS ? Promise.resolve() : page.screenshot({...options,timeout:60000});
   const errors = [], models = [], artAssets = [];

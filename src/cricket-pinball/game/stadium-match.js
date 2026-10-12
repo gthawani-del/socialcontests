@@ -61,6 +61,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   }
   function hud() {
     const state = match.getState(), s = state.score;
+    document.querySelector('#score').hidden = !state.innings;
     document.querySelector('#score').innerHTML = `<div><small>${state.innings ? `${name(match.currentInnings?.battingPlayerId || state.battingPlayerId)} batting` : 'Score'}</small><strong>${s.runs} / ${s.wickets}</strong></div><div><small>Ball</small><strong>${s.balls} <span>/ ${state.ballsPerInnings}</span></strong></div><div><small>${state.target !== null ? 'Target' : 'Innings'}</small><strong>${state.target !== null ? state.target : state.innings ? state.roundInnings : '—'}</strong></div>`;
   }
   function show(title, body) { panel.hidden = false; panel.classList.remove('match-setup'); panel.innerHTML = `<h2>${title}</h2>${body}`; }
@@ -168,7 +169,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
       }),
       onBatContact: (feedback, hit) => {
         cue.dataset.contact = feedback.timing;
-        cue.textContent = feedback.timing === 'PERFECT'
+        cue.textContent = feedback.lofted ? 'LOFTED · WATCH THE FIELDERS' : feedback.timing === 'PERFECT'
           ? 'PERFECT CONTACT'
           : `${feedback.timing} CONTACT`;
         onFeedback({ type: 'BAT_CONTACT', feedback, hit, match: displayState() });
