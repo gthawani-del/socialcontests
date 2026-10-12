@@ -129,6 +129,7 @@ export function createWebGLResultLayer({ THREE, scene } = {}) {
     if (normalized === 'TWO') return show({ title: '2 RUNS', subtitle: '+2', ms: 900, particles: .45 });
     if (normalized === 'FOUR') return show({ title: 'FOUR!', subtitle: '+4 RUNS', ms: 1150, particles: .8 });
     if (normalized === 'SIX') return show({ title: 'SIX!', subtitle: '+6 RUNS', ms: 1350, particles: 1 });
+    if (metadata.reason === 'CAUGHT_OUT') return show({ title: 'CAUGHT!', subtitle: 'OUT · BEFORE THE BOUNCE', tone: 'red', ms: 1350, particles: .55 });
     if (normalized === 'WICKET') return show({ title: 'WICKET!', subtitle: metadata.reason === 'RISK_WICKET' ? 'MISTIMED ATTACK' : 'OUT', tone: 'red', ms: 1350, particles: .55 });
     if (normalized === 'DOT') return show({ title: 'DOT BALL', subtitle: 'NO RUN', tone: 'blue', ms: 720 });
     if (normalized === 'DEAD_BALL') return show({ title: 'DEAD BALL', subtitle: 'DOES NOT COUNT', tone: 'blue', ms: 1200 });

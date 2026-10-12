@@ -54,6 +54,13 @@ export function createStadiumLauncher(scene, table, model) {
   const gripMaterial=new THREE.MeshStandardMaterial({color:'#152633',roughness:.8});
   const grip=new THREE.Mesh(new THREE.TorusGeometry(.093,.012,6,24),gripMaterial);
   grip.rotation.x=Math.PI/2;knob.add(grip);
+  // Coloured bands are part of the lever housing, not a second HUD meter.
+  const scale = new THREE.Group(); mechanism.add(scale);
+  const bandMaterials = ['#e4bb3f','#55b866','#ef665b'].map(color => new THREE.MeshBasicMaterial({color}));
+  const segments = Array.from({length:20}, (_,i) => {
+    const segment = new THREE.Mesh(new THREE.BoxGeometry(.055,.016,.011),bandMaterials[0]);
+    segment.position.set(.115,-.048,.332+i*.012);scale.add(segment);return segment;
+  });
   let glow=0;
   const world=new THREE.Vector3();
   return {
@@ -62,12 +69,16 @@ export function createStadiumLauncher(scene, table, model) {
       const active=state.visible && state.enabled && !state.cpuMode;
       glow=active && state.dragging ? .12+state.pull*.18 : 0;
       handleMaterial.emissiveIntensity=glow;
-      const pull=state.pull;knob.position.z=.32+pull*.13;tip.position.z=.08+pull*.13;
-      spring.forEach((ring,i)=>{ring.position.z=.11+i*(.18+pull*.12)/11;});
+      const pull=state.pull;knob.position.z=.32+pull*.24;tip.position.z=.08+pull*.24;
+      segments.forEach((segment,i)=>{const power=.24+i/19*.76;segment.material=bandMaterials[power>(state.band?.red??.9)?2:power<(state.band?.low??.5)?0:1];});
+      scale.visible=state.visible;
+      knob.scale.setScalar(active?1.2:1);
+      spring.forEach((ring,i)=>{ring.position.z=.11+i*(.18+pull*.23)/11;});
       // Keep the mechanism visible as table artwork; only the invisible hit area
       // changes ownership. No screen-space lever is drawn over the playfield.
       const size=viewport.getBoundingClientRect();
-      world.set(path[0].x,.24,path[0].z+.30).project(camera);
+      mechanism.updateWorldMatrix(true, true);
+      knob.getWorldPosition(world).project(camera);
       element.style.left=`${THREE.MathUtils.clamp((world.x+1)*size.width/2-32,0,Math.max(0,size.width-64))}px`;
       element.style.top=`${THREE.MathUtils.clamp((1-world.y)*size.height/2-50,0,Math.max(0,size.height-100))}px`;
     }

@@ -133,7 +133,7 @@ export function createCricketGameplayAdapter({
           );
           if (!scoring.qualified) {
             const attackRisk = Number(lastBatFeedback?.attackRisk ?? 0);
-            const riskWicket = lastBatFeedback?.shotIntent === 'ATTACK' && attackRisk > 0 && random() < attackRisk;
+            const riskWicket = !tableConfig.fielders?.length && lastBatFeedback?.shotIntent === 'ATTACK' && attackRisk > 0 && random() < attackRisk;
             resolve(riskWicket ? 'WICKET' : 'DOT', {
               reason: riskWicket ? 'RISK_WICKET' : 'SKILL_REJECTED',
               attemptedOutcome: zone.outcome,
@@ -190,7 +190,7 @@ export function createCricketGameplayAdapter({
       if (
         elapsedAfterContactMs >= minFlightMs &&
         engine.ball.velocity.z >= returnVelocityZ &&
-        engine.ramp == null
+        engine.ramp == null && !(engine.ball.height > .025)
       ) {
         resolveFieldedShot('FIELD_RETURN');
         return;
@@ -247,6 +247,14 @@ export function createCricketGameplayAdapter({
     return Boolean(accepted);
   }
 
+  unsubs.push(engine.on('fielder-intercept', hit => {
+    if (!shotLive || resolved) return;
+    resolve(hit.caught ? 'WICKET' : 'DOT', {
+      reason:hit.caught ? 'CAUGHT_OUT' : 'FIELDED',
+      displayText:hit.caught ? 'CAUGHT OUT' : 'FIELDED · DOT BALL',
+      fielderId:hit.fielderId, contact:lastBatFeedback
+    });
+  }));
   unsubs.push(engine.on('physics:step', checkDelivery));
 
   unsubs.push(engine.on('flipper-hit', (hit = {}) => {
@@ -271,6 +279,7 @@ export function createCricketGameplayAdapter({
       };
       const feedback = applyBatContactSkill(engine, hit, battingConfig);
       if (feedback) {
+        feedback.lofted = engine.beginShotFlight?.(feedback) ?? false;
         lastBatFeedback = feedback;
         onBatContact(feedback, hit);
       }

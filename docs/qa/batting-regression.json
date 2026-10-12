@@ -6,16 +6,16 @@
         "length": "FULL",
         "line": "LEFT",
         "type": "PACE",
-        "power": 0.29600000000000004,
+        "power": 0.28,
         "movementScale": 1
       },
-      "quality": "high",
+      "quality": "low",
       "atmosphere": {
         "reducedMotion": false,
-        "quality": "high",
+        "quality": "low",
         "spectators": 240,
-        "active": true,
-        "elapsed": 1.6167000000000036,
+        "active": false,
+        "elapsed": 0,
         "flashCount": 0,
         "flash": false,
         "reaction": false
@@ -28,9 +28,9 @@
       "paused": false,
       "audio": {
         "loaded": 6,
-        "played": 2,
+        "played": 3,
         "failed": [],
-        "lastSound": "launch",
+        "lastSound": "flipper",
         "settings": {
           "effects": 0.75,
           "crowd": 0.45,
@@ -38,17 +38,24 @@
         }
       },
       "vfx": {
-        "trail": true,
+        "trail": false,
         "sparks": false,
         "target": false,
         "shadow": true,
         "shadowScale": 1.08125,
         "shadowOpacity": 0.42477876106194695,
         "reducedMotion": false,
-        "quality": "high"
+        "quality": "low"
       },
       "plunger": {
-        "pull": 0.12,
+        "band": {
+          "ideal": 0.8,
+          "low": 0.6000000000000001,
+          "red": 0.95,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0.1,
         "dragging": false,
         "enabled": false,
         "cpuMode": true,
@@ -96,9 +103,14 @@
       },
       "contactCount": 0,
       "rampEntries": 0,
+      "accuracy": {
+        "x": 0,
+        "z": 0,
+        "risk": 0
+      },
       "ball": {
-        "x": 1.25,
-        "z": 2.4,
+        "x": 1.8,
+        "z": 0.42912032196198835,
         "height": 0.065,
         "verticalVelocity": 0,
         "velocity": {
@@ -140,16 +152,16 @@
         "length": "FULL",
         "line": "LEFT",
         "type": "PACE",
-        "power": 0.29600000000000004,
+        "power": 0.28,
         "movementScale": 1
       },
-      "quality": "high",
+      "quality": "low",
       "atmosphere": {
         "reducedMotion": false,
-        "quality": "high",
+        "quality": "low",
         "spectators": 240,
-        "active": true,
-        "elapsed": 1.933400000000005,
+        "active": false,
+        "elapsed": 0,
         "flashCount": 0,
         "flash": false,
         "reaction": false
@@ -162,7 +174,7 @@
       "paused": false,
       "audio": {
         "loaded": 6,
-        "played": 3,
+        "played": 4,
         "failed": [],
         "lastSound": "flipper",
         "settings": {
@@ -172,17 +184,24 @@
         }
       },
       "vfx": {
-        "trail": true,
+        "trail": false,
         "sparks": false,
         "target": false,
         "shadow": true,
         "shadowScale": 1.08125,
         "shadowOpacity": 0.42477876106194695,
         "reducedMotion": false,
-        "quality": "high"
+        "quality": "low"
       },
       "plunger": {
-        "pull": 0.12,
+        "band": {
+          "ideal": 0.8,
+          "low": 0.6000000000000001,
+          "red": 0.95,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0.1,
         "dragging": false,
         "enabled": false,
         "cpuMode": true,
@@ -230,14 +249,19 @@
       },
       "contactCount": 0,
       "rampEntries": 0,
+      "accuracy": {
+        "x": 0,
+        "z": 0,
+        "risk": 0
+      },
       "ball": {
-        "x": 1.6356520783261015,
-        "z": 1.4358698041847466,
+        "x": 1.8,
+        "z": -0.6092796780380118,
         "height": 0.065,
         "verticalVelocity": 0,
         "velocity": {
-          "x": 2.3139124699566067,
-          "z": -5.7847811748915205
+          "x": 0,
+          "z": -6.2304
         },
         "bounced": false,
         "deliveryType": "PACE"
@@ -274,150 +298,16 @@
         "length": "FULL",
         "line": "LEFT",
         "type": "PACE",
-        "power": 0.29600000000000004,
+        "power": 0.28,
         "movementScale": 1
       },
-      "quality": "high",
+      "quality": "low",
       "atmosphere": {
         "reducedMotion": false,
-        "quality": "high",
+        "quality": "low",
         "spectators": 240,
-        "active": true,
-        "elapsed": 2.0334000000000048,
-        "flashCount": 0,
-        "flash": false,
-        "reaction": false
-      },
-      "rendering": {
-        "calls": 1,
-        "triangles": 1
-      },
-      "running": true,
-      "paused": false,
-      "audio": {
-        "loaded": 6,
-        "played": 3,
-        "failed": [],
-        "lastSound": "flipper",
-        "settings": {
-          "effects": 0.75,
-          "crowd": 0.45,
-          "muted": false
-        }
-      },
-      "vfx": {
-        "trail": true,
-        "sparks": false,
-        "target": false,
-        "shadow": true,
-        "shadowScale": 1.08125,
-        "shadowOpacity": 0.42477876106194695,
-        "reducedMotion": false,
-        "quality": "high"
-      },
-      "plunger": {
-        "pull": 0.12,
-        "dragging": false,
-        "enabled": false,
-        "cpuMode": true,
-        "visible": true,
-        "glow": 0
-      },
-      "match": {
-        "format": "ONE_OVER",
-        "difficulty": "MEDIUM",
-        "ballsPerInnings": 6,
-        "maxWickets": 2,
-        "superOverBalls": 3,
-        "players": [
-          {
-            "id": "player"
-          },
-          {
-            "id": "cpu"
-          }
-        ],
-        "status": "BALL_LIVE",
-        "innings": 1,
-        "roundInnings": 1,
-        "superOverRound": 0,
-        "score": {
-          "runs": 0,
-          "wickets": 0,
-          "balls": 0
-        },
-        "target": null,
-        "requiredRuns": null,
-        "ballsRemaining": 6,
-        "battingPlayerId": "player",
-        "bowlingPlayerId": "cpu",
-        "toss": {
-          "call": "HEADS",
-          "result": "HEADS",
-          "callerId": "player",
-          "winnerId": "player",
-          "callerWon": true,
-          "choice": "BAT"
-        },
-        "result": null,
-        "deliveryOpen": true
-      },
-      "contactCount": 0,
-      "rampEntries": 0,
-      "ball": {
-        "x": 1.8,
-        "z": 0.42912032196198835,
-        "height": 0.065,
-        "verticalVelocity": 0,
-        "velocity": {
-          "x": 0,
-          "z": -6.2304
-        },
-        "bounced": false,
-        "deliveryType": "PACE"
-      },
-      "score": {
-        "number": 1,
-        "battingPlayerId": "player",
-        "bowlingPlayerId": "cpu",
-        "runs": 0,
-        "wickets": 0,
-        "balls": 0,
-        "complete": false
-      },
-      "flippers": [
-        {
-          "id": "left",
-          "pressed": false,
-          "angle": -0.24993114888558798
-        },
-        {
-          "id": "right",
-          "pressed": false,
-          "angle": 3.391523802475381
-        }
-      ],
-      "alignment": [
-        1.8875832159447664e-16,
-        1.4946834900704544e-16
-      ]
-    },
-    "rightdown": {
-      "bowling": {
-        "bowler": "FAST",
-        "length": "FULL",
-        "line": "LEFT",
-        "type": "PACE",
-        "power": 0.29600000000000004,
-        "movementScale": 1
-      },
-      "quality": "high",
-      "atmosphere": {
-        "reducedMotion": false,
-        "quality": "high",
-        "spectators": 240,
-        "active": true,
-        "elapsed": 2.1334000000000044,
+        "active": false,
+        "elapsed": 0,
         "flashCount": 0,
         "flash": false,
         "reaction": false
@@ -440,17 +330,24 @@
         }
       },
       "vfx": {
-        "trail": true,
+        "trail": false,
         "sparks": false,
         "target": false,
         "shadow": true,
         "shadowScale": 1.08125,
         "shadowOpacity": 0.42477876106194695,
         "reducedMotion": false,
-        "quality": "high"
+        "quality": "low"
       },
       "plunger": {
-        "pull": 0.12,
+        "band": {
+          "ideal": 0.8,
+          "low": 0.6000000000000001,
+          "red": 0.95,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0.1,
         "dragging": false,
         "enabled": false,
         "cpuMode": true,
@@ -498,140 +395,11 @@
       },
       "contactCount": 0,
       "rampEntries": 0,
-      "ball": {
-        "x": 1.8,
-        "z": -0.6092796780380118,
-        "height": 0.065,
-        "verticalVelocity": 0,
-        "velocity": {
-          "x": 0,
-          "z": -6.2304
-        },
-        "bounced": false,
-        "deliveryType": "PACE"
+      "accuracy": {
+        "x": 0,
+        "z": 0,
+        "risk": 0
       },
-      "score": {
-        "number": 1,
-        "battingPlayerId": "player",
-        "bowlingPlayerId": "cpu",
-        "runs": 0,
-        "wickets": 0,
-        "balls": 0,
-        "complete": false
-      },
-      "flippers": [
-        {
-          "id": "left",
-          "pressed": false,
-          "angle": -0.24993114888558798
-        },
-        {
-          "id": "right",
-          "pressed": true,
-          "angle": 2.181661564992912
-        }
-      ],
-      "alignment": [
-        1.8875832159447664e-16,
-        5.551115123125783e-17
-      ]
-    },
-    "rightup": {
-      "bowling": {
-        "bowler": "FAST",
-        "length": "FULL",
-        "line": "LEFT",
-        "type": "PACE",
-        "power": 0.29600000000000004,
-        "movementScale": 1
-      },
-      "quality": "high",
-      "atmosphere": {
-        "reducedMotion": false,
-        "quality": "high",
-        "spectators": 240,
-        "active": true,
-        "elapsed": 2.233400000000004,
-        "flashCount": 0,
-        "flash": false,
-        "reaction": false
-      },
-      "rendering": {
-        "calls": 1,
-        "triangles": 1
-      },
-      "running": true,
-      "paused": false,
-      "audio": {
-        "loaded": 6,
-        "played": 4,
-        "failed": [],
-        "lastSound": "flipper",
-        "settings": {
-          "effects": 0.75,
-          "crowd": 0.45,
-          "muted": false
-        }
-      },
-      "vfx": {
-        "trail": true,
-        "sparks": false,
-        "target": false,
-        "shadow": true,
-        "shadowScale": 1.08125,
-        "shadowOpacity": 0.42477876106194695,
-        "reducedMotion": false,
-        "quality": "high"
-      },
-      "plunger": {
-        "pull": 0.12,
-        "dragging": false,
-        "enabled": false,
-        "cpuMode": true,
-        "visible": true,
-        "glow": 0
-      },
-      "match": {
-        "format": "ONE_OVER",
-        "difficulty": "MEDIUM",
-        "ballsPerInnings": 6,
-        "maxWickets": 2,
-        "superOverBalls": 3,
-        "players": [
-          {
-            "id": "player"
-          },
-          {
-            "id": "cpu"
-          }
-        ],
-        "status": "BALL_LIVE",
-        "innings": 1,
-        "roundInnings": 1,
-        "superOverRound": 0,
-        "score": {
-          "runs": 0,
-          "wickets": 0,
-          "balls": 0
-        },
-        "target": null,
-        "requiredRuns": null,
-        "ballsRemaining": 6,
-        "battingPlayerId": "player",
-        "bowlingPlayerId": "cpu",
-        "toss": {
-          "call": "HEADS",
-          "result": "HEADS",
-          "callerId": "player",
-          "winnerId": "player",
-          "callerWon": true,
-          "choice": "BAT"
-        },
-        "result": null,
-        "deliveryOpen": true
-      },
-      "contactCount": 0,
-      "rampEntries": 0,
       "ball": {
         "x": 1.3643253071926804,
         "z": -1.4559039464746746,
@@ -670,6 +438,298 @@
         1.4946834900704544e-16
       ]
     },
+    "rightdown": {
+      "bowling": {
+        "bowler": "FAST",
+        "length": "FULL",
+        "line": "LEFT",
+        "type": "PACE",
+        "power": 0.28,
+        "movementScale": 1
+      },
+      "quality": "low",
+      "atmosphere": {
+        "reducedMotion": false,
+        "quality": "low",
+        "spectators": 240,
+        "active": false,
+        "elapsed": 0,
+        "flashCount": 0,
+        "flash": false,
+        "reaction": false
+      },
+      "rendering": {
+        "calls": 1,
+        "triangles": 1
+      },
+      "running": true,
+      "paused": false,
+      "audio": {
+        "loaded": 6,
+        "played": 5,
+        "failed": [],
+        "lastSound": "flipper",
+        "settings": {
+          "effects": 0.75,
+          "crowd": 0.45,
+          "muted": false
+        }
+      },
+      "vfx": {
+        "trail": false,
+        "sparks": false,
+        "target": false,
+        "shadow": true,
+        "shadowScale": 1.054663250076777,
+        "shadowOpacity": 0.4413950584588927,
+        "reducedMotion": false,
+        "quality": "low"
+      },
+      "plunger": {
+        "band": {
+          "ideal": 0.8,
+          "low": 0.6000000000000001,
+          "red": 0.95,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0.1,
+        "dragging": false,
+        "enabled": false,
+        "cpuMode": true,
+        "visible": true,
+        "glow": 0
+      },
+      "match": {
+        "format": "ONE_OVER",
+        "difficulty": "MEDIUM",
+        "ballsPerInnings": 6,
+        "maxWickets": 2,
+        "superOverBalls": 3,
+        "players": [
+          {
+            "id": "player"
+          },
+          {
+            "id": "cpu"
+          }
+        ],
+        "status": "BALL_LIVE",
+        "innings": 1,
+        "roundInnings": 1,
+        "superOverRound": 0,
+        "score": {
+          "runs": 0,
+          "wickets": 0,
+          "balls": 0
+        },
+        "target": null,
+        "requiredRuns": null,
+        "ballsRemaining": 6,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "toss": {
+          "call": "HEADS",
+          "result": "HEADS",
+          "callerId": "player",
+          "winnerId": "player",
+          "callerWon": true,
+          "choice": "BAT"
+        },
+        "result": null,
+        "deliveryOpen": true
+      },
+      "contactCount": 0,
+      "rampEntries": 0,
+      "accuracy": {
+        "x": 0,
+        "z": 0,
+        "risk": 0
+      },
+      "ball": {
+        "x": 0.3600893916782044,
+        "z": -1.4190847448241628,
+        "height": 0.01917011575046267,
+        "verticalVelocity": 0,
+        "velocity": {
+          "x": -5.492150610448667,
+          "z": 2.941796361434342
+        },
+        "bounced": false,
+        "deliveryType": "PACE"
+      },
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0,
+        "complete": false
+      },
+      "flippers": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": true,
+          "angle": 2.181661564992912
+        }
+      ],
+      "alignment": [
+        1.8875832159447664e-16,
+        5.551115123125783e-17
+      ]
+    },
+    "rightup": {
+      "bowling": {
+        "bowler": "FAST",
+        "length": "FULL",
+        "line": "LEFT",
+        "type": "PACE",
+        "power": 0.28,
+        "movementScale": 1
+      },
+      "quality": "low",
+      "atmosphere": {
+        "reducedMotion": false,
+        "quality": "low",
+        "spectators": 240,
+        "active": false,
+        "elapsed": 0,
+        "flashCount": 0,
+        "flash": false,
+        "reaction": false
+      },
+      "rendering": {
+        "calls": 1,
+        "triangles": 1
+      },
+      "running": true,
+      "paused": false,
+      "audio": {
+        "loaded": 6,
+        "played": 5,
+        "failed": [],
+        "lastSound": "flipper",
+        "settings": {
+          "effects": 0.75,
+          "crowd": 0.45,
+          "muted": false
+        }
+      },
+      "vfx": {
+        "trail": false,
+        "sparks": false,
+        "target": false,
+        "shadow": true,
+        "shadowScale": 1.0239626446880783,
+        "shadowOpacity": 0.462276222607842,
+        "reducedMotion": false,
+        "quality": "low"
+      },
+      "plunger": {
+        "band": {
+          "ideal": 0.8,
+          "low": 0.6000000000000001,
+          "red": 0.95,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0.1,
+        "dragging": false,
+        "enabled": false,
+        "cpuMode": true,
+        "visible": true,
+        "glow": 0
+      },
+      "match": {
+        "format": "ONE_OVER",
+        "difficulty": "MEDIUM",
+        "ballsPerInnings": 6,
+        "maxWickets": 2,
+        "superOverBalls": 3,
+        "players": [
+          {
+            "id": "player"
+          },
+          {
+            "id": "cpu"
+          }
+        ],
+        "status": "BALL_LIVE",
+        "innings": 1,
+        "roundInnings": 1,
+        "superOverRound": 0,
+        "score": {
+          "runs": 0,
+          "wickets": 0,
+          "balls": 0
+        },
+        "target": null,
+        "requiredRuns": null,
+        "ballsRemaining": 6,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "toss": {
+          "call": "HEADS",
+          "result": "HEADS",
+          "callerId": "player",
+          "winnerId": "player",
+          "callerWon": true,
+          "choice": "BAT"
+        },
+        "result": null,
+        "deliveryOpen": true
+      },
+      "contactCount": 0,
+      "rampEntries": 0,
+      "accuracy": {
+        "x": 0,
+        "z": 0,
+        "risk": 0
+      },
+      "ball": {
+        "x": -0.06224247182174667,
+        "z": -0.5408326897670327,
+        "height": 0.1057072916666664,
+        "verticalVelocity": 1.5259999999999954,
+        "velocity": {
+          "x": -1.2505467408685644,
+          "z": 6.163708451394008
+        },
+        "bounced": false,
+        "deliveryType": "PACE"
+      },
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0,
+        "complete": false
+      },
+      "flippers": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": false,
+          "angle": 3.391523802475381
+        }
+      ],
+      "alignment": [
+        1.8875832159447664e-16,
+        1.4946834900704544e-16
+      ]
+    },
     "fullOver": [
       {
         "bowling": {
@@ -677,16 +737,16 @@
           "length": "FULL",
           "line": "LEFT",
           "type": "PACE",
-          "power": 0.29600000000000004,
+          "power": 0.28,
           "movementScale": 1
         },
-        "quality": "high",
+        "quality": "low",
         "atmosphere": {
           "reducedMotion": false,
-          "quality": "high",
+          "quality": "low",
           "spectators": 240,
-          "active": true,
-          "elapsed": 2.400100000000004,
+          "active": false,
+          "elapsed": 0,
           "flashCount": 0,
           "flash": false,
           "reaction": false
@@ -699,7 +759,7 @@
         "paused": false,
         "audio": {
           "loaded": 6,
-          "played": 7,
+          "played": 8,
           "failed": [],
           "lastSound": "rail",
           "settings": {
@@ -710,16 +770,23 @@
         },
         "vfx": {
           "trail": false,
-          "sparks": true,
-          "target": true,
+          "sparks": false,
+          "target": false,
           "shadow": false,
           "shadowScale": 1,
           "shadowOpacity": 0.48,
           "reducedMotion": false,
-          "quality": "high"
+          "quality": "low"
         },
         "plunger": {
-          "pull": 0.12,
+          "band": {
+            "ideal": 0.8,
+            "low": 0.6000000000000001,
+            "red": 0.95,
+            "risk": 0,
+            "zone": "amber"
+          },
+          "pull": 0.1,
           "dragging": false,
           "enabled": false,
           "cpuMode": true,
@@ -767,6 +834,11 @@
         },
         "contactCount": 1,
         "rampEntries": 0,
+        "accuracy": {
+          "x": 0,
+          "z": 0,
+          "risk": 0
+        },
         "ball": {
           "x": 0.2830889565891421,
           "z": -2.712870584747212,
@@ -811,16 +883,16 @@
           "length": "FULL",
           "line": "LEFT",
           "type": "PACE",
-          "power": 0.29600000000000004,
+          "power": 0.28,
           "movementScale": 1
         },
-        "quality": "high",
+        "quality": "low",
         "atmosphere": {
           "reducedMotion": false,
-          "quality": "high",
+          "quality": "low",
           "spectators": 240,
-          "active": true,
-          "elapsed": 3.350100000000001,
+          "active": false,
+          "elapsed": 0,
           "flashCount": 0,
           "flash": false,
           "reaction": false
@@ -833,7 +905,7 @@
         "paused": false,
         "audio": {
           "loaded": 6,
-          "played": 11,
+          "played": 12,
           "failed": [],
           "lastSound": "rail",
           "settings": {
@@ -843,17 +915,24 @@
           }
         },
         "vfx": {
-          "trail": true,
-          "sparks": true,
+          "trail": false,
+          "sparks": false,
           "target": true,
-          "shadow": true,
-          "shadowScale": 1.0053663194444444,
-          "shadowOpacity": 0.4759137516490356,
+          "shadow": false,
+          "shadowScale": 1,
+          "shadowOpacity": 0.48,
           "reducedMotion": false,
-          "quality": "high"
+          "quality": "low"
         },
         "plunger": {
-          "pull": 0.12,
+          "band": {
+            "ideal": 0.8,
+            "low": 0.6000000000000001,
+            "red": 0.95,
+            "risk": 0,
+            "zone": "amber"
+          },
+          "pull": 0.1,
           "dragging": false,
           "enabled": false,
           "cpuMode": true,
@@ -901,6 +980,11 @@
         },
         "contactCount": 2,
         "rampEntries": 0,
+        "accuracy": {
+          "x": 0,
+          "z": 0,
+          "risk": 0
+        },
         "ball": {
           "x": 0.2830889565891421,
           "z": -2.712870584747212,
@@ -948,13 +1032,13 @@
           "power": 0.28,
           "movementScale": 1
         },
-        "quality": "high",
+        "quality": "low",
         "atmosphere": {
           "reducedMotion": false,
-          "quality": "high",
+          "quality": "low",
           "spectators": 240,
-          "active": true,
-          "elapsed": 3.6001000000000003,
+          "active": false,
+          "elapsed": 0,
           "flashCount": 0,
           "flash": false,
           "reaction": false
@@ -967,7 +1051,7 @@
         "paused": false,
         "audio": {
           "loaded": 6,
-          "played": 15,
+          "played": 16,
           "failed": [],
           "lastSound": "rail",
           "settings": {
@@ -977,16 +1061,23 @@
           }
         },
         "vfx": {
-          "trail": true,
-          "sparks": true,
+          "trail": false,
+          "sparks": false,
           "target": true,
           "shadow": true,
-          "shadowScale": 1.08125,
-          "shadowOpacity": 0.42477876106194695,
+          "shadowScale": 1,
+          "shadowOpacity": 0.48,
           "reducedMotion": false,
-          "quality": "high"
+          "quality": "low"
         },
         "plunger": {
+          "band": {
+            "ideal": 0.8,
+            "low": 0.6000000000000001,
+            "red": 0.95,
+            "risk": 0,
+            "zone": "amber"
+          },
           "pull": 0.1,
           "dragging": false,
           "enabled": false,
@@ -1013,7 +1104,7 @@
           "roundInnings": 1,
           "superOverRound": 0,
           "score": {
-            "runs": 6,
+            "runs": 4,
             "wickets": 0,
             "balls": 3
           },
@@ -1035,9 +1126,14 @@
         },
         "contactCount": 3,
         "rampEntries": 0,
+        "accuracy": {
+          "x": 0,
+          "z": 0,
+          "risk": 0
+        },
         "ball": {
-          "x": 0.3052159064990716,
-          "z": -2.7051619716575366,
+          "x": -0.9602797722007362,
+          "z": -0.49823810729065654,
           "height": 0,
           "verticalVelocity": 0,
           "velocity": {
@@ -1051,7 +1147,7 @@
           "number": 1,
           "battingPlayerId": "player",
           "bowlingPlayerId": "cpu",
-          "runs": 6,
+          "runs": 4,
           "wickets": 0,
           "balls": 3,
           "complete": false
@@ -1082,13 +1178,13 @@
           "power": 0.28,
           "movementScale": 1
         },
-        "quality": "high",
+        "quality": "low",
         "atmosphere": {
           "reducedMotion": false,
-          "quality": "high",
+          "quality": "low",
           "spectators": 240,
-          "active": true,
-          "elapsed": 4.133500000000001,
+          "active": false,
+          "elapsed": 0,
           "flashCount": 0,
           "flash": false,
           "reaction": false
@@ -1101,7 +1197,7 @@
         "paused": false,
         "audio": {
           "loaded": 6,
-          "played": 19,
+          "played": 20,
           "failed": [],
           "lastSound": "rail",
           "settings": {
@@ -1111,16 +1207,23 @@
           }
         },
         "vfx": {
-          "trail": true,
-          "sparks": true,
+          "trail": false,
+          "sparks": false,
           "target": true,
-          "shadow": true,
-          "shadowScale": 1.08125,
-          "shadowOpacity": 0.42477876106194695,
+          "shadow": false,
+          "shadowScale": 1,
+          "shadowOpacity": 0.48,
           "reducedMotion": false,
-          "quality": "high"
+          "quality": "low"
         },
         "plunger": {
+          "band": {
+            "ideal": 0.8,
+            "low": 0.6000000000000001,
+            "red": 0.95,
+            "risk": 0,
+            "zone": "amber"
+          },
           "pull": 0.1,
           "dragging": false,
           "enabled": false,
@@ -1147,7 +1250,7 @@
           "roundInnings": 1,
           "superOverRound": 0,
           "score": {
-            "runs": 8,
+            "runs": 6,
             "wickets": 0,
             "balls": 4
           },
@@ -1169,6 +1272,11 @@
         },
         "contactCount": 4,
         "rampEntries": 0,
+        "accuracy": {
+          "x": 0,
+          "z": 0,
+          "risk": 0
+        },
         "ball": {
           "x": 0.2830889565891421,
           "z": -2.712870584747212,
@@ -1185,7 +1293,7 @@
           "number": 1,
           "battingPlayerId": "player",
           "bowlingPlayerId": "cpu",
-          "runs": 8,
+          "runs": 6,
           "wickets": 0,
           "balls": 4,
           "complete": false
@@ -1216,13 +1324,13 @@
           "power": 0.28,
           "movementScale": 1
         },
-        "quality": "high",
+        "quality": "low",
         "atmosphere": {
           "reducedMotion": false,
-          "quality": "high",
+          "quality": "low",
           "spectators": 240,
-          "active": true,
-          "elapsed": 4.600099999999998,
+          "active": false,
+          "elapsed": 0,
           "flashCount": 0,
           "flash": false,
           "reaction": false
@@ -1235,7 +1343,7 @@
         "paused": false,
         "audio": {
           "loaded": 6,
-          "played": 23,
+          "played": 24,
           "failed": [],
           "lastSound": "rail",
           "settings": {
@@ -1245,16 +1353,23 @@
           }
         },
         "vfx": {
-          "trail": true,
-          "sparks": true,
+          "trail": false,
+          "sparks": false,
           "target": true,
           "shadow": true,
-          "shadowScale": 1.08125,
-          "shadowOpacity": 0.42477876106194695,
+          "shadowScale": 1,
+          "shadowOpacity": 0.48,
           "reducedMotion": false,
-          "quality": "high"
+          "quality": "low"
         },
         "plunger": {
+          "band": {
+            "ideal": 0.8,
+            "low": 0.6000000000000001,
+            "red": 0.95,
+            "risk": 0,
+            "zone": "amber"
+          },
           "pull": 0.1,
           "dragging": false,
           "enabled": false,
@@ -1281,7 +1396,7 @@
           "roundInnings": 1,
           "superOverRound": 0,
           "score": {
-            "runs": 10,
+            "runs": 8,
             "wickets": 0,
             "balls": 5
           },
@@ -1303,6 +1418,11 @@
         },
         "contactCount": 5,
         "rampEntries": 0,
+        "accuracy": {
+          "x": 0,
+          "z": 0,
+          "risk": 0
+        },
         "ball": {
           "x": 0.2830889565891421,
           "z": -2.712870584747212,
@@ -1319,7 +1439,7 @@
           "number": 1,
           "battingPlayerId": "player",
           "bowlingPlayerId": "cpu",
-          "runs": 10,
+          "runs": 8,
           "wickets": 0,
           "balls": 5,
           "complete": false
@@ -1347,16 +1467,16 @@
           "length": "FULL",
           "line": "LEFT",
           "type": "SWING_LEFT",
-          "power": 0.29600000000000004,
+          "power": 0.28,
           "movementScale": 1
         },
-        "quality": "high",
+        "quality": "low",
         "atmosphere": {
           "reducedMotion": false,
-          "quality": "high",
+          "quality": "low",
           "spectators": 240,
-          "active": true,
-          "elapsed": 5.266799999999993,
+          "active": false,
+          "elapsed": 0,
           "flashCount": 0,
           "flash": false,
           "reaction": false
@@ -1369,7 +1489,7 @@
         "paused": false,
         "audio": {
           "loaded": 6,
-          "played": 27,
+          "played": 28,
           "failed": [],
           "lastSound": "rail",
           "settings": {
@@ -1380,16 +1500,23 @@
         },
         "vfx": {
           "trail": false,
-          "sparks": true,
+          "sparks": false,
           "target": true,
-          "shadow": false,
-          "shadowScale": 1,
-          "shadowOpacity": 0.48,
+          "shadow": true,
+          "shadowScale": 1.0053663194444444,
+          "shadowOpacity": 0.4759137516490356,
           "reducedMotion": false,
-          "quality": "high"
+          "quality": "low"
         },
         "plunger": {
-          "pull": 0.12,
+          "band": {
+            "ideal": 0.8,
+            "low": 0.6000000000000001,
+            "red": 0.95,
+            "risk": 0,
+            "zone": "amber"
+          },
+          "pull": 0.05,
           "dragging": false,
           "enabled": false,
           "cpuMode": false,
@@ -1415,11 +1542,11 @@
           "roundInnings": 1,
           "superOverRound": 0,
           "score": {
-            "runs": 12,
+            "runs": 8,
             "wickets": 0,
             "balls": 6
           },
-          "target": 13,
+          "target": 9,
           "requiredRuns": 1,
           "ballsRemaining": 0,
           "battingPlayerId": "cpu",
@@ -1437,9 +1564,14 @@
         },
         "contactCount": 6,
         "rampEntries": 0,
+        "accuracy": {
+          "x": 0,
+          "z": 0,
+          "risk": 0
+        },
         "ball": {
-          "x": 0.3052159064990716,
-          "z": -2.7051619716575366,
+          "x": -0.9602797722007362,
+          "z": -0.49823810729065654,
           "height": 0,
           "verticalVelocity": 0,
           "velocity": {
@@ -1453,7 +1585,7 @@
           "number": 1,
           "battingPlayerId": "player",
           "bowlingPlayerId": "cpu",
-          "runs": 12,
+          "runs": 8,
           "wickets": 0,
           "balls": 6,
           "complete": true
@@ -1486,13 +1618,13 @@
           "power": 0.29600000000000004,
           "movementScale": 1
         },
-        "quality": "high",
+        "quality": "low",
         "atmosphere": {
           "reducedMotion": false,
-          "quality": "high",
+          "quality": "low",
           "spectators": 240,
-          "active": true,
-          "elapsed": 1.5334000000000094,
+          "active": false,
+          "elapsed": 0,
           "flashCount": 0,
           "flash": false,
           "reaction": true
@@ -1505,7 +1637,7 @@
         "paused": false,
         "audio": {
           "loaded": 6,
-          "played": 28,
+          "played": 29,
           "failed": [],
           "lastSound": "launch",
           "settings": {
@@ -1515,16 +1647,23 @@
           }
         },
         "vfx": {
-          "trail": true,
-          "sparks": true,
+          "trail": false,
+          "sparks": false,
           "target": true,
           "shadow": true,
           "shadowScale": 1.08125,
           "shadowOpacity": 0.42477876106194695,
           "reducedMotion": false,
-          "quality": "high"
+          "quality": "low"
         },
         "plunger": {
+          "band": {
+            "ideal": 0.7,
+            "low": 0.49999999999999994,
+            "red": 0.8999999999999999,
+            "risk": 0,
+            "zone": "amber"
+          },
           "pull": 0.12,
           "dragging": false,
           "enabled": false,
@@ -1573,6 +1712,11 @@
         },
         "contactCount": 0,
         "rampEntries": 0,
+        "accuracy": {
+          "x": 0,
+          "z": 0,
+          "risk": 0
+        },
         "ball": {
           "x": 0.001442363242495394,
           "z": 2.3131952950150154,
@@ -1620,13 +1764,13 @@
           "power": 0.29600000000000004,
           "movementScale": 1
         },
-        "quality": "high",
+        "quality": "low",
         "atmosphere": {
           "reducedMotion": false,
-          "quality": "high",
+          "quality": "low",
           "spectators": 240,
-          "active": true,
-          "elapsed": 2.183400000000009,
+          "active": false,
+          "elapsed": 0,
           "flashCount": 0,
           "flash": false,
           "reaction": true
@@ -1639,7 +1783,7 @@
         "paused": false,
         "audio": {
           "loaded": 6,
-          "played": 31,
+          "played": 32,
           "failed": [],
           "lastSound": "launch",
           "settings": {
@@ -1649,17 +1793,24 @@
           }
         },
         "vfx": {
-          "trail": true,
-          "sparks": true,
+          "trail": false,
+          "sparks": false,
           "target": true,
           "shadow": true,
           "shadowScale": 1.0700173611111115,
           "shadowOpacity": 0.431643893787625,
           "reducedMotion": false,
-          "quality": "high"
+          "quality": "low"
         },
         "plunger": {
-          "pull": 0.12,
+          "band": {
+            "ideal": 0.7,
+            "low": 0.49999999999999994,
+            "red": 0.8999999999999999,
+            "risk": 0,
+            "zone": "amber"
+          },
+          "pull": 0.05,
           "dragging": false,
           "enabled": false,
           "cpuMode": false,
@@ -1707,6 +1858,11 @@
         },
         "contactCount": 0,
         "rampEntries": 0,
+        "accuracy": {
+          "x": 0,
+          "z": 0,
+          "risk": 0
+        },
         "ball": {
           "x": 0.001442363242495394,
           "z": 2.3131952950150154,
@@ -1756,13 +1912,13 @@
       "power": 0.6000000000000001,
       "movementScale": 1
     },
-    "quality": "high",
+    "quality": "low",
     "atmosphere": {
       "reducedMotion": false,
-      "quality": "high",
+      "quality": "low",
       "spectators": 240,
-      "active": true,
-      "elapsed": 1.1501000000000008,
+      "active": false,
+      "elapsed": 0,
       "flashCount": 0,
       "flash": false,
       "reaction": false
@@ -1775,9 +1931,9 @@
     "paused": false,
     "audio": {
       "loaded": 6,
-      "played": 0,
+      "played": 1,
       "failed": [],
-      "lastSound": null,
+      "lastSound": "flipper",
       "settings": {
         "effects": 0.75,
         "crowd": 0.45,
@@ -1792,9 +1948,16 @@
       "shadowScale": 1.08125,
       "shadowOpacity": 0.42477876106194695,
       "reducedMotion": false,
-      "quality": "high"
+      "quality": "low"
     },
     "plunger": {
+      "band": {
+        "ideal": 0.8,
+        "low": 0.6000000000000001,
+        "red": 0.95,
+        "risk": 0,
+        "zone": "green"
+      },
       "pull": 0.5,
       "dragging": false,
       "enabled": false,
@@ -1882,19 +2045,19 @@
   "idleHeld": {
     "bowling": {
       "bowler": "FAST",
-      "length": "GOOD",
-      "line": "CENTRE",
+      "length": "FULL",
+      "line": "LEFT",
       "type": "PACE",
-      "power": 0.6000000000000001,
+      "power": 0.28,
       "movementScale": 1
     },
-    "quality": "high",
+    "quality": "low",
     "atmosphere": {
       "reducedMotion": false,
-      "quality": "high",
+      "quality": "low",
       "spectators": 240,
-      "active": true,
-      "elapsed": 1.3834000000000022,
+      "active": false,
+      "elapsed": 0,
       "flashCount": 0,
       "flash": false,
       "reaction": false
@@ -1903,11 +2066,11 @@
       "calls": 1,
       "triangles": 1
     },
-    "running": false,
+    "running": true,
     "paused": false,
     "audio": {
       "loaded": 6,
-      "played": 1,
+      "played": 3,
       "failed": [],
       "lastSound": "flipper",
       "settings": {
@@ -1920,14 +2083,21 @@
       "trail": false,
       "sparks": false,
       "target": false,
-      "shadow": false,
+      "shadow": true,
       "shadowScale": 1.08125,
       "shadowOpacity": 0.42477876106194695,
       "reducedMotion": false,
-      "quality": "high"
+      "quality": "low"
     },
     "plunger": {
-      "pull": 0.5,
+      "band": {
+        "ideal": 0.8,
+        "low": 0.6000000000000001,
+        "red": 0.95,
+        "risk": 0,
+        "zone": "amber"
+      },
+      "pull": 0.1,
       "dragging": false,
       "enabled": false,
       "cpuMode": true,
@@ -1948,7 +2118,7 @@
           "id": "cpu"
         }
       ],
-      "status": "DELIVERY_SETUP",
+      "status": "BALL_LIVE",
       "innings": 1,
       "roundInnings": 1,
       "superOverRound": 0,
@@ -1971,19 +2141,26 @@
         "choice": "BAT"
       },
       "result": null,
-      "deliveryOpen": false
+      "deliveryOpen": true
     },
     "contactCount": 0,
     "rampEntries": 0,
+    "accuracy": {
+      "x": 0,
+      "z": 0,
+      "risk": 0
+    },
     "ball": {
-      "x": 1.25,
-      "z": 2.4,
+      "x": 1.6356520783261015,
+      "z": 1.4358698041847466,
       "height": 0.065,
       "verticalVelocity": 0,
       "velocity": {
-        "x": 0,
-        "z": 0
-      }
+        "x": 2.3139124699566067,
+        "z": -5.7847811748915205
+      },
+      "bounced": false,
+      "deliveryType": "PACE"
     },
     "score": {
       "number": 1,
@@ -2014,19 +2191,19 @@
   "cancelled": {
     "bowling": {
       "bowler": "FAST",
-      "length": "GOOD",
-      "line": "CENTRE",
+      "length": "FULL",
+      "line": "LEFT",
       "type": "PACE",
-      "power": 0.6000000000000001,
+      "power": 0.28,
       "movementScale": 1
     },
-    "quality": "high",
+    "quality": "low",
     "atmosphere": {
       "reducedMotion": false,
-      "quality": "high",
+      "quality": "low",
       "spectators": 240,
-      "active": true,
-      "elapsed": 1.4834000000000023,
+      "active": false,
+      "elapsed": 0,
       "flashCount": 0,
       "flash": false,
       "reaction": false
@@ -2035,11 +2212,11 @@
       "calls": 1,
       "triangles": 1
     },
-    "running": false,
+    "running": true,
     "paused": false,
     "audio": {
       "loaded": 6,
-      "played": 1,
+      "played": 3,
       "failed": [],
       "lastSound": "flipper",
       "settings": {
@@ -2052,14 +2229,21 @@
       "trail": false,
       "sparks": false,
       "target": false,
-      "shadow": false,
+      "shadow": true,
       "shadowScale": 1.08125,
       "shadowOpacity": 0.42477876106194695,
       "reducedMotion": false,
-      "quality": "high"
+      "quality": "low"
     },
     "plunger": {
-      "pull": 0.5,
+      "band": {
+        "ideal": 0.8,
+        "low": 0.6000000000000001,
+        "red": 0.95,
+        "risk": 0,
+        "zone": "amber"
+      },
+      "pull": 0.1,
       "dragging": false,
       "enabled": false,
       "cpuMode": true,
@@ -2080,7 +2264,7 @@
           "id": "cpu"
         }
       ],
-      "status": "DELIVERY_SETUP",
+      "status": "BALL_LIVE",
       "innings": 1,
       "roundInnings": 1,
       "superOverRound": 0,
@@ -2103,19 +2287,26 @@
         "choice": "BAT"
       },
       "result": null,
-      "deliveryOpen": false
+      "deliveryOpen": true
     },
     "contactCount": 0,
     "rampEntries": 0,
+    "accuracy": {
+      "x": 0,
+      "z": 0,
+      "risk": 0
+    },
     "ball": {
-      "x": 1.25,
-      "z": 2.4,
+      "x": 1.8,
+      "z": 0.42912032196198835,
       "height": 0.065,
       "verticalVelocity": 0,
       "velocity": {
         "x": 0,
-        "z": 0
-      }
+        "z": -6.2304
+      },
+      "bounced": false,
+      "deliveryType": "PACE"
     },
     "score": {
       "number": 1,

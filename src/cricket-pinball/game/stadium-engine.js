@@ -41,6 +41,8 @@ export class StadiumEngine extends PinballEngine {
     this.launchRoute = null;
     this.verticalVelocity = 0;
     this.deliveryFlight = false;
+    this.shotFlight = null;
+    this.fielded = false;
   }
 
   freezeBall() {
@@ -143,6 +145,42 @@ export class StadiumEngine extends PinballEngine {
     this.deliveryFlight = true;
   }
 
+  beginShotFlight(feedback) {
+    this.deliveryFlight = false;
+    this.ball.height = 0;
+    // A mistimed attacking contact lifts the ball. Power alone never causes a catch.
+    const lofted = feedback.shotIntent === 'ATTACK' && feedback.timing !== 'PERFECT' && Math.abs(feedback.lateralRatioAfter ?? 0) < .8;
+    this.verticalVelocity = lofted ? 3.5 : 0;
+    this.shotFlight = {lofted, bounced:false};
+    this.fielded = false;
+    return lofted;
+  }
+
+  advanceShotHeight(dt) {
+    if (!this.shotFlight?.lofted || this.shotFlight.bounced) return;
+    this.ball.height += this.verticalVelocity*dt - 4.905*dt*dt;
+    this.verticalVelocity -= 9.81*dt;
+    if (this.ball.height <= 0 && this.verticalVelocity < 0) {
+      this.ball.height = 0; this.verticalVelocity = 0; this.shotFlight.bounced = true;
+    }
+  }
+
+  checkFielders(before, beforeHeight) {
+    if (!this.shotFlight || this.fielded || this.frozen || this.ramp || this.launcher.inLane) return;
+    const after=this.ball.position, dx=after.x-before.x, dz=after.z-before.z;
+    for (const fielder of this.config.fielders || []) {
+      const t=Math.max(0,Math.min(1,((fielder.x-before.x)*dx+(fielder.z-before.z)*dz)/(dx*dx+dz*dz || 1)));
+      const distance=Math.hypot(before.x+t*dx-fielder.x,before.z+t*dz-fielder.z);
+      const height=beforeHeight+(this.ball.height-beforeHeight)*t;
+      if (distance > fielder.radius+this.config.ball.radius || height > fielder.reach) continue;
+      const caught=this.shotFlight.lofted && !this.shotFlight.bounced && height>.025;
+      // Intercept at the fielder, with no random dismissal roll.
+      this.fielded=true;
+      this.emit('fielder-intercept',{fielderId:fielder.id,caught,height});
+      break;
+    }
+  }
+
   advanceDeliveryHeight(dt) {
     if (!this.deliveryFlight) return;
     this.ball.height += this.verticalVelocity * dt - .5 * 9.81 * dt * dt;
@@ -187,9 +225,12 @@ export class StadiumEngine extends PinballEngine {
     if (this.ramp) return this.advanceRamp(dt);
     const before = { ...this.ball.position };
     this.previousPosition = before;
+    const beforeHeight = this.ball.height;
+    this.advanceShotHeight(dt);
     this.advanceDeliveryHeight(dt);
     this.applyDeliveryVariation(dt);
     super.integrateSubstep(dt);
+    this.checkFielders(before, beforeHeight);
     if (this.frozen || !this.ball.active || this.launcher.inLane || this.launcher.deliveryGuideActive) return;
     for (const route of this.routes) {
       const start = route.points[0];

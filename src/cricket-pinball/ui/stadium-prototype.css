@@ -262,3 +262,11 @@
 #bowlingSummary{margin:4px 0;padding:8px 4px;text-align:center;font-size:14px;line-height:1.4;color:#d9e4ec;font-variant-numeric:tabular-nums}
 @media(max-height:500px){.controls:has(.setup.batting) .bats button{height:56px;min-height:56px;font-size:12px;gap:4px}.controls:has(.setup.batting) .bats svg{width:30px;height:30px}}
 @media(prefers-reduced-motion:reduce){.controls:has(.setup.batting) .bats svg{transition:none}}
+
+/* Collapse the unused HUD row before the first innings. */
+@media(min-width:800px) and (min-height:501px){#stadiumApp:has(#score[hidden]){grid-template-rows:44px 0 minmax(0,1fr)}}
+/* The scale is painted on the 3D mechanism; this readout follows its handle. */
+#pinballPlunger #bowlingPowerMeter{left:auto;right:62px;top:0;width:106px;opacity:1;background:#071622ed;border-radius:7px;padding:5px}
+#pinballPlunger #bowlingPowerMeter .colour-power-track{display:none}
+#pinballPlunger #bowlingPowerMeter small{font-size:9px}
+#pinballPlunger .power-status{font-size:10px;background:none;padding:2px 0}

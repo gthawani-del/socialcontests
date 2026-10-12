@@ -7,6 +7,7 @@ const server=await createServer({server:{host:'127.0.0.1',port:5184}});await ser
 const browser=await chromium.launch({headless:true,args:bundle.args,executablePath:process.env.CHROMIUM_PATH});
 try{
  const page=await browser.newPage({viewport:{width:390,height:844},hasTouch:true});
+ if(process.env.QA_LOW_GRAPHICS)await page.addInitScript(()=>{localStorage.setItem('cricket-quality','low');Object.defineProperty(window,'devicePixelRatio',{get:()=>.5});const raf=window.requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>setTimeout(()=>raf(fn),100);});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/qa-bounce*',r=>r.fulfill({contentType:'text/html',body:'<meta name="viewport" content="width=device-width,initial-scale=1"><main id="stadiumApp"></main><script type="module" src="/src/cricket-pinball/stadium-prototype.js"></script>'}));
  await page.goto('http://127.0.0.1:5184/qa-bounce?format=ONE_OVER');

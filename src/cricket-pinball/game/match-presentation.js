@@ -2,6 +2,8 @@ export const overs = balls => `${Math.floor(balls / 6)}.${balls % 6}`;
 const names = {player:'You',cpu:'CPU'};
 export function deliveryCommentary(outcome, metadata = {}, ballNumber = 1) {
   if(outcome==='DEAD_BALL')return 'Dead ball. No score added; this delivery will be re-bowled.';
+  if(metadata.reason==='CAUGHT_OUT')return 'Caught out! The fielder took the ball before it bounced.';
+  if(metadata.reason==='FIELDED')return 'Fielded along the ground. Dot ball.';
   if(metadata.reason==='RISK_WICKET')return 'Wicket! The attacking shot was mistimed.';
   if(outcome==='WICKET' && ['WICKET_DRAIN','DRAIN'].includes(metadata.reason))return 'Wicket! The ball entered the wicket drain.';
   if(outcome==='WICKET')return 'Wicket recorded.';

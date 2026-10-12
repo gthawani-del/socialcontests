@@ -5,35 +5,23 @@
       "overflow": false,
       "buttons": [
         {
-          "height": 50,
-          "font": 11
+          "height": 54,
+          "font": 16
         },
         {
-          "height": 50,
-          "font": 11
-        },
-        {
-          "height": 50,
-          "font": 11
-        },
-        {
-          "height": 48,
-          "font": 11
-        },
-        {
-          "height": 48,
-          "font": 11
+          "height": 54,
+          "font": 16
         }
       ],
       "plunger": {
-        "x": 311.609375,
-        "y": 298.828125,
+        "x": 314.171875,
+        "y": 348.671875,
         "width": 64,
         "height": 100,
-        "top": 298.828125,
-        "right": 375.609375,
-        "bottom": 398.828125,
-        "left": 311.609375
+        "top": 348.671875,
+        "right": 378.171875,
+        "bottom": 448.671875,
+        "left": 314.171875
       },
       "glow": 0
     },
@@ -42,35 +30,23 @@
       "overflow": false,
       "buttons": [
         {
-          "height": 50,
-          "font": 11
+          "height": 54,
+          "font": 16
         },
         {
-          "height": 50,
-          "font": 11
-        },
-        {
-          "height": 50,
-          "font": 11
-        },
-        {
-          "height": 48,
-          "font": 11
-        },
-        {
-          "height": 48,
-          "font": 11
+          "height": 54,
+          "font": 16
         }
       ],
       "plunger": {
-        "x": 234.125,
-        "y": 192.125,
+        "x": 250.84375,
+        "y": 252.28125,
         "width": 64,
         "height": 100,
-        "top": 192.125,
-        "right": 298.125,
-        "bottom": 292.125,
-        "left": 234.125
+        "top": 252.28125,
+        "right": 314.84375,
+        "bottom": 352.28125,
+        "left": 250.84375
       },
       "glow": 0
     },
@@ -79,35 +55,23 @@
       "overflow": false,
       "buttons": [
         {
-          "height": 50,
-          "font": 11
+          "height": 64,
+          "font": 16
         },
         {
-          "height": 50,
-          "font": 11
-        },
-        {
-          "height": 50,
-          "font": 11
-        },
-        {
-          "height": 48,
-          "font": 11
-        },
-        {
-          "height": 48,
-          "font": 11
+          "height": 64,
+          "font": 16
         }
       ],
       "plunger": {
-        "x": 403.609375,
-        "y": 287.859375,
+        "x": 413.578125,
+        "y": 290,
         "width": 64,
         "height": 100,
-        "top": 287.859375,
-        "right": 467.609375,
-        "bottom": 387.859375,
-        "left": 403.609375
+        "top": 290,
+        "right": 477.578125,
+        "bottom": 390,
+        "left": 413.578125
       },
       "glow": 0
     },
@@ -116,40 +80,35 @@
       "overflow": false,
       "buttons": [
         {
-          "height": 59.09375,
-          "font": 11
+          "height": 54,
+          "font": 16
         },
         {
-          "height": 59.09375,
-          "font": 11
-        },
-        {
-          "height": 59.09375,
-          "font": 11
-        },
-        {
-          "height": 48,
-          "font": 11
-        },
-        {
-          "height": 48,
-          "font": 11
+          "height": 54,
+          "font": 16
         }
       ],
       "plunger": {
-        "x": 804.046875,
-        "y": 731.015625,
+        "x": 801.828125,
+        "y": 773.765625,
         "width": 64,
         "height": 100,
-        "top": 731.015625,
-        "right": 868.046875,
-        "bottom": 831.015625,
-        "left": 804.046875
+        "top": 773.765625,
+        "right": 865.828125,
+        "bottom": 873.765625,
+        "left": 801.828125
       },
       "glow": 0
     }
   ],
   "held": {
+    "band": {
+      "ideal": 0.7,
+      "low": 0.49999999999999994,
+      "red": 0.8999999999999999,
+      "risk": 0,
+      "zone": "green"
+    },
     "pull": 0.8,
     "dragging": true,
     "enabled": true,
@@ -166,13 +125,13 @@
       "power": 0.6000000000000001,
       "movementScale": 1
     },
-    "quality": "high",
+    "quality": "low",
     "atmosphere": {
       "reducedMotion": false,
-      "quality": "high",
+      "quality": "low",
       "spectators": 240,
-      "active": true,
-      "elapsed": 3.2332999999999776,
+      "active": false,
+      "elapsed": 0,
       "flashCount": 0,
       "flash": false,
       "reaction": false
@@ -195,17 +154,24 @@
       }
     },
     "vfx": {
-      "trail": true,
+      "trail": false,
       "sparks": false,
       "target": false,
       "shadow": true,
       "shadowScale": 1.08125,
       "shadowOpacity": 0.42477876106194695,
       "reducedMotion": false,
-      "quality": "high"
+      "quality": "low"
     },
     "plunger": {
-      "pull": 0.5,
+      "band": {
+        "ideal": 0.7,
+        "low": 0.49999999999999994,
+        "red": 0.8999999999999999,
+        "risk": 0,
+        "zone": "green"
+      },
+      "pull": 0.05,
       "dragging": false,
       "enabled": false,
       "cpuMode": false,
@@ -253,6 +219,11 @@
     },
     "contactCount": 0,
     "rampEntries": 0,
+    "accuracy": {
+      "x": 0,
+      "z": 0,
+      "risk": 0
+    },
     "ball": {
       "x": 1.25,
       "z": 2.4,
@@ -260,7 +231,7 @@
       "verticalVelocity": 0,
       "velocity": {
         "x": 0,
-        "z": -7.667520000000001
+        "z": -6.820800000000001
       },
       "bounced": false,
       "deliveryType": "SWING_RIGHT"

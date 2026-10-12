@@ -36,7 +36,7 @@ export function createBowlingPlunger({
     <div id="deliveryOptions" hidden role="dialog" aria-modal="true" aria-label="Choose delivery"><div class="delivery-heading"><strong id="bowlerName">Medium pace</strong><button type="button" id="closeDelivery">Done</button></div><div class="delivery-grid">${Object.entries(DELIVERY_LABELS).map(([type,label])=>`<button type="button" data-type="${type}">${deliveryIcon(type)}<span>${label}</span></button>`).join('')}</div></div>`;
   const meter=document.createElement('div');meter.id='bowlingPowerMeter';meter.hidden=true;
   meter.innerHTML='<small>POWER</small><output id="bowlingPower">60%</output><div class="colour-power-track" id="powerMeter" role="meter" aria-label="Bowling power" aria-valuemin="24" aria-valuemax="100"><i></i></div><span class="power-status">Controlled</span>';
-  viewport.append(meter);
+
   const summary=document.createElement("p");summary.id="bowlingSummary";summary.hidden=true;summary.setAttribute("role","status");controls.prepend(summary);
   let lastDelivery=null;
 
@@ -53,6 +53,7 @@ export function createBowlingPlunger({
     <small class="plunger-help">PULL<br>& RELEASE</small>`;
 
   controls.prepend(consoleEl);
+  plunger.append(meter);
   viewport.append(plunger);
 
   const handle = plunger.querySelector('.plunger-handle');
@@ -92,7 +93,7 @@ export function createBowlingPlunger({
     meter.dataset.zone=band.zone;meter.style.setProperty('--power',percent+'%');
     for(const [key,value] of Object.entries({low:band.low,red:band.red,'ideal-start':band.ideal-.03,'ideal-end':band.ideal+.03}))meter.style.setProperty('--'+key,(value*100)+'%');
     meter.querySelector('#powerMeter').setAttribute('aria-valuenow',percent);
-    const status=({red:'Reduced control',amber:'Lower power',cyan:'Ideal release',green:'Controlled'})[band.zone];
+    const status=({red:'Max pace · less accuracy',amber:'Gentle',cyan:'Ideal release',green:'Controlled'})[band.zone];
     meter.querySelector('.power-status').textContent=status;meter.querySelector('#powerMeter').setAttribute('aria-valuetext',percent+'% · '+status);
     handle.setAttribute('aria-label', `Pull and release bowling plunger. Power ${powerLabel.textContent}`);
   }
@@ -126,7 +127,7 @@ export function createBowlingPlunger({
   });
 
   handle.addEventListener('pointerdown', event => {
-    if (!enabled || cpuMode) return;
+    if (!enabled || cpuMode || dragging) return;
     event.preventDefault();
     onInteraction({type:'LEVER_PULL'});
     dragging = true;
@@ -138,7 +139,7 @@ export function createBowlingPlunger({
   handle.addEventListener('pointermove', event => {
     if (!dragging || event.pointerId !== pointerId) return;
     event.preventDefault();
-    updatePull(startPull + (event.clientY - startY) / 100);
+    updatePull(startPull + (event.clientY - startY) / Math.max(60, plunger.clientHeight));
   });
   const release = event => {
     if (!dragging || (event?.pointerId != null && event.pointerId !== pointerId)) return;
@@ -227,7 +228,7 @@ export function createBowlingPlunger({
     setBowler,
     setSelection,
     getSelection,
-    getState: () => ({pull: !enabled && !cpuMode ? .05 : pull, dragging, enabled, cpuMode, visible: !plunger.hidden}),
+    getState: () => ({band: bowlingPowerBand(getSelection()), pull: !enabled && !cpuMode ? .05 : pull, dragging, enabled, cpuMode, visible: !plunger.hidden}),
     animateCpu,
     get line() { return line; },
     get type() { return type; },
