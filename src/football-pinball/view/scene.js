@@ -592,6 +592,7 @@ export async function createMatchView(container, mode) {
     metrics: () => ({
       effects: effects.metrics(),
       jerseys: Object.fromEntries([...targetMeshes,...keeperMeshes].filter(([,m])=>m.userData.jerseyKey).map(([id,m])=>[id,{team:m.userData.team,colours:m.userData.jerseyKey}])),
+      playerPositions: Object.fromEntries([...targetMeshes].filter(([id])=>id.startsWith('player-')).map(([id,m])=>[id,{x:m.position.x,y:-m.position.z}])),
       bootTeams: Object.fromEntries([...bootMeshes].map(([id,m])=>[id,m.userData.team])),
       assetsLoaded: [...models.keys()],
       failedAssets: [...failedAssets, ...(art?.failedAssets || [])],

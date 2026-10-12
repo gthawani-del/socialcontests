@@ -84,14 +84,16 @@ for (const speed of [0, .12, 1]) test(`ball creeping at ${speed} recovers within
   } finally {e.dispose();}
 });
 
-test('slow ball on top of a boot recovers without waiting to touch the pitch',async()=>{
+test('slow ball trapped over the back of a boot restarts without an unsafe impulse',async()=>{
   const e=await setup();
   try{
     const boot=e.boots.find(b=>b.id==='blue-right');
     place(e,boot.x+Math.cos(boot.rest),boot.y+Math.sin(boot.rest),0,0,.49);
     const start=e.events.length;
     step(e,90);
-    assert(e.events.slice(start).some(v=>v.type==='BALL_UNSTUCK'));
+    const recovery=e.events.slice(start).find(v=>v.type==='BALL_OUT_OF_PLAY');
+    assert.equal(recovery?.payload.reason,'trapped-ball');
+    assert.equal(recovery.actorId,'blue');
     assert.deepEqual(e.points,{blue:0,red:0});
   }finally{e.dispose();}
 });

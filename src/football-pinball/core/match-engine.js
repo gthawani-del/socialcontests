@@ -71,7 +71,7 @@ export class MatchEngine {
       this.collider(
         RAPIER.ColliderDesc.cuboid(r.hx, r.height / 2, r.hy)
           .setTranslation(r.x, r.height / 2, -r.y)
-          .setRestitution(0.85)
+          .setRestitution(this.mode === "pvp" ? .94 : .85)
           .setFriction(0),
         r,
       );
@@ -155,7 +155,7 @@ export class MatchEngine {
         t,
         body,
       );
-      return { ...t, body };
+      return { ...t, baseX: t.x, body };
     });
     this.keepers = (this.mode === "penalty" ? [1] : []).map((sign) => {
       const keeperTuning =
@@ -302,12 +302,12 @@ export class MatchEngine {
         .setTranslation(x, height, -y)
         .setLinvel(vx, vheight, -vy)
         .setCcdEnabled(true)
-        .setLinearDamping(0.02)
+        .setLinearDamping(this.mode === "pvp" ? .012 : .02)
         .setCanSleep(false),
     );
     const c = this.collider(
       RAPIER.ColliderDesc.ball(this.ballRadius)
-        .setRestitution(0.78)
+        .setRestitution(this.mode === "pvp" ? .92 : .78)
         .setFriction(0.005)
         .setDensity(1)
         .setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS),
@@ -322,6 +322,9 @@ export class MatchEngine {
       lastBootTick: -999,
       stillTicks: 0,
       incomingSpeed: Math.hypot(vx, vy),
+      controlTeam: null,
+      lastTouch: null,
+      lastKick: null,
       bootStrokes: new Map(),
     };
     this.balls.push(ball);
@@ -586,6 +589,9 @@ export class MatchEngine {
     ball.lastBootTick = this.tick;
     ball.stillTicks = 0;
     this.lastTeam = boot.team;
+    ball.reception = null;
+    ball.controlTeam = boot.team;
+    ball.lastKick = { team: boot.team, id: boot.id, tick: this.tick };
     this.award(boot.team, MODE_RULES.pvp.points.boot);
     ball.pendingBootStrike = { id: boot.id, team: boot.team };
     if (this.skill[boot.team]) { ball.superShot = true; this.skill[boot.team] = false; }
@@ -604,6 +610,20 @@ export class MatchEngine {
     this.restart = { reason, team };
     this.state = "relaunch";
     this.transitionTick = this.tick + MODE_RULES.pvp.restartTicks;
+  }
+
+  movePlayers() {
+    if (this.mode !== "pvp") return;
+    const ball = this.balls[0], p = ball?.body.translation(), v = ball?.body.linvel();
+    for (const t of this.targets.filter(t => t.type === "player")) {
+      const tuning = MODE_RULES.pvp.playerMotion[t.role];
+      const receiving = p && Math.hypot(p.x - t.x, p.z + t.y) < t.radius + this.ballRadius + .3;
+      const targetX = t.baseX + clamp((p ? p.x + v.x * .08 : 0) * tuning.tracking, -tuning.range, tuning.range);
+      // Settle for the actual reception; players cannot chase, overlap or
+      // sweep into a nearby ball with an unbounded kinematic impulse.
+      if (!receiving) t.x += clamp(targetX - t.x, -tuning.speed * P.step, tuning.speed * P.step);
+      t.body.setNextKinematicTranslation({ x: t.x, y: t.height / 2, z: -t.y });
+    }
   }
 
   moveKeepers() {
@@ -659,6 +679,13 @@ export class MatchEngine {
   }
   collision(ball, data) {
     this.emit("COLLISION", { ballId: ball.id, targetId: data.id });
+    if (ball.reception && ball.reception.id !== data.id) ball.reception = null;
+    if (this.mode === "pvp" && (data.type === "player" || this.boots.some(b => b.id === data.id))) {
+      const team = this.boots.find(b => b.id === data.id)?.team || data.team;
+      ball.lastTouch = { team, id: data.id, tick: this.tick };
+      // An opposing physical touch ends a controlled pass; rail contacts do not.
+      if (ball.controlTeam !== team) ball.controlTeam = null;
+    }
     if (
       this.mode === "arcade-rush" &&
       ["small", "advanced", "time", "multiball", "super"].includes(data.type)
@@ -737,6 +764,8 @@ export class MatchEngine {
       return;
     }
     if (data.type === "player") {
+      // Moving collider metadata uses the same current position as the renderer.
+      data = this.targets.find(t => t.id === data.id) || data;
       this.lastTeam = data.team;
       const p = ball.body.translation(), v = ball.body.linvel();
       const attack = -data.homeSign;
@@ -749,16 +778,30 @@ export class MatchEngine {
       const nx=p.x-data.x, nz=p.z+data.y, normal=Math.hypot(nx,nz)||1;
       const facing=(nx*dx+nz*dz)/(normal*length);
       const last=this.targetHits.get(data.id)??-999;
-      // Only the facing side can kick. Rear contacts remain physical rebounds.
-      if (facing >= .15 && this.tick-last >= MODE_RULES.pvp.playerKickCooldown) {
+      // Teammates receive their own passes from either side instead of firing a
+      // rear-face rebound back at their own net. Opposing rear hits still rebound.
+      const friendly = ball.controlTeam === data.team;
+      if (friendly || (facing >= .15 && this.tick-last >= MODE_RULES.pvp.playerKickCooldown)) {
+        const reward = this.tick-last >= MODE_RULES.pvp.playerKickCooldown;
         this.targetHits.set(data.id,this.tick);
         // Role speeds are floors, not brakes. Use pre-contact speed so the
         // collision solver cannot turn a strong boot shot into a weak pass.
         const speed=Math.min(P.maxSpeed, Math.max(MODE_RULES.pvp.playerKickSpeed[data.role],
           ball.incomingSpeed, Math.hypot(v.x,v.z)));
-        ball.body.setLinvel({x:dx/length*speed,y:Math.max(0,Math.min(v.y,.65)),z:dz/length*speed},true);
-        this.award(data.team,20);
-        this.emit('PLAYER_KICK',{actorId:data.team,targetId:data.id,ballId:ball.id,payload:{role:data.role,receiverId:data.role==='striker'?null:receiver?.id||null,speed}});
+        // A rear reception clears around the player's outside shoulder. Never
+        // teleport through the body or aim a pass back through its cylinder.
+        const rear = friendly && facing < .15;
+        const outX = rear ? Math.sign(nx) || Math.sign(dx) || 1 : dx / length,
+          outZ = rear ? data.homeSign * Math.min(.35, Math.abs(nx) / (Math.abs(nz) + .01) * .8) : dz / length,
+          outLength = Math.hypot(outX, outZ);
+        ball.body.setLinvel({x:outX/outLength*speed,y:Math.max(0,Math.min(v.y,.65)),z:outZ/outLength*speed},true);
+        ball.reception = rear ? { id:data.id, team:data.team, destination:{x:destination.x,z:-destination.y}, speed, until:this.tick+36 } : null;
+        ball.controlTeam = data.team;
+        ball.lastKick = { team: data.team, id: data.id, tick: this.tick };
+        if (reward) {
+          this.award(data.team,20);
+          this.emit('PLAYER_KICK',{actorId:data.team,targetId:data.id,ballId:ball.id,payload:{role:data.role,receiverId:data.role==='striker'?null:receiver?.id||null,speed,friendlyReception:friendly}});
+        }
       }
       return;
     }
@@ -840,7 +883,10 @@ export class MatchEngine {
     const team = sign > 0 ? this.bottomTeam : other(this.bottomTeam);
     this.score[team]++;
     this.award(team, 500 + (ball.superShot ? 250 : 0));
-    this.emit("GOAL_SCORED", { actorId: team, ballId: ball.id });
+    this.emit("GOAL_SCORED", { actorId: team, ballId: ball.id, payload: {
+      lastTouch: ball.lastTouch, lastKick: ball.lastKick,
+      defendingLastTouch: !!ball.lastTouch && ball.lastTouch.team !== team,
+    } });
     this.releaseInternal();
     this.removeBalls();
     if (
@@ -971,6 +1017,7 @@ export class MatchEngine {
     if (this.mode === "crash" && this.activeTicks - this.lastHitTick >= 600)
       this.charge = 0;
     this.cpu();
+    this.movePlayers();
     this.moveKeepers();
     for (const b of this.boots) {
       b.previousAngle = b.angle;
@@ -984,6 +1031,19 @@ export class MatchEngine {
     }
     for (const b of this.balls) {
       const p = b.body.translation();
+      if (b.reception) {
+        const reception=b.reception, t=this.targets.find(t=>t.id===reception.id);
+        const dx=reception.destination.x-p.x, dz=reception.destination.z-p.z, length=Math.hypot(dx,dz)||1;
+        const nx=p.x-t.x,nz=p.z+t.y,along=(nx*dx+nz*dz)/length;
+        const clearance=nx*nx+nz*nz-Math.min(0,along)**2;
+        // Complete the automatic pass once its path clears the receiving
+        // player's body. Motion up to this point is real, with no teleport.
+        if (along>=0 || clearance>(t.radius+this.ballRadius+.04)**2) {
+          const v=b.body.linvel();
+          b.body.setLinvel({x:dx/length*reception.speed,y:v.y,z:dz/length*reception.speed},true);
+          b.reception=null;
+        } else if (this.tick>=reception.until) b.reception=null;
+      }
       b.previous = { x: p.x, y: -p.z, height: p.y };
       const velocity = b.body.linvel();
       b.incomingSpeed = Math.hypot(velocity.x, velocity.z);
@@ -1029,10 +1089,20 @@ export class MatchEngine {
         // A slow ball bouncing on top of a boot never reaches the pitch's
         // height threshold. Give genuine flight longer, then free that trap.
         const recoveryTicks = p.y < this.ballRadius + .15 ? rally.recoveryTicks : rally.airRecoveryTicks;
-        if (b.stillTicks >= recoveryTicks) {
+        const outward = v.z * Math.sign(p.z),
+          crossingX = outward > .5 ? p.x + v.x * (P.goalPlane + this.ballRadius - Math.abs(p.z)) / outward : Infinity,
+          rollingIntoGoal = Math.abs(p.z) > 3.7 && outward > .5 && Math.abs(crossingX) + this.ballRadius <= P.goalHalfWidth;
+        // An already goal-bound slow shot completes under normal physics.
+        if (b.stillTicks >= recoveryTicks && !rollingIntoGoal) {
+          // Once trapped behind the boots, let the defending side receive a
+          // fresh ball. A recovery impulse here must never create an own goal.
+          if (Math.abs(p.z) > 3.7) {
+            this.restartPvp(b, p.z > 0 ? this.bottomTeam : other(this.bottomTeam), "trapped-ball");
+            break;
+          }
           const planar = Math.hypot(v.x, v.z),
             dx = planar > .05 ? v.x / planar : p.x > 0 ? -.35 : .35,
-            dz = planar > .05 ? v.z / planar : p.z > 0 ? -1 : 1,
+            dz = Math.abs(p.z) > 2.5 ? -Math.sign(p.z) : planar > .05 ? v.z / planar : p.z > 0 ? -1 : 1,
             length = Math.hypot(dx, dz);
           b.body.setLinvel({ x: dx / length * rally.recoverySpeed, y: .6,
             z: dz / length * rally.recoverySpeed }, true);

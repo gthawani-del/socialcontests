@@ -1,0 +1,181 @@
+{
+  "method": "Chromium mobile viewport, software GPU. Real CDP touch input with ball-placement fixtures and manually stepped physics, followed by an unfrozen rendered rally. Six midfield player visuals and no keeper visuals; open-goal and half-second restart assertions. No physical iPhone or speaker-quality claim.",
+  "checks": [
+    {
+      "side": "left",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": -0.4454199969768524,
+          "y": 2.200000047683716,
+          "z": -11.802882194519043
+        },
+        "minVz": -12.515660285949707
+      },
+      "released": true,
+      "event": "touchEnd"
+    },
+    {
+      "side": "right",
+      "hit": {
+        "pressed": true,
+        "moved": true,
+        "contact": true,
+        "velocity": {
+          "x": -1.5468415021896362,
+          "y": 2.200000047683716,
+          "z": -11.70995807647705
+        },
+        "minVz": -11.941253662109375
+      },
+      "released": true,
+      "event": "touchCancel"
+    },
+    {
+      "slowBallRecovery": {
+        "recovered": true,
+        "speed": 7.995200634004649
+      }
+    },
+    {
+      "outOfPlay": {
+        "state": "relaunch",
+        "restart": {
+          "reason": "goal-line",
+          "team": "red"
+        },
+        "score": {
+          "blue": 0,
+          "red": 0
+        }
+      },
+      "status": "Out of play. Opponent kickoff…"
+    },
+    {
+      "openGoal": {
+        "goals": 1,
+        "saves": 0,
+        "restartTicks": 60,
+        "restarted": true
+      }
+    },
+    {
+      "visiblePlayerMovement": {
+        "before": {
+          "player-defender--1": {
+            "x": -1.85,
+            "y": -2.35
+          },
+          "player-midfielder--1": {
+            "x": 1.25,
+            "y": -0.55
+          },
+          "player-striker--1": {
+            "x": -0.85,
+            "y": 1.85
+          },
+          "player-defender-1": {
+            "x": 1.85,
+            "y": 2.35
+          },
+          "player-midfielder-1": {
+            "x": -1.25,
+            "y": 0.55
+          },
+          "player-striker-1": {
+            "x": 0.85,
+            "y": -1.85
+          }
+        },
+        "after": {
+          "player-defender--1": {
+            "x": -1.55,
+            "y": -2.35
+          },
+          "player-midfielder--1": {
+            "x": 1.698093142509458,
+            "y": -0.55
+          },
+          "player-striker--1": {
+            "x": -0.43666666666666687,
+            "y": 1.85
+          },
+          "player-defender-1": {
+            "x": 2.1300000000000003,
+            "y": 2.35
+          },
+          "player-midfielder-1": {
+            "x": -0.7238096922636048,
+            "y": 0.55
+          },
+          "player-striker-1": {
+            "x": 1.2385284439722688,
+            "y": -1.85
+          }
+        },
+        "physics": [
+          {
+            "id": "player-defender--1",
+            "x": -1.55,
+            "y": -2.35
+          },
+          {
+            "id": "player-midfielder--1",
+            "x": 1.698093142509458,
+            "y": -0.55
+          },
+          {
+            "id": "player-striker--1",
+            "x": -0.43666666666666687,
+            "y": 1.85
+          },
+          {
+            "id": "player-defender-1",
+            "x": 2.1300000000000003,
+            "y": 2.35
+          },
+          {
+            "id": "player-midfielder-1",
+            "x": -0.7238096922636048,
+            "y": 0.55
+          },
+          {
+            "id": "player-striker-1",
+            "x": 1.2385284439722688,
+            "y": -1.85
+          }
+        ],
+        "moved": [
+          "player-defender--1",
+          "player-midfielder--1",
+          "player-striker--1",
+          "player-defender-1",
+          "player-midfielder-1",
+          "player-striker-1"
+        ]
+      }
+    },
+    {
+      "unfrozenRenderedRally": {
+        "ticks": 677,
+        "balls": [
+          {
+            "id": "ball-3",
+            "x": -0.1306236833333969,
+            "y": -3.7592504024505615,
+            "height": 0.1488097608089447,
+            "vx": 6.407323837280273,
+            "vy": 9.223840713500977,
+            "vheight": 0,
+            "radius": 0.15
+          }
+        ],
+        "state": "active"
+      }
+    }
+  ],
+  "errors": [],
+  "failedRequests": []
+}

@@ -1,5 +1,5 @@
 import { BOOTS, RAILS } from "./foundation.js";
-export const RULE_VERSION = "football-3d-11";
+export const RULE_VERSION = "football-3d-12";
 export const PHYSICS = Object.freeze({
   hz: 120,
   step: 1 / 120,
@@ -23,12 +23,17 @@ export const MODE_RULES = {
     ballRadius: 0.15,
     maxBallLift: 2.2,
     bootShot: { minSpeed: 10, maxSpeed: 14, lift: 2.2, strokeTicks: 8 },
-    rally: { slowSpeed: 2.5, recoveryTicks: 42, airRecoveryTicks: 84, recoverySpeed: 6 },
+    rally: { slowSpeed: 4, recoveryTicks: 42, airRecoveryTicks: 84, recoverySpeed: 8 },
     tableSlope: .9,
-    kickoff: { minOffset: .7, maxOffset: 1.5, speed: 6, lateralSpeed: .2 },
+    kickoff: { minOffset: .7, maxOffset: 1.5, speed: 8, lateralSpeed: .2 },
     restartTicks: 60,
     playerKickCooldown: 90,
-    playerKickSpeed: { defender: 8, midfielder: 9, striker: 11 },
+    playerKickSpeed: { defender: 10, midfielder: 11, striker: 13 },
+    playerMotion: {
+      defender: { range: .3, speed: 1.2, tracking: .4 },
+      midfielder: { range: .65, speed: 1.5, tracking: .6 },
+      striker: { range: .5, speed: 1.3, tracking: .5 },
+    },
     cpu: { holdTicks: 12, returnTicks: 12, reactionTicks: { easy: 36, medium: 20, hard: 10 } },
     quickGoals: 3,
     halfTicks: 14400,
@@ -243,12 +248,12 @@ export function geometryFor(mode) {
           : mode === "pvp"
             ? [
                 ...[-1, 1].flatMap(homeSign => [
-                  {role:'defender',x:homeSign*.85,y:homeSign*2.35},
+                  {role:'defender',x:homeSign*1.85,y:homeSign*2.35},
                   {role:'midfielder',x:-homeSign*1.25,y:homeSign*.55},
                   {role:'striker',x:homeSign*.85,y:-homeSign*1.85},
                 ].map(position => ({
                   ...position,id:`player-${position.role}-${homeSign}`,type:'player',
-                  homeSign,team:homeSign<0?'blue':'red',radius:.38,height:1.45,
+                  homeSign,team:homeSign<0?'blue':'red',radius:.38,height:1.45,moving:true,
                 }))),
                 {
                   id: "skill",
