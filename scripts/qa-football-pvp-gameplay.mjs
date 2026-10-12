@@ -13,6 +13,7 @@ try{
  await page.addInitScript(()=>sessionStorage.setItem('infinite-pinball-demo-access','granted'));
  await page.goto('http://127.0.0.1:5217/football-pinball/?mode=pvp&qa');await page.waitForFunction(()=>window.__football);
  await page.evaluate(()=>{window.__draw=window.__football.view.draw;window.__football.view.draw=()=>{};});
+ await page.selectOption('select[name=format]','classic');
  await page.click('#fp-enter-board');await page.click('#fp-serve');
  await page.waitForFunction(()=>['countdown','active'].includes(window.__football.snapshot().state)||(!document.querySelector('#fp-toss-choices').hidden&&!document.querySelector('#fp-toss').hidden));
  if(await page.locator('#fp-toss-choices').isVisible())await page.click('[data-choice=kickoff]');
@@ -60,6 +61,16 @@ try{
   for(let i=0;i<60;i++)e.step();
   result.restarted=e.state==='active'&&e.balls.length===1;return result;
  });assert.equal(goal.goals,1);assert.equal(goal.saves,0);assert.equal(goal.restartTicks,60);assert(goal.restarted);checks.push({openGoal:goal});
+ const movement=await page.evaluate(()=>{
+  const f=window.__football,e=f.engine;window.__draw(f.snapshot());const before=f.view.metrics().playerPositions;
+  for(let i=0;i<240;i++)e.step();window.__draw(f.snapshot());
+  const after=f.view.metrics().playerPositions;
+  return {before,after,physics:e.snapshot().targets.filter(t=>t.type==='player').map(t=>({id:t.id,x:t.x,y:t.y})),
+   moved:Object.keys(before).filter(id=>Math.abs(before[id].x-after[id].x)>.005)};
+ });assert(movement.moved.length>=4,'visible players must change position');
+ for(const p of movement.physics){assert(Math.abs(movement.after[p.id].x-p.x)<1e-6);assert.equal(movement.after[p.id].y,p.y);}
+ checks.push({visiblePlayerMovement:movement});
+ await page.evaluate(()=>{const e=window.__football.engine;while(e.state==='relaunch')e.step();});
  for(const width of [390,430]){
   await page.setViewportSize({width,height:width===390?844:932});
   await page.evaluate(()=>{window.__football.view.setQuality('high');window.__draw(window.__football.snapshot());});

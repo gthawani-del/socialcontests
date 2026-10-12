@@ -130,7 +130,9 @@ test("seeded canonical PvP input runs repeat exactly", async () => {
   try {
     for (const e of [a, b]) {
       const boot = e.boots.find((v) => v.team === "red");
-      place(e, { x: boot.x + 0.7, y: boot.y - Math.sign(boot.y) * 0.7 });
+      const spin = Math.sign(boot.active-boot.rest), nx = -Math.sin(boot.rest)*spin, ny = Math.cos(boot.rest)*spin;
+      place(e, { x: boot.x+Math.cos(boot.rest)*.95+nx*1.3,
+        y: boot.y+Math.sin(boot.rest)*.95+ny*1.3, vx:-nx*4, vy:-ny*4 });
     }
     steps(a, 2400);
     steps(b, 2400);
