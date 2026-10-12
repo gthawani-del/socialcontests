@@ -21,7 +21,7 @@ export function createStadiumFielders(scene, table) {
     const ctx=canvas.getContext('2d');ctx.fillStyle='#071622';ctx.fillRect(0,0,256,64);ctx.fillStyle='#ffe0a1';ctx.font='bold 26px Arial';ctx.textAlign='center';ctx.fillText(f.label,128,42);
     const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
     const label=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,depthWrite:false}));label.position.set(0,.40,0);label.scale.set(.34,.085,1);group.add(label);
-    figures.set(f.id,{arms,ring,elapsed:Infinity});
+    figures.set(f.id,{group,config:f,arms,ring,canvas,ctx,texture,labelText:f.label,elapsed:Infinity});
   }
   return {
     handle(event) {
@@ -32,6 +32,12 @@ export function createStadiumFielders(scene, table) {
     },
     update(dt) {
       for(const f of figures.values()) {
+        f.group.position.set(f.config.x,0,f.config.z);
+        const labelText=table.fieldingSlots?.find(slot=>slot.id===f.config.slotId)?.label || f.config.label;
+        if(labelText!==f.labelText){
+          f.ctx.fillStyle='#071622';f.ctx.fillRect(0,0,256,64);f.ctx.fillStyle='#ffe0a1';f.ctx.fillText(labelText,128,42);
+          f.texture.needsUpdate=true;f.labelText=labelText;
+        }
         f.elapsed+=dt;const active=f.elapsed<1.35;
         f.arms.position.y=active?.27:.20;
         f.ring.material.color.set(active?'#ff795c':'#efbe62');

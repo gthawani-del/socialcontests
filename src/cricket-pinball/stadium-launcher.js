@@ -4,7 +4,6 @@ import * as THREE from 'three';
 export function createStadiumLauncher(scene, table, model) {
   const group = new THREE.Group(); group.name = 'Integrated_Shooter_Lane'; scene.add(group);
   const gold = new THREE.MeshStandardMaterial({color:'#bc995d',metalness:.65,roughness:.32});
-  const steel = new THREE.MeshStandardMaterial({color:'#b9c7d2',metalness:.45,roughness:.38,emissive:'#32495a',emissiveIntensity:.35});
   const navy = new THREE.MeshStandardMaterial({color:'#07111b',metalness:.15,roughness:.65});
   const path = table.launcher.launchPath;
   // Cut a real channel through decorative seating, rather than drawing a lever over it.
@@ -42,11 +41,18 @@ export function createStadiumLauncher(scene, table, model) {
   group.add(new THREE.Mesh(geometry,navy));
   for(const edge of edges) group.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(edge),120,.014,6,false),gold));
   const mechanism = new THREE.Group(); mechanism.position.set(path[0].x,.24,path[0].z);group.add(mechanism);
-  const rod=new THREE.Mesh(new THREE.CylinderGeometry(.022,.022,.38,12),steel);rod.rotation.x=Math.PI/2;rod.position.z=.22;mechanism.add(rod);
   const handleMaterial=new THREE.MeshStandardMaterial({color:'#f3e2b1',metalness:.18,roughness:.45,emissive:'#d3ad59',emissiveIntensity:0});
   const knob=new THREE.Mesh(new THREE.CylinderGeometry(.092,.092,.07,24),handleMaterial);knob.rotation.x=Math.PI/2;mechanism.add(knob);
-  const spring=[];
-  for(let i=0;i<12;i++) {const ring=new THREE.Mesh(new THREE.TorusGeometry(.048,.01,6,16),steel);mechanism.add(ring);spring.push(ring);}
+  // The spring and shaft ARE the power scale. Each physical section has its
+  // own material so charging lights the mechanism itself, not a strip below it.
+  const spring=[], shaft=[];
+  const powerColors=['#e4bb3f','#55b866','#ef665b'].map(color=>new THREE.Color(color));
+  for(let i=0;i<12;i++) {
+    const material=new THREE.MeshStandardMaterial({metalness:.2,roughness:.42});
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(.048,.013,8,20),material);
+    const rod=new THREE.Mesh(new THREE.CylinderGeometry(.024,.024,1,12),material);
+    rod.rotation.x=Math.PI/2;mechanism.add(ring,rod);spring.push(ring);shaft.push(rod);
+  }
   const tip=new THREE.Mesh(new THREE.CylinderGeometry(.061,.061,.035,16),gold);tip.rotation.x=Math.PI/2;mechanism.add(tip);
   // Contrast and physical movement identify the control; no idle glow or halo.
   const housing=new THREE.Mesh(new THREE.BoxGeometry(.24,.055,.40),navy);
@@ -54,13 +60,6 @@ export function createStadiumLauncher(scene, table, model) {
   const gripMaterial=new THREE.MeshStandardMaterial({color:'#152633',roughness:.8});
   const grip=new THREE.Mesh(new THREE.TorusGeometry(.093,.012,6,24),gripMaterial);
   grip.rotation.x=Math.PI/2;knob.add(grip);
-  // Coloured bands are part of the lever housing, not a second HUD meter.
-  const scale = new THREE.Group(); mechanism.add(scale);
-  const bandMaterials = ['#e4bb3f','#55b866','#ef665b'].map(color => new THREE.MeshBasicMaterial({color}));
-  const segments = Array.from({length:20}, (_,i) => {
-    const segment = new THREE.Mesh(new THREE.BoxGeometry(.055,.016,.011),bandMaterials[0]);
-    segment.position.set(.115,-.048,.332+i*.012);scale.add(segment);return segment;
-  });
   let glow=0;
   const world=new THREE.Vector3();
   return {
@@ -70,10 +69,19 @@ export function createStadiumLauncher(scene, table, model) {
       glow=active && state.dragging ? .12+state.pull*.18 : 0;
       handleMaterial.emissiveIntensity=glow;
       const pull=state.pull;knob.position.z=.32+pull*.24;tip.position.z=.08+pull*.24;
-      segments.forEach((segment,i)=>{const power=.24+i/19*.76;segment.material=bandMaterials[power>(state.band?.red??.9)?2:power<(state.band?.low??.5)?0:1];});
-      scale.visible=state.visible;
       knob.scale.setScalar(active?1.2:1);
-      spring.forEach((ring,i)=>{ring.position.z=.11+i*(.18+pull*.23)/11;});
+      const travel=.18+pull*.23, power=.2+.8*pull;
+      spring.forEach((ring,i)=>{
+        const threshold=.24+i/11*.76;
+        const color=powerColors[threshold>(state.band?.red??.9)?2:threshold<(state.band?.low??.5)?0:1];
+        const charged=state.visible && threshold<=power;
+        ring.material.color.copy(color).multiplyScalar(charged?1:.4);
+        ring.material.emissive.copy(color);
+        ring.material.emissiveIntensity=charged?.45:0;
+        ring.position.z=.11+i*travel/11;
+        shaft[i].position.z=.11+(i+.5)*travel/12;
+        shaft[i].scale.y=travel/12;
+      });
       // Keep the mechanism visible as table artwork; only the invisible hit area
       // changes ownership. No screen-space lever is drawn over the playfield.
       const size=viewport.getBoundingClientRect();

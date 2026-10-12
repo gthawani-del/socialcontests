@@ -79,7 +79,7 @@ if(process.env.QA_LOW_GRAPHICS)await page.addInitScript(()=>{localStorage.setIte
     await capture({path:`docs/qa/stadium-${label}-route${suffix}.png`});
   }
   await page.setViewportSize({width:390,height:844});
-  await page.locator('#lengthPicker').click();await page.locator('[data-zone-line="LEFT"][data-zone-length="GOOD"]').click();await page.locator('#closeLength').click();
+  await page.locator('#movementPicker').click();await page.locator('#lengthPicker').click();await page.locator('[data-zone-line="LEFT"][data-zone-length="GOOD"]').click();await page.locator('#closeLength').click();
   await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
   const handle = await page.locator('.plunger-handle').boundingBox();
   await page.mouse.move(handle.x + handle.width/2, handle.y + handle.height/2);

@@ -111,8 +111,19 @@ export function createStadiumTable(base) {
   table.launcher.deliveryTypes.FLIGHTED = {...table.launcher.deliveryTypes.PACE,speedMultiplier:.78};
   table.launcher.deliveryTypes.FLIPPER = {...table.launcher.deliveryTypes.PACE,speedMultiplier:1.1};
   table.fielders = [
-    {id:'cover', label:'COVER', x:-.85, z:-.65, radius:.14, reach:.65},
-    {id:'midwicket', label:'MIDWICKET', x:.85, z:-.65, radius:.14, reach:.65}
+    {id:'cover', label:'COVER', x:-.85, z:-.65, radius:.14, reach:.36},
+    {id:'midwicket', label:'MIDWICKET', x:.85, z:-.65, radius:.14, reach:.36}
   ];
+  table.fieldingSlots = [
+    {id:'cover',label:'Cover',x:-.85,z:-.65},
+    {id:'midwicket',label:'Midwicket',x:.85,z:-.65},
+    {id:'deep-cover',label:'Deep cover',x:-1.0,z:-1.25},
+    {id:'deep-midwicket',label:'Deep midwicket',x:1.0,z:-1.25},
+    {id:'point',label:'Point',x:-1.15,z:.15},
+    {id:'square-leg',label:'Square leg',x:1.15,z:.15},
+    {id:'mid-off',label:'Mid off',x:-.38,z:-.85},
+    {id:'mid-on',label:'Mid on',x:.38,z:-.85}
+  ];
+  table.boundary = {radiusX:3.55*STADIUM_SCALE,radiusZ:6.25*STADIUM_SCALE,maxZ:1.2};
   return table;
 }

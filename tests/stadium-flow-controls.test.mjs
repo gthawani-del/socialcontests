@@ -10,7 +10,7 @@ function fixture(practice){
  globalThis.document={querySelector:selector=>element(selector.slice(1)),createElement:()=>element('matchPanel')};
  globalThis.location={search:'?format=ONE_OVER'};
  globalThis.setTimeout=fn=>{timers.set(++timerId,fn);return timerId;};globalThis.clearTimeout=id=>timers.delete(id);
- const engine={simTime:0,flippers:new Map(['left','right'].map(side=>[side,{pressed:false}])),on:()=>()=>{},resetBall(){},setDifficulty(){},setFlipper(side,pressed){this.flippers.get(side).pressed=pressed;},releaseLaunch(selection){this.lastLaunch=selection;},updateFlippers(){}};
+ const engine={simTime:0,fieldResets:0,resetFieldPositions(){this.fieldResets++;},shotMode:'GROUND',flippers:new Map(['left','right'].map(side=>[side,{pressed:false}])),on:()=>()=>{},resetBall(){},setDifficulty(){},setFlipper(side,pressed){this.flippers.get(side).pressed=pressed;},releaseLaunch(selection){this.lastLaunch=selection;},updateFlippers(){}};
  const events=[];
  const rules={maxWickets:2,superOver:{enabled:false,ballsPerInnings:3},cpu:{},delivery:{cpuPlungerMs:10,cpuDeliveryDelayMs:10},toss:{}};
  const flow=createStadiumMatch({engine,table:{physics:{maxFrameDelta:.05,fixedStep:1/120}},rules,render(){},onReset(){},onFeedback:event=>events.push(event),practice});
@@ -20,11 +20,12 @@ function fixture(practice){
 
 test('bowling practice requires bowler confirmation, blocks player bats, respects length and legal deliveries',()=>{
  const f=fixture('bowl');try{
+  assert.equal(f.engine.fieldResets,1,'new innings starts with default field');
   assert.equal(f.flow.launch(),false);assert.equal(f.element('bowl').disabled,true);
   f.flow.bat('left',true);assert.equal(f.engine.flippers.get('left').pressed,false);
   f.element('confirmBowler').onclick();assert.equal(f.element('bowl').disabled,false);
   f.element('line').value='CENTRE';f.element('length').value='SHORT';f.element('deliveryType').value='SPIN_LEFT';f.element('power').value='70';
-  assert.equal(f.flow.launch(),true);assert.equal(f.engine.lastLaunch.length,'SHORT');
+  assert.equal(f.flow.launch(),true);assert.equal(f.engine.fieldResets,1,'delivery launch preserves chosen field');assert.equal(f.engine.lastLaunch.length,'SHORT');
   assert.equal(f.engine.lastLaunch.bowler,'MEDIUM');assert(BOWLERS.MEDIUM.types.includes(f.engine.lastLaunch.deliveryType));
   assert.equal(f.element('length').disabled,true);assert.equal(f.flow.launch(),false);
   f.flow.reset();assert.equal(f.flow.launch(),false);assert.equal(f.timers.size,0);
@@ -42,7 +43,8 @@ test('batting practice uses CPU bowling and disables bats after the sixth delive
  const f=fixture('bat');try{
   assert.equal(f.flow.match.battingPlayerId,'player');assert.equal(f.element('bowl').disabled,true);assert.equal(f.element('length').disabled,true);
   f.flow.bat('left',true);assert.equal(f.engine.flippers.get('left').pressed,true);
-  assert.equal(f.flow.launch(),true);assert(BOWLERS[f.flow.bowler].types.includes(f.engine.lastLaunch.deliveryType));
+  f.engine.shotMode='LOFT';
+  assert.equal(f.flow.launch(),true);assert.equal(f.engine.deliveryShotMode,'LOFT','intent committed at launch');assert(BOWLERS[f.flow.bowler].types.includes(f.engine.lastLaunch.deliveryType));
   f.flow.match.resolveDelivery('DOT');for(let i=1;i<6;i++){f.flow.match.beginDelivery({});f.flow.match.resolveDelivery('DOT');}
   f.flow.bat('left',false);f.flow.bat('left',true);assert.equal(f.engine.flippers.get('left').pressed,false);assert.equal(f.flow.launch(),false);
  }finally{f.restore();}

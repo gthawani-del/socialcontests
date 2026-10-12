@@ -285,7 +285,9 @@ export class PinballEngine {
     this.resolveLauncherLane();
     this.resolveDeliveryGuide();
 
+    if (this.beforeTableCollisions?.() === false || !this.ball.active) return;
     for (const wall of this.config.walls) {
+      if (this.shouldCollideWithWall?.(wall) === false) continue;
       const hit = this.resolveSegmentCollision(
         wall.a,
         wall.b,

@@ -6,18 +6,27 @@ import {CricketMatchEngine} from '../../src/cricket-pinball/match/match-engine.j
 import {createCricketGameplayAdapter} from '../../src/cricket-pinball/game/gameplay-adapter.js';
 const rules=JSON.parse(fs.readFileSync(new URL('../../public/game/cricket-rules.json',import.meta.url)));
 const base=JSON.parse(fs.readFileSync(new URL('../../public/game/cricket-table.json',import.meta.url)));
-export function simulate({difficulty='MEDIUM',line='CENTRE',power=.6,type='PACE',bowler,length,seed=1,config=rules.cpu}={}) {
+export function simulate({difficulty='MEDIUM',line='CENTRE',power=.6,type='PACE',bowler,length,seed=1,config=rules.cpu,trace=false,frameHz=60,repeats=0}={}) {
  let n=seed;const random=()=>((n=(Math.imul(n,1664525)+1013904223)>>>0)/4294967296);
  for(let i=0;i<32;i++)random();
- const table=createStadiumTable(base),engine=new StadiumEngine(table);
+ const table=createStadiumTable(base),engine=new StadiumEngine(table,{random});
  engine.setDifficulty(difficulty,rules.difficultyGameplay[difficulty]);
  const cpu=createCpuBattingAI({engine,tableConfig:table,difficulty,cpuConfig:config,random});
  const match=new CricketMatchEngine({format:'ONE_OVER',difficulty,players:[{id:'player'},{id:'cpu'}],maxWickets:2});
  match.assignRoles({battingPlayerId:'cpu',bowlingPlayerId:'player'});match.startInnings();
- let result=null,hits=0;engine.on('flipper-hit',()=>hits++);
+ let result=null,hits=0,events=[];engine.on('flipper-hit',e=>{hits++;if(trace)events.push({kind:'hit',...e,height:engine.ball.height});});
  const adapter=createCricketGameplayAdapter({engine,matchEngine:match,tableConfig:table,cricketRules:rules,random,onResolved:(outcome,m)=>result={outcome,reason:m.reason},onDeadBall:()=>result={outcome:'DEAD'}});
  const selection={line,power,type,...(bowler?{bowler}:{}),...(length?{length}:{})};
- cpu.observeDelivery(selection);match.beginDelivery(selection);adapter.armDelivery();engine.releaseLaunch({...selection,charge:power,deliveryType:type});
- for(let i=0;i<1800&&!result;i++) {cpu.update(engine.simTime*1000,true);adapter.step(1/120);}
- adapter.dispose();return {...(result||{outcome:'UNRESOLVED'}),hits};
+ for(let repeat=0;repeat<=repeats;repeat++)cpu.observeDelivery(selection);match.beginDelivery(selection);adapter.armDelivery();engine.releaseLaunch({...selection,charge:power,deliveryType:type});
+ // Match the production accumulator: CPU decisions run at fixed physics
+ // frequency even when rendering only runs at 30 Hz.
+ let accumulator=0;
+ for(let frame=0;frame<15*frameHz&&!result;frame++) {
+  accumulator+=Math.min(1/frameHz,table.physics.maxFrameDelta);
+  while(accumulator>=table.physics.fixedStep&&!result) {
+   cpu.update(engine.simTime*1000,true);adapter.step(table.physics.fixedStep);
+   accumulator-=table.physics.fixedStep;
+  }
+ }
+ adapter.dispose();return {...(result||{outcome:'UNRESOLVED'}),hits,...(trace?{events}:{})};
 }

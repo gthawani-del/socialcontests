@@ -142,11 +142,45 @@ try {
   const presentation = createMatchPresentation({app,getFlow:()=>flow,audio:sound});
   const controlsRoot = document.querySelector('.controls');
   const deliveryBrief=document.createElement('p');deliveryBrief.id='deliveryBrief';deliveryBrief.hidden=true;controlsRoot.prepend(deliveryBrief);
+  let canEditField=false, fieldEditing=false, selectedFielder=null;
+  const fieldEditor=document.createElement('div');fieldEditor.id='fieldEditor';fieldEditor.hidden=true;
+  fieldEditor.innerHTML='<div class="field-editor-toolbar"><span id="fieldHint">Choose a fielder</span><button type="button" id="defaultField">Reset</button><button type="button" id="closeField">Done</button></div><div class="field-position-pins" aria-hidden="true"></div><div class="field-position-buttons" role="group" aria-label="Field positions"></div>';
+  viewport.append(fieldEditor);
+  const shotChoice=document.createElement('div');shotChoice.id='shotChoice';shotChoice.hidden=true;
+  shotChoice.innerHTML='<span>SHOT</span><button type="button" data-shot="GROUND" aria-pressed="true">Ground</button><button type="button" data-shot="LOFT" aria-pressed="false">Loft · risk catch</button>';
+  viewport.append(shotChoice);
+  let canChooseShot=false;
+  shotChoice.querySelectorAll('button').forEach(button=>button.onclick=()=>{if(!canChooseShot)return;engine.shotMode=button.dataset.shot;shotChoice.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));});
+  function closeField(){fieldEditing=false;selectedFielder=null;fieldEditor.hidden=true;app.classList.remove('field-editing');}
+  function fieldButtons(){
+    const root=fieldEditor.querySelector('.field-position-buttons'),pins=fieldEditor.querySelector('.field-position-pins');root.replaceChildren();pins.replaceChildren();root.classList.toggle('slot-sheet',Boolean(selectedFielder));
+    const choices=selectedFielder ? table.fieldingSlots || [] : table.fielders || [];
+    fieldEditor.querySelector('#fieldHint').textContent=selectedFielder?'Choose a numbered position':'Choose a fielder';
+    for(const [index,choice] of choices.entries()){
+      if(selectedFielder){const pin=document.createElement('span');pin.dataset.pinId=choice.id;pin.textContent=index+1;pins.append(pin);}
+      const button=document.createElement('button');button.type='button';button.textContent=selectedFielder?`${index+1} · ${choice.label}`:(table.fieldingSlots?.find(slot=>slot.id===choice.slotId)?.label || choice.label);button.dataset.positionId=choice.id;
+      const occupied=selectedFielder && table.fielders.some(f=>f.id!==selectedFielder && Math.hypot(f.x-choice.x,f.z-choice.z)<.3);
+      button.disabled=Boolean(occupied);button.onclick=()=>{if(!canEditField)return;if(!selectedFielder){selectedFielder=choice.id;fieldButtons();}else if(engine.setFieldPosition(selectedFielder,choice.id)){selectedFielder=null;bowlingUi.setFieldLabel(true);fieldButtons();}};root.append(button);
+    }
+    positionFieldButtons();
+  }
+  function positionFieldButtons(){
+    if(!fieldEditing)return;
+    const choices=selectedFielder ? table.fieldingSlots || [] : table.fielders || [];
+    for(const button of fieldEditor.querySelectorAll(selectedFielder?'[data-pin-id]':'[data-position-id]')){
+      const choice=choices.find(c=>c.id===(button.dataset.pinId || button.dataset.positionId));if(!choice)continue;
+      const point=new THREE.Vector3(choice.x,.12,choice.z).project(camera);
+      button.style.left=`${(point.x+1)*50}%`;button.style.top=`${(1-point.y)*50}%`;
+    }
+  }
+  fieldEditor.querySelector('#closeField').onclick=closeField;
+  fieldEditor.querySelector('#defaultField').onclick=()=>{if(canEditField){engine.resetFieldPositions();selectedFielder=null;bowlingUi.setFieldLabel(false);fieldButtons();}};
   const bowlingUi = createBowlingPlunger({
     app,
     viewport,
     controls: controlsRoot,
     cpuPullMs: Math.max(300, Number(rules.delivery.cpuPlungerMs ?? 920) - 220),
+    onFieldEdit: () => {if(canEditField){fieldEditing=true;fieldEditor.hidden=false;app.classList.add('field-editing');selectedFielder=null;fieldButtons();}},
     onInteraction: event => coach.handle(event),
     onRelease: selection => flow?.launch(selection),
     onSelectionChange: selection => {
@@ -161,6 +195,8 @@ try {
 
   const gameplayFeedback = event => {
     fielders.handle(event);
+    if(event.type==='FIELD_RESET')bowlingUi.setFieldLabel(false);
+    if(event.type==='MATCH_RESET'){closeField();engine.resetFieldPositions();engine.shotMode='GROUND';bowlingUi.setFieldLabel(false);shotChoice.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shot==='GROUND')));}
     coach.handle(event);
     atmosphere.handle(event);
     feedback.handle(event);
@@ -178,6 +214,11 @@ try {
     } else if (event?.type === 'CONTROL_STATE') {
       deliveryBrief.hidden=!event.humanBatting;
       const inningsActive = Number(event.match?.innings || 0) > 0;
+      canEditField=inningsActive && !event.humanBatting && event.ready && !event.running && !event.paused;
+      if(!canEditField)closeField();
+      canChooseShot=inningsActive && event.humanBatting && !event.running && !event.paused;
+      shotChoice.hidden=!inningsActive || !event.humanBatting;
+      shotChoice.querySelectorAll('button').forEach(b=>b.disabled=!canChooseShot);
       bowlingUi.setState({
         visible: inningsActive,
         interactive: inningsActive && !event.humanBatting && event.ready && !event.running && !event.paused,
@@ -198,6 +239,16 @@ try {
       updateBowlingGuide(event.selection || {}, false);
     }
   };
+  const aimRay=new THREE.Raycaster(),aimPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+  renderer.domElement.addEventListener('pointerup',event=>{
+    if(!canEditField || fieldEditing)return;
+    const rect=renderer.domElement.getBoundingClientRect();
+    aimRay.setFromCamera(new THREE.Vector2((event.clientX-rect.left)/rect.width*2-1,1-(event.clientY-rect.top)/rect.height*2),camera);
+    const hit=aimRay.ray.intersectPlane(aimPlane,new THREE.Vector3());
+    if(!hit || Math.abs(hit.x)>.58 || hit.z<.8 || hit.z>2.08)return;
+    const length=Object.keys(LENGTHS).reduce((a,b)=>Math.abs(hit.z-LENGTHS[a].bounceZ)<Math.abs(hit.z-LENGTHS[b].bounceZ)?a:b);
+    bowlingUi.setAim(hit.x<-.12?'LEFT':hit.x>.12?'RIGHT':'CENTRE',length);
+  });
   const bats = art.bats;
   const batching = batchStadium(model, bats);
   if (!bats.left || !bats.right) throw new Error('Stadium bat meshes are missing');
@@ -228,7 +279,7 @@ try {
   renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();flow.setPaused(true,'context');interruption.hidden=false;interruption.innerHTML='<strong>Graphics interrupted</strong><p>Reload to start a new match.</p><button type="button" id="reloadGame">Reload game</button>';interruption.querySelector('button').onclick=()=>location.reload();});
   const details=app.querySelector('#matchDetails');
   const help=document.createElement('button');help.type='button';help.id='replayCoach';help.textContent='Replay playing guide';help.onclick=()=>{details.close();coach.replay();};details.append(help);
-  const guidance=document.createElement('p');guidance.className='pause-note';guidance.textContent='Shot placement: each bat sends the ball from its own side. Contact position and swing timing change the return angle. Mistimed attacking shots lift the ball: a blue fielder catching it before a bounce is out. Ground shots reaching fielders are dot balls. Use practice to learn the scoring targets.';details.append(guidance);
+  const guidance=document.createElement('p');guidance.className='pause-note';guidance.textContent='Shot placement: each bat sends the ball from its own side. Contact position and swing timing change the return angle. Choose Ground for a safe low shot or Loft to clear the boundary for six. A blue fielder catching a loft before its first bounce after bat contact is out. Ground shots reaching fielders are dot balls. Use practice to learn the scoring targets.';details.append(guidance);
   const practiceLinks=document.createElement('p');practiceLinks.className='practice-links';practiceLinks.innerHTML='<a href="/cricket-pinball/play/?practice=bat">Practise batting</a><a href="/cricket-pinball/play/?practice=bowl">Practise bowling</a>';details.append(practiceLinks);
   let qualitySetting='auto',quality='high',slowFrames=0;
   try{const saved=localStorage.getItem('cricket-quality');if(['auto','high','low'].includes(saved))qualitySetting=saved;}catch{}
@@ -251,6 +302,7 @@ try {
     groundShadow.position.set(engine.ball.position.x,.012,engine.ball.position.z);
     art.update(engine);
     shooterArt.update(bowlingUi.getState(), camera, viewport, viewport.querySelector('#pinballPlunger'));
+    positionFieldButtons();
     composer.render();
   }
   function resize() {
@@ -276,9 +328,10 @@ try {
   requestAnimationFrame(frame);
   // Development-only evidence hook: browser tests still use real controls to launch/hit.
   if (import.meta.env.DEV) window.__stadiumQA = {
+    project: (x,z) => {const point=new THREE.Vector3(x,0,z).project(camera),rect=viewport.getBoundingClientRect();return {x:rect.left+(point.x+1)*rect.width/2,y:rect.top+(1-point.y)*rect.height/2};},
     ready: true, materials: materialStatus, art: art.stats, batching, manual: value => { manual = value; },
     step: (count, draw = true) => { for (let i = 0; i < count; i++) flow.step(1 / 120); if (draw) render(); },
-    snapshot: () => ({ bowling:bowlingUi.getSelection(), quality, atmosphere:atmosphere.getState(), rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, accuracy:engine.deliveryVariation?.accuracy, ball: { ...engine.ball.position, height: engine.ball.height, verticalVelocity:engine.verticalVelocity, velocity:{...engine.ball.velocity}, bounced:engine.deliveryVariation?.bounced, deliveryType:engine.deliveryVariation?.type }, score: { ...flow.match.currentInnings },
+    snapshot: () => ({ fielders:table.fielders.map(f=>({...f})),shotMode:engine.shotMode,bowling:bowlingUi.getSelection(), quality, atmosphere:atmosphere.getState(), rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, accuracy:engine.deliveryVariation?.accuracy, ball: { ...engine.ball.position, height: engine.ball.height, verticalVelocity:engine.verticalVelocity, velocity:{...engine.ball.velocity}, bounced:engine.deliveryVariation?.bounced, deliveryType:engine.deliveryVariation?.type }, score: { ...flow.match.currentInnings },
       flippers: [...engine.flippers].map(([id,s]) => ({id, pressed:s.pressed, angle:s.angle})),
       alignment: ['left', 'right'].map(side => {
         const state = engine.flippers.get(side), cfg = state.config, centre = bats[side].getWorldPosition(new THREE.Vector3());

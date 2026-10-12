@@ -19,21 +19,20 @@ export function createBowlingPlunger({
   onRelease = () => {},
   onInteraction = () => {},
   onSelectionChange = () => {},
+  onFieldEdit = () => {},
   cpuPullMs = 720
 } = {}) {
   const consoleEl = document.createElement('section');
   consoleEl.id = 'bowlingConsole';
   consoleEl.hidden = true;
   consoleEl.innerHTML = `
-    <div class="compact-bowling-dock">
-      <button type="button" id="lengthPicker" aria-label="Choose landing position" aria-expanded="false" aria-controls="lengthOptions"></button>
-      <button type="button" id="movementPicker" aria-label="Choose delivery" aria-expanded="false" aria-controls="deliveryOptions"></button>
-    </div>
+    <div class="quick-deliveries" role="group" aria-label="Delivery type">${Object.entries(DELIVERY_LABELS).map(([type,label])=>`<button type="button" data-quick-type="${type}">${label}</button>`).join('')}</div>
+    <div class="compact-bowling-dock"><span id="aimSummary">Tap pitch to aim</span><button type="button" id="movementPicker" aria-expanded="false" aria-controls="deliveryOptions">Tactics</button></div>
     <div id="lengthOptions" hidden role="dialog" aria-modal="true" aria-label="Landing position"><div class="delivery-heading"><strong>Place your delivery</strong><button type="button" id="closeLength">Done</button></div>
       <div class="landing-axis"><span></span><span>Left</span><span>Centre</span><span>Right</span></div>
       <div class="landing-editor"><div class="landing-labels"><span>Short</span><span>Good</span><span>Full</span></div><div class="landing-grid" role="group" aria-label="Line and length">${['SHORT','GOOD','FULL'].map(length=>['LEFT','CENTRE','RIGHT'].map(line=>`<button type="button" data-zone-line="${line}" data-zone-length="${length}" aria-label="${line.toLowerCase()}, ${length.toLowerCase()} length"></button>`).join('')).join('')}</div></div>
       <p id="landingReadout" aria-live="polite"></p><p class="landing-help">Tap or drag to set line and length</p></div>
-    <div id="deliveryOptions" hidden role="dialog" aria-modal="true" aria-label="Choose delivery"><div class="delivery-heading"><strong id="bowlerName">Medium pace</strong><button type="button" id="closeDelivery">Done</button></div><div class="delivery-grid">${Object.entries(DELIVERY_LABELS).map(([type,label])=>`<button type="button" data-type="${type}">${deliveryIcon(type)}<span>${label}</span></button>`).join('')}</div></div>`;
+    <div id="deliveryOptions" hidden role="dialog" aria-modal="true" aria-label="Choose delivery"><div class="delivery-heading"><strong id="bowlerName">Medium pace</strong><button type="button" id="closeDelivery">Done</button></div><button type="button" id="editField">Field: Default · Edit</button><button type="button" id="lengthPicker" aria-label="Choose landing position" aria-expanded="false" aria-controls="lengthOptions">Aim with buttons</button><div class="delivery-grid">${Object.entries(DELIVERY_LABELS).map(([type,label])=>`<button type="button" data-type="${type}">${deliveryIcon(type)}<span>${label}</span></button>`).join('')}</div></div>`;
   const meter=document.createElement('div');meter.id='bowlingPowerMeter';meter.hidden=true;
   meter.innerHTML='<small>POWER</small><output id="bowlingPower">60%</output><div class="colour-power-track" id="powerMeter" role="meter" aria-label="Bowling power" aria-valuemin="24" aria-valuemax="100"><i></i></div><span class="power-status">Controlled</span>';
 
@@ -63,7 +62,8 @@ export function createBowlingPlunger({
   const lengthPicker = consoleEl.querySelector('#lengthPicker'), lengthOptions = consoleEl.querySelector('#lengthOptions');
   const toggleLength = open => {lengthOptions.hidden=!open;lengthPicker.setAttribute('aria-expanded',String(open));if(open)consoleEl.querySelector('#closeLength').focus();};
   lengthPicker.onclick=()=>{toggleOptions(false);toggleLength(lengthOptions.hidden);};
-  consoleEl.querySelector('#closeLength').onclick=()=>{toggleLength(false);lengthPicker.focus();};
+  consoleEl.querySelector('#editField').onclick=()=>{if(enabled&&!cpuMode){toggleOptions(false);onFieldEdit();}};
+  consoleEl.querySelector('#closeLength').onclick=()=>{toggleLength(false);movement.focus();};
   const toggleOptions = open => { if(open)toggleLength(false); options.hidden = !open; movement.setAttribute('aria-expanded', String(open));if(open)consoleEl.querySelector('#closeDelivery').focus(); };
   movement.onclick = () => toggleOptions(options.hidden);
   consoleEl.querySelector('#closeDelivery').onclick = () => { toggleOptions(false); movement.focus(); };
@@ -101,7 +101,7 @@ export function createBowlingPlunger({
   function select(kind, value, emit = true) {
     if (kind === 'line') line = value;
     if (kind === 'length') length=value;
-    if (kind === 'type') { type = value; movement.innerHTML = `${deliveryIcon(value)}<span><small>DELIVERY</small>${DELIVERY_LABELS[value]}</span><svg class="picker-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>`; }
+    if (kind === 'type') type = value;
     consoleEl.querySelectorAll(`[data-${kind}]`).forEach(button => {
       button.classList.toggle('selected', button.dataset[kind] === value);
       button.setAttribute('aria-pressed', String(button.dataset[kind] === value));
@@ -110,18 +110,22 @@ export function createBowlingPlunger({
     lengthPicker.innerHTML=`${lineIcon(line)}<span><small>LANDING</small>${label}</span>`;
     consoleEl.querySelector('#landingReadout').textContent=label;
     consoleEl.querySelectorAll('[data-zone-line]').forEach(b=>{const selected=b.dataset.zoneLine===line&&b.dataset.zoneLength===length;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',selected);});
+    movement.textContent=BOWLERS[bowler].types.slice(0,3).includes(type)?'Tactics':`${DELIVERY_LABELS[type]} · Tactics`;
+    consoleEl.querySelector('#aimSummary').textContent=`${label} · tap pitch to aim`;
+    consoleEl.querySelectorAll('[data-quick-type]').forEach(b=>{b.classList.toggle('selected',b.dataset.quickType===type);b.setAttribute('aria-pressed',String(b.dataset.quickType===type));});
     updatePull(pull);
     if (emit) emitSelection();
   }
 
   consoleEl.querySelectorAll('[data-type]').forEach(button => { button.onclick = () => { if(enabled && !cpuMode) { select('type', button.dataset.type); toggleOptions(false); movement.focus(); } }; });
+  consoleEl.querySelectorAll('[data-quick-type]').forEach(button=>button.onclick=()=>{if(enabled&&!cpuMode)select('type',button.dataset.quickType);});
   const grid=consoleEl.querySelector('.landing-grid');let aimDrag=null;
   function aim(e){const r=grid.getBoundingClientRect();select('line',['LEFT','CENTRE','RIGHT'][clamp(Math.floor((e.clientX-r.left)/r.width*3),0,2)],false);select('length',['SHORT','GOOD','FULL'][clamp(Math.floor((e.clientY-r.top)/r.height*3),0,2)]);}
   grid.onpointerdown=e=>{if(!enabled||cpuMode)return;e.preventDefault();aimDrag={id:e.pointerId,line,length};grid.setPointerCapture(e.pointerId);aim(e);};
   grid.onpointermove=e=>{if(aimDrag?.id===e.pointerId)aim(e);};grid.onpointerup=()=>{aimDrag=null;};
   grid.onpointercancel=()=>{if(aimDrag){select('line',aimDrag.line,false);select('length',aimDrag.length);aimDrag=null;}};
   grid.querySelectorAll('button').forEach(b=>b.onclick=e=>{if(e.detail===0&&enabled&&!cpuMode){select('line',b.dataset.zoneLine,false);select('length',b.dataset.zoneLength);}});
-  for(const [dialog,close,trigger] of [[lengthOptions,()=>toggleLength(false),lengthPicker],[options,()=>toggleOptions(false),movement]])dialog.addEventListener('keydown',e=>{
+  for(const [dialog,close,trigger] of [[lengthOptions,()=>toggleLength(false),movement],[options,()=>toggleOptions(false),movement]])dialog.addEventListener('keydown',e=>{
     if(e.key==='Escape'){e.stopPropagation();close();trigger.focus();}
     if(e.key==='Tab'){const items=[...dialog.querySelectorAll('button:not([hidden])')].filter(b=>!b.disabled),first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
   });
@@ -182,7 +186,7 @@ export function createBowlingPlunger({
     handle.disabled = !enabled || cpuMode;
   }
 
-  function setBowler(next){bowler=BOWLERS[next]?next:'MEDIUM';consoleEl.querySelector('#bowlerName').textContent=BOWLERS[bowler].label;consoleEl.querySelectorAll('[data-type]').forEach(button=>{button.hidden=!BOWLERS[bowler].types.includes(button.dataset.type);});if(!BOWLERS[bowler].types.includes(type))select('type',BOWLERS[bowler].types[0],false);updatePull(pull);}
+  function setBowler(next){bowler=BOWLERS[next]?next:'MEDIUM';consoleEl.querySelectorAll('[data-quick-type]').forEach(b=>{b.hidden=!BOWLERS[bowler].types.slice(0,3).includes(b.dataset.quickType);});consoleEl.querySelector('#bowlerName').textContent=BOWLERS[bowler].label;consoleEl.querySelectorAll('[data-type]').forEach(button=>{button.hidden=!BOWLERS[bowler].types.includes(button.dataset.type);});if(!BOWLERS[bowler].types.includes(type))select('type',BOWLERS[bowler].types[0],false);updatePull(pull);}
 
   function setSelection(selection = {}, emit = false) {
     if(selection.bowler)setBowler(selection.bowler);
@@ -225,6 +229,8 @@ export function createBowlingPlunger({
 
   return {
     setState,
+    setAim: (lineValue,lengthValue) => {if(enabled&&!cpuMode){select('line',lineValue,false);select('length',lengthValue);}},
+    setFieldLabel: custom => {consoleEl.querySelector('#editField').textContent=`Field: ${custom ? 'Custom' : 'Default'} · Edit`;},
     setBowler,
     setSelection,
     getSelection,
