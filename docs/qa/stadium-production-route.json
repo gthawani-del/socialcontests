@@ -54,10 +54,16 @@
     "contactFeedback": true
   },
   "resourceTiming": {
-    "durationMs": 162,
+    "durationMs": 41,
     "transferSize": 6736188,
     "decodedBodySize": 6735888
   },
   "build": "production",
-  "humanBowlingPlunger": true
+  "humanBowlingPlunger": true,
+  "tossStates": {
+    "cpuCallerAndWinner": true,
+    "controlsRestored": true,
+    "resetCancelsFlight": true,
+    "reducedMotion": true
+  }
 }

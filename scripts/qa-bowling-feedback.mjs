@@ -22,11 +22,33 @@ for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,3
  setupLayouts.push({name,...layout});if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/match-setup-${name}.png`});
 }
 await page.setViewportSize({width:390,height:700});
-await page.locator('#beginStadiumToss').click();
+await page.locator('#beginStadiumToss').tap();
+const tossLayouts=[];
+const measureToss=()=>page.locator('#matchPanel').evaluate(panel=>({
+ panel:panel.getBoundingClientRect().toJSON(),
+ coinSize:document.querySelector('.toss-lift').offsetWidth,
+ faces:[...panel.querySelectorAll('.coin-face')].map(face=>({width:face.offsetWidth,height:face.offsetHeight,labelSize:getComputedStyle(face.querySelector('strong')).fontSize})),
+ actions:[...panel.querySelectorAll('.toss-actions button')].map(b=>b.getBoundingClientRect().toJSON()),
+ footerHidden:getComputedStyle(document.querySelector('.controls')).display==='none',
+ overflow:panel.scrollHeight>panel.clientHeight || panel.scrollWidth>panel.clientWidth
+}));
+for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,390],['desktop',1365,900]]){
+ await page.setViewportSize({width:w,height:h});
+ const layout=await measureToss();
+ assert.equal(layout.coinSize,h<=500?96:128);assert.deepEqual(layout.faces[0],layout.faces[1]);
+ assert(layout.footerHidden);assert(!layout.overflow,`${name}: toss overflow`);
+ assert(layout.panel.y>=0 && layout.panel.bottom<=h && layout.panel.right<=w);
+ assert(layout.actions.every(b=>b.height>=48));assert.equal(layout.actions[0].width,layout.actions[1].width);
+ tossLayouts.push({phase:'call',name,...layout});
+ if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/toss-call-${name}.png`});
+}
+await page.setViewportSize({width:390,height:700});
+const callLayout=await measureToss();
 // Pause on animation creation, before a slow software renderer can finish it.
 await page.evaluate(()=>{const pause=e=>{if(!e.target.matches('.toss-lift,.toss-coin'))return;e.target.getAnimations().forEach(a=>a.pause());};window.__pauseToss=pause;document.addEventListener('animationstart',pause);});
-await page.locator('#callHeads').click();
+await page.locator('#callHeads').tap();
 await page.waitForSelector('.toss-coin.flipping');
+assert.deepEqual((await measureToss()).panel,callLayout.panel,'call to flight must not move the panel');
 assert.equal(await page.locator('#score').isVisible(),false,'hide score during toss');
 const tossMotion=await page.evaluate(()=>{
  const lift=document.querySelector('.toss-lift'),coin=document.querySelector('.toss-coin');
@@ -45,6 +67,11 @@ await page.evaluate(()=>document.querySelector('.toss-lift').getAnimations()[0].
 assert.equal(await page.locator('#matchPanel h2').innerText(),'Coin in the air');
 await page.evaluate(()=>document.querySelector('.toss-coin').getAnimations()[0].finish());
 await page.waitForSelector('.toss-coin.heads:not(.flipping)');assert.equal(await page.locator('.toss-coin').getAttribute('aria-label'),'HEADS');
+assert.deepEqual((await measureToss()).panel,callLayout.panel,'flight to result must not move the panel');
+await page.locator('#chooseBowl').waitFor({timeout:15000});
+assert.deepEqual((await measureToss()).panel,callLayout.panel,'revealing choices must not move the panel');
+assert.equal(await page.locator('.toss-heading h2').innerText(),'You won the toss');
+assert.equal(await page.locator('.toss-heading p').innerText(),'Result: Heads');
 if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:'docs/qa/toss-heads.png'});
 await page.locator('#chooseBowl').click({timeout:15000});
 await page.locator('#confirmBowler').click();
@@ -109,12 +136,23 @@ assert.deepEqual(await page.evaluate(()=>window.__stadiumQA.snapshot().fielders)
 assert.equal(await page.locator('#matchCommentary').innerText()==='',false);
 await page.locator('#score').click();assert.equal(await page.locator('.ball-results span').count(),1);assert.equal(await page.locator('.commentary-list li').count(),1);
 assert.deepEqual(errors,[]);await writeFile('docs/qa/bowling-feedback.json',JSON.stringify({layouts,held,live,aimed,defaultField,customField,fieldPersists:true,fieldLaunchLocked:true,errors,cancelDoesNotLaunch:true,oneReleaseOneDelivery:true},null,2));await page.locator('#closeMatchDetails').click();await page.locator('#restart').click();assert.equal(await page.locator('#score').isVisible(),false,'restart hides score');
-await page.locator('#beginStadiumToss').click();await page.waitForSelector('#callHeads');
-await page.evaluate(()=>{Math.random=()=>.9;});await page.locator('#callHeads').click();
+await page.locator('#beginStadiumToss').tap();await page.waitForSelector('#callHeads');
+await page.evaluate(()=>{Math.random=()=>.9;});await page.locator('#callTails').tap();
 await page.waitForSelector('.toss-coin.tails:not(.flipping)');
 assert.equal(await page.locator('.toss-coin').getAttribute('aria-label'),'TAILS');
 const tailsMatrix=await page.locator('.toss-coin').evaluate(e=>getComputedStyle(e).transform);
-assert(tailsMatrix.includes('-1'));if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:'docs/qa/toss-tails.png'});
-await writeFile('docs/qa/toss-feedback.json',JSON.stringify({tossMotion,tailsMatrix,headsConfirmed:true,tailsConfirmed:true,noEarlyRevealWhileAnimationPaused:true},null,2));
+assert(tailsMatrix.includes('-1'));
+await page.locator('#chooseBowl').waitFor({timeout:15000});
+for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,390],['desktop',1365,900]]){
+ await page.setViewportSize({width:w,height:h});const layout=await measureToss();
+ assert.deepEqual(layout.panel,tossLayouts.find(l=>l.name===name).panel,`${name}: call and result stay fixed`);
+ assert(layout.footerHidden);assert.deepEqual(layout.faces[0],layout.faces[1]);assert(!layout.overflow);
+ assert.equal(layout.actions[0].width,layout.actions[1].width);assert(layout.actions.every(b=>b.height>=48));
+ tossLayouts.push({phase:'result',name,...layout});
+ if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/toss-result-${name}.png`});
+}
+await page.setViewportSize({width:390,height:700});
+if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:'docs/qa/toss-tails.png'});
+await writeFile('docs/qa/toss-feedback.json',JSON.stringify({tossLayouts,tossMotion,tailsMatrix,stablePanel:true,matchingFaces:true,staleFooterHidden:true,headsConfirmed:true,tailsConfirmed:true,noEarlyRevealWhileAnimationPaused:true},null,2));
 console.log('Bowling and both toss faces passed');
 }finally{await browser.close();await server.close();}

@@ -167,19 +167,6 @@
 @media(max-height:500px){#matchCommentary{font-size:11px;margin:3px 0;min-height:30px}#bowlingConsole{padding:6px}#bowlingConsole .bowl-selector{grid-template-columns:1fr}#bowlingConsole .bowl-selector>small{display:none}#bowlingConsole .movement-selector{grid-template-columns:1fr 38px}#bowlingConsole .segmented button{font-size:11px;min-height:44px}#bowlingMovement{min-height:44px}#cue{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.impact-fx{display:none}#stadiumApp canvas{animation:none!important}#viewport::after{display:none}}
 
-.toss-stage{height:190px;display:grid;place-items:end center;padding-bottom:10px;perspective:700px}
-.toss-lift{width:100px;height:100px;--toss-duration:2600ms}
-.toss-coin{width:100%;height:100%;position:relative;transform-style:preserve-3d;--finish:2160deg;transform:rotateX(0deg)}
-.toss-coin.tails{--finish:2340deg;transform:rotateX(180deg)}
-.coin-face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border:5px ridge #edce75;border-radius:50%;background:radial-gradient(circle at 35% 25%,#fff0b5,#c99a37 65%,#80520b);color:#302009;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:inset 0 0 0 3px #986b21}
-.coin-face img{width:66px;height:66px;object-fit:contain}
-.coin-face strong{font-size:13px;letter-spacing:.15em}.coin-tails{transform:rotateX(180deg)}.coin-tails span{font-size:48px;line-height:60px}
-.tossing{animation:coin-lift var(--toss-duration) cubic-bezier(.2,.6,.5,1) both}.toss-coin.flipping{animation:coin-flip var(--toss-duration) linear both}
-@keyframes coin-lift{0%,100%{transform:translateY(0)}45%{transform:translateY(-75px)}85%{transform:translateY(-12px)}}
-@keyframes coin-flip{from{transform:rotateX(0deg)}to{transform:rotateX(var(--finish))}}
-@media(max-height:500px){.toss-stage{height:115px}.toss-lift{width:70px;height:70px}.coin-face img{width:42px;height:42px}.coin-face strong{font-size:10px}.coin-tails span{font-size:30px;line-height:35px}@keyframes coin-lift{0%,100%{transform:translateY(0)}45%{transform:translateY(-35px)}}}
-@media(prefers-reduced-motion:reduce){.tossing,.toss-coin.flipping{animation:none}}
-
 /* Content-sized match cards leave the stadium visible around the task. */
 #matchPanel{inset:82px 16px 16px;height:fit-content;max-height:calc(100% - 98px);width:calc(100% - 32px);max-width:380px;padding:24px;border-radius:14px;background:#0b1d2ef5;box-shadow:0 12px 36px #0008;align-content:normal}
 #matchPanel h2{font-size:22px;line-height:1.2;margin-bottom:20px}
@@ -300,3 +287,39 @@
 #shotChoice{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:2;white-space:nowrap;margin:0;padding:4px 8px;background:#0b2131ed;border:1px solid #718695;border-radius:8px}
 #shotChoice button{min-height:44px}
 @media(max-width:799px) and (min-height:501px){#shotChoice{top:64px}}
+
+/* One measured toss layout for call, flight, result and innings choice. */
+#matchPanel.toss-panel{--coin-size:128px;inset:16px;width:calc(100% - 32px);max-width:360px;height:354px;max-height:calc(100% - 32px);padding:20px;display:grid;grid-template-rows:52px minmax(0,1fr) 52px;gap:12px;overflow:visible;background:#0b1d2e;box-shadow:0 18px 60px #0009}
+#matchPanel .toss-heading h2{font-size:22px;line-height:1.2;margin:0 0 7px;color:#ffe0a1}
+#matchPanel .toss-heading p{font-size:14px;line-height:1.3;margin:0;color:#c5d1dc}
+#matchPanel .toss-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch;min-height:52px}
+#matchPanel .toss-actions>span{grid-column:1/-1;align-self:center;color:#c5d1dc;font-size:13px;line-height:1.4}
+#matchPanel .toss-actions button{width:100%;min-width:0;min-height:52px;margin:0;padding:8px;font-size:16px;border-radius:10px;background:linear-gradient(110deg,#ffcf76,#efbb59);color:#07131e}
+.toss-stage{position:relative;display:grid;place-items:end center;padding-bottom:10px;perspective:700px;min-height:0}
+.toss-lift{width:var(--coin-size);height:var(--coin-size);--toss-duration:2600ms;transform-style:preserve-3d}
+.toss-coin{width:100%;height:100%;position:relative;transform-style:preserve-3d;--finish:2160deg;transform:rotateX(0deg)}
+.toss-coin.tails{--finish:2340deg;transform:rotateX(180deg)}
+.toss-coin .coin-face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px;border:4px solid #edce75;border-radius:50%;background:radial-gradient(circle at 34% 24%,#fff1ba,#d7ad4e 58%,#956019);color:#392308;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:inset 0 0 0 2px #936620,inset 0 0 0 5px #f1d88c;transform:translateZ(4px)}
+.toss-coin .coin-tails{transform:rotateX(180deg) translateZ(4px)}
+.toss-coin .coin-face small{font-size:8px;line-height:1.2;font-weight:700;letter-spacing:.08em}
+.toss-coin .coin-face svg{width:64px;height:64px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 0 #fff2bd)}
+.toss-coin .coin-stitch{stroke-width:1.4}
+.toss-coin .coin-face strong{font-size:15px;line-height:1.2;letter-spacing:.14em}
+.coin-edge{position:absolute;inset:0;transform-style:preserve-3d}
+.coin-edge i{position:absolute;left:50%;top:50%;width:calc(var(--coin-size)*.067);height:8px;margin:-4px 0 0 calc(var(--coin-size)*-.0335);background:linear-gradient(90deg,#785119,#d6ae54 40%,#f8dc86 60%,#a87529);transform:rotateZ(var(--edge-angle)) translateY(calc(var(--coin-size)*-.5 + 1px)) rotateX(90deg)}
+.toss-shadow{position:absolute;bottom:3px;left:50%;width:calc(var(--coin-size)*.78);height:12px;transform:translateX(-50%);border-radius:50%;background:#0007;filter:blur(5px)}
+.tossing{animation:coin-lift var(--toss-duration) cubic-bezier(.2,.6,.5,1) both}
+.toss-coin.flipping{animation:coin-flip var(--toss-duration) cubic-bezier(.18,.45,.5,1) both}
+@keyframes coin-lift{0%,100%{transform:translateY(0)}45%{transform:translateY(-56px)}85%{transform:translateY(-8px)}}
+@keyframes coin-flip{from{transform:rotateX(0deg)}to{transform:rotateX(var(--finish))}}
+#stadiumApp.toss-active .controls{display:none}
+#stadiumApp.toss-active #viewport{grid-column:1/-1}
+#stadiumApp.toss-active #viewport::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:#020a1273}
+@media(max-height:500px){
+ #matchPanel.toss-panel{--coin-size:96px;inset:8px;max-height:calc(100% - 16px);height:278px;padding:12px;grid-template-rows:44px minmax(0,1fr) 48px;gap:8px}
+ #matchPanel .toss-heading h2{font-size:20px;margin-bottom:4px}#matchPanel .toss-heading p{font-size:13px}
+ #matchPanel .toss-actions{min-height:48px}#matchPanel .toss-actions button{min-height:48px;font-size:15px}
+ .toss-coin .coin-face{padding:8px;gap:2px}.toss-coin .coin-face small{font-size:6px}.toss-coin .coin-face svg{width:42px;height:42px}.toss-coin .coin-face strong{font-size:12px}
+ @keyframes coin-lift{0%,100%{transform:translateY(0)}45%{transform:translateY(-30px)}85%{transform:translateY(-5px)}}
+}
+@media(prefers-reduced-motion:reduce){.tossing,.toss-coin.flipping{animation:none}}

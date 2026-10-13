@@ -87,6 +87,30 @@ if(process.env.QA_LOW_GRAPHICS)await page.addInitScript(()=>{localStorage.setIte
   await page.waitForFunction(() => /BALL\s+1\s*\/\s*6/i.test(document.querySelector('#score').innerText));
   assert.deepEqual(errors, []);
   evidence.humanBowlingPlunger = true;
+  // The CPU result and reduced-motion path must also leave the toss layout cleanly.
+  await page.locator('#restart').click();
+  await page.evaluate(() => { Math.random = () => .9; });
+  await page.locator('#beginStadiumToss').click();
+  await page.getByRole('heading',{name:'CPU won the toss',exact:true}).waitFor({timeout:15000});
+  assert.equal(await page.locator('.toss-heading p').innerText(),'Result: Tails');
+  await page.waitForFunction(() => !document.querySelector('#leftBat').disabled,null,{timeout:15000});
+  assert.equal(await page.locator('#stadiumApp.toss-active').count(),0);
+  assert(await page.locator('.controls').isVisible());
+  await page.locator('#restart').click();
+  await page.evaluate(() => { Math.random = () => .1; });
+  await page.locator('#beginStadiumToss').click();await page.locator('#callHeads').click();
+  await page.locator('#restart').click();
+  await page.waitForTimeout(3000); // Past the cancelled flight and reveal timer.
+  assert(await page.locator('#beginStadiumToss').isVisible());
+  assert.equal(await page.locator('#stadiumApp.toss-active').count(),0);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.locator('#beginStadiumToss').click();await page.locator('#callHeads').click();
+  await page.locator('#chooseBowl').waitFor({timeout:10000});
+  assert.equal(await page.locator('.toss-coin').getAttribute('aria-label'),'HEADS');
+  assert.equal(await page.locator('#matchPanel').evaluate(p=>p.getAnimations({subtree:true}).length),0);
+  assert.equal(await page.locator('.controls').isVisible(),false);
+  evidence.tossStates = {cpuCallerAndWinner:true,controlsRestored:true,resetCancelsFlight:true,reducedMotion:true};
+  assert.deepEqual(errors, []);
   await writeFile(`docs/qa/stadium-${label}-route.json`, JSON.stringify(evidence,null,2)+'\n');
   console.log(JSON.stringify(evidence));
 } finally { await browser.close(); await new Promise(resolve => server ? server.httpServer.close(resolve) : resolve()); }

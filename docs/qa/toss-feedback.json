@@ -1,13 +1,426 @@
 {
+  "tossLayouts": [
+    {
+      "phase": "call",
+      "name": "mobile",
+      "panel": {
+        "x": 16,
+        "y": 173,
+        "width": 358,
+        "height": 354,
+        "top": 173,
+        "right": 374,
+        "bottom": 527,
+        "left": 16
+      },
+      "coinSize": 128,
+      "faces": [
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        },
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        }
+      ],
+      "actions": [
+        {
+          "x": 37,
+          "y": 454,
+          "width": 152,
+          "height": 52,
+          "top": 454,
+          "right": 189,
+          "bottom": 506,
+          "left": 37
+        },
+        {
+          "x": 201,
+          "y": 454,
+          "width": 152,
+          "height": 52,
+          "top": 454,
+          "right": 353,
+          "bottom": 506,
+          "left": 201
+        }
+      ],
+      "footerHidden": true,
+      "overflow": false
+    },
+    {
+      "phase": "call",
+      "name": "small",
+      "panel": {
+        "x": 16,
+        "y": 107,
+        "width": 288,
+        "height": 354,
+        "top": 107,
+        "right": 304,
+        "bottom": 461,
+        "left": 16
+      },
+      "coinSize": 128,
+      "faces": [
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        },
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        }
+      ],
+      "actions": [
+        {
+          "x": 37,
+          "y": 388,
+          "width": 117,
+          "height": 52,
+          "top": 388,
+          "right": 154,
+          "bottom": 440,
+          "left": 37
+        },
+        {
+          "x": 166,
+          "y": 388,
+          "width": 117,
+          "height": 52,
+          "top": 388,
+          "right": 283,
+          "bottom": 440,
+          "left": 166
+        }
+      ],
+      "footerHidden": true,
+      "overflow": false
+    },
+    {
+      "phase": "call",
+      "name": "landscape",
+      "panel": {
+        "x": 242,
+        "y": 74,
+        "width": 360,
+        "height": 278,
+        "top": 74,
+        "right": 602,
+        "bottom": 352,
+        "left": 242
+      },
+      "coinSize": 96,
+      "faces": [
+        {
+          "width": 96,
+          "height": 96,
+          "labelSize": "12px"
+        },
+        {
+          "width": 96,
+          "height": 96,
+          "labelSize": "12px"
+        }
+      ],
+      "actions": [
+        {
+          "x": 255,
+          "y": 291,
+          "width": 161,
+          "height": 48,
+          "top": 291,
+          "right": 416,
+          "bottom": 339,
+          "left": 255
+        },
+        {
+          "x": 428,
+          "y": 291,
+          "width": 161,
+          "height": 48,
+          "top": 291,
+          "right": 589,
+          "bottom": 339,
+          "left": 428
+        }
+      ],
+      "footerHidden": true,
+      "overflow": false
+    },
+    {
+      "phase": "call",
+      "name": "desktop",
+      "panel": {
+        "x": 502.5,
+        "y": 295,
+        "width": 360,
+        "height": 354,
+        "top": 295,
+        "right": 862.5,
+        "bottom": 649,
+        "left": 502.5
+      },
+      "coinSize": 128,
+      "faces": [
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        },
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        }
+      ],
+      "actions": [
+        {
+          "x": 523.5,
+          "y": 576,
+          "width": 153,
+          "height": 52,
+          "top": 576,
+          "right": 676.5,
+          "bottom": 628,
+          "left": 523.5
+        },
+        {
+          "x": 688.5,
+          "y": 576,
+          "width": 153,
+          "height": 52,
+          "top": 576,
+          "right": 841.5,
+          "bottom": 628,
+          "left": 688.5
+        }
+      ],
+      "footerHidden": true,
+      "overflow": false
+    },
+    {
+      "phase": "result",
+      "name": "mobile",
+      "panel": {
+        "x": 16,
+        "y": 173,
+        "width": 358,
+        "height": 354,
+        "top": 173,
+        "right": 374,
+        "bottom": 527,
+        "left": 16
+      },
+      "coinSize": 128,
+      "faces": [
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        },
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        }
+      ],
+      "actions": [
+        {
+          "x": 37,
+          "y": 454,
+          "width": 152,
+          "height": 52,
+          "top": 454,
+          "right": 189,
+          "bottom": 506,
+          "left": 37
+        },
+        {
+          "x": 201,
+          "y": 454,
+          "width": 152,
+          "height": 52,
+          "top": 454,
+          "right": 353,
+          "bottom": 506,
+          "left": 201
+        }
+      ],
+      "footerHidden": true,
+      "overflow": false
+    },
+    {
+      "phase": "result",
+      "name": "small",
+      "panel": {
+        "x": 16,
+        "y": 107,
+        "width": 288,
+        "height": 354,
+        "top": 107,
+        "right": 304,
+        "bottom": 461,
+        "left": 16
+      },
+      "coinSize": 128,
+      "faces": [
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        },
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        }
+      ],
+      "actions": [
+        {
+          "x": 37,
+          "y": 388,
+          "width": 117,
+          "height": 52,
+          "top": 388,
+          "right": 154,
+          "bottom": 440,
+          "left": 37
+        },
+        {
+          "x": 166,
+          "y": 388,
+          "width": 117,
+          "height": 52,
+          "top": 388,
+          "right": 283,
+          "bottom": 440,
+          "left": 166
+        }
+      ],
+      "footerHidden": true,
+      "overflow": false
+    },
+    {
+      "phase": "result",
+      "name": "landscape",
+      "panel": {
+        "x": 242,
+        "y": 74,
+        "width": 360,
+        "height": 278,
+        "top": 74,
+        "right": 602,
+        "bottom": 352,
+        "left": 242
+      },
+      "coinSize": 96,
+      "faces": [
+        {
+          "width": 96,
+          "height": 96,
+          "labelSize": "12px"
+        },
+        {
+          "width": 96,
+          "height": 96,
+          "labelSize": "12px"
+        }
+      ],
+      "actions": [
+        {
+          "x": 255,
+          "y": 291,
+          "width": 161,
+          "height": 48,
+          "top": 291,
+          "right": 416,
+          "bottom": 339,
+          "left": 255
+        },
+        {
+          "x": 428,
+          "y": 291,
+          "width": 161,
+          "height": 48,
+          "top": 291,
+          "right": 589,
+          "bottom": 339,
+          "left": 428
+        }
+      ],
+      "footerHidden": true,
+      "overflow": false
+    },
+    {
+      "phase": "result",
+      "name": "desktop",
+      "panel": {
+        "x": 502.5,
+        "y": 295,
+        "width": 360,
+        "height": 354,
+        "top": 295,
+        "right": 862.5,
+        "bottom": 649,
+        "left": 502.5
+      },
+      "coinSize": 128,
+      "faces": [
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        },
+        {
+          "width": 128,
+          "height": 128,
+          "labelSize": "15px"
+        }
+      ],
+      "actions": [
+        {
+          "x": 523.5,
+          "y": 576,
+          "width": 153,
+          "height": 52,
+          "top": 576,
+          "right": 676.5,
+          "bottom": 628,
+          "left": 523.5
+        },
+        {
+          "x": 688.5,
+          "y": 576,
+          "width": 153,
+          "height": 52,
+          "top": 576,
+          "right": 841.5,
+          "bottom": 628,
+          "left": 688.5
+        }
+      ],
+      "footerHidden": true,
+      "overflow": false
+    }
+  ],
   "tossMotion": {
-    "lift": 75,
-    "matrix": "matrix3d(1, 0, 0, 0, 0, -0.309017, -0.951057, 0, 0, 0.951057, -0.309017, 0, 0, 0, 0, 1)",
+    "lift": 56,
+    "matrix": "matrix3d(1, 0, 0, 0, 0, -0.98175, 0.190174, 0, 0, -0.190174, -0.98175, 0, 0, 0, 0, 1)",
     "faces": [
       "HEADS",
       "TAILS"
     ]
   },
   "tailsMatrix": "matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1)",
+  "stablePanel": true,
+  "matchingFaces": true,
+  "staleFooterHidden": true,
   "headsConfirmed": true,
   "tailsConfirmed": true,
   "noEarlyRevealWhileAnimationPaused": true

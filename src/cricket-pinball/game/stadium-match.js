@@ -64,7 +64,12 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     document.querySelector('#score').hidden = !state.innings;
     document.querySelector('#score').innerHTML = `<div><small>${state.innings ? `${name(match.currentInnings?.battingPlayerId || state.battingPlayerId)} batting` : 'Score'}</small><strong>${s.runs} / ${s.wickets}</strong></div><div><small>Ball</small><strong>${s.balls} <span>/ ${state.ballsPerInnings}</span></strong></div><div><small>${state.target !== null ? 'Target' : 'Innings'}</small><strong>${state.target !== null ? state.target : state.innings ? state.roundInnings : '—'}</strong></div>`;
   }
-  function show(title, body) { panel.hidden = false; panel.classList.remove('match-setup'); panel.innerHTML = `<h2>${title}</h2>${body}`; }
+  function tossVisible(visible) {
+    panel.classList.toggle('toss-panel', visible);
+    document.querySelector('#stadiumApp').classList.toggle('toss-active', visible);
+    panel.setAttribute('aria-label', visible ? 'Coin toss' : 'Match setup');
+  }
+  function show(title, body) { tossVisible(false); panel.hidden = false; panel.classList.remove('match-setup'); panel.innerHTML = `<h2>${title}</h2>${body}`; }
   function prepareBowler() {
     if(!match?.currentInnings || match.currentInnings.complete)return;
     ready=false;running=false;releaseBats();controls();
@@ -86,7 +91,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
   function makeReady() {
     if(!match?.currentInnings || match.currentInnings.complete)return;
     if(!bowlerByInnings[match.currentInnings.number]){prepareBowler();return;}
-    ready = true; panel.hidden = true; delete cue.dataset.contact;
+    ready = true; tossVisible(false); panel.hidden = true; delete cue.dataset.contact;
     cue.textContent = humanBatting()
       ? 'CPU preparing delivery'
       : 'Choose a ball · tap pitch to aim · pull and release';
@@ -185,26 +190,35 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     const winner = match.toss.winnerId;
     const battingPlayerId = choice === 'BAT' ? winner : winner === 'player' ? 'cpu' : 'player';
     match.assignRoles({ battingPlayerId, bowlingPlayerId: battingPlayerId === 'player' ? 'cpu' : 'player', choice });
-    show('Roles confirmed', `<p>${battingPlayerId === 'player' ? 'You bat' : 'CPU bats'} first.</p>`);
+    showToss(battingPlayerId === 'player' ? 'You bat first' : 'You bowl first', 'The match is ready to begin.', match.toss.result, '<span>Starting match…</span>');
     delay(() => { match.startInnings(); prepareBowler(); }, rules.toss.roleConfirmMs);
   }
   function coinMarkup(face = 'HEADS', flying = false) {
-    return `<div class="toss-stage"><div class="toss-lift${flying ? ' tossing' : ''}" style="--toss-duration:${rules.toss.coinMs}ms"><div class="toss-coin ${face === 'TAILS' ? 'tails' : 'heads'}${flying ? ' flipping' : ''}" role="img" aria-label="${flying ? 'Coin flipping in the air' : face}"><div class="coin-face coin-heads"><img src="/assets/cricket/world/cricket-pinball-toss-coin-v4.png" alt=""><strong>HEADS</strong></div><div class="coin-face coin-tails"><span aria-hidden="true">✦</span><strong>TAILS</strong></div></div></div></div>`;
+    const ball = '<circle cx="36" cy="36" r="24"/><path d="M18 52C39 50 50 36 52 18M14 47C33 45 45 33 47 14"/><path class="coin-stitch" d="m20 44 4 4m2-8 4 4m2-9 4 4m2-9 4 4m-1-10 4 4"/>';
+    const wickets = '<path d="M20 58V19h32v39M36 19v39M17 13h16m6 0h16M15 59h42"/><path class="coin-stitch" d="M24 24v28m16-28v28"/>';
+    const faceMarkup = (side, art) => `<div class="coin-face coin-${side.toLowerCase()}"><small>CRICKET PINBALL</small><svg viewBox="0 0 72 72" aria-hidden="true">${art}</svg><strong>${side}</strong></div>`;
+    const rim = Array.from({length:48}, (_, i) => `<i style="--edge-angle:${i * 7.5}deg"></i>`).join('');
+    return `<div class="toss-stage"><div class="toss-shadow" aria-hidden="true"></div><div class="toss-lift${flying ? ' tossing' : ''}" style="--toss-duration:${rules.toss.coinMs}ms"><div class="toss-coin ${face === 'TAILS' ? 'tails' : 'heads'}${flying ? ' flipping' : ''}" role="img" aria-label="${flying ? 'Coin flipping in the air' : face}"><div class="coin-edge" aria-hidden="true">${rim}</div>${faceMarkup('HEADS', ball)}${faceMarkup('TAILS', wickets)}</div></div></div>`;
+  }
+  function showToss(title, subtitle, face = 'HEADS', actions = '', flying = false) {
+    show(title, '');
+    tossVisible(true);
+    panel.innerHTML = `<div class="toss-heading" role="status"><h2>${title}</h2><p>${subtitle}</p></div>${coinMarkup(face, flying)}<div class="toss-actions" id="tossChoice">${actions}</div>`;
   }
   function perform(call, caller) {
     const result = toss.perform(call, caller, caller === 'player' ? 'cpu' : 'player');
     if (!result) return;
-    show('Coin in the air', `${coinMarkup(result.result, true)}<p>${name(caller)} called ${call.toLowerCase()}.</p>`);
+    showToss('Coin in the air', `${name(caller)} called ${call.toLowerCase()}.`, result.result, '<span>Waiting for the coin to land…</span>', true);
     const coin = panel.querySelector('.toss-coin');
     const reveal = () => {
       if (panel.querySelector('.toss-coin') !== coin) return;
       match.setToss(result);
-      show(`${result.result} · ${name(result.winnerId)} won the toss`, `${coinMarkup(result.result)}<p id="tossChoice">Result confirmed</p>`);
+      showToss(`${name(result.winnerId)} won the toss`, `Result: ${result.result === 'HEADS' ? 'Heads' : 'Tails'}`, result.result, `<span>${result.winnerId === 'player' ? 'Choose whether to bat or bowl.' : 'CPU is choosing its innings…'}</span>`);
       delay(() => {
         if (result.winnerId === 'player') {
-          document.querySelector('#tossChoice').innerHTML = '<button id="chooseBat">Bat first</button> <button id="chooseBowl">Bowl first</button>';
+          document.querySelector('#tossChoice').innerHTML = '<button type="button" id="chooseBat">Bat first</button><button type="button" id="chooseBowl">Bowl first</button>';
           document.querySelector('#chooseBat').onclick = () => assign('BAT'); document.querySelector('#chooseBowl').onclick = () => assign('BOWL');
-        } else { const choice = Math.random() < .5 ? 'BAT' : 'BOWL'; document.querySelector('#tossChoice').textContent = `CPU chooses to ${choice.toLowerCase()}`; delay(() => assign(choice), rules.toss.cpuChoiceMs); }
+        } else { const choice = Math.random() < .5 ? 'BAT' : 'BOWL'; document.querySelector('#tossChoice').innerHTML = `<span>CPU chooses to ${choice.toLowerCase()} first.</span>`; delay(() => assign(choice), rules.toss.cpuChoiceMs); }
       }, rules.toss.resultHoldMs);
     };
     // Wait for the rendered lift AND flip, including throttled/paused frames.
@@ -225,9 +239,9 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
         format = document.querySelector('#format').value; difficulty = document.querySelector('#difficulty').value; newMatch();
         const caller = toss.pickCaller(match.players).id;
         if (caller === 'player') {
-          show('Call the toss', '<img class="stadium-coin" src="/assets/cricket/world/cricket-pinball-toss-coin-v4.png" alt="Cricket Pinball toss coin"><p><button id="callHeads">Heads</button> <button id="callTails">Tails</button></p>');
+          showToss('Call the toss', 'Choose heads or tails.', 'HEADS', '<button type="button" id="callHeads">Heads</button><button type="button" id="callTails">Tails</button>');
           document.querySelector('#callHeads').onclick = () => perform('HEADS', caller); document.querySelector('#callTails').onclick = () => perform('TAILS', caller);
-        } else { show('CPU calls the toss', '<p>Waiting for the call…</p>'); delay(() => perform(Math.random() < .5 ? 'HEADS' : 'TAILS', caller), rules.toss.cpuCallMs); }
+        } else { showToss('CPU calls the toss', 'Your opponent makes the call.', 'HEADS', '<span>Waiting for the call…</span>'); delay(() => perform(Math.random() < .5 ? 'HEADS' : 'TAILS', caller), rules.toss.cpuCallMs); }
       };
     }
     render();
