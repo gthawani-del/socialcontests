@@ -18,6 +18,7 @@ const mode =
   query.get("mode") || location.pathname.split("/").filter(Boolean)[1];
 if (mode === "foundation") await import("./foundation-main.js");
 else if (mode === 'crash') await (await import('./crash-main.js')).mountCrash();
+else if (mode === 'penalty') await (await import('./penalty/main.js')).mountPenalty();
 else if (MODE_UI[mode]) await mount(mode);
 else renderLobby();
 async function mount(mode) {

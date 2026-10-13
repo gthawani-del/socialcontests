@@ -1,0 +1,52 @@
+[
+  {
+    "name": "small",
+    "width": 360,
+    "height": 640,
+    "realTouchAim": true,
+    "realTouchBootContact": true,
+    "keeperPositionAndDive": true,
+    "pause": true,
+    "errors": []
+  },
+  {
+    "name": "mobile",
+    "width": 390,
+    "height": 844,
+    "realTouchAim": true,
+    "realTouchBootContact": true,
+    "keeperPositionAndDive": true,
+    "pause": true,
+    "errors": []
+  },
+  {
+    "name": "large-mobile",
+    "width": 430,
+    "height": 932,
+    "realTouchAim": true,
+    "realTouchBootContact": true,
+    "keeperPositionAndDive": true,
+    "pause": true,
+    "errors": []
+  },
+  {
+    "name": "desktop",
+    "width": 1440,
+    "height": 1000,
+    "realTouchAim": true,
+    "realTouchBootContact": true,
+    "keeperPositionAndDive": true,
+    "pause": true,
+    "errors": []
+  },
+  {
+    "name": "landscape",
+    "width": 844,
+    "height": 390,
+    "realTouchAim": true,
+    "realTouchBootContact": true,
+    "keeperPositionAndDive": true,
+    "pause": true,
+    "errors": []
+  }
+]

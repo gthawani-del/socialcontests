@@ -1,0 +1,27 @@
+{
+  "productionDefaults": true,
+  "accelerated": false,
+  "stateMutation": false,
+  "history": {
+    "you": [
+      "goal",
+      "goal",
+      "save",
+      "goal",
+      "goal"
+    ],
+    "cpu": [
+      "goal",
+      "goal",
+      "goal",
+      "goal",
+      "goal"
+    ]
+  },
+  "winner": "cpu",
+  "keyboardKick": true,
+  "touchAim": true,
+  "rematchClearsScores": true,
+  "settingsPersist": true,
+  "errors": []
+}
