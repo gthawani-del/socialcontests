@@ -3,13 +3,13 @@ const SAMPLE = 'Oye hoye! Kya zabardast chhakka maara hai! Ball seedha stadium k
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
-  const key = process.env.FISHAUDIO_API_KEY || process.env.FISH_AUDIO_API_KEY || process.env.FISHAUDIO_API_KEY || process.env.FISH_AUDIO_API;
+  const key = process.env.FISHAUDIO_API_KEY || process.env.FISH_AUDIO_API_KEY;
   if (!key) return res.status(500).json({ error: 'Fish Audio API key missing in Vercel environment' });
   const started = Date.now();
   try {
     const response = await fetch('https://api.fish.audio/v1/tts', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', model: 's1' },
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', model: 's2-pro' },
       body: JSON.stringify({ text: SAMPLE, reference_id: VOICE_ID, format: 'mp3', latency: 'normal' }),
       signal: AbortSignal.timeout(25000)
     });
