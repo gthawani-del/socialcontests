@@ -29,11 +29,11 @@ export default async function handler(req, res) {
       body: JSON.stringify({ text: pick(type), reference_id: VOICE_ID, format: 'mp3', latency: 'normal' }),
       signal: AbortSignal.timeout(25000)
     });
-    if (!response.ok) return res.status(502).json({ error: 'Commentary generation unavailable' });
+    if (!response.ok) return res.status(502).json({ error: `Fish Audio HTTP ${response.status}` });
     const audio = Buffer.from(await response.arrayBuffer());
     if (!audio.length) return res.status(502).json({ error: 'Empty commentary audio' });
     res.setHeader('Content-Type', 'audio/mpeg');
     res.setHeader('Cache-Control', 'no-store');
     return res.status(200).send(audio);
-  } catch { return res.status(502).json({ error: 'Commentary request failed' }); }
+  } catch (error) { return res.status(502).json({ error: error?.name === 'TimeoutError' ? 'Fish Audio timed out' : 'Fish Audio request failed' }); }
 }
