@@ -56,6 +56,7 @@ app.innerHTML = `
           <li>${icon('wickets')}<span>2 wickets</span></li>
           <li>${icon('toss')}<span>Toss to start</span></li>
         </ul>
+        <div style="text-align:center;margin:12px 0"><button type="button" id="cricketVoiceTest" style="background:none;border:0;color:#f5c46c;text-decoration:underline;font:inherit;cursor:pointer;padding:8px">♫ Test Navjot Voice</button><div id="cricketVoiceStatus" role="status" aria-live="polite" style="font-size:13px;color:#d3dce6"></div></div>
         <button type="button" id="cricketStart" class="cricket-start">Play match ${icon('arrow')}</button>
         <nav class="practice-links" aria-label="Practice"><a href="/cricket-pinball/play/?practice=bat">${icon('bat')}Practise batting</a><a href="/cricket-pinball/play/?practice=bowl">${icon('ball')}Practise bowling</a></nav>
       </section>
@@ -79,6 +80,30 @@ function sync() {
 app.addEventListener('change',event=>{
   const key=event.target.dataset.setting;
   if(key==='format'||key==='difficulty'){state[key]=event.target.value;sync();}
+});
+app.querySelector('#cricketVoiceTest').addEventListener('click', async () => {
+  const button = app.querySelector('#cricketVoiceTest');
+  const status = app.querySelector('#cricketVoiceStatus');
+  button.disabled = true;
+  status.textContent = 'Generating commentary…';
+  const started = performance.now();
+  try {
+    const response = await fetch('/api/cricket-voice-test');
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error([data.error || `HTTP ${response.status}`, data.details].filter(Boolean).join(': '));
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audio.addEventListener('ended', () => URL.revokeObjectURL(url), { once: true });
+    await audio.play();
+    status.textContent = `Voice playing · ${Math.round(performance.now() - started)} ms`;
+  } catch (error) {
+    status.textContent = `Voice test failed: ${error.message}`;
+  } finally {
+    button.disabled = false;
+  }
 });
 app.addEventListener('click',event=>{
   if(event.target.closest('#cricketStart')){
