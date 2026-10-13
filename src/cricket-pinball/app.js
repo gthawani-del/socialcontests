@@ -96,7 +96,7 @@ app.querySelector('#cricketVoiceTest').addEventListener('click', async () => {
     const blob = await response.blob();
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
-    audio.playbackRate = 0.9;
+    audio.playbackRate = 1.0;
     audio.addEventListener('ended', () => URL.revokeObjectURL(url), { once: true });
     try { await audio.play(); } catch (error) {
       URL.revokeObjectURL(url);
