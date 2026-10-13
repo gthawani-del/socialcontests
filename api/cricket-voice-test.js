@@ -3,7 +3,7 @@ const SAMPLE = 'Oye hoye! Kya zabardast chhakka maara hai! Ball seedha stadium k
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
-  const key = process.env.FISH_AUDIO_API_KEY || process.env.FISHAUDIO_API_KEY || process.env.FISH_AUDIO_API;
+  const key = process.env.FISHAUDIO_API_KEY || process.env.FISH_AUDIO_API_KEY || process.env.FISHAUDIO_API_KEY || process.env.FISH_AUDIO_API;
   if (!key) return res.status(500).json({ error: 'Fish Audio API key missing in Vercel environment' });
   const started = Date.now();
   try {
