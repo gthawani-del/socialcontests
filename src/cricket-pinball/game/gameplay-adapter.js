@@ -247,6 +247,7 @@ export function createCricketGameplayAdapter({
     return Boolean(accepted);
   }
 
+  unsubs.push(engine.on('shot-boundary', hit => { if (shotLive) resolve(hit.outcome, {...hit,contact:lastBatFeedback}); }));
   unsubs.push(engine.on('fielder-intercept', hit => {
     if (!shotLive || resolved) return;
     resolve(hit.caught ? 'WICKET' : 'DOT', {

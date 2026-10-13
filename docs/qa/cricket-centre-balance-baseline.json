@@ -1,0 +1,701 @@
+[
+  {
+    "difficulty": "EASY",
+    "type": "PACE",
+    "length": "FULL",
+    "power": 0.24,
+    "wickets": 35,
+    "contacts": 23,
+    "reasons": {
+      "WICKET_DRAIN": 35,
+      "DELIVERY_ZONE": 8,
+      "FIELD_RETURN": 7
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "PACE",
+    "length": "FULL",
+    "power": 0.6,
+    "wickets": 28,
+    "contacts": 50,
+    "reasons": {
+      "WICKET_DRAIN": 28,
+      "FIELD_RETURN": 22
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "PACE",
+    "length": "FULL",
+    "power": 1,
+    "wickets": 1,
+    "contacts": 50,
+    "reasons": {
+      "DELIVERY_ZONE": 17,
+      "FIELD_RETURN": 26,
+      "WICKET_DRAIN": 1,
+      "SKILL_REJECTED": 1,
+      "FIELDED": 3,
+      "FIELD_STALLED": 1,
+      "FIELD_MAX_TIMEOUT": 1
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "PACE",
+    "length": "GOOD",
+    "power": 0.24,
+    "wickets": 35,
+    "contacts": 23,
+    "reasons": {
+      "WICKET_DRAIN": 35,
+      "DELIVERY_ZONE": 8,
+      "FIELD_RETURN": 7
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "PACE",
+    "length": "GOOD",
+    "power": 0.6,
+    "wickets": 28,
+    "contacts": 50,
+    "reasons": {
+      "WICKET_DRAIN": 28,
+      "FIELD_RETURN": 22
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "PACE",
+    "length": "GOOD",
+    "power": 1,
+    "wickets": 1,
+    "contacts": 50,
+    "reasons": {
+      "DELIVERY_ZONE": 17,
+      "FIELD_RETURN": 26,
+      "WICKET_DRAIN": 1,
+      "SKILL_REJECTED": 1,
+      "FIELDED": 3,
+      "FIELD_STALLED": 1,
+      "FIELD_MAX_TIMEOUT": 1
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "PACE",
+    "length": "SHORT",
+    "power": 0.24,
+    "wickets": 35,
+    "contacts": 23,
+    "reasons": {
+      "WICKET_DRAIN": 35,
+      "DELIVERY_ZONE": 8,
+      "FIELD_RETURN": 7
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "PACE",
+    "length": "SHORT",
+    "power": 0.6,
+    "wickets": 28,
+    "contacts": 50,
+    "reasons": {
+      "WICKET_DRAIN": 28,
+      "FIELD_RETURN": 22
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "PACE",
+    "length": "SHORT",
+    "power": 1,
+    "wickets": 1,
+    "contacts": 50,
+    "reasons": {
+      "DELIVERY_ZONE": 17,
+      "FIELD_RETURN": 30,
+      "WICKET_DRAIN": 1,
+      "FIELDED": 1,
+      "FIELD_MAX_TIMEOUT": 1
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "FLIPPER",
+    "length": "FULL",
+    "power": 0.24,
+    "wickets": 35,
+    "contacts": 42,
+    "reasons": {
+      "WICKET_DRAIN": 35,
+      "DELIVERY_ZONE": 7,
+      "FIELD_RETURN": 8
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "FLIPPER",
+    "length": "FULL",
+    "power": 0.6,
+    "wickets": 28,
+    "contacts": 42,
+    "reasons": {
+      "WICKET_DRAIN": 28,
+      "DELIVERY_ZONE": 2,
+      "FIELD_RETURN": 20
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "FLIPPER",
+    "length": "FULL",
+    "power": 1,
+    "wickets": 2,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 31,
+      "DELIVERY_ZONE": 10,
+      "FIELDED": 5,
+      "FIELD_MAX_TIMEOUT": 2,
+      "WICKET_DRAIN": 2
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "FLIPPER",
+    "length": "GOOD",
+    "power": 0.24,
+    "wickets": 35,
+    "contacts": 42,
+    "reasons": {
+      "WICKET_DRAIN": 35,
+      "DELIVERY_ZONE": 7,
+      "FIELD_RETURN": 8
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "FLIPPER",
+    "length": "GOOD",
+    "power": 0.6,
+    "wickets": 28,
+    "contacts": 42,
+    "reasons": {
+      "WICKET_DRAIN": 28,
+      "DELIVERY_ZONE": 2,
+      "FIELD_RETURN": 20
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "FLIPPER",
+    "length": "GOOD",
+    "power": 1,
+    "wickets": 2,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 31,
+      "DELIVERY_ZONE": 10,
+      "FIELDED": 5,
+      "FIELD_MAX_TIMEOUT": 2,
+      "WICKET_DRAIN": 2
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "FLIPPER",
+    "length": "SHORT",
+    "power": 0.24,
+    "wickets": 35,
+    "contacts": 42,
+    "reasons": {
+      "WICKET_DRAIN": 35,
+      "DELIVERY_ZONE": 7,
+      "FIELD_RETURN": 8
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "FLIPPER",
+    "length": "SHORT",
+    "power": 0.6,
+    "wickets": 28,
+    "contacts": 42,
+    "reasons": {
+      "WICKET_DRAIN": 28,
+      "DELIVERY_ZONE": 2,
+      "FIELD_RETURN": 20
+    }
+  },
+  {
+    "difficulty": "EASY",
+    "type": "FLIPPER",
+    "length": "SHORT",
+    "power": 1,
+    "wickets": 1,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 29,
+      "DELIVERY_ZONE": 12,
+      "FIELDED": 7,
+      "WICKET_DRAIN": 1,
+      "FIELD_MAX_TIMEOUT": 1
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "PACE",
+    "length": "FULL",
+    "power": 0.24,
+    "wickets": 29,
+    "contacts": 40,
+    "reasons": {
+      "WICKET_DRAIN": 29,
+      "FIELD_RETURN": 21
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "PACE",
+    "length": "FULL",
+    "power": 0.6,
+    "wickets": 8,
+    "contacts": 42,
+    "reasons": {
+      "FIELD_RETURN": 42,
+      "WICKET_DRAIN": 8
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "PACE",
+    "length": "FULL",
+    "power": 1,
+    "wickets": 2,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 38,
+      "DELIVERY_ZONE": 8,
+      "WICKET_DRAIN": 2,
+      "FIELDED": 2
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "PACE",
+    "length": "GOOD",
+    "power": 0.24,
+    "wickets": 29,
+    "contacts": 40,
+    "reasons": {
+      "WICKET_DRAIN": 29,
+      "FIELD_RETURN": 21
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "PACE",
+    "length": "GOOD",
+    "power": 0.6,
+    "wickets": 8,
+    "contacts": 42,
+    "reasons": {
+      "FIELD_RETURN": 42,
+      "WICKET_DRAIN": 8
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "PACE",
+    "length": "GOOD",
+    "power": 1,
+    "wickets": 2,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 38,
+      "DELIVERY_ZONE": 8,
+      "WICKET_DRAIN": 2,
+      "FIELDED": 2
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "PACE",
+    "length": "SHORT",
+    "power": 0.24,
+    "wickets": 29,
+    "contacts": 40,
+    "reasons": {
+      "WICKET_DRAIN": 29,
+      "FIELD_RETURN": 21
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "PACE",
+    "length": "SHORT",
+    "power": 0.6,
+    "wickets": 8,
+    "contacts": 42,
+    "reasons": {
+      "FIELD_RETURN": 42,
+      "WICKET_DRAIN": 8
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "PACE",
+    "length": "SHORT",
+    "power": 1,
+    "wickets": 2,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 36,
+      "DELIVERY_ZONE": 10,
+      "WICKET_DRAIN": 2,
+      "FIELDED": 2
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "FLIPPER",
+    "length": "FULL",
+    "power": 0.24,
+    "wickets": 28,
+    "contacts": 22,
+    "reasons": {
+      "WICKET_DRAIN": 28,
+      "FIELD_RETURN": 22
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "FLIPPER",
+    "length": "FULL",
+    "power": 0.6,
+    "wickets": 8,
+    "contacts": 42,
+    "reasons": {
+      "FIELD_RETURN": 42,
+      "WICKET_DRAIN": 8
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "FLIPPER",
+    "length": "FULL",
+    "power": 1,
+    "wickets": 1,
+    "contacts": 50,
+    "reasons": {
+      "DELIVERY_ZONE": 15,
+      "FIELD_RETURN": 30,
+      "FIELDED": 4,
+      "WICKET_DRAIN": 1
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "FLIPPER",
+    "length": "GOOD",
+    "power": 0.24,
+    "wickets": 28,
+    "contacts": 22,
+    "reasons": {
+      "WICKET_DRAIN": 28,
+      "FIELD_RETURN": 22
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "FLIPPER",
+    "length": "GOOD",
+    "power": 0.6,
+    "wickets": 8,
+    "contacts": 42,
+    "reasons": {
+      "FIELD_RETURN": 42,
+      "WICKET_DRAIN": 8
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "FLIPPER",
+    "length": "GOOD",
+    "power": 1,
+    "wickets": 1,
+    "contacts": 50,
+    "reasons": {
+      "DELIVERY_ZONE": 15,
+      "FIELD_RETURN": 30,
+      "FIELDED": 4,
+      "WICKET_DRAIN": 1
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "FLIPPER",
+    "length": "SHORT",
+    "power": 0.24,
+    "wickets": 28,
+    "contacts": 22,
+    "reasons": {
+      "WICKET_DRAIN": 28,
+      "FIELD_RETURN": 22
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "FLIPPER",
+    "length": "SHORT",
+    "power": 0.6,
+    "wickets": 8,
+    "contacts": 42,
+    "reasons": {
+      "FIELD_RETURN": 42,
+      "WICKET_DRAIN": 8
+    }
+  },
+  {
+    "difficulty": "MEDIUM",
+    "type": "FLIPPER",
+    "length": "SHORT",
+    "power": 1,
+    "wickets": 1,
+    "contacts": 50,
+    "reasons": {
+      "DELIVERY_ZONE": 13,
+      "FIELD_RETURN": 31,
+      "FIELDED": 4,
+      "WICKET_DRAIN": 1,
+      "FIELD_MAX_TIMEOUT": 1
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "PACE",
+    "length": "FULL",
+    "power": 0.24,
+    "wickets": 20,
+    "contacts": 30,
+    "reasons": {
+      "DELIVERY_ZONE": 30,
+      "WICKET_DRAIN": 20
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "PACE",
+    "length": "FULL",
+    "power": 0.6,
+    "wickets": 4,
+    "contacts": 46,
+    "reasons": {
+      "FIELD_RETURN": 26,
+      "DELIVERY_ZONE": 20,
+      "WICKET_DRAIN": 4
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "PACE",
+    "length": "FULL",
+    "power": 1,
+    "wickets": 0,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 43,
+      "DELIVERY_ZONE": 7
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "PACE",
+    "length": "GOOD",
+    "power": 0.24,
+    "wickets": 20,
+    "contacts": 30,
+    "reasons": {
+      "DELIVERY_ZONE": 30,
+      "WICKET_DRAIN": 20
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "PACE",
+    "length": "GOOD",
+    "power": 0.6,
+    "wickets": 4,
+    "contacts": 46,
+    "reasons": {
+      "FIELD_RETURN": 26,
+      "DELIVERY_ZONE": 20,
+      "WICKET_DRAIN": 4
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "PACE",
+    "length": "GOOD",
+    "power": 1,
+    "wickets": 0,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 43,
+      "DELIVERY_ZONE": 7
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "PACE",
+    "length": "SHORT",
+    "power": 0.24,
+    "wickets": 20,
+    "contacts": 30,
+    "reasons": {
+      "DELIVERY_ZONE": 30,
+      "WICKET_DRAIN": 20
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "PACE",
+    "length": "SHORT",
+    "power": 0.6,
+    "wickets": 4,
+    "contacts": 46,
+    "reasons": {
+      "FIELD_RETURN": 26,
+      "DELIVERY_ZONE": 20,
+      "WICKET_DRAIN": 4
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "PACE",
+    "length": "SHORT",
+    "power": 1,
+    "wickets": 0,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 41,
+      "DELIVERY_ZONE": 8,
+      "FIELDED": 1
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "FLIPPER",
+    "length": "FULL",
+    "power": 0.24,
+    "wickets": 19,
+    "contacts": 31,
+    "reasons": {
+      "FIELD_RETURN": 31,
+      "WICKET_DRAIN": 19
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "FLIPPER",
+    "length": "FULL",
+    "power": 0.6,
+    "wickets": 4,
+    "contacts": 46,
+    "reasons": {
+      "FIELD_RETURN": 46,
+      "WICKET_DRAIN": 4
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "FLIPPER",
+    "length": "FULL",
+    "power": 1,
+    "wickets": 0,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 34,
+      "DELIVERY_ZONE": 14,
+      "FIELDED": 2
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "FLIPPER",
+    "length": "GOOD",
+    "power": 0.24,
+    "wickets": 19,
+    "contacts": 31,
+    "reasons": {
+      "FIELD_RETURN": 31,
+      "WICKET_DRAIN": 19
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "FLIPPER",
+    "length": "GOOD",
+    "power": 0.6,
+    "wickets": 4,
+    "contacts": 46,
+    "reasons": {
+      "FIELD_RETURN": 46,
+      "WICKET_DRAIN": 4
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "FLIPPER",
+    "length": "GOOD",
+    "power": 1,
+    "wickets": 0,
+    "contacts": 50,
+    "reasons": {
+      "FIELD_RETURN": 34,
+      "DELIVERY_ZONE": 14,
+      "FIELDED": 2
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "FLIPPER",
+    "length": "SHORT",
+    "power": 0.24,
+    "wickets": 19,
+    "contacts": 31,
+    "reasons": {
+      "FIELD_RETURN": 31,
+      "WICKET_DRAIN": 19
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "FLIPPER",
+    "length": "SHORT",
+    "power": 0.6,
+    "wickets": 4,
+    "contacts": 46,
+    "reasons": {
+      "FIELD_RETURN": 46,
+      "WICKET_DRAIN": 4
+    }
+  },
+  {
+    "difficulty": "HARD",
+    "type": "FLIPPER",
+    "length": "SHORT",
+    "power": 1,
+    "wickets": 0,
+    "contacts": 50,
+    "reasons": {
+      "DELIVERY_ZONE": 13,
+      "FIELD_RETURN": 35,
+      "FIELDED": 2
+    }
+  }
+]

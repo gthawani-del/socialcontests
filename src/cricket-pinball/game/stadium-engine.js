@@ -20,6 +20,7 @@ export class StadiumEngine extends PinballEngine {
       [...this.flippers.entries()].map(([id, state]) => [id, state.config.radius])
     );
     this.difficulty = 'MEDIUM';
+    this.shotMode = 'GROUND';
   }
 
   setDifficulty(difficulty = 'MEDIUM', config = {}) {
@@ -42,6 +43,7 @@ export class StadiumEngine extends PinballEngine {
     this.verticalVelocity = 0;
     this.deliveryFlight = false;
     this.shotFlight = null;
+    this.deliveryShotMode = null;
     this.fielded = false;
   }
 
@@ -148,12 +150,65 @@ export class StadiumEngine extends PinballEngine {
   beginShotFlight(feedback) {
     this.deliveryFlight = false;
     this.ball.height = 0;
-    // A mistimed attacking contact lifts the ball. Power alone never causes a catch.
-    const lofted = feedback.shotIntent === 'ATTACK' && feedback.timing !== 'PERFECT' && Math.abs(feedback.lateralRatioAfter ?? 0) < .8;
-    this.verticalVelocity = lofted ? 3.5 : 0;
-    this.shotFlight = {lofted, bounced:false};
+    const lofted = (this.deliveryShotMode || this.shotMode) === 'LOFT';
+    const quality = Math.max(0, Math.min(1, Number(feedback.quality ?? .5)));
+    // A deliberate loft trades distance for height. Poor contact falls short.
+    this.verticalVelocity = lofted ? 2.4 + 3.2 * quality : 0;
+    if (lofted) {
+      const carry = .64 + .36 * quality;
+      this.ball.velocity.x *= carry;
+      this.ball.velocity.z *= carry;
+    }
+    this.shotFlight = {lofted, bounced:false, groundContacts:0};
     this.fielded = false;
     return lofted;
+  }
+
+  markShotGroundContact(surface) {
+    if (!this.shotFlight) return;
+    this.shotFlight.bounced = true;
+    this.shotFlight.groundContacts = (this.shotFlight.groundContacts || 0) + 1;
+    this.emit('shot-ground-contact', {surface, x:this.ball.position.x, z:this.ball.position.z});
+  }
+
+  setFieldPosition(id, slotId) {
+    if (!this.isAwaitingLaunch() && !this.frozen) return false;
+    const fielder=this.config.fielders?.find(f=>f.id===id);
+    const slot=this.config.fieldingSlots?.find(s=>s.id===slotId);
+    if (!fielder || !slot || this.config.fielders.some(f=>f!==fielder && Math.hypot(f.x-slot.x,f.z-slot.z)<.3)) return false;
+    Object.assign(fielder,{x:slot.x,z:slot.z,slotId});
+    return true;
+  }
+
+  resetFieldPositions() {
+    if (!this.isAwaitingLaunch() && !this.frozen) return false;
+    for (const f of this.config.fielders || []) {
+      const slot=this.config.fieldingSlots.find(s=>s.id===f.id);
+      Object.assign(f,{x:slot.x,z:slot.z,slotId:slot.id});
+    }
+    return true;
+  }
+
+  beforeTableCollisions() {
+    if (!this.shotFlight || this.frozen || this.ramp) return;
+    this.checkFielders(this.previousPosition, this.previousHeight);
+    if (this.frozen) return false;
+    const b=this.config.boundary, p=this.ball.position, a=this.previousPosition;
+    if (!b || !this.shotFlight.lofted || p.z>b.maxZ) return;
+    const value=p=>p.x*p.x/(b.radiusX*b.radiusX)+p.z*p.z/(b.radiusZ*b.radiusZ);
+    if (value(a)<=1 && value(p)>1) {
+      this.emit('shot-boundary', {outcome:this.shotFlight.lofted && !this.shotFlight.bounced ? 'SIX':'FOUR',
+        reason:this.shotFlight.lofted && !this.shotFlight.bounced ? 'AERIAL_SIX':'GROUND_BOUNDARY',
+        height:this.ball.height, groundContacts:this.shotFlight.groundContacts});
+      if (this.frozen) return false;
+    }
+  }
+
+  shouldCollideWithWall(wall) {
+    if (!this.shotFlight || this.ramp) return true;
+    if (this.shotFlight.lofted && wall.id.startsWith('stadium-boundary-') && this.ball.position.z<=this.config.boundary.maxZ) return false;
+    // Raised balls clear the low gate structures; grounded shots retain pinball geometry.
+    return !(this.ball.height > .55 && !wall.id.startsWith('stadium-boundary-'));
   }
 
   advanceShotHeight(dt) {
@@ -161,7 +216,7 @@ export class StadiumEngine extends PinballEngine {
     this.ball.height += this.verticalVelocity*dt - 4.905*dt*dt;
     this.verticalVelocity -= 9.81*dt;
     if (this.ball.height <= 0 && this.verticalVelocity < 0) {
-      this.ball.height = 0; this.verticalVelocity = 0; this.shotFlight.bounced = true;
+      this.ball.height = 0; this.verticalVelocity = 0; this.markShotGroundContact('PITCH');
     }
   }
 
@@ -173,7 +228,7 @@ export class StadiumEngine extends PinballEngine {
       const distance=Math.hypot(before.x+t*dx-fielder.x,before.z+t*dz-fielder.z);
       const height=beforeHeight+(this.ball.height-beforeHeight)*t;
       if (distance > fielder.radius+this.config.ball.radius || height > fielder.reach) continue;
-      const caught=this.shotFlight.lofted && !this.shotFlight.bounced && height>.025;
+      const caught=this.shotFlight.lofted && !this.shotFlight.bounced && height>0 && !(this.shotFlight.groundContacts > 0);
       // Intercept at the fielder, with no random dismissal roll.
       this.fielded=true;
       this.emit('fielder-intercept',{fielderId:fielder.id,caught,height});
@@ -210,6 +265,7 @@ export class StadiumEngine extends PinballEngine {
   }
 
   isDeliveryZoneEligible(zone) {
+    if (this.shotFlight?.lofted && !this.shotFlight.bounced) return false;
     if (zone.requiresRoute) return this.completedRoute === zone.requiresRoute;
     if (zone.entryZ === undefined) return true;
     const before = this.previousPosition, after = this.ball.position;
@@ -226,12 +282,14 @@ export class StadiumEngine extends PinballEngine {
     const before = { ...this.ball.position };
     this.previousPosition = before;
     const beforeHeight = this.ball.height;
+    this.previousHeight = beforeHeight;
     this.advanceShotHeight(dt);
     this.advanceDeliveryHeight(dt);
     this.applyDeliveryVariation(dt);
     super.integrateSubstep(dt);
-    this.checkFielders(before, beforeHeight);
+
     if (this.frozen || !this.ball.active || this.launcher.inLane || this.launcher.deliveryGuideActive) return;
+    if (this.shotFlight?.lofted && !this.shotFlight.bounced) return;
     for (const route of this.routes) {
       const start = route.points[0];
       if (this.ball.height > start.height + this.config.ball.radius) continue;
@@ -243,6 +301,7 @@ export class StadiumEngine extends PinballEngine {
       const sample = this.sampleRoute(route, 0);
       const speed = this.ball.velocity.x * sample.tx + this.ball.velocity.z * sample.tz;
       if (speed <= 0) continue;
+      this.markShotGroundContact('RAMP');
       this.ramp = { route, distance: 0, speed };
       this.deliveryFlight = false;
       this.verticalVelocity = 0;

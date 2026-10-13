@@ -50,7 +50,22 @@ await page.locator('#chooseBowl').click({timeout:15000});
 await page.locator('#confirmBowler').click();
 assert.equal(await page.locator('#score').isVisible(),true,'show score for innings');
 await page.waitForFunction(()=>!document.querySelector('#movementPicker').disabled);
-await page.locator('#lengthPicker').click();await page.locator('[data-zone-line="LEFT"][data-zone-length="GOOD"]').click();await page.locator('#closeLength').click();await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
+await page.locator('#movementPicker').click();await page.locator('#lengthPicker').click();await page.locator('[data-zone-line="LEFT"][data-zone-length="GOOD"]').click();await page.locator('#closeLength').click();await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
+assert.equal(await page.locator('[data-quick-type]:visible').count(),3,'three legal quick deliveries');
+await page.locator('[data-quick-type="PACE"]').click();
+assert.equal((await page.evaluate(()=>window.__stadiumQA.snapshot())).bowling.type,'PACE');
+const aimPoint=await page.evaluate(()=>window.__stadiumQA.project(.5,1.88));
+await page.mouse.click(aimPoint.x,aimPoint.y);
+const aimed=await page.evaluate(()=>window.__stadiumQA.snapshot().bowling);
+assert.equal(aimed.line,'RIGHT','canvas tap selects actual right line');assert.equal(aimed.length,'FULL','canvas tap selects actual full length');
+const defaultField=await page.evaluate(()=>window.__stadiumQA.snapshot().fielders);
+async function openField(){await page.locator('#movementPicker').click();await page.locator('#editField').click();await page.locator('#fieldEditor').waitFor();}
+await openField();await page.locator('[data-position-id="cover"]').click();await page.locator('[data-position-id="deep-cover"]').click();
+const customField=await page.evaluate(()=>window.__stadiumQA.snapshot().fielders);
+assert.equal(customField.find(f=>f.id==='cover').slotId,'deep-cover','field selection changes engine geometry');
+await page.locator('#defaultField').click();
+assert.deepEqual((await page.evaluate(()=>window.__stadiumQA.snapshot().fielders)).map(f=>[f.id,f.x,f.z]),defaultField.map(f=>[f.id,f.x,f.z]),'reset restores exact field');
+await page.locator('[data-position-id="cover"]').click();await page.locator('[data-position-id="deep-cover"]').click();await page.locator('#closeField').click();
 await writeFile('docs/qa/match-setup-layouts.json',JSON.stringify(setupLayouts,null,2));
 const layouts=[];
 for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,390],['desktop',1365,900]]){
@@ -63,6 +78,16 @@ for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,3
  assert.equal(await page.locator('[data-type]:visible svg').count(),6);
  if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/delivery-options-${name}.png`});
  await page.locator('#closeDelivery').click();
+ {
+   await openField();await page.locator('[data-position-id="cover"]').click();
+   assert.equal(await page.locator('[data-position-id="midwicket"]').isDisabled(),true,'occupied slot is unavailable');
+   const fieldBoxes=await page.locator('[data-position-id]').evaluateAll(buttons=>buttons.map(b=>({id:b.dataset.positionId,...b.getBoundingClientRect().toJSON()})));
+   assert(fieldBoxes.every(b=>b.x>=0&&b.y>=0&&b.right<=w&&b.bottom<=h),'field targets remain in viewport');
+   for(let i=0;i<fieldBoxes.length;i++)for(let j=i+1;j<fieldBoxes.length;j++){const a=fieldBoxes[i],b=fieldBoxes[j];assert(a.right<=b.x||b.right<=a.x||a.bottom<=b.y||b.bottom<=a.y,`field targets ${a.id}/${b.id} must not overlap at ${name}`);}
+   assert(fieldBoxes.every(b=>b.height>=44),'field targets preserve44px touch size');
+   if((name==='mobile'||name==='small')&&(!process.env.QA_SKIP_SCREENSHOTS||process.env.QA_CAPTURE))await page.screenshot({timeout:60000,path:`docs/qa/field-edit-${name}.png`});
+   await page.locator('#closeField').click();
+ }
  assert.equal(await page.locator('#movementPicker').getAttribute('aria-expanded'),'false');
  if(process.env.QA_CAPTURE)await page.screenshot({timeout:60000,path:`docs/qa/cricket-integrated-lever-${name}.png`});
  layouts.push({name,...layout});if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/bowling-feedback-${name}.png`});
@@ -73,15 +98,17 @@ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,i
 await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:y+30,id:1}]});
 await page.waitForTimeout(60);const held=await page.evaluate(()=>window.__stadiumQA.snapshot().plunger);assert(held.dragging&&held.pull>.5&&held.glow>0);
 await cdp.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});assert.equal(await page.evaluate(()=>window.__stadiumQA.snapshot().running),false);
-await page.locator('#score').click();assert(await page.evaluate(()=>window.__stadiumQA.snapshot().paused));await page.locator('#closeMatchDetails').click();await page.waitForFunction(()=>!window.__stadiumQA.snapshot().paused);
+await page.locator('#score').click();assert(await page.evaluate(()=>window.__stadiumQA.snapshot().paused));assert.equal(await page.locator('#fieldEditor').isVisible(),false);assert.equal(await page.locator('#editField').isDisabled(),true,'paused field controls locked');await page.locator('#closeMatchDetails').click();await page.waitForFunction(()=>!window.__stadiumQA.snapshot().paused);
 await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
 await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
+assert.equal(await page.locator('#editField').isDisabled(),true,'field changes locked on launch');assert.equal(await page.locator('#fieldEditor').isVisible(),false);
 await page.waitForFunction(()=>window.__stadiumQA.snapshot().plunger.glow===0);const live=await page.evaluate(()=>window.__stadiumQA.snapshot());assert.equal(live.plunger.glow,0);
 await page.evaluate(()=>window.__stadiumQA.step(1600));
 assert.equal((await page.evaluate(()=>window.__stadiumQA.snapshot())).score.balls,1);
+assert.deepEqual(await page.evaluate(()=>window.__stadiumQA.snapshot().fielders),customField,'field arrangement survives counted delivery');
 assert.equal(await page.locator('#matchCommentary').innerText()==='',false);
 await page.locator('#score').click();assert.equal(await page.locator('.ball-results span').count(),1);assert.equal(await page.locator('.commentary-list li').count(),1);
-assert.deepEqual(errors,[]);await writeFile('docs/qa/bowling-feedback.json',JSON.stringify({layouts,held,live,errors,cancelDoesNotLaunch:true,oneReleaseOneDelivery:true},null,2));await page.locator('#closeMatchDetails').click();await page.locator('#restart').click();assert.equal(await page.locator('#score').isVisible(),false,'restart hides score');
+assert.deepEqual(errors,[]);await writeFile('docs/qa/bowling-feedback.json',JSON.stringify({layouts,held,live,aimed,defaultField,customField,fieldPersists:true,fieldLaunchLocked:true,errors,cancelDoesNotLaunch:true,oneReleaseOneDelivery:true},null,2));await page.locator('#closeMatchDetails').click();await page.locator('#restart').click();assert.equal(await page.locator('#score').isVisible(),false,'restart hides score');
 await page.locator('#beginStadiumToss').click();await page.waitForSelector('#callHeads');
 await page.evaluate(()=>{Math.random=()=>.9;});await page.locator('#callHeads').click();
 await page.waitForSelector('.toss-coin.tails:not(.flipping)');

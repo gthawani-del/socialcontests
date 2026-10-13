@@ -3,6 +3,8 @@ const names = {player:'You',cpu:'CPU'};
 export function deliveryCommentary(outcome, metadata = {}, ballNumber = 1) {
   if(outcome==='DEAD_BALL')return 'Dead ball. No score added; this delivery will be re-bowled.';
   if(metadata.reason==='CAUGHT_OUT')return 'Caught out! The fielder took the ball before it bounced.';
+  if(metadata.reason==='AERIAL_SIX')return 'Six! Cleared the boundary without bouncing.';
+  if(metadata.reason==='GROUND_BOUNDARY')return 'Four! Reached the boundary after bouncing.';
   if(metadata.reason==='FIELDED')return 'Fielded along the ground. Dot ball.';
   if(metadata.reason==='RISK_WICKET')return 'Wicket! The attacking shot was mistimed.';
   if(outcome==='WICKET' && ['WICKET_DRAIN','DRAIN'].includes(metadata.reason))return 'Wicket! The ball entered the wicket drain.';

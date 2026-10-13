@@ -22,6 +22,11 @@ await page.waitForFunction(()=>window.__stadiumQA?.ready,null,{timeout:60000});
 await page.evaluate(()=>{window.__stadiumQA.manual(true);Math.random=()=>.1;});
 await page.locator('#beginStadiumToss').click();await page.locator('#callHeads').click();await page.locator('#chooseBat').click({timeout:15000});
 await page.waitForFunction(()=>window.__stadiumQA.snapshot().score.number===1 && !window.__stadiumQA.snapshot().running);
+await page.locator('[data-shot="LOFT"]').click();
+assert.equal(await page.evaluate(()=>window.__stadiumQA.snapshot().shotMode),'LOFT','Loft selector changes actual engine mode');
+assert.equal(await page.locator('[data-shot="LOFT"]').getAttribute('aria-pressed'),'true');
+await page.locator('[data-shot="GROUND"]').click();
+assert.equal(await page.evaluate(()=>window.__stadiumQA.snapshot().shotMode),'GROUND','Ground selector restores low shot mode');
 const touch=await page.context().newCDPSession(page);
 const batPosition=await page.locator('#leftBat').boundingBox();
 const bothBoxes=await Promise.all(['left','right'].map(side=>page.locator('#'+side+'Bat').boundingBox()));
@@ -43,13 +48,14 @@ await touch.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]})
 const cancelled=await page.evaluate(()=>{window.__stadiumQA.step(20);return window.__stadiumQA.snapshot();});
 assert(!cancelled.flippers[0].pressed);assert(Math.abs(cancelled.flippers[0].angle-idleStart.flippers[0].angle)<.001);
 await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
+assert.equal(await page.locator('[data-shot="GROUND"]').isDisabled(),true);assert.equal(await page.locator('[data-shot="LOFT"]').isDisabled(),true,'shot type locked during delivery');
 const liveBatPosition=await page.locator('#leftBat').boundingBox();
 assert(Math.abs(liveBatPosition.y-batPosition.y)<1,'bat row stays stationary from preparation to live delivery');
 const result={before:await page.evaluate(()=>window.__stadiumQA.snapshot())};
 await page.locator('#score').click();
 const pausedBefore=await page.evaluate(()=>window.__stadiumQA.snapshot());
 const pausedAfter=await page.evaluate(()=>{window.__stadiumQA.step(300);return window.__stadiumQA.snapshot();});
-assert(pausedAfter.paused);assert.deepEqual(pausedAfter.ball,pausedBefore.ball);assert.equal(pausedAfter.score.balls,pausedBefore.score.balls);
+assert(pausedAfter.paused);assert.equal(await page.locator('[data-shot="LOFT"]').isDisabled(),true,'shot selection locked while paused');assert.deepEqual(pausedAfter.ball,pausedBefore.ball);assert.equal(pausedAfter.score.balls,pausedBefore.score.balls);
 await page.locator('#closeMatchDetails').click();
 await page.waitForFunction(()=>!window.__stadiumQA.snapshot().paused);
 
@@ -118,5 +124,5 @@ for(let wicket=1;wicket<=2;wicket++){
 }
 result.twoWicketFinish=wickets;
 assert.deepEqual(errors, [], 'no browser runtime errors');
-await writeFile('docs/qa/batting-regression.json',JSON.stringify({result,idleStart,idleHeld,cancelled,errors},null,2));console.log(JSON.stringify({samples:Object.fromEntries(Object.entries(result).filter(([k])=>!['fullOver','twoWicketFinish'].includes(k)).map(([k,v])=>[k,{flippers:v.flippers,ball:v.ball,score:v.score,running:v.running}])),errors}));
+await writeFile('docs/qa/batting-regression.json',JSON.stringify({result,idleStart,idleHeld,cancelled,shotSelectionVerified:true,shotLockedDuringDelivery:true,errors},null,2));console.log(JSON.stringify({samples:Object.fromEntries(Object.entries(result).filter(([k])=>!['fullOver','twoWicketFinish'].includes(k)).map(([k,v])=>[k,{flippers:v.flippers,ball:v.ball,score:v.score,running:v.running}])),errors}));
 }finally{await browser.close();await server.close();}

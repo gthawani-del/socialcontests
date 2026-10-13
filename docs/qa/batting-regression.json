@@ -1,12 +1,33 @@
 {
   "result": {
     "before": {
+      "fielders": [
+        {
+          "id": "cover",
+          "label": "COVER",
+          "x": -0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "cover"
+        },
+        {
+          "id": "midwicket",
+          "label": "MIDWICKET",
+          "x": 0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "midwicket"
+        }
+      ],
+      "shotMode": "GROUND",
       "bowling": {
         "bowler": "FAST",
         "length": "FULL",
         "line": "LEFT",
         "type": "PACE",
-        "power": 0.28,
+        "power": 0.29600000000000004,
         "movementScale": 1
       },
       "quality": "low",
@@ -55,153 +76,7 @@
           "risk": 0,
           "zone": "amber"
         },
-        "pull": 0.1,
-        "dragging": false,
-        "enabled": false,
-        "cpuMode": true,
-        "visible": true,
-        "glow": 0
-      },
-      "match": {
-        "format": "ONE_OVER",
-        "difficulty": "MEDIUM",
-        "ballsPerInnings": 6,
-        "maxWickets": 2,
-        "superOverBalls": 3,
-        "players": [
-          {
-            "id": "player"
-          },
-          {
-            "id": "cpu"
-          }
-        ],
-        "status": "BALL_LIVE",
-        "innings": 1,
-        "roundInnings": 1,
-        "superOverRound": 0,
-        "score": {
-          "runs": 0,
-          "wickets": 0,
-          "balls": 0
-        },
-        "target": null,
-        "requiredRuns": null,
-        "ballsRemaining": 6,
-        "battingPlayerId": "player",
-        "bowlingPlayerId": "cpu",
-        "toss": {
-          "call": "HEADS",
-          "result": "HEADS",
-          "callerId": "player",
-          "winnerId": "player",
-          "callerWon": true,
-          "choice": "BAT"
-        },
-        "result": null,
-        "deliveryOpen": true
-      },
-      "contactCount": 0,
-      "rampEntries": 0,
-      "accuracy": {
-        "x": 0,
-        "z": 0,
-        "risk": 0
-      },
-      "ball": {
-        "x": 1.8,
-        "z": 0.42912032196198835,
-        "height": 0.065,
-        "verticalVelocity": 0,
-        "velocity": {
-          "x": 0,
-          "z": -6.2304
-        },
-        "bounced": false,
-        "deliveryType": "PACE"
-      },
-      "score": {
-        "number": 1,
-        "battingPlayerId": "player",
-        "bowlingPlayerId": "cpu",
-        "runs": 0,
-        "wickets": 0,
-        "balls": 0,
-        "complete": false
-      },
-      "flippers": [
-        {
-          "id": "left",
-          "pressed": false,
-          "angle": -0.24993114888558798
-        },
-        {
-          "id": "right",
-          "pressed": false,
-          "angle": 3.391523802475381
-        }
-      ],
-      "alignment": [
-        1.8875832159447664e-16,
-        1.4946834900704544e-16
-      ]
-    },
-    "leftdown": {
-      "bowling": {
-        "bowler": "FAST",
-        "length": "FULL",
-        "line": "LEFT",
-        "type": "PACE",
-        "power": 0.28,
-        "movementScale": 1
-      },
-      "quality": "low",
-      "atmosphere": {
-        "reducedMotion": false,
-        "quality": "low",
-        "spectators": 240,
-        "active": false,
-        "elapsed": 0,
-        "flashCount": 0,
-        "flash": false,
-        "reaction": false
-      },
-      "rendering": {
-        "calls": 1,
-        "triangles": 1
-      },
-      "running": true,
-      "paused": false,
-      "audio": {
-        "loaded": 6,
-        "played": 4,
-        "failed": [],
-        "lastSound": "flipper",
-        "settings": {
-          "effects": 0.75,
-          "crowd": 0.45,
-          "muted": false
-        }
-      },
-      "vfx": {
-        "trail": false,
-        "sparks": false,
-        "target": false,
-        "shadow": true,
-        "shadowScale": 1.08125,
-        "shadowOpacity": 0.42477876106194695,
-        "reducedMotion": false,
-        "quality": "low"
-      },
-      "plunger": {
-        "band": {
-          "ideal": 0.8,
-          "low": 0.6000000000000001,
-          "red": 0.95,
-          "risk": 0,
-          "zone": "amber"
-        },
-        "pull": 0.1,
+        "pull": 0.12,
         "dragging": false,
         "enabled": false,
         "cpuMode": true,
@@ -278,8 +153,8 @@
       "flippers": [
         {
           "id": "left",
-          "pressed": true,
-          "angle": 0.9599310885968813
+          "pressed": false,
+          "angle": -0.24993114888558798
         },
         {
           "id": "right",
@@ -288,17 +163,38 @@
         }
       ],
       "alignment": [
-        7.850462293418876e-17,
+        1.8875832159447664e-16,
         1.4946834900704544e-16
       ]
     },
-    "leftup": {
+    "leftdown": {
+      "fielders": [
+        {
+          "id": "cover",
+          "label": "COVER",
+          "x": -0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "cover"
+        },
+        {
+          "id": "midwicket",
+          "label": "MIDWICKET",
+          "x": 0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "midwicket"
+        }
+      ],
+      "shotMode": "GROUND",
       "bowling": {
         "bowler": "FAST",
         "length": "FULL",
         "line": "LEFT",
         "type": "PACE",
-        "power": 0.28,
+        "power": 0.29600000000000004,
         "movementScale": 1
       },
       "quality": "low",
@@ -347,7 +243,7 @@
           "risk": 0,
           "zone": "amber"
         },
-        "pull": 0.1,
+        "pull": 0.12,
         "dragging": false,
         "enabled": false,
         "cpuMode": true,
@@ -424,8 +320,8 @@
       "flippers": [
         {
           "id": "left",
-          "pressed": false,
-          "angle": -0.24993114888558798
+          "pressed": true,
+          "angle": 0.9599310885968813
         },
         {
           "id": "right",
@@ -434,17 +330,38 @@
         }
       ],
       "alignment": [
-        1.8875832159447664e-16,
+        7.850462293418876e-17,
         1.4946834900704544e-16
       ]
     },
-    "rightdown": {
+    "leftup": {
+      "fielders": [
+        {
+          "id": "cover",
+          "label": "COVER",
+          "x": -0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "cover"
+        },
+        {
+          "id": "midwicket",
+          "label": "MIDWICKET",
+          "x": 0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "midwicket"
+        }
+      ],
+      "shotMode": "GROUND",
       "bowling": {
         "bowler": "FAST",
         "length": "FULL",
         "line": "LEFT",
         "type": "PACE",
-        "power": 0.28,
+        "power": 0.29600000000000004,
         "movementScale": 1
       },
       "quality": "low",
@@ -466,7 +383,7 @@
       "paused": false,
       "audio": {
         "loaded": 6,
-        "played": 5,
+        "played": 4,
         "failed": [],
         "lastSound": "flipper",
         "settings": {
@@ -493,7 +410,7 @@
           "risk": 0,
           "zone": "amber"
         },
-        "pull": 0.1,
+        "pull": 0.12,
         "dragging": false,
         "enabled": false,
         "cpuMode": true,
@@ -575,22 +492,43 @@
         },
         {
           "id": "right",
-          "pressed": true,
-          "angle": 2.181661564992912
+          "pressed": false,
+          "angle": 3.391523802475381
         }
       ],
       "alignment": [
         1.8875832159447664e-16,
-        5.551115123125783e-17
+        1.4946834900704544e-16
       ]
     },
-    "rightup": {
+    "rightdown": {
+      "fielders": [
+        {
+          "id": "cover",
+          "label": "COVER",
+          "x": -0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "cover"
+        },
+        {
+          "id": "midwicket",
+          "label": "MIDWICKET",
+          "x": 0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "midwicket"
+        }
+      ],
+      "shotMode": "GROUND",
       "bowling": {
         "bowler": "FAST",
         "length": "FULL",
         "line": "LEFT",
         "type": "PACE",
-        "power": 0.28,
+        "power": 0.29600000000000004,
         "movementScale": 1
       },
       "quality": "low",
@@ -639,7 +577,7 @@
           "risk": 0,
           "zone": "amber"
         },
-        "pull": 0.1,
+        "pull": 0.12,
         "dragging": false,
         "enabled": false,
         "cpuMode": true,
@@ -721,6 +659,173 @@
         },
         {
           "id": "right",
+          "pressed": true,
+          "angle": 2.181661564992912
+        }
+      ],
+      "alignment": [
+        1.8875832159447664e-16,
+        5.551115123125783e-17
+      ]
+    },
+    "rightup": {
+      "fielders": [
+        {
+          "id": "cover",
+          "label": "COVER",
+          "x": -0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "cover"
+        },
+        {
+          "id": "midwicket",
+          "label": "MIDWICKET",
+          "x": 0.85,
+          "z": -0.65,
+          "radius": 0.14,
+          "reach": 0.36,
+          "slotId": "midwicket"
+        }
+      ],
+      "shotMode": "GROUND",
+      "bowling": {
+        "bowler": "FAST",
+        "length": "FULL",
+        "line": "LEFT",
+        "type": "PACE",
+        "power": 0.29600000000000004,
+        "movementScale": 1
+      },
+      "quality": "low",
+      "atmosphere": {
+        "reducedMotion": false,
+        "quality": "low",
+        "spectators": 240,
+        "active": false,
+        "elapsed": 0,
+        "flashCount": 0,
+        "flash": false,
+        "reaction": false
+      },
+      "rendering": {
+        "calls": 1,
+        "triangles": 1
+      },
+      "running": true,
+      "paused": false,
+      "audio": {
+        "loaded": 6,
+        "played": 5,
+        "failed": [],
+        "lastSound": "flipper",
+        "settings": {
+          "effects": 0.75,
+          "crowd": 0.45,
+          "muted": false
+        }
+      },
+      "vfx": {
+        "trail": false,
+        "sparks": false,
+        "target": false,
+        "shadow": true,
+        "shadowScale": 1.132134114583333,
+        "shadowOpacity": 0.39623099028511793,
+        "reducedMotion": false,
+        "quality": "low"
+      },
+      "plunger": {
+        "band": {
+          "ideal": 0.8,
+          "low": 0.6000000000000001,
+          "red": 0.95,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0.12,
+        "dragging": false,
+        "enabled": false,
+        "cpuMode": true,
+        "visible": true,
+        "glow": 0
+      },
+      "match": {
+        "format": "ONE_OVER",
+        "difficulty": "MEDIUM",
+        "ballsPerInnings": 6,
+        "maxWickets": 2,
+        "superOverBalls": 3,
+        "players": [
+          {
+            "id": "player"
+          },
+          {
+            "id": "cpu"
+          }
+        ],
+        "status": "BALL_LIVE",
+        "innings": 1,
+        "roundInnings": 1,
+        "superOverRound": 0,
+        "score": {
+          "runs": 0,
+          "wickets": 0,
+          "balls": 0
+        },
+        "target": null,
+        "requiredRuns": null,
+        "ballsRemaining": 6,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "toss": {
+          "call": "HEADS",
+          "result": "HEADS",
+          "callerId": "player",
+          "winnerId": "player",
+          "callerWon": true,
+          "choice": "BAT"
+        },
+        "result": null,
+        "deliveryOpen": true
+      },
+      "contactCount": 0,
+      "rampEntries": 0,
+      "accuracy": {
+        "x": 0,
+        "z": 0,
+        "risk": 0
+      },
+      "ball": {
+        "x": -0.27546721465298835,
+        "z": 0.5055772440961976,
+        "height": 0.22379062499999894,
+        "verticalVelocity": -0.10900000000000448,
+        "velocity": {
+          "x": -1.3058880704623745,
+          "z": 6.388929896076501
+        },
+        "bounced": false,
+        "deliveryType": "PACE"
+      },
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0,
+        "complete": false
+      },
+      "flippers": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
           "pressed": false,
           "angle": 3.391523802475381
         }
@@ -732,12 +837,33 @@
     },
     "fullOver": [
       {
+        "fielders": [
+          {
+            "id": "cover",
+            "label": "COVER",
+            "x": -0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "cover"
+          },
+          {
+            "id": "midwicket",
+            "label": "MIDWICKET",
+            "x": 0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "midwicket"
+          }
+        ],
+        "shotMode": "GROUND",
         "bowling": {
           "bowler": "FAST",
           "length": "FULL",
           "line": "LEFT",
           "type": "PACE",
-          "power": 0.28,
+          "power": 0.29600000000000004,
           "movementScale": 1
         },
         "quality": "low",
@@ -772,7 +898,7 @@
           "trail": false,
           "sparks": false,
           "target": false,
-          "shadow": false,
+          "shadow": true,
           "shadowScale": 1,
           "shadowOpacity": 0.48,
           "reducedMotion": false,
@@ -786,7 +912,7 @@
             "risk": 0,
             "zone": "amber"
           },
-          "pull": 0.1,
+          "pull": 0.12,
           "dragging": false,
           "enabled": false,
           "cpuMode": true,
@@ -878,6 +1004,27 @@
         ]
       },
       {
+        "fielders": [
+          {
+            "id": "cover",
+            "label": "COVER",
+            "x": -0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "cover"
+          },
+          {
+            "id": "midwicket",
+            "label": "MIDWICKET",
+            "x": 0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "midwicket"
+          }
+        ],
+        "shotMode": "GROUND",
         "bowling": {
           "bowler": "FAST",
           "length": "FULL",
@@ -917,7 +1064,7 @@
         "vfx": {
           "trail": false,
           "sparks": false,
-          "target": true,
+          "target": false,
           "shadow": false,
           "shadowScale": 1,
           "shadowOpacity": 0.48,
@@ -1024,6 +1171,27 @@
         ]
       },
       {
+        "fielders": [
+          {
+            "id": "cover",
+            "label": "COVER",
+            "x": -0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "cover"
+          },
+          {
+            "id": "midwicket",
+            "label": "MIDWICKET",
+            "x": 0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "midwicket"
+          }
+        ],
+        "shotMode": "GROUND",
         "bowling": {
           "bowler": "FAST",
           "length": "FULL",
@@ -1064,7 +1232,7 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": true,
+          "shadow": false,
           "shadowScale": 1,
           "shadowOpacity": 0.48,
           "reducedMotion": false,
@@ -1170,6 +1338,27 @@
         ]
       },
       {
+        "fielders": [
+          {
+            "id": "cover",
+            "label": "COVER",
+            "x": -0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "cover"
+          },
+          {
+            "id": "midwicket",
+            "label": "MIDWICKET",
+            "x": 0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "midwicket"
+          }
+        ],
+        "shotMode": "GROUND",
         "bowling": {
           "bowler": "FAST",
           "length": "FULL",
@@ -1316,6 +1505,27 @@
         ]
       },
       {
+        "fielders": [
+          {
+            "id": "cover",
+            "label": "COVER",
+            "x": -0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "cover"
+          },
+          {
+            "id": "midwicket",
+            "label": "MIDWICKET",
+            "x": 0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "midwicket"
+          }
+        ],
+        "shotMode": "GROUND",
         "bowling": {
           "bowler": "FAST",
           "length": "FULL",
@@ -1355,7 +1565,7 @@
         "vfx": {
           "trail": false,
           "sparks": false,
-          "target": true,
+          "target": false,
           "shadow": true,
           "shadowScale": 1,
           "shadowOpacity": 0.48,
@@ -1462,6 +1672,27 @@
         ]
       },
       {
+        "fielders": [
+          {
+            "id": "cover",
+            "label": "COVER",
+            "x": -0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "cover"
+          },
+          {
+            "id": "midwicket",
+            "label": "MIDWICKET",
+            "x": 0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "midwicket"
+          }
+        ],
+        "shotMode": "GROUND",
         "bowling": {
           "bowler": "FAST",
           "length": "FULL",
@@ -1503,8 +1734,8 @@
           "sparks": false,
           "target": true,
           "shadow": true,
-          "shadowScale": 1.0053663194444444,
-          "shadowOpacity": 0.4759137516490356,
+          "shadowScale": 1,
+          "shadowOpacity": 0.48,
           "reducedMotion": false,
           "quality": "low"
         },
@@ -1610,6 +1841,27 @@
     ],
     "twoWicketFinish": [
       {
+        "fielders": [
+          {
+            "id": "cover",
+            "label": "COVER",
+            "x": -0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "cover"
+          },
+          {
+            "id": "midwicket",
+            "label": "MIDWICKET",
+            "x": 0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "midwicket"
+          }
+        ],
+        "shotMode": "GROUND",
         "bowling": {
           "bowler": "MEDIUM",
           "length": "GOOD",
@@ -1650,7 +1902,7 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": true,
+          "shadow": false,
           "shadowScale": 1.08125,
           "shadowOpacity": 0.42477876106194695,
           "reducedMotion": false,
@@ -1756,6 +2008,27 @@
         ]
       },
       {
+        "fielders": [
+          {
+            "id": "cover",
+            "label": "COVER",
+            "x": -0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "cover"
+          },
+          {
+            "id": "midwicket",
+            "label": "MIDWICKET",
+            "x": 0.85,
+            "z": -0.65,
+            "radius": 0.14,
+            "reach": 0.36,
+            "slotId": "midwicket"
+          }
+        ],
+        "shotMode": "GROUND",
         "bowling": {
           "bowler": "MEDIUM",
           "length": "GOOD",
@@ -1904,151 +2177,33 @@
     ]
   },
   "idleStart": {
-    "bowling": {
-      "bowler": "FAST",
-      "length": "GOOD",
-      "line": "CENTRE",
-      "type": "PACE",
-      "power": 0.6000000000000001,
-      "movementScale": 1
-    },
-    "quality": "low",
-    "atmosphere": {
-      "reducedMotion": false,
-      "quality": "low",
-      "spectators": 240,
-      "active": false,
-      "elapsed": 0,
-      "flashCount": 0,
-      "flash": false,
-      "reaction": false
-    },
-    "rendering": {
-      "calls": 1,
-      "triangles": 1
-    },
-    "running": false,
-    "paused": false,
-    "audio": {
-      "loaded": 6,
-      "played": 1,
-      "failed": [],
-      "lastSound": "flipper",
-      "settings": {
-        "effects": 0.75,
-        "crowd": 0.45,
-        "muted": false
-      }
-    },
-    "vfx": {
-      "trail": false,
-      "sparks": false,
-      "target": false,
-      "shadow": false,
-      "shadowScale": 1.08125,
-      "shadowOpacity": 0.42477876106194695,
-      "reducedMotion": false,
-      "quality": "low"
-    },
-    "plunger": {
-      "band": {
-        "ideal": 0.8,
-        "low": 0.6000000000000001,
-        "red": 0.95,
-        "risk": 0,
-        "zone": "green"
-      },
-      "pull": 0.5,
-      "dragging": false,
-      "enabled": false,
-      "cpuMode": true,
-      "visible": true,
-      "glow": 0
-    },
-    "match": {
-      "format": "ONE_OVER",
-      "difficulty": "MEDIUM",
-      "ballsPerInnings": 6,
-      "maxWickets": 2,
-      "superOverBalls": 3,
-      "players": [
-        {
-          "id": "player"
-        },
-        {
-          "id": "cpu"
-        }
-      ],
-      "status": "DELIVERY_SETUP",
-      "innings": 1,
-      "roundInnings": 1,
-      "superOverRound": 0,
-      "score": {
-        "runs": 0,
-        "wickets": 0,
-        "balls": 0
-      },
-      "target": null,
-      "requiredRuns": null,
-      "ballsRemaining": 6,
-      "battingPlayerId": "player",
-      "bowlingPlayerId": "cpu",
-      "toss": {
-        "call": "HEADS",
-        "result": "HEADS",
-        "callerId": "player",
-        "winnerId": "player",
-        "callerWon": true,
-        "choice": "BAT"
-      },
-      "result": null,
-      "deliveryOpen": false
-    },
-    "contactCount": 0,
-    "rampEntries": 0,
-    "ball": {
-      "x": 1.25,
-      "z": 2.4,
-      "height": 0.065,
-      "verticalVelocity": 0,
-      "velocity": {
-        "x": 0,
-        "z": 0
-      }
-    },
-    "score": {
-      "number": 1,
-      "battingPlayerId": "player",
-      "bowlingPlayerId": "cpu",
-      "runs": 0,
-      "wickets": 0,
-      "balls": 0,
-      "complete": false
-    },
-    "flippers": [
+    "fielders": [
       {
-        "id": "left",
-        "pressed": false,
-        "angle": -0.24993114888558798
+        "id": "cover",
+        "label": "COVER",
+        "x": -0.85,
+        "z": -0.65,
+        "radius": 0.14,
+        "reach": 0.36,
+        "slotId": "cover"
       },
       {
-        "id": "right",
-        "pressed": false,
-        "angle": 3.391523802475381
+        "id": "midwicket",
+        "label": "MIDWICKET",
+        "x": 0.85,
+        "z": -0.65,
+        "radius": 0.14,
+        "reach": 0.36,
+        "slotId": "midwicket"
       }
     ],
-    "alignment": [
-      1.8875832159447664e-16,
-      1.4946834900704544e-16
-    ]
-  },
-  "idleHeld": {
+    "shotMode": "GROUND",
     "bowling": {
       "bowler": "FAST",
       "length": "FULL",
       "line": "LEFT",
       "type": "PACE",
-      "power": 0.28,
+      "power": 0.29600000000000004,
       "movementScale": 1
     },
     "quality": "low",
@@ -2070,9 +2225,9 @@
     "paused": false,
     "audio": {
       "loaded": 6,
-      "played": 3,
+      "played": 2,
       "failed": [],
-      "lastSound": "flipper",
+      "lastSound": "launch",
       "settings": {
         "effects": 0.75,
         "crowd": 0.45,
@@ -2097,7 +2252,7 @@
         "risk": 0,
         "zone": "amber"
       },
-      "pull": 0.1,
+      "pull": 0.12,
       "dragging": false,
       "enabled": false,
       "cpuMode": true,
@@ -2174,8 +2329,8 @@
     "flippers": [
       {
         "id": "left",
-        "pressed": true,
-        "angle": 0.9599310885968813
+        "pressed": false,
+        "angle": -0.24993114888558798
       },
       {
         "id": "right",
@@ -2184,17 +2339,38 @@
       }
     ],
     "alignment": [
-      7.850462293418876e-17,
+      1.8875832159447664e-16,
       1.4946834900704544e-16
     ]
   },
-  "cancelled": {
+  "idleHeld": {
+    "fielders": [
+      {
+        "id": "cover",
+        "label": "COVER",
+        "x": -0.85,
+        "z": -0.65,
+        "radius": 0.14,
+        "reach": 0.36,
+        "slotId": "cover"
+      },
+      {
+        "id": "midwicket",
+        "label": "MIDWICKET",
+        "x": 0.85,
+        "z": -0.65,
+        "radius": 0.14,
+        "reach": 0.36,
+        "slotId": "midwicket"
+      }
+    ],
+    "shotMode": "GROUND",
     "bowling": {
       "bowler": "FAST",
       "length": "FULL",
       "line": "LEFT",
       "type": "PACE",
-      "power": 0.28,
+      "power": 0.29600000000000004,
       "movementScale": 1
     },
     "quality": "low",
@@ -2243,7 +2419,7 @@
         "risk": 0,
         "zone": "amber"
       },
-      "pull": 0.1,
+      "pull": 0.12,
       "dragging": false,
       "enabled": false,
       "cpuMode": true,
@@ -2320,6 +2496,173 @@
     "flippers": [
       {
         "id": "left",
+        "pressed": true,
+        "angle": 0.9599310885968813
+      },
+      {
+        "id": "right",
+        "pressed": false,
+        "angle": 3.391523802475381
+      }
+    ],
+    "alignment": [
+      7.850462293418876e-17,
+      1.4946834900704544e-16
+    ]
+  },
+  "cancelled": {
+    "fielders": [
+      {
+        "id": "cover",
+        "label": "COVER",
+        "x": -0.85,
+        "z": -0.65,
+        "radius": 0.14,
+        "reach": 0.36,
+        "slotId": "cover"
+      },
+      {
+        "id": "midwicket",
+        "label": "MIDWICKET",
+        "x": 0.85,
+        "z": -0.65,
+        "radius": 0.14,
+        "reach": 0.36,
+        "slotId": "midwicket"
+      }
+    ],
+    "shotMode": "GROUND",
+    "bowling": {
+      "bowler": "FAST",
+      "length": "FULL",
+      "line": "LEFT",
+      "type": "PACE",
+      "power": 0.29600000000000004,
+      "movementScale": 1
+    },
+    "quality": "low",
+    "atmosphere": {
+      "reducedMotion": false,
+      "quality": "low",
+      "spectators": 240,
+      "active": false,
+      "elapsed": 0,
+      "flashCount": 0,
+      "flash": false,
+      "reaction": false
+    },
+    "rendering": {
+      "calls": 1,
+      "triangles": 1
+    },
+    "running": true,
+    "paused": false,
+    "audio": {
+      "loaded": 6,
+      "played": 3,
+      "failed": [],
+      "lastSound": "flipper",
+      "settings": {
+        "effects": 0.75,
+        "crowd": 0.45,
+        "muted": false
+      }
+    },
+    "vfx": {
+      "trail": false,
+      "sparks": false,
+      "target": false,
+      "shadow": true,
+      "shadowScale": 1.08125,
+      "shadowOpacity": 0.42477876106194695,
+      "reducedMotion": false,
+      "quality": "low"
+    },
+    "plunger": {
+      "band": {
+        "ideal": 0.8,
+        "low": 0.6000000000000001,
+        "red": 0.95,
+        "risk": 0,
+        "zone": "amber"
+      },
+      "pull": 0.12,
+      "dragging": false,
+      "enabled": false,
+      "cpuMode": true,
+      "visible": true,
+      "glow": 0
+    },
+    "match": {
+      "format": "ONE_OVER",
+      "difficulty": "MEDIUM",
+      "ballsPerInnings": 6,
+      "maxWickets": 2,
+      "superOverBalls": 3,
+      "players": [
+        {
+          "id": "player"
+        },
+        {
+          "id": "cpu"
+        }
+      ],
+      "status": "BALL_LIVE",
+      "innings": 1,
+      "roundInnings": 1,
+      "superOverRound": 0,
+      "score": {
+        "runs": 0,
+        "wickets": 0,
+        "balls": 0
+      },
+      "target": null,
+      "requiredRuns": null,
+      "ballsRemaining": 6,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "toss": {
+        "call": "HEADS",
+        "result": "HEADS",
+        "callerId": "player",
+        "winnerId": "player",
+        "callerWon": true,
+        "choice": "BAT"
+      },
+      "result": null,
+      "deliveryOpen": true
+    },
+    "contactCount": 0,
+    "rampEntries": 0,
+    "accuracy": {
+      "x": 0,
+      "z": 0,
+      "risk": 0
+    },
+    "ball": {
+      "x": 1.8,
+      "z": -0.6092796780380118,
+      "height": 0.065,
+      "verticalVelocity": 0,
+      "velocity": {
+        "x": 0,
+        "z": -6.2304
+      },
+      "bounced": false,
+      "deliveryType": "PACE"
+    },
+    "score": {
+      "number": 1,
+      "battingPlayerId": "player",
+      "bowlingPlayerId": "cpu",
+      "runs": 0,
+      "wickets": 0,
+      "balls": 0,
+      "complete": false
+    },
+    "flippers": [
+      {
+        "id": "left",
         "pressed": false,
         "angle": -0.24993114888558798
       },
@@ -2334,5 +2677,7 @@
       1.4946834900704544e-16
     ]
   },
+  "shotSelectionVerified": true,
+  "shotLockedDuringDelivery": true,
   "errors": []
 }

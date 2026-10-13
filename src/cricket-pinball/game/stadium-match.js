@@ -70,6 +70,8 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     ready=false;running=false;releaseBats();controls();
     const selectedMatch=match,key=match.currentInnings.number;
     if(bowlerByInnings[key]) {currentBowler=bowlerByInnings[key];makeReady();return;}
+    engine.resetFieldPositions();
+    onFeedback({type:'FIELD_RESET'});
     const confirm=bowler=>{if(paused || match!==selectedMatch || match.currentInnings.number!==key || ready)return;currentBowler=bowler;bowlerByInnings[key]=bowler;onFeedback({type:'BOWLER_SELECTED',bowler,human:!humanBatting(),match:displayState()});makeReady();};
     if(humanBatting()) {
       // Choose while paused too; the delivery timer remains suspended until resume.
@@ -87,7 +89,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     ready = true; panel.hidden = true; delete cue.dataset.contact;
     cue.textContent = humanBatting()
       ? 'CPU preparing delivery'
-      : 'Select line, length and delivery · pull and release';
+      : 'Choose a ball · tap pitch to aim · pull and release';
     controls(); hud();
     if (humanBatting()) {
       const selection = chooseTacticalBowling(difficulty,rules.cpu,{bowler:currentBowler,history:match.deliveryHistory.filter(d=>d.innings===match.currentInnings.number),state:match.getState()});
@@ -245,6 +247,10 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     if (!match.beginDelivery(selection)) return false;
     const held = Object.fromEntries(['left', 'right'].map(side => [side, engine.flippers.get(side).pressed]));
     engine.resetBall(); cpu.reset(); cpu.observeDelivery(selection,match.getState());
+    // Commit CPU shot intent before launch; the same flight/catch rules apply to both sides.
+    const state=match.getState();
+    const chaseAttack=state.target!==null && state.requiredRuns>state.ballsRemaining*1.5;
+    engine.deliveryShotMode=humanBatting() ? engine.shotMode : (chaseAttack || match.currentInnings.balls%3===2 ? 'LOFT':'GROUND');
     if (humanBatting()) for (const side of ['left', 'right']) engine.setFlipper(side, held[side]);
     adapter.armDelivery();
     engine.releaseLaunch({

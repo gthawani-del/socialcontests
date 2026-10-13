@@ -5,23 +5,31 @@
       "overflow": false,
       "buttons": [
         {
-          "height": 54,
-          "font": 16
+          "height": 44,
+          "font": 12
         },
         {
-          "height": 54,
-          "font": 16
+          "height": 44,
+          "font": 12
+        },
+        {
+          "height": 44,
+          "font": 12
+        },
+        {
+          "height": 44,
+          "font": 12
         }
       ],
       "plunger": {
-        "x": 314.171875,
-        "y": 348.671875,
+        "x": 313.15625,
+        "y": 328.125,
         "width": 64,
         "height": 100,
-        "top": 348.671875,
-        "right": 378.171875,
-        "bottom": 448.671875,
-        "left": 314.171875
+        "top": 328.125,
+        "right": 377.15625,
+        "bottom": 428.125,
+        "left": 313.15625
       },
       "glow": 0
     },
@@ -30,23 +38,31 @@
       "overflow": false,
       "buttons": [
         {
-          "height": 54,
-          "font": 16
+          "height": 44,
+          "font": 12
         },
         {
-          "height": 54,
-          "font": 16
+          "height": 44,
+          "font": 12
+        },
+        {
+          "height": 44,
+          "font": 12
+        },
+        {
+          "height": 44,
+          "font": 12
         }
       ],
       "plunger": {
-        "x": 250.84375,
-        "y": 252.28125,
+        "x": 249.546875,
+        "y": 213.28125,
         "width": 64,
         "height": 100,
-        "top": 252.28125,
-        "right": 314.84375,
-        "bottom": 352.28125,
-        "left": 250.84375
+        "top": 213.28125,
+        "right": 313.546875,
+        "bottom": 313.28125,
+        "left": 249.546875
       },
       "glow": 0
     },
@@ -55,12 +71,20 @@
       "overflow": false,
       "buttons": [
         {
-          "height": 64,
-          "font": 16
+          "height": 44,
+          "font": 11
         },
         {
-          "height": 64,
-          "font": 16
+          "height": 44,
+          "font": 11
+        },
+        {
+          "height": 44,
+          "font": 11
+        },
+        {
+          "height": 44,
+          "font": 12
         }
       ],
       "plunger": {
@@ -80,12 +104,20 @@
       "overflow": false,
       "buttons": [
         {
-          "height": 54,
-          "font": 16
+          "height": 44,
+          "font": 12
         },
         {
-          "height": 54,
-          "font": 16
+          "height": 44,
+          "font": 12
+        },
+        {
+          "height": 44,
+          "font": 12
+        },
+        {
+          "height": 44,
+          "font": 12
         }
       ],
       "plunger": {
@@ -117,11 +149,32 @@
     "glow": 0.264
   },
   "live": {
+    "fielders": [
+      {
+        "id": "cover",
+        "label": "COVER",
+        "x": -1,
+        "z": -1.25,
+        "radius": 0.14,
+        "reach": 0.36,
+        "slotId": "deep-cover"
+      },
+      {
+        "id": "midwicket",
+        "label": "MIDWICKET",
+        "x": 0.85,
+        "z": -0.65,
+        "radius": 0.14,
+        "reach": 0.36,
+        "slotId": "midwicket"
+      }
+    ],
+    "shotMode": "GROUND",
     "bowling": {
       "bowler": "MEDIUM",
-      "length": "GOOD",
-      "line": "LEFT",
-      "type": "SWING_RIGHT",
+      "length": "FULL",
+      "line": "RIGHT",
+      "type": "PACE",
       "power": 0.6000000000000001,
       "movementScale": 1
     },
@@ -231,10 +284,10 @@
       "verticalVelocity": 0,
       "velocity": {
         "x": 0,
-        "z": -6.820800000000001
+        "z": -6.960000000000001
       },
       "bounced": false,
-      "deliveryType": "SWING_RIGHT"
+      "deliveryType": "PACE"
     },
     "score": {
       "number": 1,
@@ -262,6 +315,56 @@
       1.4946834900704544e-16
     ]
   },
+  "aimed": {
+    "bowler": "MEDIUM",
+    "length": "FULL",
+    "line": "RIGHT",
+    "type": "PACE",
+    "power": 0.6000000000000001,
+    "movementScale": 1
+  },
+  "defaultField": [
+    {
+      "id": "cover",
+      "label": "COVER",
+      "x": -0.85,
+      "z": -0.65,
+      "radius": 0.14,
+      "reach": 0.36,
+      "slotId": "cover"
+    },
+    {
+      "id": "midwicket",
+      "label": "MIDWICKET",
+      "x": 0.85,
+      "z": -0.65,
+      "radius": 0.14,
+      "reach": 0.36,
+      "slotId": "midwicket"
+    }
+  ],
+  "customField": [
+    {
+      "id": "cover",
+      "label": "COVER",
+      "x": -1,
+      "z": -1.25,
+      "radius": 0.14,
+      "reach": 0.36,
+      "slotId": "deep-cover"
+    },
+    {
+      "id": "midwicket",
+      "label": "MIDWICKET",
+      "x": 0.85,
+      "z": -0.65,
+      "radius": 0.14,
+      "reach": 0.36,
+      "slotId": "midwicket"
+    }
+  ],
+  "fieldPersists": true,
+  "fieldLaunchLocked": true,
   "errors": [],
   "cancelDoesNotLaunch": true,
   "oneReleaseOneDelivery": true
