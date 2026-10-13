@@ -1,6 +1,8 @@
 import { createKeeper, stepKeeper, requestDive, keeperSaves, GOAL } from './keeper.js';
 // Normalised goal coordinates: x=0 left post, y=0 crossbar.
 // CPU decisions use visible flight only; the human aim is never read by the CPU.
+// The ball is staged on the pitch side of the boots, never in the rear drain.
+export const BALL_START = Object.freeze({x:.5,y:.765});
 export const LEVELS = {
   rookie: { reaction: .30, error: .20, flight: .95 },
   pro: { reaction: .23, error: .12, flight: .82 },
@@ -24,13 +26,13 @@ export function createDuel({ total = 5, difficulty = 'rookie', format = 'standar
   const level = LEVELS[difficulty];
   const s = { phase:'setup', paused:false, total, difficulty, format:format==='fixed'?'fixed':'standard', elapsed:0, turn:'you',
     history:{you:[],cpu:[]}, aim:{x:.5,y:.5}, keeper:createKeeper(), dive:null, charge:null,
-    flight:null, ball:{x:.5,y:.67}, boots:{left:0,right:0}, events:[], winner:null, message:'' };
+    flight:null, ball:{...BALL_START}, boots:{left:0,right:0}, events:[], winner:null, message:'' };
   let carry = 0, tick = 0, eventId = 0;
   const emit = (type, extra = {}) => { s.events.push({ id:++eventId, type, tick, ...extra }); if(s.events.length>32)s.events.shift(); };
   const phase = value => { s.phase=value; s.elapsed=0; };
   function beginAttempt() {
     s.aim={x:.5,y:.5}; s.keeper=createKeeper(s.turn==='you'?.35+random()*.3:.5); s.dive=null; s.flight=null;
-    s.charge=null; s.ball={x:.5,y:.88}; s.message=s.turn==='you'?'Aim. Hold a boot to charge. Release to shoot.':'Drag the keeper or hold arrows. Tap a diagonal to dive.';
+    s.charge=null; s.ball={...BALL_START}; s.message=s.turn==='you'?'Aim. Hold a boot to charge. Release to shoot.':'Drag the keeper or hold arrows. Tap a diagonal to dive.';
     s.boots={left:0,right:0}; phase('aim'); emit('ATTEMPT', {turn:s.turn});
   }
   function choose(first) {
@@ -82,7 +84,7 @@ export function createDuel({ total = 5, difficulty = 'rookie', format = 'standar
     if(s.phase==='toss' && s.elapsed>=2.1){phase('choice');if(s.toss.winner==='cpu')choose(random()<.5?'cpu':'you');}
     else if(s.phase==='countdown' && s.elapsed>=1.8)beginAttempt();
     else if(s.phase==='aim'){
-      s.ball={x:.5,y:.88};
+      s.ball={...BALL_START};
       if(s.charge){const q=s.charge;q.elapsed+=dt;q.power=clamp(q.elapsed/1.4,0,1);q.timing=(1-Math.cos(q.elapsed*5))/2;q.window=.30-.18*q.power;}
       if(s.turn==='cpu' && s.elapsed>=2){
         // CPU target selected independently of the human keeper's position.

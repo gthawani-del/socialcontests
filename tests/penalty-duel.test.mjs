@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createDuel, matchWinner, duelScore } from '../src/football-pinball/penalty/engine.js';
+import { createDuel, matchWinner, duelScore, BALL_START } from '../src/football-pinball/penalty/engine.js';
 const run=(e,seconds)=>{for(let i=0;i<seconds*120;i++)e.advance(1/120);};
 const start=(first='you',total=5,format='standard')=>{const e=createDuel({format,total,random:()=>.25});e.toss('heads');run(e,2.2);e.choose(first);run(e,1.9);return e;};
 test('toss controls first role, both roles alternate and a shot only counts once',()=>{
@@ -55,4 +55,18 @@ test('save collision follows the visible hand pose',()=>{
 });
 test('positioning in front of a reachable CPU shot produces a save',()=>{
  const e=start('cpu');e.position(.23);run(e,3.1);assert.equal(e.state.history.cpu[0],'save');assert.equal(e.state.events.filter(x=>x.type==='RESULT').length,1);
+});
+
+test('ball stays ahead of boots through setup, charging, both shots and role switches',()=>{
+ for(const side of ['left','right']){
+  const e=start();assert.deepEqual(e.state.ball,BALL_START);e.startCharge(side);run(e,.315);assert.deepEqual(e.state.ball,BALL_START);e.releaseCharge(side);
+  let previous=e.state.ball.y;
+  for(let i=0;i<120*7;i++){
+   const flight=e.state.phase==='flight';e.advance(1/120);
+   assert(e.state.ball.y<=BALL_START.y+1e-9,'no ball behind staging line');
+   if(flight&&e.state.phase==='flight')assert(e.state.ball.y<=previous+1e-9,'flight moves toward goal');
+   previous=e.state.ball.y;
+  }
+  assert(e.state.history.you.length===1&&e.state.history.cpu.length===1);
+ }
 });

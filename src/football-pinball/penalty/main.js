@@ -86,7 +86,7 @@ export async function mountPenalty(){
     }
     // Pivot each sprite at the outer heel; a swing visibly changes its angle.
     for(const side of ['left','right']){
-      const left=side==='left';c.save();c.translate((left?.11:.89)*w,.78*h);c.rotate(s.boots[side]*(left?-.42:.42));c.drawImage(assets[side],(left?0:-.37)*w,-.08*h,.37*w,.20*h);c.restore();
+      const left=side==='left';c.save();c.translate((left?.18:.82)*w,.83*h);c.rotate(s.boots[side]*(left?-.42:.42));c.drawImage(assets[side],(left?0:-.28)*w,-.06*h,.28*w,.15*h);c.restore();
     }
     const p=s.flight?clamp(s.flight.elapsed/s.flight.duration,0,1):0;
     const ballSize=.11-.065*p;

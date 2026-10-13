@@ -1,0 +1,26 @@
+[
+  {
+    "name": "small",
+    "realTouchChargeRelease": true,
+    "bootSwing": true,
+    "playerAndCpuShots": true,
+    "maxBallY": 0.765,
+    "errors": []
+  },
+  {
+    "name": "mobile",
+    "realTouchChargeRelease": true,
+    "bootSwing": true,
+    "playerAndCpuShots": true,
+    "maxBallY": 0.765,
+    "errors": []
+  },
+  {
+    "name": "landscape",
+    "realTouchChargeRelease": true,
+    "bootSwing": true,
+    "playerAndCpuShots": true,
+    "maxBallY": 0.765,
+    "errors": []
+  }
+]
