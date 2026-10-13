@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   try {
     const response = await fetch('https://api.fish.audio/v1/tts', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', model: 's2-pro' },
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', model: 's2.1-pro' },
       body: JSON.stringify({ text: SAMPLE, reference_id: VOICE_ID, format: 'mp3', latency: 'normal' }),
       signal: AbortSignal.timeout(25000)
     });
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     const audio = Buffer.from(await response.arrayBuffer());
     if (!audio.length) return res.status(502).json({ error: 'Fish Audio returned empty audio' });
     res.setHeader('Content-Type', 'audio/mpeg');
-    res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
+    res.setHeader('Cache-Control', 'no-store');
     res.setHeader('X-Voice-Latency-Ms', String(Date.now() - started));
     return res.status(200).send(audio);
   } catch (error) {
