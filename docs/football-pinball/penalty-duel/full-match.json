@@ -4,14 +4,12 @@
   "stateMutation": false,
   "history": {
     "you": [
-      "goal",
-      "goal",
       "save",
       "goal",
-      "goal"
+      "goal",
+      "save"
     ],
     "cpu": [
-      "goal",
       "goal",
       "goal",
       "goal",

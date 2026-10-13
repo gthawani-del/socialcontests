@@ -1,3 +1,4 @@
+import { createKeeper, stepKeeper, requestDive, keeperSaves, GOAL } from './keeper.js';
 // Normalised goal coordinates: x=0 left post, y=0 crossbar.
 // CPU decisions use visible flight only; the human aim is never read by the CPU.
 export const LEVELS = {
@@ -17,19 +18,19 @@ export function matchWinner(history, total) {
   if (a.length >= total && a.length === b.length && x !== y) return x > y ? 'you' : 'cpu';
   return null;
 }
-export function createDuel({ total = 5, difficulty = 'rookie', random = Math.random } = {}) {
+export function createDuel({ total = 5, difficulty = 'rookie', format = 'standard', random = Math.random } = {}) {
   total = total === 3 ? 3 : 5;
   difficulty = LEVELS[difficulty] ? difficulty : 'rookie';
   const level = LEVELS[difficulty];
-  const s = { phase:'setup', paused:false, total, difficulty, elapsed:0, turn:'you',
-    history:{you:[],cpu:[]}, aim:{x:.5,y:.5}, keeper:{x:.5,y:.65}, dive:null,
+  const s = { phase:'setup', paused:false, total, difficulty, format:format==='fixed'?'fixed':'standard', elapsed:0, turn:'you',
+    history:{you:[],cpu:[]}, aim:{x:.5,y:.5}, keeper:createKeeper(), dive:null, charge:null,
     flight:null, ball:{x:.5,y:.67}, boots:{left:0,right:0}, events:[], winner:null, message:'' };
   let carry = 0, tick = 0, eventId = 0;
   const emit = (type, extra = {}) => { s.events.push({ id:++eventId, type, tick, ...extra }); if(s.events.length>32)s.events.shift(); };
   const phase = value => { s.phase=value; s.elapsed=0; };
   function beginAttempt() {
-    s.aim={x:.5,y:.5}; s.keeper={x:s.turn==='you'?.35+random()*.3:.5,y:.65}; s.dive=null; s.flight=null;
-    s.ball={x:.5,y:.67}; s.message=s.turn==='you'?'Drag inside the goal to aim':'Position your keeper. Watch the kick.';
+    s.aim={x:.5,y:.5}; s.keeper=createKeeper(s.turn==='you'?.35+random()*.3:.5); s.dive=null; s.flight=null;
+    s.charge=null; s.ball={x:.5,y:.88}; s.message=s.turn==='you'?'Aim. Hold a boot to charge. Release to shoot.':'Drag the keeper or hold arrows. Tap a diagonal to dive.';
     s.boots={left:0,right:0}; phase('aim'); emit('ATTEMPT', {turn:s.turn});
   }
   function choose(first) {
@@ -38,29 +39,30 @@ export function createDuel({ total = 5, difficulty = 'rookie', random = Math.ran
   }
   function dive(x, y) {
     if(s.dive || !['aim','flight'].includes(s.phase))return false;
-    const from={...s.keeper};
-    s.dive={from, to:{x:clamp(x,Math.max(.04,from.x-.33),Math.min(.96,from.x+.33)),y:clamp(y,.2,.82)},elapsed:0};
+    if(!requestDive(s.keeper,x,y))return false; s.dive=s.keeper.dive;
     emit('DIVE', {turn:s.turn}); return true;
   }
   function launch(target, duration, feedback) {
     s.flight={ target, duration, elapsed:0, from:{...s.ball}, feedback };
     phase('flight'); emit('KICK',{turn:s.turn,target:{...target}});
   }
-  function kick(side) {
-    if(s.phase!=='aim' || s.turn!=='you' || s.paused || !['left','right'].includes(side))return false;
+  function startCharge(side) {
+    if(s.phase!=='aim'||s.turn!=='you'||s.paused||s.charge||!['left','right'].includes(side))return false;
+    s.charge={side,elapsed:0,power:0,timing:0,window:.24};return true;
+  }
+  function releaseCharge(side) {
+    if(!s.charge||s.charge.side!==side||s.paused||s.phase!=='aim')return false;
+    const q=s.charge; s.charge=null;
+    const error=(q.timing-.5)*2, excess=Math.max(0,Math.abs(error)-q.window);
+    const target={x:s.aim.x+Math.sign(error)*excess*.28*(side==='left'?1:-1),y:s.aim.y+excess*.15};
     s.boots[side]=1;
-    // Actual ball must overlap the boot contact zone. Early swings can be retried.
-    if(s.ball.y<.82 || s.ball.y>.94){ emit('SWING',{side});s.message='Too early — wait for the ball';return false; }
-    const error=clamp((s.ball.y-.88)/.06,-1,1), sign=side==='left'?1:-1;
-    const target={x:s.aim.x+error*.24*sign,y:s.aim.y+Math.abs(error)*.20};
-    const feedback=Math.abs(error)<.22?'Clean contact':error<0?'Early contact':'Late contact';
-    emit('BOOT_CONTACT',{side,ball:{...s.ball},error});
-    launch(target,.64+Math.abs(error)*.26,feedback); return true;
+    emit('BOOT_CONTACT',{side,power:q.power,timing:q.timing,error,ball:{...s.ball}});
+    launch(target,1.05-.5*q.power,excess<.04?'Perfect timing':error<0?'Early release':'Late release');return true;
   }
   function finish(outcome, feedback) {
     if(!['aim','flight'].includes(s.phase))return;
     s.history[s.turn].push(outcome); s.outcome=outcome;
-    s.message=feedback; s.winner=matchWinner(s.history,total);
+    s.message=feedback; s.winner=s.format==='fixed'?fixedWinner(s.history,s.first,total):matchWinner(s.history,total);
     emit('RESULT',{turn:s.turn,outcome}); phase('result');
   }
   function resolve() {
@@ -69,25 +71,26 @@ export function createDuel({ total = 5, difficulty = 'rookie', random = Math.ran
       const post=target.x>=-.035 && target.x<=1.035 && target.y>=-.035 && target.y<=1.035;
       finish('miss',post?'Off the frame':feedback+' · wide');return;
     }
-    const dx=(target.x-s.keeper.x)/.13, dy=(target.y-s.keeper.y)/.26;
-    finish(dx*dx+dy*dy<=1?'save':'goal',dx*dx+dy*dy<=1?'Saved by the keeper':feedback);
+    const saved=keeperSaves(s.keeper,target);
+    finish(saved?'save':'goal',saved?'Saved by the keeper':feedback);
   }
   function step(dt) {
     if(s.paused || ['setup','choice','ended'].includes(s.phase))return;
     tick++; s.elapsed+=dt;
     for(const side of ['left','right']) s.boots[side]=Math.max(0,s.boots[side]-dt*4);
-    if(s.dive){s.dive.elapsed+=dt; const t=clamp(s.dive.elapsed/.36,0,1);s.keeper={x:s.dive.from.x+(s.dive.to.x-s.dive.from.x)*t,y:s.dive.from.y+(s.dive.to.y-s.dive.from.y)*t};}
+    stepKeeper(s.keeper,dt);
     if(s.phase==='toss' && s.elapsed>=2.1){phase('choice');if(s.toss.winner==='cpu')choose(random()<.5?'cpu':'you');}
     else if(s.phase==='countdown' && s.elapsed>=1.8)beginAttempt();
     else if(s.phase==='aim'){
-      s.ball={x:.5,y:.67+Math.min(s.elapsed,3.3)*.085};
+      s.ball={x:.5,y:.88};
+      if(s.charge){const q=s.charge;q.elapsed+=dt;q.power=clamp(q.elapsed/1.4,0,1);q.timing=(1-Math.cos(q.elapsed*5))/2;q.window=.30-.18*q.power;}
       if(s.turn==='cpu' && s.elapsed>=2){
         // CPU target selected independently of the human keeper's position.
         const target={x:.06+random()*.88,y:.13+random()*.77};
         const mistake=(random()-.5)*level.error;
         target.x+=mistake; target.y+=Math.abs(mistake)*.2;
         s.boots[random()<.5?'left':'right']=1;launch(target,level.flight,'CPU shot');
-      } else if(s.elapsed>=3.3)finish('miss','No contact');
+      } else if(s.elapsed>=12)finish('miss','Shot clock expired');
     } else if(s.phase==='flight'){
       const f=s.flight; f.elapsed+=dt; const p=clamp(f.elapsed/f.duration,0,1);
       // Visible flight projects directly to the goal coordinates used for saves.
@@ -101,18 +104,32 @@ export function createDuel({ total = 5, difficulty = 'rookie', random = Math.ran
       if(p>=1)resolve();
     } else if(s.phase==='result' && s.elapsed>=1.5){
       if(s.winner){phase('ended');emit('END',{winner:s.winner});}
-      else {s.turn=s.turn==='you'?'cpu':'you';beginAttempt();}
+      else {if(s.format==='standard')s.turn=s.turn==='you'?'cpu':'you';beginAttempt();}
     }
   }
   return {
     state:s,
     toss(call) { if(s.phase!=='setup')return;const face=random()<.5?'heads':'tails';s.toss={face,call,winner:call===face?'you':'cpu'};phase('toss'); },
-    choose, kick,
+    choose, startCharge, releaseCharge, cancelCharge(){s.charge=null;},
+    kick(side){return releaseCharge(side);},
     aim(x,y){if(s.phase==='aim' && s.turn==='you' && !s.paused)s.aim={x:clamp(x,.04,.96),y:clamp(y,.04,.96)};},
-    position(x){if(s.phase==='aim' && s.turn==='cpu' && !s.dive && !s.paused)s.keeper.x=clamp(x,.30,.70);},
+    position(x){if(['aim','flight'].includes(s.phase)&&s.turn==='cpu'&&!s.dive&&!s.paused){s.keeper.target=(clamp(x,.05,.95)-.5)*GOAL.width;s.keeper.move=0;}},
+    moveKeeper(direction){if(['aim','flight'].includes(s.phase)&&s.turn==='cpu'&&!s.dive&&!s.paused){s.keeper.target=null;s.keeper.move=clamp(direction,-1,1);}},
+    stopKeeper(){s.keeper.move=0;s.keeper.target=null;},
     dive(x,y){return s.turn==='cpu' && !s.paused ? dive(x,y) : false;},
-    pause(value){s.paused=!!value;carry=0;},
+    pause(value){s.paused=!!value;s.charge=null;s.keeper.move=0;s.keeper.target=null;carry=0;},
     advance(dt){carry+=clamp(dt,0,.05);while(carry>=1/120){step(1/120);carry-=1/120;}},
     snapshot(){return structuredClone(s);},
   };
+}
+
+export function duelScore(s) {
+  const goals=t=>s.history[t].filter(x=>x==='goal').length;
+  if(s.format!=='fixed')return {you:goals('you'),cpu:goals('cpu')};
+  const shooter=s.first||s.turn, defender=shooter==='you'?'cpu':'you';
+  return {[shooter]:goals(shooter),[defender]:s.history[shooter].length-goals(shooter)};
+}
+export function fixedWinner(history,shooter,total){
+  const goals=history[shooter].filter(x=>x==='goal').length, stops=history[shooter].length-goals;
+  return goals>total/2?shooter:stops>total/2?(shooter==='you'?'cpu':'you'):null;
 }

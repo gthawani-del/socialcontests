@@ -1,0 +1,22 @@
+{
+  "stateMutation": false,
+  "accelerated": false,
+  "first": "cpu",
+  "history": {
+    "you": [],
+    "cpu": [
+      "goal",
+      "goal"
+    ]
+  },
+  "winner": "cpu",
+  "modes": [
+    "windup",
+    "airborne",
+    "recover",
+    "windup",
+    "airborne",
+    "recover"
+  ],
+  "errors": []
+}

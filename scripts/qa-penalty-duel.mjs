@@ -26,13 +26,13 @@ try{
   await page.screenshot({path:`${dir}/striker-${name}.png`});
   await page.evaluate(()=>{const e=window.__penalty.engine;e.state.elapsed=2.45;e.state.ball={x:.5,y:.878};});
   const boot=await page.locator('[data-boot=left]').boundingBox();await touch('touchStart',boot.x+boot.width/2,boot.y+boot.height/2);
-  await page.waitForFunction(()=>window.__penalty.snapshot().events.some(e=>e.type==='BOOT_CONTACT'));
+  await page.waitForTimeout(600);await touch('touchEnd');await page.waitForFunction(()=>window.__penalty.snapshot().events.some(e=>e.type==='BOOT_CONTACT'));
   const kicked=await page.evaluate(()=>window.__penalty.snapshot());assert(kicked.boots.left>0);assert.equal(kicked.phase,'flight');
-  await touch('touchEnd');await page.waitForFunction(()=>window.__penalty.snapshot().history.you.length===1);
+  await page.waitForFunction(()=>window.__penalty.snapshot().history.you.length===1);
   await page.waitForFunction(()=>window.__penalty.snapshot().phase==='aim'&&window.__penalty.snapshot().turn==='cpu');
-  await page.locator('#pd-position').fill('65');assert.equal(await page.evaluate(()=>window.__penalty.snapshot().keeper.x),.65);
+  const move=await page.locator('[data-move="1"]').boundingBox();await touch('touchStart',move.x+move.width/2,move.y+move.height/2);await page.waitForTimeout(350);await touch('touchEnd');assert((await page.evaluate(()=>window.__penalty.snapshot().keeper.x))>.3);
   await page.screenshot({path:`${dir}/goalkeeper-${name}.png`});
-  await page.locator('[aria-label="Dive top left"]').click();await page.waitForFunction(()=>window.__penalty.snapshot().keeper.x<.60);
+  await page.locator('[aria-label="Dive top left"]').click();await page.waitForFunction(()=>window.__penalty.snapshot().keeper.mode==='airborne');
   assert(await page.evaluate(()=>!!window.__penalty.snapshot().dive));
   await page.locator('#pd-pause').click();const before=await page.evaluate(()=>window.__penalty.snapshot().elapsed);await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.__penalty.snapshot().elapsed),before);await page.locator('#pd-resume').click();
   const controls=await page.locator('#pd-defender').boundingBox();assert(controls.y+controls.height<=height+1,'controls inside viewport');

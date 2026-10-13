@@ -17,7 +17,7 @@ try{
   if(s.phase==='ended')break;
   if(s.phase==='aim'&&s.turn==='you'){
    if(aimed!==s.history.you.length){const box=await page.locator('canvas').boundingBox();const aim=s.keeper.x>=.5?.09:.91;await page.touchscreen.tap(box.x+box.width*(.215+.57*aim),box.y+box.height*(.165+.135*.12));aimed=s.history.you.length;}
-   if(s.ball.y>=.874&&s.ball.y<.91)await page.keyboard.press('ArrowRight');
+   await page.keyboard.down('ArrowRight');await page.waitForTimeout(315);await page.keyboard.up('ArrowRight');
   }
   if(s.phase==='flight'&&s.turn==='cpu'&&dived!==s.history.cpu.length){
    await page.click('[aria-label="Dive top left"]');dived=s.history.cpu.length;
