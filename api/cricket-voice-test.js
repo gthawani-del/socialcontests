@@ -1,5 +1,5 @@
 const VOICE_ID = 'bb5da5dbfad34bbeb2032098d15babe2';
-const SAMPLE = 'Oye hoye! Kya zabardast chhakka maara hai! Ball seedha stadium ke baahar!';
+const SAMPLE = 'Oye guru! Kya zabardast chhakka lagaya hai! Gend seedhi boundary ke paar! Wah, kya shot hai!';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
