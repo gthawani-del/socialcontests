@@ -97,24 +97,9 @@ app.querySelector('#cricketVoiceTest').addEventListener('click', async () => {
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
     audio.playbackRate = 0.9;
-    // Browser audio.volume is capped at 1; Web Audio gain supports the requested 3.4.
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    let audioContext;
-    if (AudioContextClass) {
-      audioContext = new AudioContextClass();
-      const source = audioContext.createMediaElementSource(audio);
-      const gain = audioContext.createGain();
-      gain.gain.value = 3.4;
-      source.connect(gain).connect(audioContext.destination);
-      await audioContext.resume();
-    }
-    audio.addEventListener('ended', () => {
-      URL.revokeObjectURL(url);
-      if (audioContext) audioContext.close().catch(() => {});
-    }, { once: true });
+    audio.addEventListener('ended', () => URL.revokeObjectURL(url), { once: true });
     try { await audio.play(); } catch (error) {
       URL.revokeObjectURL(url);
-      if (audioContext) audioContext.close().catch(() => {});
       throw error;
     }
     status.textContent = `Voice playing · ${Math.round(performance.now() - started)} ms`;
