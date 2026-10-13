@@ -8,6 +8,7 @@ import {createFieldPlacement} from './game/field-placement.js';
 import './game/match-experience.css';
 import { createMatchPresentation } from './game/match-presentation.js';
 import { createStadiumAudio } from './game/stadium-audio.js';
+import { createCricketCommentary } from './game/cricket-commentary.js';
 import { createStadiumVfx } from './game/stadium-vfx.js';
 import { createStadiumLauncher } from './stadium-launcher.js';
 import { frameStadium } from './stadium-camera.js';
@@ -180,7 +181,9 @@ try {
     onOpenChange:open=>{fieldEditing=open;bowlingUi.setFieldEditing(open);app.classList.toggle('field-editing',open);pitchControl.setEnabled(canEditField&&!open);updateBowlingGuide(bowlingUi.getSelection(),canEditField&&!open);}
   });
 
+  const commentary = createCricketCommentary();
   const gameplayFeedback = event => {
+    commentary.handle(event);
     fielders.handle(event);
     if(event.type==='FIELD_RESET')bowlingUi.setFieldLabel(false);
     if(event.type==='MATCH_RESET'){bowlingUi.resetCharge();fieldControl.close();engine.resetFieldPositions();engine.shotMode='GROUND';bowlingUi.setFieldLabel(false);shotChoice.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shot==='GROUND')));}
