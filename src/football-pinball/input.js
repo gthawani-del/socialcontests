@@ -1,6 +1,6 @@
 export function bindInputs(root, engine, allowed) {
   const abort = new AbortController(), options = { signal: abort.signal };
-  const keys = { KeyA: 'blue-left', KeyD: 'blue-right', KeyJ: 'red-left', KeyL: 'red-right' };
+  const keys = { ArrowLeft: 'blue-left', ArrowRight: 'blue-right', KeyA: 'blue-left', KeyD: 'blue-right', KeyJ: 'red-left', KeyL: 'red-right' };
   const held = new Map();
   const update = id => {
     const down = [...held.values()].includes(id);
