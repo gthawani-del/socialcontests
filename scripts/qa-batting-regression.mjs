@@ -25,6 +25,7 @@ await page.waitForFunction(()=>window.__stadiumQA.snapshot().score.number===1 &&
 await page.locator('[data-shot="LOFT"]').click();
 assert.equal(await page.evaluate(()=>window.__stadiumQA.snapshot().shotMode),'LOFT','Loft selector changes actual engine mode');
 assert.equal(await page.locator('[data-shot="LOFT"]').getAttribute('aria-pressed'),'true');
+assert.equal(await page.locator('[data-shot=LOFT]').evaluate(b=>getComputedStyle(b).backgroundColor),'rgb(244, 181, 68)');
 await page.locator('[data-shot="GROUND"]').click();
 assert.equal(await page.evaluate(()=>window.__stadiumQA.snapshot().shotMode),'GROUND','Ground selector restores low shot mode');
 const touch=await page.context().newCDPSession(page);
@@ -49,6 +50,9 @@ const cancelled=await page.evaluate(()=>{window.__stadiumQA.step(20);return wind
 assert(!cancelled.flippers[0].pressed);assert(Math.abs(cancelled.flippers[0].angle-idleStart.flippers[0].angle)<.001);
 await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
 assert.equal(await page.locator('[data-shot="GROUND"]').isDisabled(),true);assert.equal(await page.locator('[data-shot="LOFT"]').isDisabled(),true,'shot type locked during delivery');
+assert.equal(await page.locator('[data-shot=GROUND]').evaluate(b=>getComputedStyle(b).backgroundColor),'rgb(21, 128, 61)');
+assert.equal(await page.locator('[data-shot=GROUND]').evaluate(b=>getComputedStyle(b).opacity),'1');
+assert.equal(await page.locator('#shotStatus').innerText(),'LOCKED');
 const liveBatPosition=await page.locator('#leftBat').boundingBox();
 assert(Math.abs(liveBatPosition.y-batPosition.y)<1,'bat row stays stationary from preparation to live delivery');
 const result={before:await page.evaluate(()=>window.__stadiumQA.snapshot())};

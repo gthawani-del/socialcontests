@@ -20,11 +20,11 @@ try{
   await page.waitForFunction(()=>!document.querySelector('#movementPicker').disabled);
   await page.locator('#movementPicker').click();await page.locator(`[data-type="${type}"]`).click();
   const b=await page.locator('.plunger-handle').boundingBox();
-  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,b.y+b.height/2+20,{steps:4});await page.mouse.up();
+  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,b.y+b.height/2+50,{steps:4});await page.mouse.move(b.x+b.width/2,b.y+b.height/2+32,{steps:3});await page.mouse.up();
   await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
   const flight=await page.evaluate(()=>{for(let i=0;i<500;i++){window.__stadiumQA.step(1,false);const s=window.__stadiumQA.snapshot();if(s.ball.height>.09&&s.ball.z>0&&!s.ball.bounced){window.__stadiumQA.step(0);return s;}}return null;});
   assert(flight,'visible flight before pitch impact');assert.equal(flight.ball.deliveryType,type);
-  await page.screenshot({timeout:60000,path:`docs/qa/bounce-flight-${type.toLowerCase()}.png`});
+  if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/bounce-flight-${type.toLowerCase()}.png`});
   const impact=await page.evaluate(()=>{for(let i=0;i<200;i++){window.__stadiumQA.step(1,false);const s=window.__stadiumQA.snapshot();if(s.ball.bounced){window.__stadiumQA.step(0);return s;}}return null;});
   assert(impact,'pitch impact occurs');assert(impact.ball.verticalVelocity>0,'upward rebound');
   assert(type==='SPIN_LEFT'?impact.ball.velocity.x<-.5:impact.ball.velocity.x>.5,'spin turns in selected direction');

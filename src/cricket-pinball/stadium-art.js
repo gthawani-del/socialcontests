@@ -8,7 +8,8 @@ export function buildStadiumArt(scene, model, table) {
   if (!bats.left || !bats.right) throw new Error('Authored stadium bats missing');
   model.updateMatrixWorld(true);
   const pitch = model.getObjectByName('Measured_Pitch');
-  const size = new THREE.Box3().setFromObject(pitch).getSize(new THREE.Vector3());
+  const pitchBox = new THREE.Box3().setFromObject(pitch);
+  const size = pitchBox.getSize(new THREE.Vector3());
   const ramp = model.getObjectByName('Six_Ramp');
   const p = ramp.geometry.getAttribute('position'), n = ramp.geometry.getAttribute('normal');
   const points = [], normalMatrix = new THREE.Matrix3().getNormalMatrix(ramp.matrixWorld);
@@ -21,6 +22,7 @@ export function buildStadiumArt(scene, model, table) {
     Math.hypot(v.x - sample.x - sign * route.halfWidth, v.y - sample.height, v.z - sample.z)
   )))));
   const stats = {
+    pitchBounds:{minX:pitchBox.min.x,maxX:pitchBox.max.x,minZ:pitchBox.min.z,maxZ:pitchBox.max.z},
     pitchLengthMetres: size.z * STADIUM_PITCH.metresPerUnit,
     pitchWidthMetres: size.x * STADIUM_PITCH.metresPerUnit,
     battingZ: STADIUM_PITCH.battingZ, bowlingZ: STADIUM_PITCH.bowlingZ,

@@ -8,7 +8,7 @@ Before release, verify the changed surface with real browser input and meaningfu
 - One-over first innings can complete six counted deliveries; a first wicket does not end it. Verify the configured two-wicket early finish separately, and distinguish an early successful chase from a shortened over.
 - Each delivery counts once. Dead balls do not count; no stale timers launch another ball after restart or innings completion.
 - The ball visibly starts in the side shooter lane, follows its curve without teleporting, and enters the playfield before bat contact.
-- The bowling plunger is visible table artwork; its pointer hit area remains aligned after mobile/desktop/landscape resize. Pull/release changes power and launches exactly one ball.
+- The bowling plunger is visible table artwork; its pointer hit area remains aligned after mobile/desktop/landscape resize. Pulling charges the spring; lifting holds power; pushing forward launches exactly one ball. Verify clearing charge, cancellation and restart during recoil.
 - Preserve CPU batting, role changes, chase completion, score HUD, and access gate.
 - For toss or launcher presentation changes, run scripts/qa-bowling-feedback.mjs: verify vertical lift/end-over-end flipping and both final coin faces, inspect the visible shaft/spring across all four viewports, and test pull, cancellation and single release. Audio playback checks do not establish physical phone-speaker quality.
 

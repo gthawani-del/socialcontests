@@ -1,7 +1,7 @@
 const STORAGE_KEY='cricket-pinball-coaching-v1';
 const copy={
   bat:[['Try a bat','Tap either bat button to see it move.'],['Watch the ball','Follow the ball from the side lane to the pitch.'],['Read the bounce','Wait for the bounce, then time your swing.'],['Make contact','Tap the left or right bat as the ball reaches it.'],['Check your timing','Use Early / Perfect / Late feedback on your next shot.']],
-  bowl:[['Aim your delivery','Drag the pitch ring to aim. Use Delivery to choose a ball, or Field to move your fielders.'],['Pull the lever','Drag the right-side handle down. Red means extra pace with reduced control.'],['Release to bowl','Let go of the handle to deliver the ball.'],['Watch the bounce','The ring marks the first bounce. Red power adds uncertainty.'],['Read the result','Watch the CPU response before choosing your next ball.']]
+  bowl:[['Aim your delivery','Drag the white pitch ring to aim. Use Delivery to choose a ball, or Field to move your fielders.'],['Pull the lever','Drag the right-side handle down. Red means extra pace with reduced control.'],['Push to bowl','Lift to hold power. Push the handle forward to bowl. Clear power cancels the charge.'],['Watch the bounce','The ring marks the first bounce. Red power adds uncertainty.'],['Read the result','Watch the CPU response before choosing your next ball.']]
 };
 // Advance only from observed game/input events, never from elapsed time.
 export function coachingStep(role,step,event){
@@ -29,12 +29,25 @@ export function createStadiumCoaching({app,getFlow}){
   const save=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(learned));}catch{}};
   function dismiss(){if(role){learned[role]=true;save();}forced=false;active=false;panel.hidden=true;}
   close.onclick=dismiss;
+  // Instructions must not resize the pitch underneath a finger mid-drag.
+  let measuredWidth=0,measuredRole=null;
+  function reserveInstructionHeight(){
+    const width=text.clientWidth;if(!role||!width||(width===measuredWidth&&role===measuredRole))return;
+    measuredWidth=width;measuredRole=role;
+    const previous=[title.textContent,body.textContent];text.style.minHeight='0';
+    let height=0;
+    for(const [heading,description] of copy[role]){
+      title.textContent=heading;body.textContent=description;height=Math.max(height,text.offsetHeight);
+    }
+    title.textContent=previous[0];body.textContent=previous[1];text.style.minHeight=`${height}px`;
+  }
+  new ResizeObserver(reserveInstructionHeight).observe(text);
   function paint(){
     if(!role || !active){panel.hidden=true;return;}
     panel.hidden=false;
     const instruction=step>=5?['First delivery complete',role==='bat'?'Keep practising your timing. Open Help to replay this guide.':'Vary line, length and pace. Open Help to replay this guide.']:copy[role][step];
     title.textContent=instruction[0];body.textContent=instruction[1];panel.dataset.step=String(step);panel.dataset.role=role;
-    close.textContent=step>=5?'Got it':'Dismiss';
+    close.textContent=step>=5?'Got it':'Dismiss';reserveInstructionHeight();
   }
   return{
     replay(){forced=true;step=0;active=true;paint();},dismiss,

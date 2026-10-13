@@ -27,11 +27,17 @@ try {
  }
  for(const [name,width,height]of [['mobile',390,700],['small',320,568],['landscape',844,390],['desktop',1365,900]]) {
   await page.setViewportSize({width,height});await page.waitForFunction(()=>Math.abs(document.querySelector('#viewport canvas').width-document.querySelector('#viewport').clientWidth*Math.min(devicePixelRatio,2))<2);
-  await drag('#pitchTarget',await point(.237,1.437));
-  const target=(await snapshot()).bowling.target;assert(Math.abs(target.x-.237)<.01&&Math.abs(target.z-1.437)<.01,`${name}: target follows exact touch coordinates`);
+  await drag('#pitchTarget',await point(.031,1.437));
+  const target=(await snapshot()).bowling.target;assert(Math.abs(target.x-.031)<.01&&Math.abs(target.z-1.437)<.01,`${name}: target follows exact touch coordinates ${JSON.stringify(target)}`);
   await drag('#pitchTarget',await point(-.3,1.83),true);assert.deepEqual((await snapshot()).bowling.target,target,'cancel restores aim');
   assert(!(await snapshot()).running,'aim never launches');
   await page.locator('#pitchTarget').focus();await page.keyboard.press('ArrowRight');assert((await snapshot()).bowling.target.x>target.x);
+  for(const [x,z] of [[-2,.4],[2,2.6]]){
+   await drag('#pitchTarget',await point(x,z));
+   const {aim}=await snapshot();assert.equal(aim.color,'ffffff');
+   assert(aim.x-aim.radius>=aim.pitch.minX && aim.x+aim.radius<=aim.pitch.maxX,'whole ring inside actual GLB width');
+   assert(aim.z-aim.radius>=aim.pitch.minZ && aim.z+aim.radius<=aim.pitch.maxZ,'whole ring inside actual GLB length');
+  }
   const dock=await page.locator('.compact-bowling-dock>button').evaluateAll(bs=>bs.map(b=>b.getBoundingClientRect().toJSON()));
   assert.equal(dock[0].width,dock[1].width);assert.equal(dock[0].height,dock[1].height);assert(dock.every(b=>b.height>=44));
   assert.equal(await page.locator('.quick-deliveries').count(),0);
@@ -55,12 +61,12 @@ try {
  }
  await page.setViewportSize({width:390,height:700});await page.waitForFunction(()=>document.querySelector('#pinballPlunger').getBoundingClientRect().right<=innerWidth);
  await page.locator('#movementPicker').click();await page.locator('[data-type=SWING_LEFT]').click();
- await drag('#pitchTarget',await point(.137,1.537));
+ await drag('#pitchTarget',await point(.031,1.537));
  const target=(await snapshot()).bowling.target,customField=(await snapshot()).fielders;
- const handle=page.locator('.plunger-handle');await handle.focus();for(let i=0;i<5;i++)await page.keyboard.press('ArrowDown');
- assert((await snapshot()).accuracyRingVisible,'red power shows a wider landing area');
- for(let i=0;i<5;i++)await page.keyboard.press('ArrowUp');assert(!(await snapshot()).accuracyRingVisible);
- await page.keyboard.press('Enter');assert((await snapshot()).running);
+ const handle=page.locator('.plunger-handle');await handle.focus();for(let i=0;i<10;i++)await page.keyboard.press('ArrowDown');
+ assert.equal((await snapshot()).aim.color,'ffffff','even max power keeps the marker white');
+ await page.keyboard.press('Escape');for(let i=0;i<5;i++)await page.keyboard.press('ArrowDown');
+ await page.keyboard.press('Enter');await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
  assert.equal(await page.locator('#pitchTarget').isVisible(),false);assert(await page.locator('#editField').isDisabled());
  const bounce=await page.evaluate(()=>{for(let i=0;i<1200;i++){window.__stadiumQA.step(1,false);const s=window.__stadiumQA.snapshot();if(s.lastBounce)return s.lastBounce;}return null;});
  assert(bounce,'first bounce occurs');assert(Math.hypot(bounce.x-target.x,bounce.z-target.z)<.04,'actual physics bounce matches dragged ring');

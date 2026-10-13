@@ -1,5 +1,6 @@
 import {BOWLERS, LENGTHS, normalizeBowling, bowlingPowerBand, pitchTargetFor, normalizePitchTarget, describePitchTarget} from './bowling-rules.js';
-import {lineIcon, deliveryIcon, lengthIcon, DELIVERY_LABELS} from './bowling-icons.js';
+import {createPlungerCharge, PLUNGER_RECOIL_MS} from './plunger-charge.js';
+import {lineIcon, deliveryIcon, DELIVERY_LABELS} from './bowling-icons.js';
 const TYPE_LABELS = {
   PACE: 'STRAIGHT',
   SWING_LEFT: 'SWING ←',
@@ -29,14 +30,14 @@ export function createBowlingPlunger({
   consoleEl.hidden = true;
   consoleEl.innerHTML = `
     <div class="compact-bowling-dock"><button type="button" id="movementPicker" aria-expanded="false" aria-controls="deliveryOptions"><span><small>Delivery</small><strong id="deliveryLabel">Straight</strong></span><span aria-hidden="true">⌄</span></button><button type="button" id="editField" aria-expanded="false" aria-controls="fieldEditor"><span><small>Field</small><strong id="fieldLabel">Default</strong></span><span aria-hidden="true">⌄</span></button></div>
-    <p id="aimSummary">Drag the ring to aim. Pull the lever to bowl.</p>
+    <div class="bowling-instruction"><p id="aimSummary">Pull to charge. Push to bowl.</p><button type="button" id="resetCharge" disabled>Clear power</button></div>
     <div id="lengthOptions" hidden role="dialog" aria-modal="true" aria-label="Landing position"><div class="delivery-heading"><strong>Place your delivery</strong><button type="button" id="closeLength">Done</button></div>
       <div class="landing-axis"><span></span><span>Left</span><span>Centre</span><span>Right</span></div>
       <div class="landing-editor"><div class="landing-labels"><span>Short</span><span>Good</span><span>Full</span></div><div class="landing-grid" role="group" aria-label="Line and length">${['SHORT','GOOD','FULL'].map(length=>['LEFT','CENTRE','RIGHT'].map(line=>`<button type="button" data-zone-line="${line}" data-zone-length="${length}" aria-label="${line.toLowerCase()}, ${length.toLowerCase()} length"></button>`).join('')).join('')}</div></div>
       <p id="landingReadout" aria-live="polite"></p><p class="landing-help">Tap or drag to set line and length</p></div>
     <div id="deliveryOptions" hidden role="dialog" aria-modal="true" aria-label="Choose delivery"><div class="delivery-heading"><strong id="bowlerName">Medium pace</strong><button type="button" id="closeDelivery">Done</button></div><button type="button" id="lengthPicker" aria-label="Choose landing position" aria-expanded="false" aria-controls="lengthOptions">Aim with buttons</button><div class="delivery-grid">${Object.entries(DELIVERY_LABELS).map(([type,label])=>`<button type="button" data-type="${type}">${deliveryIcon(type)}<span>${label}</span></button>`).join('')}</div></div>`;
   const meter=document.createElement('div');meter.id='bowlingPowerMeter';meter.hidden=true;
-  meter.innerHTML='<small>POWER</small><output id="bowlingPower">60%</output><div class="colour-power-track" id="powerMeter" role="meter" aria-label="Bowling power" aria-valuemin="24" aria-valuemax="100"><i></i></div><span class="power-status">Controlled</span>';
+  meter.innerHTML='<small>POWER</small><output id="bowlingPower">0%</output><div class="colour-power-track" id="powerMeter" role="meter" aria-label="Bowling power" aria-valuemin="0" aria-valuemax="100"><i></i></div><span class="power-status">Controlled</span>';
 
   const summary=document.createElement("p");summary.id="bowlingSummary";summary.hidden=true;summary.setAttribute("role","status");controls.prepend(summary);
   let lastDelivery=null;
@@ -49,9 +50,9 @@ export function createBowlingPlunger({
     <div class="plunger-label"><b>POWER</b><span id="plungerPower">50%</span></div>
     <div class="plunger-track">
       <div class="plunger-spring"></div>
-      <button type="button" class="plunger-handle" aria-label="Pull and release bowling plunger"><span></span></button>
+      <button type="button" class="plunger-handle" aria-label="Pull to charge, push to bowl"><span></span></button>
     </div>
-    <small class="plunger-help">PULL<br>& RELEASE</small>`;
+    <small class="plunger-help">PULL THEN<br>PUSH</small>`;
 
   controls.prepend(consoleEl);
   plunger.append(meter);
@@ -71,14 +72,15 @@ export function createBowlingPlunger({
   consoleEl.querySelector('#closeDelivery').onclick = () => { toggleOptions(false); movement.focus(); };
   consoleEl.addEventListener('keydown', event => { if(event.key === 'Escape') {toggleLength(false);toggleOptions(false); movement.focus();} });
   const powerReadout = meter.querySelector('#bowlingPower');
-  let startY = 0, startPull = .5;
-  const track = plunger.querySelector('.plunger-track');
+  const spring = createPlungerCharge();
+  const clearPower = consoleEl.querySelector('#resetCharge');
+  let recoil = null, releaseTimer = null, cpuGeneration = 0;
 
   let enabled = false;
   let cpuMode = false;
   let dragging = false;
   let pointerId = null;
-  let pull = .5;
+  let pull = 0;
   let line = 'CENTRE';
   let type = 'PACE', bowler='MEDIUM', length='GOOD';
   let target = pitchTargetFor({line,length});
@@ -87,18 +89,20 @@ export function createBowlingPlunger({
   const emitSelection = () => onSelectionChange(getSelection());
 
   function updatePull(next, animate = false) {
-    pull = clamp(next, .05, 1);
+    pull = clamp(next, 0, 1);
     plunger.style.setProperty('--pull', pull.toFixed(3));
     plunger.classList.toggle('animated', animate);
-    powerLabel.textContent = `${Math.round((.2 + .8 * pull) * 100)}%`;
+    powerLabel.textContent = `${Math.round((pull>=.05 ? .2 + .8 * pull : 0) * 100)}%`;
     powerReadout.textContent = powerLabel.textContent;
-    const band=bowlingPowerBand(getSelection()),percent=Math.round((.2+.8*pull)*100);
+    const band=bowlingPowerBand(getSelection()),percent=parseInt(powerLabel.textContent,10);
     meter.dataset.zone=band.zone;meter.style.setProperty('--power',percent+'%');
     for(const [key,value] of Object.entries({low:band.low,red:band.red,'ideal-start':band.ideal-.03,'ideal-end':band.ideal+.03}))meter.style.setProperty('--'+key,(value*100)+'%');
     meter.querySelector('#powerMeter').setAttribute('aria-valuenow',percent);
-    const status=({red:'Max pace · less accuracy',amber:'Gentle',cyan:'Ideal release',green:'Controlled'})[band.zone];
+    const status=pull<.05?'Pull to charge':({red:'Max pace · less accuracy',amber:'Gentle',cyan:'Ideal release',green:'Controlled'})[band.zone];
     meter.querySelector('.power-status').textContent=status;meter.querySelector('#powerMeter').setAttribute('aria-valuetext',percent+'% · '+status);
-    handle.setAttribute('aria-label', `Pull and release bowling plunger. Power ${powerLabel.textContent}`);
+    handle.setAttribute('aria-label', `Pull to charge, push to bowl. Power ${powerLabel.textContent}. Down arrow charges, Up arrow or Enter bowls, Escape clears.`);
+    clearPower.disabled=!enabled||cpuMode||pull<.05||Boolean(recoil);
+    consoleEl.querySelector('#aimSummary').textContent=pull>=.05?'Power held. Push forward to bowl.':'Pull to charge. Push to bowl.';
     onPowerChange(getSelection());
   }
 
@@ -133,42 +137,59 @@ export function createBowlingPlunger({
     if(e.key==='Tab'){const items=[...dialog.querySelectorAll('button:not([hidden])')].filter(b=>!b.disabled),first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
   });
 
+  function endDrag() {
+    const oldPointer=pointerId;
+    dragging=false;pointerId=null;
+    plunger.classList.remove('dragging');meter.classList.remove('charging');
+    if(oldPointer!==null&&handle.hasPointerCapture?.(oldPointer))handle.releasePointerCapture(oldPointer);
+  }
+  const cancel = () => {spring.cancel();endDrag();updatePull(spring.charge);};
+  function resetCharge() {
+    clearTimeout(releaseTimer);releaseTimer=null;recoil=null;
+    clearTimeout(cpuTimer);cpuGeneration++;
+    spring.reset();endDrag();updatePull(0);
+  }
+  function bowl(power) {
+    if(power===null||!enabled||cpuMode||recoil)return;
+    const selection={...getSelection(),power};
+    endDrag();spring.reset();
+    recoil={from:pull,to:0,start:performance.now(),duration:PLUNGER_RECOIL_MS};
+    clearPower.disabled=true;handle.disabled=true;
+    // The ball leaves when the spring has driven the rod back to its rest stop.
+    releaseTimer=setTimeout(()=>{
+      releaseTimer=null;recoil=null;updatePull(0);
+      if(enabled&&!cpuMode){lastDelivery=selection;onRelease(selection);}
+      handle.disabled=!enabled||cpuMode;
+    },PLUNGER_RECOIL_MS);
+  }
+  clearPower.onclick=()=>{resetCharge();handle.focus();};
   handle.addEventListener('pointerdown', event => {
-    if (!enabled || cpuMode || dragging || !canPull()) return;
-    event.preventDefault();
-    onInteraction({type:'LEVER_PULL'});
-    dragging = true;
-    pointerId = event.pointerId;
+    if (!enabled || cpuMode || dragging || recoil || !canPull() || event.button!==0) return;
+    event.preventDefault();onInteraction({type:'LEVER_PULL'});
+    dragging=true;pointerId=event.pointerId;spring.begin(event.clientY,Math.min(100,Math.max(32,window.innerHeight-event.clientY-12)));
     handle.setPointerCapture?.(pointerId);
     plunger.classList.add('dragging');meter.classList.add('charging');
-    startY = event.clientY; startPull = pull;
   });
   handle.addEventListener('pointermove', event => {
     if (!dragging || event.pointerId !== pointerId) return;
     event.preventDefault();
-    updatePull(startPull + (event.clientY - startY) / Math.max(60, plunger.clientHeight));
+    const power=spring.move(event.clientY);
+    if(power!==null)bowl(power);else updatePull(spring.charge);
   });
-  const release = event => {
-    if (!dragging || (event?.pointerId != null && event.pointerId !== pointerId)) return;
-    dragging = false;
-    plunger.classList.remove('dragging');meter.classList.remove('charging');
-    const selection = getSelection();
-    if (enabled && !cpuMode) {lastDelivery=selection;onRelease(selection);}
-    pointerId = null;
-  };
-  handle.addEventListener('pointerup', release);
-  const cancel = () => { if(dragging)updatePull(startPull);dragging = false; pointerId = null; plunger.classList.remove('dragging');meter.classList.remove('charging'); };
+  handle.addEventListener('pointerup', event => {
+    if(!dragging||event.pointerId!==pointerId)return;
+    spring.hold();endDrag(); // Lifting holds the charge. It never bowls.
+  });
   handle.addEventListener('pointercancel', cancel);
-  handle.addEventListener('lostpointercapture', cancel);
-  window.addEventListener('blur', cancel);
-  document.addEventListener('visibilitychange', () => { if(document.hidden) cancel(); });
+  handle.addEventListener('lostpointercapture',()=>{if(dragging)cancel();});
+  window.addEventListener('blur',resetCharge);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)resetCharge();});
   handle.addEventListener('keydown', event => {
-    if (!enabled || cpuMode || !canPull()) return;
-    if (['ArrowDown','ArrowUp','Enter',' '].includes(event.key)) event.preventDefault();
-    if(['ArrowDown','ArrowUp'].includes(event.key))meter.classList.add('charging');
-    if(event.key === 'ArrowDown') updatePull(pull + .1);
-    if(event.key === 'ArrowUp') updatePull(pull - .1);
-    if((event.key === 'Enter' || event.key === ' ') && !event.repeat) {lastDelivery=getSelection();meter.classList.remove('charging');onRelease(lastDelivery);}
+    if (!enabled || cpuMode || recoil || !canPull()) return;
+    if (['ArrowDown','ArrowUp','Enter',' ','Escape'].includes(event.key)) event.preventDefault();
+    if(event.key==='Escape'){resetCharge();return;}
+    if(event.key==='ArrowDown'){spring.set(spring.charge+.1);updatePull(spring.charge);}
+    if(['ArrowUp','Enter',' '].includes(event.key)&&!event.repeat)bowl(spring.release());
   });
 
   function setState({ visible = false, interactive = false, cpu = false, running = false } = {}) {
@@ -179,7 +200,7 @@ export function createBowlingPlunger({
     consoleEl.hidden = !visible || !interactive || cpu;
     meter.hidden = !visible || !interactive || cpu;
     enabled = Boolean(interactive);
-    if(!enabled) { cancel(); toggleOptions(false); toggleLength(false); }
+    if(!enabled) { if(!cpu||!visible||running)resetCharge();else cancel(); toggleOptions(false); toggleLength(false); }
     movement.disabled = !enabled || cpu;
     cpuMode = Boolean(cpu);
     plunger.classList.toggle('cpu', cpuMode);
@@ -187,6 +208,7 @@ export function createBowlingPlunger({
     consoleEl.classList.toggle('cpu', cpuMode);
     consoleEl.querySelectorAll('button').forEach(button => { button.disabled = !enabled || cpuMode; });
     handle.disabled = !enabled || cpuMode;
+    clearPower.disabled=!enabled||cpuMode||pull<.05;
   }
 
   function setBowler(next){bowler=BOWLERS[next]?next:'MEDIUM';consoleEl.querySelector('#bowlerName').textContent=BOWLERS[bowler].label;consoleEl.querySelectorAll('[data-type]').forEach(button=>{button.hidden=!BOWLERS[bowler].types.includes(button.dataset.type);});if(!BOWLERS[bowler].types.includes(type))select('type',BOWLERS[bowler].types[0],false);updatePull(pull);}
@@ -199,31 +221,25 @@ export function createBowlingPlunger({
     if (selection.line) select('line', String(selection.line).toUpperCase(), false);
     if (selection.type) select('type', String(selection.type).toUpperCase(), false);
     setTarget(nextTarget,false);
-    if (Number.isFinite(Number(selection.power))) updatePull(clamp((Number(selection.power) - .2) / .8, .05, 1), true);
+    if (Number.isFinite(Number(selection.power))) {spring.set((Number(selection.power)-.2)/.8);updatePull(spring.charge,true);}
     if (emit) emitSelection();
   }
 
   function animateCpu(selection = {}) {
-    clearTimeout(cpuTimer);
-    setSelection(selection, false);
-    setState({ visible: true, interactive: false, cpu: true });
-    plunger.classList.add('cpu-pulling');
-    updatePull(.12, true);
-    return new Promise(resolve => {
-      requestAnimationFrame(() => updatePull(clamp((Number(selection.power ?? .6) - .2) / .8, .12, 1), true));
-      cpuTimer = setTimeout(() => {
-        plunger.classList.add('cpu-release');
-        updatePull(.10, true);
-        setTimeout(() => {
-          plunger.classList.remove('cpu-pulling', 'cpu-release');
-          resolve();
-        }, 220);
-      }, cpuPullMs);
-    });
+    resetCharge();setSelection(selection,false);
+    setState({visible:true,interactive:false,cpu:true});
+    const generation=cpuGeneration,charged=clamp((Number(selection.power??.6)-.2)/.8,0,1);
+    updatePull(charged);
+    recoil={from:0,to:charged,start:performance.now(),duration:cpuPullMs};
+    cpuTimer=setTimeout(()=>{
+      if(generation!==cpuGeneration)return;
+      recoil={from:charged,to:0,start:performance.now(),duration:220};
+      cpuTimer=setTimeout(()=>{if(generation===cpuGeneration){recoil=null;updatePull(0);}},220);
+    },cpuPullMs);
   }
 
   function getSelection() {
-    return { bowler, length, line, type, target:{...target}, power: .2 + .8 * pull, movementScale: 1 };
+    return { bowler, length, line, type, target:{...target}, power: pull>=.05 ? .2 + .8 * pull : 0, movementScale: 1 };
   }
 
   function setTarget(next,emit=true) {
@@ -236,7 +252,7 @@ export function createBowlingPlunger({
     if(emit)emitSelection();
   }
 
-  updatePull(.5);
+  updatePull(0);
   select('line', line, false);
   select('type', type, false);
   select('length', length, false);
@@ -251,7 +267,11 @@ export function createBowlingPlunger({
     setBowler,
     setSelection,
     getSelection,
-    getState: () => ({band: bowlingPowerBand(getSelection()), pull: !enabled && !cpuMode ? .05 : pull, dragging, enabled, cpuMode, visible: !plunger.hidden}),
+    resetCharge,
+    getState: () => ({band: bowlingPowerBand(getSelection()),
+      pull:recoil?recoil.from+(recoil.to-recoil.from)*Math.min(1,(performance.now()-recoil.start)/recoil.duration):pull,
+      charge:pull,power:pull>=.05?.2+.8*pull:0,recoiling:Boolean(recoil),
+      dragging,busy:dragging||Boolean(recoil),enabled,cpuMode,visible:!plunger.hidden}),
     animateCpu,
     get line() { return line; },
     get type() { return type; },

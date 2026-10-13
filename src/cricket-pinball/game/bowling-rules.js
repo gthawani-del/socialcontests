@@ -1,3 +1,4 @@
+import {STADIUM_PITCH} from './stadium-layout.js';
 // Shared by UI, CPU and physics. Selection is validated before a ball is launched.
 export const BOWLERS = Object.freeze({
  FAST: {label:'Fast',speed:1.1,types:['PACE','SWING_LEFT','SWING_RIGHT','SLOWER']},
@@ -9,17 +10,23 @@ export const LENGTHS = Object.freeze({
  GOOD:{label:'Good',bounceZ:1.66,rebound:1.05},
  SHORT:{label:'Short',bounceZ:1.22,rebound:.8}
 });
-export const PITCH_TARGET_BOUNDS = Object.freeze({minX:-.5,maxX:.5,minZ:1.12,maxZ:1.93});
+// Keep the entire marker within the authored brown pitch, including its outer edge.
+export const PITCH_TARGET_RADIUS = .105;
+const pitchHalfWidth = STADIUM_PITCH.widthMetres / STADIUM_PITCH.metresPerUnit / 2;
+export const PITCH_TARGET_BOUNDS = Object.freeze({
+ minX:-pitchHalfWidth+PITCH_TARGET_RADIUS+.003, maxX:pitchHalfWidth-PITCH_TARGET_RADIUS-.003,
+ minZ:1.12, maxZ:1.93
+});
 export function normalizePitchTarget(target) {
  if (!target || !Number.isFinite(target.x) || !Number.isFinite(target.z)) return null;
  const b=PITCH_TARGET_BOUNDS;
  return {x:Math.max(b.minX,Math.min(b.maxX,target.x)),z:Math.max(b.minZ,Math.min(b.maxZ,target.z))};
 }
 export function pitchTargetFor(selection={}) {
- return normalizePitchTarget(selection.target) || {x:({LEFT:-.5,CENTRE:0,RIGHT:.5})[selection.line] || 0,z:(LENGTHS[selection.length] || LENGTHS.GOOD).bounceZ};
+ return normalizePitchTarget(selection.target) || {x:({LEFT:PITCH_TARGET_BOUNDS.minX,CENTRE:0,RIGHT:PITCH_TARGET_BOUNDS.maxX})[selection.line] || 0,z:(LENGTHS[selection.length] || LENGTHS.GOOD).bounceZ};
 }
 export function describePitchTarget(target) {
- return {line:target.x<-.12?'LEFT':target.x>.12?'RIGHT':'CENTRE',
+ return {line:target.x<PITCH_TARGET_BOUNDS.minX/3?'LEFT':target.x>PITCH_TARGET_BOUNDS.maxX/3?'RIGHT':'CENTRE',
   length:Object.keys(LENGTHS).reduce((a,b)=>Math.abs(target.z-LENGTHS[a].bounceZ)<Math.abs(target.z-LENGTHS[b].bounceZ)?a:b)};
 }
 export function normalizeBowling(selection={},bowler=selection.bowler||'MEDIUM') {

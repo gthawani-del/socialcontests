@@ -1,0 +1,158 @@
+{
+  "fixture": "Deterministic engine simulation at 120 Hz; centred dispersion sample; native arena units, not km/h.",
+  "rows": [
+    {
+      "bowler": "FAST",
+      "type": "PACE",
+      "power": 0.3,
+      "launchSpeed": 6.468,
+      "laneExitSeconds": 0.9,
+      "bounceSeconds": 1.2916666666666667,
+      "flightSeconds": 0.3916666666666667,
+      "peakHeight": 0.1769751291248473,
+      "reboundHeight": 0.04452884887047821,
+      "spinKick": 0,
+      "bounce": {
+        "x": -1.8483976598733292e-7,
+        "z": 1.6446082927927597
+      },
+      "maxStep": 0.05835976365864983
+    },
+    {
+      "bowler": "FAST",
+      "type": "PACE",
+      "power": 0.6,
+      "launchSpeed": 7.656000000000001,
+      "laneExitSeconds": 0.7583333333333333,
+      "bounceSeconds": 1.1,
+      "flightSeconds": 0.3416666666666668,
+      "peakHeight": 0.1298623538325923,
+      "reboundHeight": 0.03337319504601244,
+      "spinKick": 0,
+      "bounce": {
+        "x": -1.8888041981464047e-7,
+        "z": 1.6558063902197533
+      },
+      "maxStep": 0.06727283492801933
+    },
+    {
+      "bowler": "FAST",
+      "type": "PACE",
+      "power": 1,
+      "launchSpeed": 9.240000000000002,
+      "laneExitSeconds": 0.6333333333333333,
+      "bounceSeconds": 0.9166666666666666,
+      "flightSeconds": 0.2833333333333333,
+      "peakHeight": 0.09116823952206354,
+      "reboundHeight": 0.02353628918137141,
+      "spinKick": 0,
+      "bounce": {
+        "x": -1.9155398921049813e-7,
+        "z": 1.6553297485608216
+      },
+      "maxStep": 0.0791666666666666
+    },
+    {
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "power": 0.3,
+      "launchSpeed": 5.7623999999999995,
+      "laneExitSeconds": 1.0083333333333333,
+      "bounceSeconds": 1.4416666666666667,
+      "flightSeconds": 0.43333333333333335,
+      "peakHeight": 0.2175269780085003,
+      "reboundHeight": 0.054870255146792175,
+      "spinKick": -0.060000000000000005,
+      "bounce": {
+        "x": 0.00004250242350552774,
+        "z": 1.648766066303319
+      },
+      "maxStep": 0.05311160353768125
+    },
+    {
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "power": 0.6,
+      "launchSpeed": 6.8208,
+      "laneExitSeconds": 0.8583333333333333,
+      "bounceSeconds": 1.225,
+      "flightSeconds": 0.3666666666666668,
+      "peakHeight": 0.16077247680272586,
+      "reboundHeight": 0.04096412536821792,
+      "spinKick": -0.06,
+      "bounce": {
+        "x": 0.0000213642923175647,
+        "z": 1.6528315303144072
+      },
+      "maxStep": 0.060829982002544115
+    },
+    {
+      "bowler": "MEDIUM",
+      "type": "SWING_LEFT",
+      "power": 1,
+      "launchSpeed": 8.232,
+      "laneExitSeconds": 0.7083333333333334,
+      "bounceSeconds": 1.025,
+      "flightSeconds": 0.31666666666666654,
+      "peakHeight": 0.11344584867337756,
+      "reboundHeight": 0.028868263280170968,
+      "spinKick": -0.060000000000000005,
+      "bounce": {
+        "x": 0.00002443969740552456,
+        "z": 1.6480734057074438
+      },
+      "maxStep": 0.0715879186902252
+    },
+    {
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "power": 0.3,
+      "launchSpeed": 4.0501439999999995,
+      "laneExitSeconds": 1.4416666666666667,
+      "bounceSeconds": 2.0166666666666666,
+      "flightSeconds": 0.575,
+      "peakHeight": 0.3919898635867437,
+      "reboundHeight": 0.05611111111111113,
+      "spinKick": 0.8,
+      "bounce": {
+        "x": -1.7058803472535408e-7,
+        "z": 1.652304768946153
+      },
+      "maxStep": 0.04148546965526762
+    },
+    {
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "power": 0.6,
+      "launchSpeed": 4.794048,
+      "laneExitSeconds": 1.2166666666666666,
+      "bounceSeconds": 1.7166666666666666,
+      "flightSeconds": 0.5,
+      "peakHeight": 0.29829623298290436,
+      "reboundHeight": 0.05618437500000002,
+      "spinKick": 0.8,
+      "bounce": {
+        "x": -1.7694116964740994e-7,
+        "z": 1.651271559105887
+      },
+      "maxStep": 0.04632629398591868
+    },
+    {
+      "bowler": "SPINNER",
+      "type": "SPIN_RIGHT",
+      "power": 1,
+      "launchSpeed": 5.78592,
+      "laneExitSeconds": 1.0083333333333333,
+      "bounceSeconds": 1.4416666666666667,
+      "flightSeconds": 0.43333333333333335,
+      "peakHeight": 0.2159900464063628,
+      "reboundHeight": 0.055305266176187085,
+      "spinKick": 0.8,
+      "bounce": {
+        "x": -1.8307603512283676e-7,
+        "z": 1.6583856645943484
+      },
+      "maxStep": 0.053331173210707024
+    }
+  ]
+}

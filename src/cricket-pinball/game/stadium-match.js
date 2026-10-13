@@ -94,7 +94,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     ready = true; tossVisible(false); panel.hidden = true; delete cue.dataset.contact;
     cue.textContent = humanBatting()
       ? 'CPU preparing delivery'
-      : 'Drag the ring to aim · pull and release the lever';
+      : 'Drag the white ring · pull to charge, push to bowl';
     controls(); hud();
     if (humanBatting()) {
       const selection = chooseTacticalBowling(difficulty,rules.cpu,{bowler:currentBowler,history:match.deliveryHistory.filter(d=>d.innings===match.currentInnings.number),state:match.getState()});

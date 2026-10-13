@@ -1,0 +1,193 @@
+{
+  "fixture": "Real Chromium touch input; four emulated viewports; manual engine stepping for counted delivery; not physical iPhone.",
+  "rows": [
+    {
+      "name": "mobile",
+      "stroke": 100,
+      "before": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0,
+        "charge": 0,
+        "power": 0,
+        "recoiling": false,
+        "dragging": false,
+        "busy": false,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0,
+        "springLength": 0.21000000000000002,
+        "knobZ": 0.32
+      },
+      "held": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 1,
+          "zone": "red"
+        },
+        "pull": 1,
+        "charge": 1,
+        "power": 1,
+        "recoiling": false,
+        "dragging": false,
+        "busy": false,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0,
+        "springLength": 0.05000000000000002,
+        "knobZ": 0.48
+      }
+    },
+    {
+      "name": "small",
+      "stroke": 100,
+      "before": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0,
+        "charge": 0,
+        "power": 0,
+        "recoiling": false,
+        "dragging": false,
+        "busy": false,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0,
+        "springLength": 0.21000000000000002,
+        "knobZ": 0.32
+      },
+      "held": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 1,
+          "zone": "red"
+        },
+        "pull": 1,
+        "charge": 1,
+        "power": 1,
+        "recoiling": false,
+        "dragging": false,
+        "busy": false,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0,
+        "springLength": 0.05000000000000002,
+        "knobZ": 0.48
+      }
+    },
+    {
+      "name": "landscape",
+      "stroke": 38,
+      "before": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0,
+        "charge": 0,
+        "power": 0,
+        "recoiling": false,
+        "dragging": false,
+        "busy": false,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0,
+        "springLength": 0.21000000000000002,
+        "knobZ": 0.32
+      },
+      "held": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 1,
+          "zone": "red"
+        },
+        "pull": 1,
+        "charge": 1,
+        "power": 1,
+        "recoiling": false,
+        "dragging": false,
+        "busy": false,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0,
+        "springLength": 0.05000000000000002,
+        "knobZ": 0.48
+      }
+    },
+    {
+      "name": "desktop",
+      "stroke": 92.078125,
+      "before": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 0,
+          "zone": "amber"
+        },
+        "pull": 0,
+        "charge": 0,
+        "power": 0,
+        "recoiling": false,
+        "dragging": false,
+        "busy": false,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0,
+        "springLength": 0.21000000000000002,
+        "knobZ": 0.32
+      },
+      "held": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 1,
+          "zone": "red"
+        },
+        "pull": 1,
+        "charge": 1,
+        "power": 1,
+        "recoiling": false,
+        "dragging": false,
+        "busy": false,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0,
+        "springLength": 0.05000000000000002,
+        "knobZ": 0.48
+      }
+    }
+  ],
+  "pauseClears": true,
+  "restartCancelsRecoil": true,
+  "onePushOneDelivery": true,
+  "errors": []
+}

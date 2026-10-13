@@ -272,7 +272,15 @@
 #shotChoice{display:flex;align-items:center;justify-content:center;gap:6px;margin:4px 0}
 #shotChoice>span{font-size:10px;color:#bfced7}
 #shotChoice button{min-height:38px;padding:5px 10px;font-size:12px}
-#shotChoice button[aria-pressed=true]{background:#294657;border-color:#e6bd66;color:#ffe1a0}
+#shotChoice button{background:#0b2131;opacity:1}
+#shotChoice button[data-shot=GROUND]{border-color:#39bf75;color:#a5efc4}
+#shotChoice button[data-shot=LOFT]{border-color:#f4b544;color:#f4c76f}
+#shotChoice button[data-shot=GROUND][aria-pressed=true]{background:#15803d;color:#fff}
+#shotChoice button[data-shot=LOFT][aria-pressed=true]{background:#f4b544;color:#071521}
+#shotChoice button::before{content:"✓";display:inline-block;width:14px;margin-right:3px;visibility:hidden}
+#shotChoice button[aria-pressed=true]::before{visibility:visible}
+#shotChoice button:disabled{opacity:1;cursor:default}
+#shotChoice button:focus-visible{outline:2px solid white;outline-offset:2px}
 #fieldEditor{position:absolute;inset:0;z-index:8;background:#06142122;touch-action:none}
 .field-editor-toolbar{position:absolute;top:12px;left:12px;right:12px;display:flex;align-items:center;gap:8px;padding:8px 10px;background:#0b2131f5;border:1px solid #456075;border-radius:12px}
 .field-editor-toolbar strong{flex:1;font-size:14px;color:#fff1ca}
@@ -336,3 +344,8 @@
  @keyframes coin-lift{0%,100%{transform:translateY(0)}45%{transform:translateY(-30px)}85%{transform:translateY(-5px)}}
 }
 @media(prefers-reduced-motion:reduce){.tossing,.toss-coin.flipping{animation:none}}
+
+.bowling-instruction{display:flex;align-items:center;gap:8px;min-height:48px;margin-top:4px}
+.bowling-instruction #aimSummary{flex:1;margin:0}
+#resetCharge{min-height:44px;padding:5px 9px;font-size:11px;white-space:nowrap;background:#102b3b;border-color:#718695;color:#e3edf3}
+#resetCharge:disabled{opacity:.45}

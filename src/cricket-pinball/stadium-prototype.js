@@ -2,7 +2,7 @@ import {createStadiumFielders} from './game/stadium-fielders.js';
 import {DELIVERY_LABELS} from './game/bowling-icons.js';
 import {createStadiumAtmosphere} from './game/stadium-atmosphere.js';
 import {createStadiumCoaching} from './game/stadium-coaching.js';
-import {BOWLERS,LENGTHS,pitchTargetFor,bowlingPowerBand} from './game/bowling-rules.js';
+import {BOWLERS,LENGTHS,pitchTargetFor,PITCH_TARGET_RADIUS} from './game/bowling-rules.js';
 import {createPitchTargetControl} from './game/pitch-target-control.js';
 import {createFieldPlacement} from './game/field-placement.js';
 import './game/match-experience.css';
@@ -82,14 +82,12 @@ try {
   const viewport = document.querySelector('#viewport'); viewport.append(renderer.domElement);
   const resultLayer = createWebGLResultLayer({ THREE, scene });
 
-  const aimMaterial = new THREE.MeshBasicMaterial({ color: 0xf2c96b, transparent: true, opacity: .82, depthWrite: false });
-  const aimRing = new THREE.Mesh(new THREE.RingGeometry(.075, .105, 28), aimMaterial);
+  const aimMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1, toneMapped: false, depthWrite: false });
+  const aimRing = new THREE.Mesh(new THREE.RingGeometry(.075, PITCH_TARGET_RADIUS, 48), aimMaterial);
   aimRing.rotation.x = -Math.PI / 2;
   aimRing.position.set(0, .026, 1.62);
   aimRing.visible = false;
   scene.add(aimRing);
-  const accuracyRing=new THREE.Mesh(new THREE.RingGeometry(.96,1,48),new THREE.MeshBasicMaterial({color:0xf07469,transparent:true,opacity:.55,depthWrite:false}));
-  accuracyRing.rotation.x=-Math.PI/2;accuracyRing.visible=false;scene.add(accuracyRing);
   const movementGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, .032, 1.62), new THREE.Vector3(0, .032, 1.32)]);
   const movementLine = new THREE.Line(movementGeometry, new THREE.LineBasicMaterial({ color: 0x71b8ff, transparent: true, opacity: .82 }));
   movementLine.visible = false;
@@ -100,10 +98,6 @@ try {
     aimRing.position.x = target.x;
     const type = String(selection.type || 'PACE').toUpperCase();
     aimRing.position.z = target.z;
-    const {risk}=bowlingPowerBand(selection);
-    accuracyRing.position.copy(aimRing.position);accuracyRing.scale.set(.105+({FAST:.12,MEDIUM:.16,SPINNER:.2})[selection.bowler||'MEDIUM']*risk,.105+.055*risk,1);
-    accuracyRing.visible=visible && risk>0;
-    aimMaterial.color.set(risk>0?0xf07469:0xf2c96b);
     const direction = type.endsWith('_LEFT') ? -1 : type.endsWith('_RIGHT') ? 1 : 0;
     const attr = movementLine.geometry.getAttribute('position');
     attr.setXYZ(0, aimRing.position.x, .032, aimRing.position.z);
@@ -151,7 +145,7 @@ try {
   const deliveryBrief=document.createElement('p');deliveryBrief.id='deliveryBrief';deliveryBrief.hidden=true;controlsRoot.prepend(deliveryBrief);
   let canEditField=false, fieldEditing=false;
   const shotChoice=document.createElement('div');shotChoice.id='shotChoice';shotChoice.hidden=true;
-  shotChoice.innerHTML='<span>SHOT</span><button type="button" data-shot="GROUND" aria-pressed="true">Ground</button><button type="button" data-shot="LOFT" aria-pressed="false">Loft · risk catch</button>';
+  shotChoice.innerHTML='<span id="shotStatus" role="status">SHOT</span><button type="button" data-shot="GROUND" aria-pressed="true">Ground</button><button type="button" data-shot="LOFT" aria-pressed="false">Loft · risk catch</button>';
   viewport.append(shotChoice);
   let canChooseShot=false;
   shotChoice.querySelectorAll('button').forEach(button=>button.onclick=()=>{if(!canChooseShot)return;engine.shotMode=button.dataset.shot;shotChoice.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));});
@@ -178,10 +172,10 @@ try {
   const aimRay=new THREE.Raycaster(),aimPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
   const projectPoint=({x,z})=>{const point=new THREE.Vector3(x,0,z).project(camera),rect=viewport.getBoundingClientRect();return {x:rect.left+(point.x+1)*rect.width/2,y:rect.top+(1-point.y)*rect.height/2};};
   const unprojectPoint=(x,y)=>{const rect=renderer.domElement.getBoundingClientRect();aimRay.setFromCamera(new THREE.Vector2((x-rect.left)/rect.width*2-1,1-(y-rect.top)/rect.height*2),camera);return aimRay.ray.intersectPlane(aimPlane,new THREE.Vector3());};
-  const pitchControl=createPitchTargetControl({viewport,canvas:renderer.domElement,project:projectPoint,unproject:unprojectPoint,getSelection:bowlingUi.getSelection,setTarget:bowlingUi.setTarget,canInteract:()=>canEditField&&!fieldEditing&&!bowlingUi.getState().dragging});
+  const pitchControl=createPitchTargetControl({viewport,canvas:renderer.domElement,project:projectPoint,unproject:unprojectPoint,getSelection:bowlingUi.getSelection,setTarget:bowlingUi.setTarget,canInteract:()=>canEditField&&!fieldEditing&&!bowlingUi.getState().busy});
 
   const fieldControl=createFieldPlacement({viewport,table,engine,project:projectPoint,unproject:unprojectPoint,preview:fielders.preview,
-    canEdit:()=>canEditField&&!bowlingUi.getState().dragging&&!pitchControl.dragging,
+    canEdit:()=>canEditField&&!bowlingUi.getState().busy&&!pitchControl.dragging,
     onChange:()=>bowlingUi.setFieldLabel(table.fielders.some(f=>f.slotId && f.slotId!==f.id)),
     onOpenChange:open=>{fieldEditing=open;bowlingUi.setFieldEditing(open);app.classList.toggle('field-editing',open);pitchControl.setEnabled(canEditField&&!open);updateBowlingGuide(bowlingUi.getSelection(),canEditField&&!open);}
   });
@@ -189,7 +183,7 @@ try {
   const gameplayFeedback = event => {
     fielders.handle(event);
     if(event.type==='FIELD_RESET')bowlingUi.setFieldLabel(false);
-    if(event.type==='MATCH_RESET'){fieldControl.close();engine.resetFieldPositions();engine.shotMode='GROUND';bowlingUi.setFieldLabel(false);shotChoice.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shot==='GROUND')));}
+    if(event.type==='MATCH_RESET'){bowlingUi.resetCharge();fieldControl.close();engine.resetFieldPositions();engine.shotMode='GROUND';bowlingUi.setFieldLabel(false);shotChoice.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shot==='GROUND')));}
     coach.handle(event);
     atmosphere.handle(event);
     feedback.handle(event);
@@ -213,6 +207,7 @@ try {
       canChooseShot=inningsActive && event.humanBatting && !event.running && !event.paused;
       shotChoice.hidden=!inningsActive || !event.humanBatting;
       shotChoice.querySelectorAll('button').forEach(b=>b.disabled=!canChooseShot);
+      shotChoice.querySelector('#shotStatus').textContent=canChooseShot?'SHOT':'LOCKED';
       bowlingUi.setState({
         visible: inningsActive,
         interactive: inningsActive && !event.humanBatting && event.ready && !event.running && !event.paused,
@@ -229,7 +224,6 @@ try {
       updateBowlingGuide(event.selection || {}, true);
       bowlingUi.animateCpu(event.selection || {});
     } else if (event?.type === 'DELIVERY_LAUNCH') {
-      bowlingUi.setSelection(event.selection || {}, false);
       updateBowlingGuide(event.selection || {}, false);
     }
   };
@@ -317,7 +311,7 @@ try {
     project: (x,z) => {const point=new THREE.Vector3(x,0,z).project(camera),rect=viewport.getBoundingClientRect();return {x:rect.left+(point.x+1)*rect.width/2,y:rect.top+(1-point.y)*rect.height/2};},
     ready: true, materials: materialStatus, art: art.stats, batching, manual: value => { manual = value; },
     step: (count, draw = true) => { for (let i = 0; i < count; i++) flow.step(1 / 120); if (draw) render(); },
-    snapshot: () => ({ lastBounce, aimVisible:aimRing.visible, accuracyRingVisible:accuracyRing.visible, fielders:table.fielders.map(f=>({...f})),shotMode:engine.shotMode,bowling:bowlingUi.getSelection(), quality, atmosphere:atmosphere.getState(), rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, accuracy:engine.deliveryVariation?.accuracy, ball: { ...engine.ball.position, height: engine.ball.height, verticalVelocity:engine.verticalVelocity, velocity:{...engine.ball.velocity}, bounced:engine.deliveryVariation?.bounced, deliveryType:engine.deliveryVariation?.type }, score: { ...flow.match.currentInnings },
+    snapshot: () => ({ lastBounce, aimVisible:aimRing.visible, aim:{x:aimRing.position.x,z:aimRing.position.z,radius:PITCH_TARGET_RADIUS,color:aimMaterial.color.getHexString(),pitch:art.stats.pitchBounds}, fielders:table.fielders.map(f=>({...f})),shotMode:engine.shotMode,bowling:bowlingUi.getSelection(), quality, atmosphere:atmosphere.getState(), rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, accuracy:engine.deliveryVariation?.accuracy, ball: { ...engine.ball.position, height: engine.ball.height, verticalVelocity:engine.verticalVelocity, velocity:{...engine.ball.velocity}, bounced:engine.deliveryVariation?.bounced, deliveryType:engine.deliveryVariation?.type }, score: { ...flow.match.currentInnings },
       flippers: [...engine.flippers].map(([id,s]) => ({id, pressed:s.pressed, angle:s.angle})),
       alignment: ['left', 'right'].map(side => {
         const state = engine.flippers.get(side), cfg = state.config, centre = bats[side].getWorldPosition(new THREE.Vector3());
