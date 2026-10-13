@@ -1,10 +1,9 @@
 const clamp = value => Math.max(0, Math.min(1, value));
 export const PLUNGER_STROKE_PX = 100;
-export const PLUNGER_PUSH_PX = 16;
 export const PLUNGER_RECOIL_MS = 90;
 
-// A latched spring: lifting a finger holds charge; a deliberate forward push
-// releases the stored peak energy, independent of the speed of that push.
+// A manual spring plunger: power follows its current displacement. Moving the
+// handle forwards reduces compression; only releasing the handle fires it.
 export function createPlungerCharge() {
   let charge = 0, gesture = null;
   return {
@@ -12,21 +11,16 @@ export function createPlungerCharge() {
     get dragging() { return Boolean(gesture); },
     get power() { return charge >= .05 ? .2 + .8 * charge : 0; },
     set(value) { charge = clamp(value); },
-    begin(y,stroke=PLUNGER_STROKE_PX) { gesture = {y, peakY:y, initial:charge,stroke}; },
+    begin(y,stroke=PLUNGER_STROKE_PX) { gesture = {y, initial:charge,stroke}; },
     move(y) {
-      if (!gesture) return null;
-      gesture.peakY = Math.max(gesture.peakY, y);
-      charge = Math.max(charge, clamp(gesture.initial + (y - gesture.y) / gesture.stroke));
-      if (charge >= .05 && gesture.peakY - y >= PLUNGER_PUSH_PX) return this.release();
-      return null;
+      if (!gesture) return;
+      charge = clamp(gesture.initial + (y - gesture.y) / gesture.stroke);
     },
-    hold() { gesture = null; },
-    cancel() { if (gesture) charge = gesture.initial; gesture = null; },
+    cancel() { this.reset(); },
     release() {
       const power = this.power;
-      if (!power) return null;
-      charge = 0; gesture = null;
-      return power;
+      this.reset();
+      return power || null;
     },
     reset() { charge = 0; gesture = null; }
   };

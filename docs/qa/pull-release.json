@@ -1,0 +1,202 @@
+{
+  "fixture": "Chromium real touch input; four emulated viewports; manual engine stepping for counted deliveries; controlled clock for recoil/reset; not physical iPhone.",
+  "rows": [
+    {
+      "name": "mobile",
+      "stroke": 100,
+      "full": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 1,
+          "zone": "red"
+        },
+        "pull": 1,
+        "charge": 1,
+        "power": 1,
+        "recoiling": false,
+        "dragging": true,
+        "busy": true,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0.3,
+        "springLength": 0.05000000000000002,
+        "knobZ": 0.48
+      },
+      "eased": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 0,
+          "zone": "green"
+        },
+        "pull": 0.5,
+        "charge": 0.5,
+        "power": 0.6000000000000001,
+        "recoiling": false,
+        "dragging": true,
+        "busy": true,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0.21,
+        "springLength": 0.13,
+        "knobZ": 0.4
+      },
+      "launchSpeed": 6.960000000000001,
+      "balls": 1
+    },
+    {
+      "name": "small",
+      "stroke": 100,
+      "full": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 1,
+          "zone": "red"
+        },
+        "pull": 1,
+        "charge": 1,
+        "power": 1,
+        "recoiling": false,
+        "dragging": true,
+        "busy": true,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0.3,
+        "springLength": 0.05000000000000002,
+        "knobZ": 0.48
+      },
+      "eased": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 0,
+          "zone": "green"
+        },
+        "pull": 0.5,
+        "charge": 0.5,
+        "power": 0.6000000000000001,
+        "recoiling": false,
+        "dragging": true,
+        "busy": true,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0.21,
+        "springLength": 0.13,
+        "knobZ": 0.4
+      },
+      "launchSpeed": 6.960000000000001,
+      "balls": 2
+    },
+    {
+      "name": "landscape",
+      "stroke": 38,
+      "full": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 1,
+          "zone": "red"
+        },
+        "pull": 1,
+        "charge": 1,
+        "power": 1,
+        "recoiling": false,
+        "dragging": true,
+        "busy": true,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0.3,
+        "springLength": 0.05000000000000002,
+        "knobZ": 0.48
+      },
+      "eased": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 0,
+          "zone": "green"
+        },
+        "pull": 0.5,
+        "charge": 0.5,
+        "power": 0.6000000000000001,
+        "recoiling": false,
+        "dragging": true,
+        "busy": true,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0.21,
+        "springLength": 0.13,
+        "knobZ": 0.4
+      },
+      "launchSpeed": 6.960000000000001,
+      "balls": 3
+    },
+    {
+      "name": "desktop",
+      "stroke": 92.078125,
+      "full": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 1,
+          "zone": "red"
+        },
+        "pull": 1,
+        "charge": 1,
+        "power": 1,
+        "recoiling": false,
+        "dragging": true,
+        "busy": true,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0.3,
+        "springLength": 0.05000000000000002,
+        "knobZ": 0.48
+      },
+      "eased": {
+        "band": {
+          "ideal": 0.7,
+          "low": 0.49999999999999994,
+          "red": 0.8999999999999999,
+          "risk": 0,
+          "zone": "green"
+        },
+        "pull": 0.5,
+        "charge": 0.5,
+        "power": 0.6000000000000001,
+        "recoiling": false,
+        "dragging": true,
+        "busy": true,
+        "enabled": true,
+        "cpuMode": false,
+        "visible": true,
+        "glow": 0.21,
+        "springLength": 0.13,
+        "knobZ": 0.4
+      },
+      "launchSpeed": 6.960000000000001,
+      "balls": 4
+    }
+  ],
+  "recoilBeforeLaunch": true,
+  "focusLossCancelsRecoilAndRestoresHandle": true,
+  "restartCancelsRecoil": true,
+  "oneReleaseOneDelivery": true,
+  "errors": []
+}

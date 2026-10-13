@@ -129,12 +129,8 @@ await page.locator('#score').click();assert(await page.evaluate(()=>window.__sta
 const resetBox=await page.locator('.plunger-handle').boundingBox(),px=resetBox.x+resetBox.width/2,py=resetBox.y+resetBox.height/2;
 await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:px,y:py,id:1}]});
 await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:px,y:py+50,id:1}]});
-await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-assert.equal(await page.evaluate(()=>window.__stadiumQA.snapshot().running),false,'finger lift holds charge');
+assert.equal(await page.evaluate(()=>window.__stadiumQA.snapshot().running),false,'holding does not bowl');
 assert.equal(await page.locator('#bowlingPower').innerText(),'60%');
-const chargedBox=await page.locator('.plunger-handle').boundingBox(),cx=chargedBox.x+chargedBox.width/2,cy=chargedBox.y+chargedBox.height/2;
-await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:cx,y:cy,id:1}]});
-await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:cx,y:cy-18,id:1}]});
 await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
 await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
 assert.equal(await page.locator('#editField').isDisabled(),true,'field changes locked on launch');assert.equal(await page.locator('#fieldEditor').isVisible(),false);

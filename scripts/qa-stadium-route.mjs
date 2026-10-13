@@ -83,14 +83,15 @@ if(process.env.QA_LOW_GRAPHICS)await page.addInitScript(()=>{localStorage.setIte
   await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
   const handle = await page.locator('.plunger-handle').boundingBox();
   await page.mouse.move(handle.x + handle.width/2, handle.y + handle.height/2);
-  await page.mouse.down(); await page.mouse.move(handle.x + handle.width/2,handle.y + handle.height/2 + 50,{steps:5}); await page.mouse.up();
-  assert.equal(await page.locator('#bowlingPower').innerText(),'60%','lifting holds power');
-  const charged=await page.locator('.plunger-handle').boundingBox();
-  await page.mouse.move(charged.x+charged.width/2,charged.y+charged.height/2);await page.mouse.down();
-  await page.mouse.move(charged.x+charged.width/2,charged.y+charged.height/2-18,{steps:3});await page.mouse.up();
+  await page.mouse.down();await page.mouse.move(handle.x+handle.width/2,handle.y+handle.height/2+80,{steps:5});
+  assert.equal(await page.locator('#bowlingPower').innerText(),'84%');
+  await page.mouse.move(handle.x+handle.width/2,handle.y+handle.height/2+50,{steps:3});
+  assert.equal(await page.locator('#bowlingPower').innerText(),'60%','easing forwards reduces power');
+  await page.mouse.up();
   await page.waitForFunction(() => /BALL\s+1\s*\/\s*6/i.test(document.querySelector('#score').innerText));
   assert.deepEqual(errors, []);
   evidence.humanBowlingPlunger = true;
+  evidence.plungerInteraction='Pull to charge, ease forwards to reduce, lift to bowl';
   // The CPU result and reduced-motion path must also leave the toss layout cleanly.
   await page.locator('#restart').click();
   await page.evaluate(() => { Math.random = () => .9; });

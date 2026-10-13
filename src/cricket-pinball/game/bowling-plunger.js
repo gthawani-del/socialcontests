@@ -30,7 +30,7 @@ export function createBowlingPlunger({
   consoleEl.hidden = true;
   consoleEl.innerHTML = `
     <div class="compact-bowling-dock"><button type="button" id="movementPicker" aria-expanded="false" aria-controls="deliveryOptions"><span><small>Delivery</small><strong id="deliveryLabel">Straight</strong></span><span aria-hidden="true">⌄</span></button><button type="button" id="editField" aria-expanded="false" aria-controls="fieldEditor"><span><small>Field</small><strong id="fieldLabel">Default</strong></span><span aria-hidden="true">⌄</span></button></div>
-    <div class="bowling-instruction"><p id="aimSummary">Pull to charge. Push to bowl.</p><button type="button" id="resetCharge" disabled>Clear power</button></div>
+    <div class="bowling-instruction"><p id="aimSummary">Pull back. Release to bowl.</p><button type="button" id="resetCharge" disabled>Clear power</button></div>
     <div id="lengthOptions" hidden role="dialog" aria-modal="true" aria-label="Landing position"><div class="delivery-heading"><strong>Place your delivery</strong><button type="button" id="closeLength">Done</button></div>
       <div class="landing-axis"><span></span><span>Left</span><span>Centre</span><span>Right</span></div>
       <div class="landing-editor"><div class="landing-labels"><span>Short</span><span>Good</span><span>Full</span></div><div class="landing-grid" role="group" aria-label="Line and length">${['SHORT','GOOD','FULL'].map(length=>['LEFT','CENTRE','RIGHT'].map(line=>`<button type="button" data-zone-line="${line}" data-zone-length="${length}" aria-label="${line.toLowerCase()}, ${length.toLowerCase()} length"></button>`).join('')).join('')}</div></div>
@@ -50,9 +50,9 @@ export function createBowlingPlunger({
     <div class="plunger-label"><b>POWER</b><span id="plungerPower">50%</span></div>
     <div class="plunger-track">
       <div class="plunger-spring"></div>
-      <button type="button" class="plunger-handle" aria-label="Pull to charge, push to bowl"><span></span></button>
+      <button type="button" class="plunger-handle" aria-label="Pull back and release to bowl"><span></span></button>
     </div>
-    <small class="plunger-help">PULL THEN<br>PUSH</small>`;
+    <small class="plunger-help">PULL &amp;<br>RELEASE</small>`;
 
   controls.prepend(consoleEl);
   plunger.append(meter);
@@ -100,9 +100,9 @@ export function createBowlingPlunger({
     meter.querySelector('#powerMeter').setAttribute('aria-valuenow',percent);
     const status=pull<.05?'Pull to charge':({red:'Max pace · less accuracy',amber:'Gentle',cyan:'Ideal release',green:'Controlled'})[band.zone];
     meter.querySelector('.power-status').textContent=status;meter.querySelector('#powerMeter').setAttribute('aria-valuetext',percent+'% · '+status);
-    handle.setAttribute('aria-label', `Pull to charge, push to bowl. Power ${powerLabel.textContent}. Down arrow charges, Up arrow or Enter bowls, Escape clears.`);
+    handle.setAttribute('aria-label', `Pull back and release to bowl. Power ${powerLabel.textContent}. Down arrow increases power, Up arrow reduces power, Enter bowls, Escape cancels.`);
     clearPower.disabled=!enabled||cpuMode||pull<.05||Boolean(recoil);
-    consoleEl.querySelector('#aimSummary').textContent=pull>=.05?'Power held. Push forward to bowl.':'Pull to charge. Push to bowl.';
+    consoleEl.querySelector('#aimSummary').textContent=pull>=.05?'Release to bowl. Ease up to reduce.':'Pull back. Release to bowl.';
     onPowerChange(getSelection());
   }
 
@@ -148,6 +148,7 @@ export function createBowlingPlunger({
     clearTimeout(releaseTimer);releaseTimer=null;recoil=null;
     clearTimeout(cpuTimer);cpuGeneration++;
     spring.reset();endDrag();updatePull(0);
+    handle.disabled=!enabled||cpuMode;
   }
   function bowl(power) {
     if(power===null||!enabled||cpuMode||recoil)return;
@@ -173,23 +174,26 @@ export function createBowlingPlunger({
   handle.addEventListener('pointermove', event => {
     if (!dragging || event.pointerId !== pointerId) return;
     event.preventDefault();
-    const power=spring.move(event.clientY);
-    if(power!==null)bowl(power);else updatePull(spring.charge);
+    spring.move(event.clientY);updatePull(spring.charge);
   });
   handle.addEventListener('pointerup', event => {
     if(!dragging||event.pointerId!==pointerId)return;
-    spring.hold();endDrag(); // Lifting holds the charge. It never bowls.
+    event.preventDefault();
+    spring.move(event.clientY);updatePull(spring.charge);
+    const power=spring.release();
+    if(power!==null)bowl(power);else {endDrag();updatePull(0);}
   });
   handle.addEventListener('pointercancel', cancel);
   handle.addEventListener('lostpointercapture',()=>{if(dragging)cancel();});
   window.addEventListener('blur',resetCharge);
+  window.addEventListener('resize',()=>{if(dragging)resetCharge();});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)resetCharge();});
   handle.addEventListener('keydown', event => {
     if (!enabled || cpuMode || recoil || !canPull()) return;
     if (['ArrowDown','ArrowUp','Enter',' ','Escape'].includes(event.key)) event.preventDefault();
     if(event.key==='Escape'){resetCharge();return;}
-    if(event.key==='ArrowDown'){spring.set(spring.charge+.1);updatePull(spring.charge);}
-    if(['ArrowUp','Enter',' '].includes(event.key)&&!event.repeat)bowl(spring.release());
+    if(['ArrowDown','ArrowUp'].includes(event.key)){spring.set(spring.charge+(event.key==='ArrowDown'?.1:-.1));updatePull(spring.charge);}
+    if(['Enter',' '].includes(event.key)&&!event.repeat)bowl(spring.release());
   });
 
   function setState({ visible = false, interactive = false, cpu = false, running = false } = {}) {

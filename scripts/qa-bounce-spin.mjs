@@ -20,7 +20,7 @@ try{
   await page.waitForFunction(()=>!document.querySelector('#movementPicker').disabled);
   await page.locator('#movementPicker').click();await page.locator(`[data-type="${type}"]`).click();
   const b=await page.locator('.plunger-handle').boundingBox();
-  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,b.y+b.height/2+50,{steps:4});await page.mouse.move(b.x+b.width/2,b.y+b.height/2+32,{steps:3});await page.mouse.up();
+  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,b.y+b.height/2+50,{steps:4});await page.mouse.up();
   await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
   const flight=await page.evaluate(()=>{for(let i=0;i<500;i++){window.__stadiumQA.step(1,false);const s=window.__stadiumQA.snapshot();if(s.ball.height>.09&&s.ball.z>0&&!s.ball.bounced){window.__stadiumQA.step(0);return s;}}return null;});
   assert(flight,'visible flight before pitch impact');assert.equal(flight.ball.deliveryType,type);

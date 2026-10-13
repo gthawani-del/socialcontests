@@ -1,0 +1,58 @@
+import {createServer} from 'vite';
+import assert from 'node:assert/strict';
+import {writeFile} from 'node:fs/promises';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE);
+const {default:bundle}=await import(process.env.CHROMIUM_MODULE);
+const server=await createServer({server:{host:'127.0.0.1',port:5189}});await server.listen();
+const browser=await chromium.launch({headless:true,args:bundle.args,executablePath:process.env.CHROMIUM_PATH});
+try {
+ const page=await browser.newPage({viewport:{width:390,height:700},hasTouch:true});const errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>{localStorage.setItem('cricket-quality','low');localStorage.setItem('cricket-pinball-coaching-v1',JSON.stringify({bowl:true,bat:true}));const raf=window.requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>setTimeout(()=>raf(fn),120);});
+ await page.route('**/qa-pull-release*',r=>r.fulfill({contentType:'text/html',body:'<meta name="viewport" content="width=device-width,initial-scale=1"><main id="stadiumApp"></main><script type="module" src="/src/cricket-pinball/stadium-prototype.js"></script>'}));
+ await page.goto('http://127.0.0.1:5189/qa-pull-release?practice=bowl&format=ONE_OVER');
+ await page.waitForFunction(()=>window.__stadiumQA?.ready,null,{timeout:60000});await page.evaluate(()=>{window.__stadiumQA.manual(true);Math.random=()=>.5;});await page.locator('#confirmBowler').click();
+ const touch=await page.context().newCDPSession(page),rows=[];
+ const send=(type,p)=>touch.send('Input.dispatchTouchEvent',{type,touchPoints:p?[{...p,id:1}]:[]});
+ const snap=()=>page.evaluate(()=>{window.__stadiumQA.step(0);return window.__stadiumQA.snapshot();});
+ const knob=async()=>{const b=await page.locator('.plunger-handle').boundingBox();return {x:b.x+b.width/2,y:b.y+b.height/2};};
+ for(const [name,width,height]of [['mobile',390,700],['small',320,568],['landscape',844,390],['desktop',1365,900]]){
+  await page.setViewportSize({width,height});await page.waitForFunction(()=>Math.abs(document.querySelector('#viewport canvas').height-document.querySelector('#viewport').clientHeight)<2);await snap();
+  const before=await snap(),p=await knob(),stroke=Math.min(100,Math.max(32,height-p.y-12));
+  await send('touchStart',p);await send('touchMove',{x:p.x,y:p.y+stroke});
+  const full=await snap();assert.equal(full.plunger.power,1);assert.equal(full.running,false);assert.equal(full.aim.color,'ffffff');
+  assert(full.plunger.springLength<before.plunger.springLength*.35,'spring compresses against fixed stop');
+  if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({path:`docs/qa/pull-release-${name}.png`,timeout:60000});
+  await send('touchMove',{x:p.x,y:p.y+stroke/2});
+  const eased=await snap();assert(Math.abs(eased.plunger.power-.6)<.001);assert.equal(eased.running,false,'forward movement only reduces power');
+  assert(eased.plunger.springLength>full.plunger.springLength,'spring follows reduced pull');
+  assert.equal(await page.locator('#bowlingPowerMeter').getAttribute('data-zone'),'green','lever colour reflects current power');
+  await page.waitForTimeout(200);assert.equal((await snap()).plunger.power,eased.plunger.power,'holding still adds no power');
+  await send('touchCancel');assert.equal((await snap()).plunger.power,0);assert.equal((await snap()).score.balls,before.score.balls);
+  let q=await knob();await send('touchStart',q);await send('touchMove',{x:q.x,y:q.y+20});await send('touchMove',q);await send('touchEnd');
+  assert.equal((await snap()).plunger.power,0);assert.equal((await snap()).running,false,'easing fully home cancels the launch');
+  q=await knob();const travel=Math.min(100,Math.max(32,height-q.y-12));
+  await send('touchStart',q);await send('touchMove',{x:q.x,y:q.y+travel});await send('touchMove',{x:q.x,y:q.y+travel/2});await send('touchEnd');
+  await page.waitForFunction(()=>window.__stadiumQA.snapshot().running);
+  assert.match(await page.locator('#bowlingSummary').innerText(),/60%/,'release uses current power, not previous peak');
+  const launched=await snap();assert.equal(launched.plunger.power,0);
+  await page.evaluate(()=>window.__stadiumQA.step(1600));assert.equal((await snap()).score.balls,before.score.balls+1,'one release counts once');
+  await page.locator('#pitchTarget').waitFor();
+  rows.push({name,stroke,full:full.plunger,eased:eased.plunger,launchSpeed:Math.hypot(launched.ball.velocity.x,launched.ball.velocity.z),balls:(await snap()).score.balls});
+  console.log(name,'full pull, easing, hold, cancel, zero return and one release passed');
+ }
+ await page.clock.install({time:new Date('2030-01-01T00:00:00Z')});await page.clock.pauseAt(new Date('2030-01-01T00:00:10Z'));
+ let p=await knob();await send('touchStart',p);await send('touchMove',{x:p.x,y:p.y+40});await send('touchEnd');
+ const released=await snap();assert(released.plunger.recoiling);assert.equal(released.running,false,'ball waits for rod contact');
+ await page.clock.runFor(45);const halfway=await snap();assert(halfway.plunger.pull<released.plunger.pull&&halfway.plunger.pull>0);assert.equal(halfway.running,false);
+ await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await page.clock.runFor(200);
+ assert.equal((await snap()).running,false,'focus loss cancels pending release');assert.equal((await snap()).plunger.power,0);
+ await page.getByRole('button',{name:'Resume match',exact:true}).click({force:true});
+ assert.equal(await page.locator('.plunger-handle').isDisabled(),false,'handle remains usable after cancelled recoil');
+ p=await knob();await send('touchStart',p);await send('touchMove',{x:p.x,y:p.y+40});await send('touchEnd');
+ assert((await snap()).plunger.recoiling,'the next pull works after focus cancellation');
+ await page.locator('#restart').click({force:true});await page.clock.runFor(1000);
+ assert.equal((await snap()).running,false,'restart cancels pending release');assert.equal((await snap()).plunger.power,0);
+ assert.deepEqual(errors,[]);await writeFile('docs/qa/pull-release.json',JSON.stringify({fixture:'Chromium real touch input; four emulated viewports; manual engine stepping for counted deliveries; controlled clock for recoil/reset; not physical iPhone.',rows,recoilBeforeLaunch:true,focusLossCancelsRecoilAndRestoresHandle:true,restartCancelsRecoil:true,oneReleaseOneDelivery:true,errors},null,2)+'\n');
+ console.log('Standard spring plunger, recoil-before-contact and restart cancellation passed');
+}finally{await browser.close();await server.close();}
