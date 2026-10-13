@@ -7,14 +7,14 @@ const args=process.env.CHROMIUM_MODULE
   : ['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'];
 const server=await preview({preview:{host:'127.0.0.1',port:5180,strictPort:true}});
 const browser=await chromium.launch({headless:true,args,executablePath:process.env.CHROMIUM_PATH});
-const evidence='docs/cricket-pinball/evidence-settings';
+const evidence=process.env.QA_EVIDENCE || 'docs/cricket-pinball/evidence-settings';
 await mkdir(evidence,{recursive:true});
 try{
 const page=await browser.newPage({viewport:{width:390,height:844},hasTouch:true});
 const errors=[],models=[];
 page.on('pageerror',e=>errors.push(e.message));
 page.on('request',r=>{if(r.url().endsWith('.glb'))models.push(r.url());});
-const lobby='http://127.0.0.1:5180/cricket-pinball/';
+const lobby=process.env.QA_URL || 'http://127.0.0.1:5180/cricket-pinball/';
 await page.goto(lobby);
 const gate=await readFile('src/access/demo-gate.js','utf8');
 await page.locator('#c').check();await page.locator('#n').click();
@@ -23,26 +23,26 @@ await page.locator('#p').fill(gate.match(/P='([^']+)'/)[1]);
 await page.locator('#l button').click();
 await page.locator('#cricketStart').waitFor();
 await page.waitForFunction(()=>document.querySelector('.stadium-preview img').naturalWidth>0);
-assert.equal(await page.locator('[data-format="ONE_OVER"]').getAttribute('aria-pressed'),'true');
-assert.equal(await page.locator('[data-difficulty="MEDIUM"]').getAttribute('aria-pressed'),'true');
+assert.equal(await page.getByLabel('Match length',{exact:true}).inputValue(),'ONE_OVER');
+assert.equal(await page.getByLabel('Difficulty',{exact:true}).inputValue(),'MEDIUM');
 for(const [format,balls] of [['LAST_3',3],['ONE_OVER',6],['TWO_OVER',12]]){
- await page.locator(`[data-format="${format}"]`).tap();
+ await page.getByLabel('Match length',{exact:true}).selectOption(format);
  assert.equal(await page.locator('#matchBalls').innerText(),`${balls} balls`);
- assert.equal(await page.locator('[data-format][aria-pressed="true"]').count(),1);
+ assert.equal(await page.locator('#formatValue').innerText(),{LAST_3:'3 balls',ONE_OVER:'1 over',TWO_OVER:'2 overs'}[format]);
 }
 for(const difficulty of ['EASY','HARD','MEDIUM']){
- await page.locator(`[data-difficulty="${difficulty}"]`).tap();
- assert.equal(await page.locator(`[data-difficulty="${difficulty}"]`).getAttribute('aria-pressed'),'true');
- assert.equal(await page.locator('[data-difficulty][aria-pressed="true"]').count(),1);
+ await page.getByLabel('Difficulty',{exact:true}).selectOption(difficulty);
+ assert.equal(await page.locator('#difficultyValue').innerText(),{EASY:'Easy',MEDIUM:'Normal',HARD:'Hard'}[difficulty]);
+ assert.equal(await page.locator('#difficultyHint').innerText(),{EASY:'A gentler challenge',MEDIUM:'A balanced match',HARD:'A tougher opponent'}[difficulty]);
 }
 const layouts=[];
-for(const [name,width,height] of [['mobile',390,844],['small',320,568],['desktop',1365,900],['landscape',844,390]]){
+for(const [name,width,height] of [['mobile',390,844],['mobile-browser',390,664],['small',320,568],['desktop',1365,900],['landscape',844,390]]){
  await page.setViewportSize({width,height});
  await page.evaluate(()=>scrollTo(0,0));
  await page.evaluate(()=>document.fonts.ready);
- const result=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth,play:document.querySelector('#cricketStart').getBoundingClientRect().toJSON(),targets:[...document.querySelectorAll('.cricket-segmented button,.practice-links a,#cricketStart,.worlds-link,.how-pin-trigger')].map(b=>b.getBoundingClientRect().height)}));
+ const result=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth,play:document.querySelector('#cricketStart').getBoundingClientRect().toJSON(),targets:[...document.querySelectorAll('.setting-card select,.practice-links a,#cricketStart,.worlds-link,.how-pin-trigger')].map(b=>b.getBoundingClientRect().height)}));
  assert(!result.overflow,`${name}: horizontal overflow`);assert(result.targets.every(h=>h>=44),`${name}: touch targets`);
- if(name==='mobile')assert(result.play.bottom<=height,'Play is above the fold on the standard mobile viewport');
+ if(name.startsWith('mobile'))assert(result.play.bottom<=height,'Play is above the fold on the standard mobile viewport');
  // The approved artwork uses natural vertical scrolling on short viewports.
  await page.locator('#cricketStart').scrollIntoViewIfNeeded();
  assert(await page.locator('#cricketStart').isVisible());
@@ -56,8 +56,10 @@ await page.locator('.how-pin-trigger').tap();await page.locator('#howPinCricketD
 assert.match(await page.locator('#howPinCricketDialog').innerText(),/right-side plunger/);
 await page.keyboard.press('Escape');assert(await page.locator('#howPinCricketDialog').isHidden());
 assert(await page.locator('.how-pin-trigger').evaluate(el=>el===document.activeElement));
-await page.locator('[data-format="TWO_OVER"]').focus();await page.keyboard.press('Enter');
-await page.locator('[data-difficulty="HARD"]').tap();
+await page.getByLabel('Match length',{exact:true}).selectOption('ONE_OVER');
+await page.getByLabel('Match length',{exact:true}).focus();await page.keyboard.press('ArrowDown');
+assert.equal(await page.getByLabel('Match length',{exact:true}).inputValue(),'TWO_OVER');
+await page.getByLabel('Difficulty',{exact:true}).selectOption('HARD');
 await page.locator('#cricketStart').tap();await page.waitForURL('**/cricket-pinball/play/**');
 const url=new URL(page.url());
 assert.equal(url.searchParams.get('format'),'TWO_OVER');assert.equal(url.searchParams.get('difficulty'),'HARD');
@@ -66,8 +68,8 @@ await page.locator('#beginStadiumToss').waitFor({timeout:60000});
 assert.equal(await page.locator('#format').inputValue(),'TWO_OVER');
 assert.equal(await page.locator('#difficulty').inputValue(),'HARD');
 await page.goto(lobby);
-assert.equal(await page.locator('[data-format="TWO_OVER"]').getAttribute('aria-pressed'),'true');
-assert.equal(await page.locator('[data-difficulty="HARD"]').getAttribute('aria-pressed'),'true');
+assert.equal(await page.getByLabel('Match length',{exact:true}).inputValue(),'TWO_OVER');
+assert.equal(await page.getByLabel('Difficulty',{exact:true}).inputValue(),'HARD');
 for(const practice of ['bat','bowl']){
  await page.locator(`.practice-links a[href$="practice=${practice}"]`).tap();
  await page.waitForURL(`**/cricket-pinball/play/?practice=${practice}`);

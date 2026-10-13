@@ -1,11 +1,10 @@
 @font-face{font-family:"Cricket Display";src:url('/football-pinball/fonts/barlow-condensed-extrabold.woff2') format('woff2');font-weight:800;font-display:swap}
 :root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f5f6f7;background:#07131e;--gold:#f4bf5d;--line:#34495b;--muted:#b4c3cf}
-*{box-sizing:border-box}body{margin:0}button,a{-webkit-tap-highlight-color:transparent;font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:4px}[hidden]{display:none!important}
+*{box-sizing:border-box}body{margin:0}button,a,select{-webkit-tap-highlight-color:transparent;font:inherit}button,select{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:4px}[hidden]{display:none!important}
 .cricket-pinball-shell{max-width:1240px;margin:auto;padding:0 36px 32px}
 .cricket-pinball-shell svg{width:24px;height:24px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.cricket-sitebar{height:80px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line)}
-.infinite-brand{display:flex;align-items:center;min-height:44px}.infinite-brand img{display:block;width:158px;height:auto}
-.worlds-link{display:flex;align-items:center;gap:6px;width:fit-content;min-height:52px;color:var(--muted);font-size:14px;text-decoration:none}.worlds-link svg{width:18px;height:18px}
+.cricket-sitebar{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.worlds-link{display:flex;align-items:center;gap:6px;width:fit-content;min-height:44px;color:var(--muted);font-size:14px;text-decoration:none}.worlds-link svg{width:18px;height:18px}
 .cricket-sitebar .how-pin-trigger{position:static!important;min-height:44px;border:0;border-radius:0;background:none;padding:0;font:600 14px/1.2 system-ui,sans-serif;color:var(--gold);box-shadow:none;letter-spacing:0;text-transform:none;backdrop-filter:none}
 .cricket-lobby{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(340px,1fr);gap:0 48px;align-items:center;padding-top:12px}
 .cricket-identity{grid-column:1;grid-row:1;position:relative;z-index:1}.cricket-eyebrow{display:block;font-size:12px;letter-spacing:.23em;color:var(--gold);font-weight:700;margin-bottom:8px}
@@ -15,24 +14,28 @@
 .stadium-preview:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,#07131e,transparent 17%,transparent 85%,#07131e)}
 .stadium-preview figcaption{position:relative;z-index:1;display:grid;place-content:center;height:100%;color:var(--muted);text-align:center;padding:24px;font-size:14px;line-height:1.5}
 .cricket-lobby-panel{grid-column:2;grid-row:1/span 2;padding:28px 0;min-width:0}
-.match-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.match-heading h2{font-size:28px;line-height:1.2;letter-spacing:-.7px;margin:0}.match-heading>span{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}.match-heading svg{width:21px;height:21px}
-.cricket-lobby-panel fieldset{display:block;width:100%;border:0;margin:0 0 20px;padding:0;min-width:0}
-.cricket-lobby-panel legend{display:block;float:none;font-size:14px;line-height:1.4;color:var(--muted);margin:0 0 8px;padding:0}
-.cricket-segmented{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.cricket-segmented button{display:flex;align-items:center;justify-content:center;gap:8px;position:relative;width:100%;min-width:0;min-height:52px;padding:10px 5px;color:#f5f6f7;background:#0b1b29;border:1px solid var(--line);border-radius:8px;font-size:15px;font-weight:700;white-space:nowrap}
-.cricket-segmented button svg{display:none;width:18px;height:18px;stroke:var(--gold);stroke-width:2.5}.selection-disc{fill:#07131e;stroke:#07131e}
-.cricket-segmented button[aria-pressed=true]{color:#07131e;border-color:#ffe0a0;background:linear-gradient(110deg,#ffd079,var(--gold));box-shadow:inset 0 0 0 1px #ffe0a055}.cricket-segmented button[aria-pressed=true] svg{display:block}
-.match-note{display:grid;grid-template-columns:1.08fr .94fr 1fr;list-style:none;margin:2px 0 16px;padding:14px 4px;border:1px solid var(--line);border-radius:8px;color:#d4dfe8;font-size:12px;line-height:1.3}
-.match-note li{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;padding:0 5px}.match-note li+li{border-left:1px solid var(--line)}.match-note svg{color:var(--gold);width:25px;height:25px}.match-note strong{font-weight:500}
-.cricket-start{display:flex;align-items:center;justify-content:center;gap:16px;width:100%;min-height:56px;border:1px solid #ffd781;border-radius:8px;background:linear-gradient(110deg,#ffcc72,var(--gold));color:#07131e;font-size:20px;font-weight:800}
-.practice-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.practice-links a{display:flex;justify-content:center;align-items:center;gap:8px;min-height:52px;padding:8px 5px;border:1px solid #8299ad;border-radius:8px;color:#e4ebf1;font-size:13px;font-weight:550;text-decoration:none}.practice-links svg{color:var(--gold);width:22px;height:22px}
-@media(hover:hover){.cricket-segmented button:hover{border-color:var(--gold)}.cricket-start:hover{filter:brightness(1.08)}.practice-links a:hover{border-color:var(--gold);background:#102231}.worlds-link:hover{color:#fff}}
+.match-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}.match-heading h2{font-size:28px;line-height:1.2;letter-spacing:-.7px;margin:0}.match-heading>span{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);white-space:nowrap}.match-heading svg{width:21px;height:21px}
+.match-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.setting-card{position:relative;min-width:0;padding:16px;background:#0b1b29;border:1px solid var(--line);border-radius:14px}
+.setting-card label{display:block;color:var(--muted);font-size:13px;line-height:1.4}
+.setting-value{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0;font-size:26px;line-height:1.15;font-weight:750;letter-spacing:-.5px}
+.setting-value svg{width:20px;height:20px;color:var(--muted)}
+.setting-hint{display:block;color:var(--muted);font-size:12px;line-height:1.4}
+/* The native select covers the card: one full-size touch target with the OS picker. */
+.setting-card select{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;color:#f5f6f7;background:#0b1b29;border:0;border-radius:inherit}
+.setting-card:focus-within{outline:3px solid var(--gold);outline-offset:3px;border-color:var(--gold)}
+.match-note{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));list-style:none;margin:0 0 16px;padding:16px 4px;border:1px solid var(--line);border-radius:12px;color:#d4dfe8;font-size:13px;line-height:1.3}
+.match-note li{display:flex;align-items:center;justify-content:center;gap:10px;min-width:0;padding:0 5px}.match-note li+li{border-left:1px solid var(--line)}.match-note svg{color:var(--gold);width:25px;height:25px}
+.cricket-start{display:flex;align-items:center;justify-content:center;gap:16px;width:100%;min-height:58px;border:1px solid #ffd781;border-radius:12px;background:linear-gradient(110deg,#ffcc72,var(--gold));color:#07131e;font-size:20px;font-weight:800}
+.practice-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.practice-links a{display:flex;justify-content:center;align-items:center;gap:8px;min-height:48px;padding:8px 5px;border-radius:8px;color:var(--muted);font-size:13px;font-weight:550;text-decoration:none}.practice-links svg{color:var(--gold);width:22px;height:22px}
+@media(hover:hover){.setting-card:hover{border-color:var(--gold)}.cricket-start:hover{filter:brightness(1.08)}.practice-links a:hover{color:#fff;background:#102231}.worlds-link:hover{color:#fff}}
 @media(max-width:760px){
- .cricket-pinball-shell{max-width:560px;padding:0 18px max(20px,env(safe-area-inset-bottom))}.cricket-sitebar{height:60px;gap:16px}.infinite-brand img{width:130px}.cricket-sitebar .how-pin-trigger{font-size:13px;gap:7px}.cricket-sitebar .how-pin-trigger svg{width:22px;height:22px}.worlds-link{min-height:44px;font-size:13px}
- .cricket-lobby{display:flex;flex-direction:column;align-items:stretch;padding-top:4px}.cricket-eyebrow{font-size:10px;margin-bottom:8px}.cricket-identity h1{font-size:clamp(40px,11.4vw,60px)}.cricket-identity p{font-size:13px;line-height:1.5;margin-top:8px}
- .stadium-preview{aspect-ratio:3/2;margin:0 -18px;flex-shrink:0}.cricket-lobby-panel{padding:2px 0 0}.match-heading{margin-bottom:18px}.match-heading h2{font-size:25px}.match-heading>span{font-size:12px}
- .cricket-lobby-panel fieldset{margin-bottom:16px}.cricket-lobby-panel legend{font-size:13px;margin-bottom:7px}.cricket-segmented button{min-height:48px;font-size:14px;gap:7px}
- .match-note{padding:12px 3px;font-size:11px;margin-bottom:14px}.match-note li{gap:7px}.match-note svg{width:23px;height:23px}.cricket-start{min-height:54px;font-size:19px}.practice-links{margin-top:12px}.practice-links a{min-height:48px;font-size:12px}
+ .cricket-pinball-shell{max-width:560px;padding:0 20px max(20px,env(safe-area-inset-bottom))}.cricket-sitebar{height:56px;gap:16px}.cricket-sitebar .how-pin-trigger{font-size:13px;gap:7px}.cricket-sitebar .how-pin-trigger svg{width:20px;height:20px}.worlds-link{font-size:13px}
+ .cricket-lobby{display:flex;flex-direction:column;align-items:stretch;padding-top:8px}.cricket-eyebrow{font-size:10px;margin-bottom:8px}.cricket-identity h1{font-size:clamp(40px,11.4vw,60px)}.cricket-identity p{font-size:13px;line-height:1.5;margin-top:8px}
+ .stadium-preview{aspect-ratio:3/2;margin:0 -20px;max-height:320px;flex-shrink:0}.cricket-lobby-panel{padding:6px 0 0}.match-heading{margin-bottom:16px}.match-heading h2{font-size:25px}.match-heading>span{font-size:12px}
+ .match-settings{gap:10px;margin-bottom:14px}.setting-card{padding:14px}.setting-value{font-size:25px;margin:9px 0}.setting-hint{font-size:11px}
+ .match-note{padding:14px 3px;font-size:12px;margin-bottom:14px}.match-note svg{width:23px;height:23px}.cricket-start{font-size:20px}.practice-links a{font-size:12px}
 }
-@media(max-width:359px){.cricket-pinball-shell{padding-inline:14px}.stadium-preview{margin-inline:-14px}.match-heading h2{font-size:23px}.cricket-segmented{gap:6px}.cricket-segmented button{font-size:13px;gap:4px}.cricket-segmented button svg{width:16px;height:16px}.match-note li{gap:5px;padding-inline:3px}.match-note svg{width:19px;height:19px}.practice-links{gap:8px}.practice-links a{gap:5px;font-size:11px}.practice-links svg{width:19px;height:19px}}
+@media(max-width:359px){.cricket-pinball-shell{padding-inline:14px}.stadium-preview{margin-inline:-14px}.match-heading h2{font-size:23px}.match-heading>span{gap:6px}.setting-card{padding:12px}.setting-value{font-size:23px}.setting-card label{font-size:12px}.setting-hint{font-size:11px}.match-note li{gap:8px}.practice-links{gap:8px}.practice-links a{gap:5px;font-size:11px}.practice-links svg{width:19px;height:19px}}
+@media(max-width:760px) and (max-height:720px){.stadium-preview{max-height:clamp(160px,calc(100svh - 470px),260px)}.stadium-preview img{object-position:center bottom}}
 @media(min-width:761px) and (max-width:1020px){.cricket-pinball-shell{padding-inline:24px}.cricket-lobby{column-gap:24px;grid-template-columns:minmax(0,1fr) minmax(330px,1fr)}.cricket-identity h1{font-size:48px}.cricket-identity p{font-size:14px}.match-heading h2{font-size:25px}}
