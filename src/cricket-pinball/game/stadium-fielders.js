@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 export function createStadiumFielders(scene, table) {
   const figures = new Map();
+  const previews = new Map();
   const kit = new THREE.MeshStandardMaterial({color:'#579bd5',roughness:.85});
   const skin = new THREE.MeshStandardMaterial({color:'#b87e55',roughness:.9});
   for (const f of table.fielders || []) {
@@ -24,6 +25,7 @@ export function createStadiumFielders(scene, table) {
     figures.set(f.id,{group,config:f,arms,ring,canvas,ctx,texture,labelText:f.label,elapsed:Infinity});
   }
   return {
+    preview(id,point) {if(point)previews.set(id,point);else previews.delete(id);},
     handle(event) {
       if(event.type==='MATCH_RESET')for(const figure of figures.values())figure.elapsed=Infinity;
       if(event.type==='OUTCOME' && event.metadata?.reason==='CAUGHT_OUT') {
@@ -32,7 +34,8 @@ export function createStadiumFielders(scene, table) {
     },
     update(dt) {
       for(const f of figures.values()) {
-        f.group.position.set(f.config.x,0,f.config.z);
+        const point=previews.get(f.config.id)||f.config;
+        f.group.position.set(point.x,0,point.z);
         const labelText=table.fieldingSlots?.find(slot=>slot.id===f.config.slotId)?.label || f.config.label;
         if(labelText!==f.labelText){
           f.ctx.fillStyle='#071622';f.ctx.fillRect(0,0,256,64);f.ctx.fillStyle='#ffe0a1';f.ctx.fillText(labelText,128,42);

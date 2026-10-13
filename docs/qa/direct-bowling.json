@@ -1,0 +1,186 @@
+{
+  "fixture": "Bowling practice; manual deterministic physics steps; real touch/pointer/keyboard input; emulated viewports, not physical iPhone.",
+  "layouts": [
+    {
+      "name": "mobile",
+      "dock": [
+        {
+          "x": 21,
+          "y": 445.109375,
+          "width": 170,
+          "height": 62,
+          "top": 445.109375,
+          "right": 191,
+          "bottom": 507.109375,
+          "left": 21
+        },
+        {
+          "x": 199,
+          "y": 445.109375,
+          "width": 170,
+          "height": 62,
+          "top": 445.109375,
+          "right": 369,
+          "bottom": 507.109375,
+          "left": 199
+        }
+      ],
+      "target": {
+        "x": 0.23699999899551946,
+        "z": 1.4369999084112002
+      },
+      "overflow": false,
+      "plunger": {
+        "x": 312.828125,
+        "y": 321.796875,
+        "width": 64,
+        "height": 100,
+        "top": 321.796875,
+        "right": 376.828125,
+        "bottom": 421.796875,
+        "left": 312.828125
+      }
+    },
+    {
+      "name": "small",
+      "dock": [
+        {
+          "x": 21,
+          "y": 314.890625,
+          "width": 135,
+          "height": 62,
+          "top": 314.890625,
+          "right": 156,
+          "bottom": 376.890625,
+          "left": 21
+        },
+        {
+          "x": 164,
+          "y": 314.890625,
+          "width": 135,
+          "height": 62,
+          "top": 314.890625,
+          "right": 299,
+          "bottom": 376.890625,
+          "left": 164
+        }
+      ],
+      "target": {
+        "x": 0.23699999430861277,
+        "z": 1.437000000743959
+      },
+      "overflow": false,
+      "plunger": {
+        "x": 246.578125,
+        "y": 202.890625,
+        "width": 64,
+        "height": 100,
+        "top": 202.890625,
+        "right": 310.578125,
+        "bottom": 302.890625,
+        "left": 246.578125
+      }
+    },
+    {
+      "name": "landscape",
+      "dock": [
+        {
+          "x": 633,
+          "y": 67.4375,
+          "width": 92,
+          "height": 62,
+          "top": 67.4375,
+          "right": 725,
+          "bottom": 129.4375,
+          "left": 633
+        },
+        {
+          "x": 733,
+          "y": 67.4375,
+          "width": 92,
+          "height": 62,
+          "top": 67.4375,
+          "right": 825,
+          "bottom": 129.4375,
+          "left": 733
+        }
+      ],
+      "target": {
+        "x": 0.2370001079899694,
+        "z": 1.4369998429566961
+      },
+      "overflow": false,
+      "plunger": {
+        "x": 413.578125,
+        "y": 290,
+        "width": 64,
+        "height": 100,
+        "top": 290,
+        "right": 477.578125,
+        "bottom": 390,
+        "left": 413.578125
+      }
+    },
+    {
+      "name": "desktop",
+      "dock": [
+        {
+          "x": 979.5,
+          "y": 571.75,
+          "width": 134,
+          "height": 62,
+          "top": 571.75,
+          "right": 1113.5,
+          "bottom": 633.75,
+          "left": 979.5
+        },
+        {
+          "x": 1121.5,
+          "y": 571.75,
+          "width": 134,
+          "height": 62,
+          "top": 571.75,
+          "right": 1255.5,
+          "bottom": 633.75,
+          "left": 1121.5
+        }
+      ],
+      "target": {
+        "x": 0.23700016197838927,
+        "z": 1.4369997822889808
+      },
+      "overflow": false,
+      "plunger": {
+        "x": 801.828125,
+        "y": 773.765625,
+        "width": 64,
+        "height": 100,
+        "top": 773.765625,
+        "right": 865.828125,
+        "bottom": 873.765625,
+        "left": 801.828125
+      }
+    }
+  ],
+  "target": {
+    "x": 0.13700000059968037,
+    "z": 1.5370001546234042
+  },
+  "bounce": {
+    "type": "SWING_LEFT",
+    "x": 0.13650113411659653,
+    "z": 1.5270672589004457,
+    "height": 0,
+    "beforeVelocity": {
+      "x": 0.3681472982759256,
+      "z": 7.276934566146856
+    },
+    "velocity": {
+      "x": 0.30814729827592563,
+      "z": 7.204165220485388
+    }
+  },
+  "fieldPersists": true,
+  "cancelledAndIllegalDropsPreserved": true,
+  "errors": []
+}

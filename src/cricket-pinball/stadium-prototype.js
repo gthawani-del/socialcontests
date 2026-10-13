@@ -2,7 +2,9 @@ import {createStadiumFielders} from './game/stadium-fielders.js';
 import {DELIVERY_LABELS} from './game/bowling-icons.js';
 import {createStadiumAtmosphere} from './game/stadium-atmosphere.js';
 import {createStadiumCoaching} from './game/stadium-coaching.js';
-import {BOWLERS,LENGTHS} from './game/bowling-rules.js';
+import {BOWLERS,LENGTHS,pitchTargetFor,bowlingPowerBand} from './game/bowling-rules.js';
+import {createPitchTargetControl} from './game/pitch-target-control.js';
+import {createFieldPlacement} from './game/field-placement.js';
 import './game/match-experience.css';
 import { createMatchPresentation } from './game/match-presentation.js';
 import { createStadiumAudio } from './game/stadium-audio.js';
@@ -86,17 +88,22 @@ try {
   aimRing.position.set(0, .026, 1.62);
   aimRing.visible = false;
   scene.add(aimRing);
+  const accuracyRing=new THREE.Mesh(new THREE.RingGeometry(.96,1,48),new THREE.MeshBasicMaterial({color:0xf07469,transparent:true,opacity:.55,depthWrite:false}));
+  accuracyRing.rotation.x=-Math.PI/2;accuracyRing.visible=false;scene.add(accuracyRing);
   const movementGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, .032, 1.62), new THREE.Vector3(0, .032, 1.32)]);
   const movementLine = new THREE.Line(movementGeometry, new THREE.LineBasicMaterial({ color: 0x71b8ff, transparent: true, opacity: .82 }));
   movementLine.visible = false;
   scene.add(movementLine);
 
   const updateBowlingGuide = (selection = {}, visible = true) => {
-    const line = String(selection.line || 'CENTRE').toUpperCase();
-    const target = table.launcher.bowlingLines?.[line]?.target || [0, 1.62];
-    aimRing.position.x = Number(target[0] || 0);
+    const target = pitchTargetFor(selection);
+    aimRing.position.x = target.x;
     const type = String(selection.type || 'PACE').toUpperCase();
-    aimRing.position.z = Number(LENGTHS[selection.length || 'GOOD'].bounceZ);
+    aimRing.position.z = target.z;
+    const {risk}=bowlingPowerBand(selection);
+    accuracyRing.position.copy(aimRing.position);accuracyRing.scale.set(.105+({FAST:.12,MEDIUM:.16,SPINNER:.2})[selection.bowler||'MEDIUM']*risk,.105+.055*risk,1);
+    accuracyRing.visible=visible && risk>0;
+    aimMaterial.color.set(risk>0?0xf07469:0xf2c96b);
     const direction = type.endsWith('_LEFT') ? -1 : type.endsWith('_RIGHT') ? 1 : 0;
     const attr = movementLine.geometry.getAttribute('position');
     attr.setXYZ(0, aimRing.position.x, .032, aimRing.position.z);
@@ -142,47 +149,22 @@ try {
   const presentation = createMatchPresentation({app,getFlow:()=>flow,audio:sound});
   const controlsRoot = document.querySelector('.controls');
   const deliveryBrief=document.createElement('p');deliveryBrief.id='deliveryBrief';deliveryBrief.hidden=true;controlsRoot.prepend(deliveryBrief);
-  let canEditField=false, fieldEditing=false, selectedFielder=null;
-  const fieldEditor=document.createElement('div');fieldEditor.id='fieldEditor';fieldEditor.hidden=true;
-  fieldEditor.innerHTML='<div class="field-editor-toolbar"><span id="fieldHint">Choose a fielder</span><button type="button" id="defaultField">Reset</button><button type="button" id="closeField">Done</button></div><div class="field-position-pins" aria-hidden="true"></div><div class="field-position-buttons" role="group" aria-label="Field positions"></div>';
-  viewport.append(fieldEditor);
+  let canEditField=false, fieldEditing=false;
   const shotChoice=document.createElement('div');shotChoice.id='shotChoice';shotChoice.hidden=true;
   shotChoice.innerHTML='<span>SHOT</span><button type="button" data-shot="GROUND" aria-pressed="true">Ground</button><button type="button" data-shot="LOFT" aria-pressed="false">Loft · risk catch</button>';
   viewport.append(shotChoice);
   let canChooseShot=false;
   shotChoice.querySelectorAll('button').forEach(button=>button.onclick=()=>{if(!canChooseShot)return;engine.shotMode=button.dataset.shot;shotChoice.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));});
-  function closeField(){fieldEditing=false;selectedFielder=null;fieldEditor.hidden=true;app.classList.remove('field-editing');}
-  function fieldButtons(){
-    const root=fieldEditor.querySelector('.field-position-buttons'),pins=fieldEditor.querySelector('.field-position-pins');root.replaceChildren();pins.replaceChildren();root.classList.toggle('slot-sheet',Boolean(selectedFielder));
-    const choices=selectedFielder ? table.fieldingSlots || [] : table.fielders || [];
-    fieldEditor.querySelector('#fieldHint').textContent=selectedFielder?'Choose a numbered position':'Choose a fielder';
-    for(const [index,choice] of choices.entries()){
-      if(selectedFielder){const pin=document.createElement('span');pin.dataset.pinId=choice.id;pin.textContent=index+1;pins.append(pin);}
-      const button=document.createElement('button');button.type='button';button.textContent=selectedFielder?`${index+1} · ${choice.label}`:(table.fieldingSlots?.find(slot=>slot.id===choice.slotId)?.label || choice.label);button.dataset.positionId=choice.id;
-      const occupied=selectedFielder && table.fielders.some(f=>f.id!==selectedFielder && Math.hypot(f.x-choice.x,f.z-choice.z)<.3);
-      button.disabled=Boolean(occupied);button.onclick=()=>{if(!canEditField)return;if(!selectedFielder){selectedFielder=choice.id;fieldButtons();}else if(engine.setFieldPosition(selectedFielder,choice.id)){selectedFielder=null;bowlingUi.setFieldLabel(true);fieldButtons();}};root.append(button);
-    }
-    positionFieldButtons();
-  }
-  function positionFieldButtons(){
-    if(!fieldEditing)return;
-    const choices=selectedFielder ? table.fieldingSlots || [] : table.fielders || [];
-    for(const button of fieldEditor.querySelectorAll(selectedFielder?'[data-pin-id]':'[data-position-id]')){
-      const choice=choices.find(c=>c.id===(button.dataset.pinId || button.dataset.positionId));if(!choice)continue;
-      const point=new THREE.Vector3(choice.x,.12,choice.z).project(camera);
-      button.style.left=`${(point.x+1)*50}%`;button.style.top=`${(1-point.y)*50}%`;
-    }
-  }
-  fieldEditor.querySelector('#closeField').onclick=closeField;
-  fieldEditor.querySelector('#defaultField').onclick=()=>{if(canEditField){engine.resetFieldPositions();selectedFielder=null;bowlingUi.setFieldLabel(false);fieldButtons();}};
   const bowlingUi = createBowlingPlunger({
     app,
     viewport,
     controls: controlsRoot,
     cpuPullMs: Math.max(300, Number(rules.delivery.cpuPlungerMs ?? 920) - 220),
-    onFieldEdit: () => {if(canEditField){fieldEditing=true;fieldEditor.hidden=false;app.classList.add('field-editing');selectedFielder=null;fieldButtons();}},
+    onFieldEdit: () => fieldControl.open(),
+    canPull: () => !fieldEditing&&!pitchControl.dragging,
     onInteraction: event => coach.handle(event),
     onRelease: selection => flow?.launch(selection),
+    onPowerChange: selection => updateBowlingGuide(selection,aimRing.visible),
     onSelectionChange: selection => {
       coach.handle({type:'BOWLING_SELECTION',selection});
       document.querySelector('#line').value = selection.line;
@@ -193,10 +175,21 @@ try {
     }
   });
 
+  const aimRay=new THREE.Raycaster(),aimPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+  const projectPoint=({x,z})=>{const point=new THREE.Vector3(x,0,z).project(camera),rect=viewport.getBoundingClientRect();return {x:rect.left+(point.x+1)*rect.width/2,y:rect.top+(1-point.y)*rect.height/2};};
+  const unprojectPoint=(x,y)=>{const rect=renderer.domElement.getBoundingClientRect();aimRay.setFromCamera(new THREE.Vector2((x-rect.left)/rect.width*2-1,1-(y-rect.top)/rect.height*2),camera);return aimRay.ray.intersectPlane(aimPlane,new THREE.Vector3());};
+  const pitchControl=createPitchTargetControl({viewport,canvas:renderer.domElement,project:projectPoint,unproject:unprojectPoint,getSelection:bowlingUi.getSelection,setTarget:bowlingUi.setTarget,canInteract:()=>canEditField&&!fieldEditing&&!bowlingUi.getState().dragging});
+
+  const fieldControl=createFieldPlacement({viewport,table,engine,project:projectPoint,unproject:unprojectPoint,preview:fielders.preview,
+    canEdit:()=>canEditField&&!bowlingUi.getState().dragging&&!pitchControl.dragging,
+    onChange:()=>bowlingUi.setFieldLabel(table.fielders.some(f=>f.slotId && f.slotId!==f.id)),
+    onOpenChange:open=>{fieldEditing=open;bowlingUi.setFieldEditing(open);app.classList.toggle('field-editing',open);pitchControl.setEnabled(canEditField&&!open);updateBowlingGuide(bowlingUi.getSelection(),canEditField&&!open);}
+  });
+
   const gameplayFeedback = event => {
     fielders.handle(event);
     if(event.type==='FIELD_RESET')bowlingUi.setFieldLabel(false);
-    if(event.type==='MATCH_RESET'){closeField();engine.resetFieldPositions();engine.shotMode='GROUND';bowlingUi.setFieldLabel(false);shotChoice.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shot==='GROUND')));}
+    if(event.type==='MATCH_RESET'){fieldControl.close();engine.resetFieldPositions();engine.shotMode='GROUND';bowlingUi.setFieldLabel(false);shotChoice.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shot==='GROUND')));}
     coach.handle(event);
     atmosphere.handle(event);
     feedback.handle(event);
@@ -215,7 +208,8 @@ try {
       deliveryBrief.hidden=!event.humanBatting;
       const inningsActive = Number(event.match?.innings || 0) > 0;
       canEditField=inningsActive && !event.humanBatting && event.ready && !event.running && !event.paused;
-      if(!canEditField)closeField();
+      pitchControl.setEnabled(canEditField&&!fieldEditing);
+      if(!canEditField)fieldControl.close();
       canChooseShot=inningsActive && event.humanBatting && !event.running && !event.paused;
       shotChoice.hidden=!inningsActive || !event.humanBatting;
       shotChoice.querySelectorAll('button').forEach(b=>b.disabled=!canChooseShot);
@@ -239,23 +233,14 @@ try {
       updateBowlingGuide(event.selection || {}, false);
     }
   };
-  const aimRay=new THREE.Raycaster(),aimPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
-  renderer.domElement.addEventListener('pointerup',event=>{
-    if(!canEditField || fieldEditing)return;
-    const rect=renderer.domElement.getBoundingClientRect();
-    aimRay.setFromCamera(new THREE.Vector2((event.clientX-rect.left)/rect.width*2-1,1-(event.clientY-rect.top)/rect.height*2),camera);
-    const hit=aimRay.ray.intersectPlane(aimPlane,new THREE.Vector3());
-    if(!hit || Math.abs(hit.x)>.58 || hit.z<.8 || hit.z>2.08)return;
-    const length=Object.keys(LENGTHS).reduce((a,b)=>Math.abs(hit.z-LENGTHS[a].bounceZ)<Math.abs(hit.z-LENGTHS[b].bounceZ)?a:b);
-    bowlingUi.setAim(hit.x<-.12?'LEFT':hit.x>.12?'RIGHT':'CENTRE',length);
-  });
   const bats = art.bats;
   const batching = batchStadium(model, bats);
   if (!bats.left || !bats.right) throw new Error('Stadium bat meshes are missing');
-  let last = performance.now(), contactCount = 0, rampEntries = 0;
+  let last = performance.now(), contactCount = 0, rampEntries = 0, lastBounce = null;
   engine.on('wall-hit', () => sound.play('rail',.35));
   engine.on('flipper-hit', () => contactCount++); engine.on('ramp-enter', () => rampEntries++);
-  engine.on('delivery-bounce', event => gameplayFeedback({ type: 'DELIVERY_BOUNCE', deliveryType: event.type, event }));
+  engine.on('launch',()=>{lastBounce=null;});
+  engine.on('delivery-bounce', event => {lastBounce=event;gameplayFeedback({ type: 'DELIVERY_BOUNCE', deliveryType: event.type, event });});
   flow = createStadiumMatch({ engine, table, rules, render,
     practice,
     onReset: () => { contactCount = 0; rampEntries = 0; },
@@ -302,7 +287,8 @@ try {
     groundShadow.position.set(engine.ball.position.x,.012,engine.ball.position.z);
     art.update(engine);
     shooterArt.update(bowlingUi.getState(), camera, viewport, viewport.querySelector('#pinballPlunger'));
-    positionFieldButtons();
+    fieldControl.position();
+    pitchControl.position();
     composer.render();
   }
   function resize() {
@@ -331,7 +317,7 @@ try {
     project: (x,z) => {const point=new THREE.Vector3(x,0,z).project(camera),rect=viewport.getBoundingClientRect();return {x:rect.left+(point.x+1)*rect.width/2,y:rect.top+(1-point.y)*rect.height/2};},
     ready: true, materials: materialStatus, art: art.stats, batching, manual: value => { manual = value; },
     step: (count, draw = true) => { for (let i = 0; i < count; i++) flow.step(1 / 120); if (draw) render(); },
-    snapshot: () => ({ fielders:table.fielders.map(f=>({...f})),shotMode:engine.shotMode,bowling:bowlingUi.getSelection(), quality, atmosphere:atmosphere.getState(), rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, accuracy:engine.deliveryVariation?.accuracy, ball: { ...engine.ball.position, height: engine.ball.height, verticalVelocity:engine.verticalVelocity, velocity:{...engine.ball.velocity}, bounced:engine.deliveryVariation?.bounced, deliveryType:engine.deliveryVariation?.type }, score: { ...flow.match.currentInnings },
+    snapshot: () => ({ lastBounce, aimVisible:aimRing.visible, accuracyRingVisible:accuracyRing.visible, fielders:table.fielders.map(f=>({...f})),shotMode:engine.shotMode,bowling:bowlingUi.getSelection(), quality, atmosphere:atmosphere.getState(), rendering: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, running: flow.running, paused:flow.paused, audio:{...sound.status,settings:sound.getSettings()}, vfx:vfx.getState(), plunger:{...bowlingUi.getState(),...shooterArt.getState()}, match: flow.match.getState(), contactCount, rampEntries, accuracy:engine.deliveryVariation?.accuracy, ball: { ...engine.ball.position, height: engine.ball.height, verticalVelocity:engine.verticalVelocity, velocity:{...engine.ball.velocity}, bounced:engine.deliveryVariation?.bounced, deliveryType:engine.deliveryVariation?.type }, score: { ...flow.match.currentInnings },
       flippers: [...engine.flippers].map(([id,s]) => ({id, pressed:s.pressed, angle:s.angle})),
       alignment: ['left', 'right'].map(side => {
         const state = engine.flippers.get(side), cfg = state.config, centre = bats[side].getWorldPosition(new THREE.Vector3());

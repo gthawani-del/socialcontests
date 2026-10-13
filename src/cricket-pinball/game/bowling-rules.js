@@ -9,10 +9,24 @@ export const LENGTHS = Object.freeze({
  GOOD:{label:'Good',bounceZ:1.66,rebound:1.05},
  SHORT:{label:'Short',bounceZ:1.22,rebound:.8}
 });
+export const PITCH_TARGET_BOUNDS = Object.freeze({minX:-.5,maxX:.5,minZ:1.12,maxZ:1.93});
+export function normalizePitchTarget(target) {
+ if (!target || !Number.isFinite(target.x) || !Number.isFinite(target.z)) return null;
+ const b=PITCH_TARGET_BOUNDS;
+ return {x:Math.max(b.minX,Math.min(b.maxX,target.x)),z:Math.max(b.minZ,Math.min(b.maxZ,target.z))};
+}
+export function pitchTargetFor(selection={}) {
+ return normalizePitchTarget(selection.target) || {x:({LEFT:-.5,CENTRE:0,RIGHT:.5})[selection.line] || 0,z:(LENGTHS[selection.length] || LENGTHS.GOOD).bounceZ};
+}
+export function describePitchTarget(target) {
+ return {line:target.x<-.12?'LEFT':target.x>.12?'RIGHT':'CENTRE',
+  length:Object.keys(LENGTHS).reduce((a,b)=>Math.abs(target.z-LENGTHS[a].bounceZ)<Math.abs(target.z-LENGTHS[b].bounceZ)?a:b)};
+}
 export function normalizeBowling(selection={},bowler=selection.bowler||'MEDIUM') {
  bowler=BOWLERS[bowler]?bowler:'MEDIUM';
  const profile=BOWLERS[bowler];
- return {...selection,bowler,type:profile.types.includes(selection.type)?selection.type:profile.types[0],
+ const target=normalizePitchTarget(selection.target);
+ return {...selection,target,bowler,type:profile.types.includes(selection.type)?selection.type:profile.types[0],
   line:['LEFT','CENTRE','RIGHT'].includes(selection.line)?selection.line:'CENTRE',
   length:LENGTHS[selection.length]?selection.length:'GOOD',
   power:Math.max(.24,Math.min(1,Number.isFinite(Number(selection.power))?Number(selection.power):.6)),

@@ -94,7 +94,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
     ready = true; tossVisible(false); panel.hidden = true; delete cue.dataset.contact;
     cue.textContent = humanBatting()
       ? 'CPU preparing delivery'
-      : 'Choose a ball · tap pitch to aim · pull and release';
+      : 'Drag the ring to aim · pull and release the lever';
     controls(); hud();
     if (humanBatting()) {
       const selection = chooseTacticalBowling(difficulty,rules.cpu,{bowler:currentBowler,history:match.deliveryHistory.filter(d=>d.innings===match.currentInnings.number),state:match.getState()});
@@ -272,6 +272,7 @@ export function createStadiumMatch({ engine, table, rules, render, onReset, onFe
       charge: selection.power,
       deliveryType: selection.type || 'PACE',
       bowler:selection.bowler, length:selection.length,
+      target:selection.target,
       movementScale: selection.movementScale ?? 1
     });
     onFeedback({ type: 'DELIVERY_LAUNCH', selection, practice:isPractice?practiceRole:false, match: displayState() });

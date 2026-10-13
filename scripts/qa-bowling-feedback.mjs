@@ -78,21 +78,21 @@ await page.locator('#confirmBowler').click();
 assert.equal(await page.locator('#score').isVisible(),true,'show score for innings');
 await page.waitForFunction(()=>!document.querySelector('#movementPicker').disabled);
 await page.locator('#movementPicker').click();await page.locator('#lengthPicker').click();await page.locator('[data-zone-line="LEFT"][data-zone-length="GOOD"]').click();await page.locator('#closeLength').click();await page.locator('#movementPicker').click();await page.locator('[data-type="SWING_RIGHT"]').click();
-assert.equal(await page.locator('[data-quick-type]:visible').count(),3,'three legal quick deliveries');
-await page.locator('[data-quick-type="PACE"]').click();
+assert.equal(await page.locator('.compact-bowling-dock>button:visible').count(),2,'balanced delivery and field controls');
+await page.locator('#movementPicker').click();await page.locator('[data-type="PACE"]').click();
 assert.equal((await page.evaluate(()=>window.__stadiumQA.snapshot())).bowling.type,'PACE');
 const aimPoint=await page.evaluate(()=>window.__stadiumQA.project(.5,1.88));
 await page.mouse.click(aimPoint.x,aimPoint.y);
 const aimed=await page.evaluate(()=>window.__stadiumQA.snapshot().bowling);
 assert.equal(aimed.line,'RIGHT','canvas tap selects actual right line');assert.equal(aimed.length,'FULL','canvas tap selects actual full length');
 const defaultField=await page.evaluate(()=>window.__stadiumQA.snapshot().fielders);
-async function openField(){await page.locator('#movementPicker').click();await page.locator('#editField').click();await page.locator('#fieldEditor').waitFor();}
-await openField();await page.locator('[data-position-id="cover"]').click();await page.locator('[data-position-id="deep-cover"]').click();
+async function openField(){await page.locator('#editField').click();await page.locator('#fieldEditor').waitFor();}
+await openField();await page.locator('[data-fielder-id="cover"]').click();await page.locator('#fieldPosition').selectOption('deep-cover');
 const customField=await page.evaluate(()=>window.__stadiumQA.snapshot().fielders);
 assert.equal(customField.find(f=>f.id==='cover').slotId,'deep-cover','field selection changes engine geometry');
 await page.locator('#defaultField').click();
 assert.deepEqual((await page.evaluate(()=>window.__stadiumQA.snapshot().fielders)).map(f=>[f.id,f.x,f.z]),defaultField.map(f=>[f.id,f.x,f.z]),'reset restores exact field');
-await page.locator('[data-position-id="cover"]').click();await page.locator('[data-position-id="deep-cover"]').click();await page.locator('#closeField').click();
+await page.locator('[data-fielder-id="cover"]').click();await page.locator('#fieldPosition').selectOption('deep-cover');await page.locator('#closeField').click();
 await writeFile('docs/qa/match-setup-layouts.json',JSON.stringify(setupLayouts,null,2));
 const layouts=[];
 for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,390],['desktop',1365,900]]){
@@ -106,9 +106,9 @@ for(const [name,w,h] of [['mobile',390,700],['small',320,568],['landscape',844,3
  if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/delivery-options-${name}.png`});
  await page.locator('#closeDelivery').click();
  {
-   await openField();await page.locator('[data-position-id="cover"]').click();
-   assert.equal(await page.locator('[data-position-id="midwicket"]').isDisabled(),true,'occupied slot is unavailable');
-   const fieldBoxes=await page.locator('[data-position-id]').evaluateAll(buttons=>buttons.map(b=>({id:b.dataset.positionId,...b.getBoundingClientRect().toJSON()})));
+   await openField();await page.locator('[data-fielder-id="cover"]').click();
+   assert.equal(await page.locator('#fieldPosition option[value="midwicket"]').evaluate(e=>e.disabled),true,'occupied slot is unavailable');
+   const fieldBoxes=await page.locator('[data-fielder-id]').evaluateAll(buttons=>buttons.map(b=>({id:b.dataset.fielderId,...b.getBoundingClientRect().toJSON()})));
    assert(fieldBoxes.every(b=>b.x>=0&&b.y>=0&&b.right<=w&&b.bottom<=h),'field targets remain in viewport');
    for(let i=0;i<fieldBoxes.length;i++)for(let j=i+1;j<fieldBoxes.length;j++){const a=fieldBoxes[i],b=fieldBoxes[j];assert(a.right<=b.x||b.right<=a.x||a.bottom<=b.y||b.bottom<=a.y,`field targets ${a.id}/${b.id} must not overlap at ${name}`);}
    assert(fieldBoxes.every(b=>b.height>=44),'field targets preserve44px touch size');

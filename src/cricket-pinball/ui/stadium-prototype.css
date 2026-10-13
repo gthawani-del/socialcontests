@@ -257,32 +257,45 @@
 #pinballPlunger #bowlingPowerMeter .colour-power-track{display:none}
 #pinballPlunger #bowlingPowerMeter small{font-size:9px}
 #pinballPlunger .power-status{font-size:10px;background:none;padding:2px 0}
-/* Everyday bowling: choose a ball, tap the pitch, pull the lever. */
-#bowlingConsole .quick-deliveries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
-#bowlingConsole .quick-deliveries button{font-size:12px;min-height:44px;padding:5px 3px;border-radius:6px}
-#bowlingConsole .compact-bowling-dock{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:5px}
-#aimSummary{font-size:11px;color:#c5d8e4;line-height:1.3}
-#bowlingConsole #movementPicker{height:44px;min-height:44px;font-size:12px;padding:4px 8px;flex-shrink:0}
-#bowlingConsole #lengthPicker,#editField{width:100%;min-height:44px;margin-bottom:6px;font-size:13px}
+/* Two equal choices support direct manipulation on the board. */
+.controls:has(#bowlingConsole:not([hidden])) #cue{display:none}
+#bowlingConsole .compact-bowling-dock{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0}
+#bowlingConsole #movementPicker,#bowlingConsole #editField{display:flex;align-items:center;justify-content:space-between;gap:6px;height:62px;min-height:62px;min-width:0;padding:8px 12px;border:1px solid #456075;border-radius:12px;background:#10283a;color:#f9e3b4;text-align:left;font-size:14px}
+#bowlingConsole #movementPicker small,#bowlingConsole #editField small{display:block;color:#b6c7d2;font-size:11px;line-height:1.4;font-weight:400}
+#bowlingConsole .compact-bowling-dock strong{display:block;font-size:14px;line-height:1.5;font-weight:600}
+#bowlingConsole .compact-bowling-dock>button[aria-expanded=true]{border-color:#ebc77e;background:#1b394c}
+#aimSummary{font-size:11px;color:#b6c7d2;line-height:1.4;text-align:center;margin:8px 0 1px}
+#bowlingConsole #lengthPicker{width:100%;height:auto;min-height:44px;margin-bottom:10px;font-size:13px}
+#pitchTarget{position:absolute;z-index:2;width:48px;height:48px;min-height:48px;transform:translate(-50%,-50%);padding:0;border:0;border-radius:50%;background:transparent;touch-action:none;cursor:grab}
+#pitchTarget:focus-visible,#pitchTarget.dragging{outline:2px solid #fff0c5;outline-offset:2px;background:#ffd97920}
+#pitchTarget.dragging{cursor:grabbing}
 #shotChoice{display:flex;align-items:center;justify-content:center;gap:6px;margin:4px 0}
 #shotChoice>span{font-size:10px;color:#bfced7}
 #shotChoice button{min-height:38px;padding:5px 10px;font-size:12px}
 #shotChoice button[aria-pressed=true]{background:#294657;border-color:#e6bd66;color:#ffe1a0}
-#fieldEditor{position:absolute;inset:0;z-index:8;background:#06142133;pointer-events:auto}
-.field-editor-toolbar{position:absolute;top:8px;left:8px;right:8px;display:flex;align-items:center;gap:6px;padding:6px;background:#0b2131;border:1px solid #718695;border-radius:8px}
-.field-editor-toolbar span{flex:1;font-size:12px;color:#fff1ca}
-.field-editor-toolbar button{min-height:40px;padding:5px 8px;font-size:12px}
-.field-position-buttons button{position:absolute;transform:translate(-50%,-50%);min-height:44px;max-width:100px;font-size:11px;padding:5px 8px;border:2px solid #e6bd66;background:#0b2131ed;color:#ffe1a0;border-radius:20px}
-.field-position-buttons button:disabled{opacity:.45}
-@media(max-height:500px){#bowlingConsole .quick-deliveries button{font-size:11px}#shotChoice{gap:3px}#shotChoice button{padding:4px 6px;font-size:11px}}
-/* Optional tactics sheets stay within the viewport, even above a tall mobile dock. */
+#fieldEditor{position:absolute;inset:0;z-index:8;background:#06142122;touch-action:none}
+.field-editor-toolbar{position:absolute;top:12px;left:12px;right:12px;display:flex;align-items:center;gap:8px;padding:8px 10px;background:#0b2131f5;border:1px solid #456075;border-radius:12px}
+.field-editor-toolbar strong{flex:1;font-size:14px;color:#fff1ca}
+.field-editor-toolbar button{min-height:44px;padding:6px 10px;font-size:12px}
+#closeField{color:#071622;background:#edc77c;font-weight:600}
+.field-position-buttons button{position:absolute;z-index:2;transform:translate(-50%,-50%);width:44px;height:44px;padding:8px;border:2px solid #e6bd66;background:#0b2131f5;color:#ffe1a0;border-radius:50%;touch-action:none;cursor:grab}
+.field-position-buttons button svg{width:24px;height:24px;pointer-events:none}
+.field-position-buttons button span{position:absolute;top:46px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10px;padding:3px 6px;background:#0b2131e8;border-radius:5px;pointer-events:none}
+.field-position-buttons button[aria-pressed=true]{border-color:#fff4c5;box-shadow:0 0 0 4px #efc16d33}
+.field-position-buttons button.dragging{pointer-events:auto;cursor:grabbing;box-shadow:0 0 0 6px #efc16d44}
+.field-editor-footer{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:min(360px,calc(100% - 24px));padding:10px 12px;background:#0b2131f5;border:1px solid #456075;border-radius:12px}
+#fieldHint{font-size:12px;line-height:1.4;color:#e6d2a4;margin:0}
+#fieldPositionLabel{font-size:11px;margin-top:8px;color:#bcced9}
+#fieldPosition{height:44px;font-size:14px;margin-top:4px}
+@media(max-width:799px) and (min-height:501px){.field-editor-toolbar{top:64px}#stadiumApp.field-editing .controls{display:none}}
+@media(max-height:500px){#shotChoice{gap:3px}#shotChoice button{padding:4px 6px;font-size:11px}.field-editor-toolbar{top:6px}.field-editor-footer{bottom:6px;padding:6px 10px}#fieldHint{font-size:11px}}
+/* Optional aim/delivery sheets remain inside the screen. */
 #lengthOptions,#deliveryOptions{position:fixed;left:50%;right:auto;bottom:16px;transform:translateX(-50%);width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 32px);box-sizing:border-box}
 
-/* Numbered pitch pins map to unobstructed touch targets in the field sheet. */
 #stadiumApp.field-editing .controls,#stadiumApp.field-editing #pinballPlunger{visibility:hidden}
-.field-position-pins span{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffe1a0;color:#071622;border:1px solid #071622;font-size:12px;font-weight:700;pointer-events:none}
-.field-position-buttons.slot-sheet{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(360px,calc(100vw - 24px));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:10px;border:1px solid #718695;border-radius:12px;background:#0b2131;box-shadow:0 8px 24px #0009}
-.field-position-buttons.slot-sheet button{position:static;transform:none;max-width:none;min-width:0;min-height:44px;border-width:1px;border-radius:6px;text-align:left;font-size:12px}
+.field-position-pins span{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#0b2131e8;color:#ffe1a0;border:2px dashed #e6bd66;font-size:11px;font-weight:700;pointer-events:none}
+.field-position-pins span.occupied{border-color:#7d8d99;color:#a1afbb;background:#13283c}
+.field-position-pins span.candidate{background:#ffe1a0;color:#071622;border-style:solid;box-shadow:0 0 0 5px #ffe1a033}
 /* Shot intent sits above the board, leaving the bat controls and playfield tall. */
 #shotChoice{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:2;white-space:nowrap;margin:0;padding:4px 8px;background:#0b2131ed;border:1px solid #718695;border-radius:8px}
 #shotChoice button{min-height:44px}

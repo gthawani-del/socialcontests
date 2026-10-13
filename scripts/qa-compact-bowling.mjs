@@ -13,9 +13,9 @@ await page.locator('#confirmBowler').click();await page.waitForFunction(()=>!doc
 await page.locator('#stadiumCoach button').click();assert(!(await page.locator('#stadiumCoach').isVisible()));
 for(const [width,height] of [[390,844],[320,568],[844,390],[1365,900]]){
  await page.setViewportSize({width,height});await page.waitForTimeout(400);
- const dock=await page.locator('#bowlingConsole').boundingBox();assert(dock.height<=80);console.log('dock',width,dock.height);
- const text=await page.locator('#lengthPicker').evaluate(e=>({font:getComputedStyle(e).fontSize,overflow:e.scrollWidth>e.clientWidth}));assert.equal(text.font,'16px');assert(!text.overflow);
- await page.locator('#lengthPicker').click();const sheet=await page.locator('#lengthOptions').boundingBox();assert(sheet.x>=0&&sheet.y>=0&&sheet.x+sheet.width<=width&&sheet.y+sheet.height<=height);
+ const dock=await page.locator('#bowlingConsole').boundingBox();assert(dock.height<=110);console.log('dock',width,dock.height);
+ const text=await page.locator('#movementPicker').evaluate(e=>({font:getComputedStyle(e).fontSize,overflow:e.scrollWidth>e.clientWidth}));assert.equal(text.font,'14px');assert(!text.overflow);
+ await page.locator('#movementPicker').click();await page.locator('#lengthPicker').click();const sheet=await page.locator('#lengthOptions').boundingBox();assert(sheet.x>=0&&sheet.y>=0&&sheet.x+sheet.width<=width&&sheet.y+sheet.height<=height);
  await page.locator('[data-zone-line=RIGHT][data-zone-length=FULL]').click();assert.equal((await page.evaluate(()=>window.__stadiumQA.snapshot())).bowling.length,'FULL');await page.locator('#closeLength').click();
  if(width===390)await page.screenshot({path:'docs/qa/compact-bowling-mobile.png',timeout:60000});
 }

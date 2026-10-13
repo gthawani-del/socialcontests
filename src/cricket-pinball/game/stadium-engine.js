@@ -1,4 +1,4 @@
-import {BOWLERS,LENGTHS,normalizeBowling,bowlingDispersion} from './bowling-rules.js';
+import {BOWLERS,LENGTHS,normalizeBowling,normalizePitchTarget,bowlingDispersion} from './bowling-rules.js';
 import { PinballEngine } from '../../physics/pinball-engine.js';
 
 // Opt-in prototype: planar free play with a constrained, height-aware ramp.
@@ -67,6 +67,8 @@ export class StadiumEngine extends PinballEngine {
     const accuracy=options?.bowler?bowlingDispersion({...options,type:options.deliveryType,power:options.charge},this.random):{x:0,z:0,risk:0};
     const length=LENGTHS[options?.length];
     if(length) {profile.bounceZ=length.bounceZ+accuracy.z;profile.startZ=Math.min(profile.startZ??1.55,length.bounceZ-.2);}
+    const target=normalizePitchTarget(options?.target);
+    if(target) {target.x+=accuracy.x;target.z+=accuracy.z;profile.bounceZ=target.z;profile.startZ=Math.min(profile.startZ??1.55,target.z-.2);}
     this.config.launcher.deliveryGuide.releaseZ=length?Math.min(1.55,length.bounceZ-.11):1.55;
     const speedMultiplier = Math.max(.55, Math.min(1.3, Number(profile.speedMultiplier ?? 1)*(BOWLERS[options?.bowler]?.speed ?? 1)));
 
@@ -77,6 +79,7 @@ export class StadiumEngine extends PinballEngine {
       type,
       profile,
       accuracy,
+      target,
       length:options?.length || null,
       bowler:options?.bowler || null,
       movementScale: Math.max(.5, Math.min(1.6, Number(options?.movementScale ?? 1))),
@@ -101,9 +104,10 @@ export class StadiumEngine extends PinballEngine {
     }
     if (r.segment >= r.path.length - 1) {
       this.launchRoute = null; this.launcher.inLane = false; this.ball.height = 0;
-      const target=this.config.launcher.bowlingLines[this.launcher.deliveryLine].target;
-      this.launcher.deliveryTarget = [target[0]+(this.deliveryVariation?.accuracy.x||0),target[1]];
-      this.launcher.deliveryGuideActive = true;
+      const target=this.deliveryVariation?.target;
+      const preset=this.config.launcher.bowlingLines[this.launcher.deliveryLine].target;
+      this.launcher.deliveryTarget = target ? [target.x,target.z] : [preset[0]+(this.deliveryVariation?.accuracy.x||0),preset[1]];
+      this.launcher.deliveryGuideActive = !target;
       this.beginDeliveryFlight();
       this.emit('launcher-exit',{line:this.launcher.deliveryLine, deliveryType:this.launcher.deliveryType, target:[...this.launcher.deliveryTarget]});
     }
@@ -132,6 +136,13 @@ export class StadiumEngine extends PinballEngine {
   }
 
   beginDeliveryFlight() {
+    if(this.deliveryVariation?.target) {
+      const flight=this.aimDeliveryFlight(this.deliveryVariation.target);
+      Object.assign(this.ball.velocity,flight.velocity);
+      this.verticalVelocity=9.81*flight.time/2;
+      this.deliveryFlight=true;
+      return;
+    }
     // Predict time to the pitching length with the same forward acceleration,
     // damping and friction as the table. Height is then integrated under gravity.
     const target = Number(this.deliveryVariation?.profile.bounceZ ?? 1.66);
@@ -145,6 +156,32 @@ export class StadiumEngine extends PinballEngine {
     }
     this.verticalVelocity = 9.81 * time / 2;
     this.deliveryFlight = true;
+  }
+
+  aimDeliveryFlight(target) {
+    // Solve the launch direction against the same planar integration as free play.
+    // Compensate for swing before release; never move the ball to the target at impact.
+    const dt=this.fixedStep/this.config.physics.collisionSubsteps;
+    const physics=this.config.physics, profile=this.deliveryVariation.profile;
+    const speed=Math.hypot(this.ball.velocity.x,this.ball.velocity.z);
+    const predict=angle=>{
+      const initial={x:Math.sin(angle)*speed,z:Math.cos(angle)*speed};
+      let {x,z}=this.ball.position,vx=initial.x,vz=initial.z,time=0;
+      while(z<target.z && time<3) {
+        const beforeZ=z,beforeX=x;
+        if(z>=profile.startZ && z<=(profile.stopZ??2.32))vx+=(profile.swingAcceleration||0)*this.deliveryVariation.movementScale*dt;
+        vx=(vx+physics.gravity[0]*dt)*Math.exp(-physics.linearDamping*dt);
+        vz=(vz+physics.gravity[1]*dt)*Math.exp(-physics.linearDamping*dt);
+        const magnitude=Math.hypot(vx,vz),next=Math.min(this.config.ball.maxSpeed,Math.max(0,magnitude-physics.rollingFriction*dt));
+        vx*=next/magnitude;vz*=next/magnitude;
+        x+=vx*dt;z+=vz*dt;time+=dt;
+        if(z>=target.z) {const t=(target.z-beforeZ)/(z-beforeZ);x=beforeX+(x-beforeX)*t;time-=dt*(1-t);}
+      }
+      return {x,time,velocity:initial};
+    };
+    let low=-.65,high=.65,flight;
+    for(let i=0;i<24;i++){const angle=(low+high)/2;flight=predict(angle);if(flight.x<target.x)low=angle;else high=angle;}
+    return flight;
   }
 
   beginShotFlight(feedback) {

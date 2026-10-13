@@ -1,0 +1,71 @@
+import {createServer} from 'vite';
+import assert from 'node:assert/strict';
+import {writeFile} from 'node:fs/promises';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE);
+const {default:bundle}=await import(process.env.CHROMIUM_MODULE);
+const server=await createServer({server:{host:'127.0.0.1',port:5185}});await server.listen();
+const browser=await chromium.launch({headless:true,args:bundle.args,executablePath:process.env.CHROMIUM_PATH});
+try {
+ const page=await browser.newPage({viewport:{width:390,height:700},hasTouch:true});
+ const errors=[];page.on('pageerror',e=>{errors.push(e.message);console.error(e.message);});
+ await page.addInitScript(()=>{localStorage.setItem('cricket-quality','low');});
+ if(process.env.QA_LOW_GRAPHICS)await page.addInitScript(()=>{Object.defineProperty(window,'devicePixelRatio',{get:()=>.5});const raf=window.requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>setTimeout(()=>raf(fn),100);});
+ await page.route('**/qa-direct*',r=>r.fulfill({contentType:'text/html',body:'<meta name="viewport" content="width=device-width,initial-scale=1"><main id="stadiumApp"></main><script type="module" src="/src/cricket-pinball/stadium-prototype.js"></script>'}));
+ await page.goto('http://127.0.0.1:5185/qa-direct?practice=bowl&format=ONE_OVER');
+ await page.waitForFunction(()=>window.__stadiumQA?.ready,null,{timeout:60000});
+ await page.evaluate(()=>window.__stadiumQA.manual(true));await page.locator('#confirmBowler').click();
+ await page.locator('#pitchTarget').waitFor();
+ const touch=await page.context().newCDPSession(page),layouts=[];
+ const snapshot=()=>page.evaluate(()=>window.__stadiumQA.snapshot());
+ const point=(x,z)=>page.evaluate(({x,z})=>window.__stadiumQA.project(x,z),{x,z});
+ const center=async selector=>{const r=await page.locator(selector).boundingBox();return {x:r.x+r.width/2,y:r.y+r.height/2};};
+ const send=(type,p)=>touch.send('Input.dispatchTouchEvent',{type,touchPoints:p?[{...p,id:1}]:[]});
+ async function drag(selector,to,cancel=false) {
+  const from=await center(selector);await send('touchStart',from);
+  for(let i=1;i<=5;i++)await send('touchMove',{x:from.x+(to.x-from.x)*i/5,y:from.y+(to.y-from.y)*i/5});
+  await send(cancel?'touchCancel':'touchEnd');
+ }
+ for(const [name,width,height]of [['mobile',390,700],['small',320,568],['landscape',844,390],['desktop',1365,900]]) {
+  await page.setViewportSize({width,height});await page.waitForFunction(()=>Math.abs(document.querySelector('#viewport canvas').width-document.querySelector('#viewport').clientWidth*Math.min(devicePixelRatio,2))<2);
+  await drag('#pitchTarget',await point(.237,1.437));
+  const target=(await snapshot()).bowling.target;assert(Math.abs(target.x-.237)<.01&&Math.abs(target.z-1.437)<.01,`${name}: target follows exact touch coordinates`);
+  await drag('#pitchTarget',await point(-.3,1.83),true);assert.deepEqual((await snapshot()).bowling.target,target,'cancel restores aim');
+  assert(!(await snapshot()).running,'aim never launches');
+  await page.locator('#pitchTarget').focus();await page.keyboard.press('ArrowRight');assert((await snapshot()).bowling.target.x>target.x);
+  const dock=await page.locator('.compact-bowling-dock>button').evaluateAll(bs=>bs.map(b=>b.getBoundingClientRect().toJSON()));
+  assert.equal(dock[0].width,dock[1].width);assert.equal(dock[0].height,dock[1].height);assert(dock.every(b=>b.height>=44));
+  assert.equal(await page.locator('.quick-deliveries').count(),0);
+  if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/direct-bowling-${name}.png`});
+  await page.locator('#editField').click();await page.locator('#defaultField').click();
+  assert.equal(await page.locator('#pitchTarget').isVisible(),false);
+  const defaultField=(await snapshot()).fielders;
+  await drag('[data-fielder-id=cover]',await point(-1,-1.25),true);assert.deepEqual((await snapshot()).fielders,defaultField,'field touchcancel restores position');
+  await drag('[data-fielder-id=cover]',await point(.85,-.65));assert.deepEqual((await snapshot()).fielders,defaultField,'occupied position rejected');
+  await drag('[data-fielder-id=cover]',await point(0,1.6));assert.deepEqual((await snapshot()).fielders,defaultField,'invalid drop rejected');
+  await drag('[data-fielder-id=cover]',await point(-1,-1.25));
+  assert.equal((await snapshot()).fielders[0].slotId,'deep-cover',`${name}: touch drag changes engine geometry`);
+  await page.locator('[data-fielder-id=midwicket]').tap();
+  assert.equal(await page.locator('#fieldPosition option[value=deep-cover]').evaluate(e=>e.disabled),true);
+  if(!process.env.QA_SKIP_SCREENSHOTS)await page.screenshot({timeout:60000,path:`docs/qa/direct-field-${name}.png`});
+  await page.locator('#fieldPosition').selectOption('square-leg');assert.equal((await snapshot()).fielders[1].slotId,'square-leg','accessible alternative updates geometry');
+  await page.locator('#closeField').click();assert.equal(await page.locator('#fieldLabel').innerText(),'Custom');
+  const layout=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth,plunger:document.querySelector('#pinballPlunger').getBoundingClientRect().toJSON()}));
+  assert(!layout.overflow);assert(layout.plunger.right<=width&&layout.plunger.bottom<=height);
+  layouts.push({name,dock,target,...layout});console.log(`${name}: continuous aim, drag/cancel/occupied field and layout pass`);
+ }
+ await page.setViewportSize({width:390,height:700});await page.waitForFunction(()=>document.querySelector('#pinballPlunger').getBoundingClientRect().right<=innerWidth);
+ await page.locator('#movementPicker').click();await page.locator('[data-type=SWING_LEFT]').click();
+ await drag('#pitchTarget',await point(.137,1.537));
+ const target=(await snapshot()).bowling.target,customField=(await snapshot()).fielders;
+ const handle=page.locator('.plunger-handle');await handle.focus();for(let i=0;i<5;i++)await page.keyboard.press('ArrowDown');
+ assert((await snapshot()).accuracyRingVisible,'red power shows a wider landing area');
+ for(let i=0;i<5;i++)await page.keyboard.press('ArrowUp');assert(!(await snapshot()).accuracyRingVisible);
+ await page.keyboard.press('Enter');assert((await snapshot()).running);
+ assert.equal(await page.locator('#pitchTarget').isVisible(),false);assert(await page.locator('#editField').isDisabled());
+ const bounce=await page.evaluate(()=>{for(let i=0;i<1200;i++){window.__stadiumQA.step(1,false);const s=window.__stadiumQA.snapshot();if(s.lastBounce)return s.lastBounce;}return null;});
+ assert(bounce,'first bounce occurs');assert(Math.hypot(bounce.x-target.x,bounce.z-target.z)<.04,'actual physics bounce matches dragged ring');
+ await page.evaluate(()=>window.__stadiumQA.step(1600));assert.equal((await snapshot()).score.balls,1);assert.deepEqual((await snapshot()).fielders,customField,'field persists between balls');
+ await page.locator('#pitchTarget').waitFor();await page.locator('#score').click();assert.equal(await page.locator('#pitchTarget').isVisible(),false);assert(await page.locator('#editField').isDisabled());
+ assert.deepEqual(errors,[]);await writeFile('docs/qa/direct-bowling.json',JSON.stringify({fixture:'Bowling practice; manual deterministic physics steps; real touch/pointer/keyboard input; emulated viewports, not physical iPhone.',layouts,target,bounce,fieldPersists:true,cancelledAndIllegalDropsPreserved:true,errors},null,2));
+ console.log(JSON.stringify({target,bounce,errors}));
+} finally {await browser.close();await server.close();}
