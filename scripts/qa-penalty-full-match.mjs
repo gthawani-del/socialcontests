@@ -16,7 +16,7 @@ try{
   if(s.phase==='choice')await page.click('[data-first=you]');
   if(s.phase==='ended')break;
   if(s.phase==='aim'&&s.turn==='you'){
-   if(aimed!==s.history.you.length){const box=await page.locator('canvas').boundingBox();const aim=s.keeper.x>=.5?.09:.91;await page.touchscreen.tap(box.x+box.width*(.215+.57*aim),box.y+box.height*(.165+.135*.12));aimed=s.history.you.length;}
+   if(aimed!==s.history.you.length){await page.click('[data-height=".22"]');aimed=s.history.you.length;}
    await page.keyboard.down('ArrowRight');await page.waitForTimeout(315);await page.keyboard.up('ArrowRight');
   }
   if(s.phase==='flight'&&s.turn==='cpu'&&dived!==s.history.cpu.length){
@@ -30,6 +30,6 @@ try{
  await page.waitForFunction(()=>['choice','countdown','aim'].includes(window.__penalty.snapshot().phase));if(await page.locator('[data-first=cpu]').isVisible())await page.click('[data-first=cpu]');
  await page.click('#pd-pause');await page.click('#pd-restart');await page.locator('label').filter({has:page.locator('[name=length][value="3"]')}).click();
  await page.reload();assert(await page.locator('[name=length][value="3"]').isChecked());assert.deepEqual(errors,[]);
- await writeFile('docs/football-pinball/penalty-duel/full-match.json',JSON.stringify({productionDefaults:true,accelerated:false,stateMutation:false,history:final.history,winner:final.winner,keyboardKick:true,touchAim:true,rematchClearsScores:true,settingsPersist:true,errors},null,2));
+ await writeFile('docs/football-pinball/penalty-duel/full-match.json',JSON.stringify({productionDefaults:true,accelerated:false,stateMutation:false,history:final.history,winner:final.winner,keyboardKick:true,shotHeightControl:true,rematchClearsScores:true,settingsPersist:true,errors},null,2));
  console.log('Full production-default match, keyboard, rematch and settings persistence passed.',final.history);
 }finally{await browser.close();await server.close();}

@@ -6,10 +6,11 @@ Replaces the solo penalty presentation at `?mode=penalty` and `/football-pinball
 
 - Standard: three or five attempts per side; switch roles after every penalty. Early mathematical victory and paired sudden death.
 - Fixed Role: toss winner chooses striker/keeper for the whole round. Goals score for striker; saves and misses score for keeper. First to a majority of three/five wins.
-- Striker: aim inside the goal, hold either boot or left/right arrow to charge, release to kick. Power controls flight speed; timing controls accuracy, with a narrower perfect window at high power. Cancellation and pause do not shoot.
+- Striker: choose Low/High, hold either boot or left/right arrow for power, release as the fed ball enters reach. A rotating capsule collider must touch the ball before launch. Contact normal and boot surface velocity determine direction and speed. There is no independent timing meter. A missed swing consumes the attempt; cancellation does not shoot.
 - Keeper: drag on the arena or hold left/right controls/arrows to position, including during ball flight. Separate diagonal buttons commit a dive and lock its direction.
 - Keeper physics: acceleration/braking, planted feet and inverse-kinematic knees, push-off, ballistic gravity, landing friction and recovery. An articulated texture mesh follows the joints; the same joints drive capsule/hand collision checks.
-- CPU targets are independent of player keeper position. CPU keepers observe ball flight only after the difficulty-specific reaction delay, then make one committed dive with bounded reach and estimation error.
+- CPU strikers use the same feed, swing and collision solver; their preparation visibly highlights the winding boot and then the imminent kick. CPU keepers shift weight before the shot and observe ball flight only after their reaction delay, never reading hidden player input.
+- Outcome feedback distinguishes missed swings, early/late/clean contact, body and glove saves, and wrong-footed keepers. Match-point text is computed by evaluating actual possible score outcomes, including paired sudden death.
 - Pause freezes the simulation. Tab hiding pauses; rematch creates a fresh engine and clears all attempts.
 - No extra points, wagering, manipulative outcomes, or difficulty changes within a match.
 
@@ -28,3 +29,7 @@ The penalty route uses a dedicated lightweight Canvas 2D renderer with perspecti
 - Browser scripts use `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` if Playwright/browser binaries are outside normal locations.
 
 Browser checks establish Chromium behaviour. Physical iPhone Safari touch/audio feel still needs a device playtest.
+
+## Contact gameplay revision
+
+Current normal-speed, real-touch match evidence lives in `../penalty-contact/`. Earlier screenshots here document previous releases. Run `scripts/qa-penalty-contact.mjs` for the current contact solver, power, cues, both match formats, rematch and three viewport checks.

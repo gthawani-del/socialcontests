@@ -1,5 +1,6 @@
 import './style.css';
 import { drawKeeper } from './keeper-view.js';
+import {BOOT,TABLE_HEIGHT,BALL_RADIUS,bootSegment} from './contact.js';
 import { createDuel, duelScore } from './engine.js';
 const ART='/football-pinball/penalty/';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -20,7 +21,7 @@ export async function mountPenalty(){
   const header=(play=false)=>`<header class="pd-header"><a href="/football-pinball/" aria-label="Game selection" class="pd-back">‹</a><a href="/football-pinball/" class="pd-brand">FOOTBALL <span>PINBALL</span></a>${play?'<button class="pd-icon" id="pd-pause" aria-label="Pause game">Ⅱ</button>':'<span class="pd-header-spacer"></span>'}</header>`;
   function setup(){
     screen='setup';engine=null;seen=0;root.dataset.screen='setup';
-    root.innerHTML=`${header()}<section class="pd-setup"><div class="pd-intro"><p class="pd-eyebrow">PENALTY SHOOTOUT</p><h1>Penalty Duel</h1><p>Shoot. Save. Win.</p></div><div class="pd-hero"><img src="${ART}settings-hero.webp" alt="Floodlit penalty arena with goalkeeper, football and blue and red boot flippers"></div><form id="pd-options"><fieldset><legend>Game mode</legend><div class="pd-length">${[['standard','Standard','Switch roles after each shot'],['fixed','Fixed Role','One role for the whole round']].map(([v,t,d])=>`<label><input type="radio" name="format" value="${v}" ${settings.format===v?'checked':''}><span><strong>${t}</strong><small>${d}</small><i aria-hidden="true">✓</i></span></label>`).join('')}</div></fieldset><fieldset><legend>Match length</legend><div class="pd-length">${[[3,'Quick'],[5,'Classic']].map(([n,t])=>`<label><input type="radio" name="length" value="${n}" ${settings.total===n?'checked':''}><span><strong>${t}</strong><small>${n} ${settings.format==='fixed'?'attempts':'each'}</small><i aria-hidden="true">✓</i></span></label>`).join('')}</div></fieldset><fieldset><legend>Difficulty</legend><div class="pd-level">${['rookie','pro','elite'].map(d=>`<label><input type="radio" name="difficulty" value="${d}" ${settings.difficulty===d?'checked':''}><span>${d[0].toUpperCase()+d.slice(1)}</span></label>`).join('')}</div></fieldset><p class="pd-toss-note"><span aria-hidden="true">◉</span>Win the toss. Choose your role. Standard switches after each shot; Fixed Role stays for the round.</p><div class="pd-options-row"><button type="button" id="pd-sound" aria-pressed="${settings.sound}">${soundIcon}<span>Sound ${settings.sound?'on':'off'}</span></button><button type="button" id="pd-help">How to play <span aria-hidden="true">↗</span></button></div><button class="pd-primary" id="pd-continue" type="submit">Continue to toss <span aria-hidden="true">→</span></button></form></section><dialog id="pd-help-dialog" class="pd-dialog"><h2>How to play</h2><p>Standard: switch roles after each penalty; most goals wins, with paired sudden death. Fixed Role: keep your chosen role; goals score for the striker and stops score for the keeper. First to a majority wins.</p><h3>Shooting</h3><p>Drag inside the goal to aim. Hold a boot or ← / → to build power. Release with the timing marker in the centre. Higher power makes the timing window smaller.</p><h3>Saving</h3><p>Drag the keeper on the arena or hold ← / → to move. Use the diagonal buttons to dive. Movement continues during ball flight until you commit to a dive.</p><p>One kick per attempt. A save or miss ends that attempt.</p><button class="pd-primary" id="pd-help-close">Got it</button></dialog>`;
+    root.innerHTML=`${header()}<section class="pd-setup"><div class="pd-intro"><p class="pd-eyebrow">PENALTY SHOOTOUT</p><h1>Penalty Duel</h1><p>Shoot. Save. Win.</p></div><div class="pd-hero"><img src="${ART}settings-hero.webp" alt="Floodlit penalty arena with goalkeeper, football and blue and red boot flippers"></div><form id="pd-options"><fieldset><legend>Game mode</legend><div class="pd-length">${[['standard','Standard','Switch roles after each shot'],['fixed','Fixed Role','One role for the whole round']].map(([v,t,d])=>`<label><input type="radio" name="format" value="${v}" ${settings.format===v?'checked':''}><span><strong>${t}</strong><small>${d}</small><i aria-hidden="true">✓</i></span></label>`).join('')}</div></fieldset><fieldset><legend>Match length</legend><div class="pd-length">${[[3,'Quick'],[5,'Classic']].map(([n,t])=>`<label><input type="radio" name="length" value="${n}" ${settings.total===n?'checked':''}><span><strong>${t}</strong><small>${n} ${settings.format==='fixed'?'attempts':'each'}</small><i aria-hidden="true">✓</i></span></label>`).join('')}</div></fieldset><fieldset><legend>Difficulty</legend><div class="pd-level">${['rookie','pro','elite'].map(d=>`<label><input type="radio" name="difficulty" value="${d}" ${settings.difficulty===d?'checked':''}><span>${d[0].toUpperCase()+d.slice(1)}</span></label>`).join('')}</div></fieldset><p class="pd-toss-note"><span aria-hidden="true">◉</span>Win the toss. Choose your role. Standard switches after each shot; Fixed Role stays for the round.</p><div class="pd-options-row"><button type="button" id="pd-sound" aria-pressed="${settings.sound}">${soundIcon}<span>Sound ${settings.sound?'on':'off'}</span></button><button type="button" id="pd-help">How to play <span aria-hidden="true">↗</span></button></div><button class="pd-primary" id="pd-continue" type="submit">Continue to toss <span aria-hidden="true">→</span></button></form></section><dialog id="pd-help-dialog" class="pd-dialog"><h2>How to play</h2><p>Standard: switch roles after each penalty; most goals wins, with paired sudden death. Fixed Role: keep your chosen role; goals score for the striker and stops score for the keeper. First to a majority wins.</p><h3>Shooting</h3><p>The ball rolls into the boots. Hold a boot or ← / → to build power, then release as it reaches the boot. Contact angle sends the ball left or right. Choose Low or High for shot height. A swing that misses uses your attempt.</p><h3>Saving</h3><p>Drag the keeper on the arena or hold ← / → to move. Use the diagonal buttons to dive. Movement continues during ball flight until you commit to a dive.</p><p>One kick per attempt. A save or miss ends that attempt.</p><button class="pd-primary" id="pd-help-close">Got it</button></dialog>`;
     root.querySelector('#pd-options').onchange=()=>{const data=new FormData(root.querySelector('form'));settings.format=data.get('format');settings.total=Number(data.get('length'));root.querySelectorAll('[name=length]').forEach(i=>i.nextElementSibling.querySelector('small').textContent=`${i.value} ${settings.format==='fixed'?'attempts':'each'}`);settings.difficulty=data.get('difficulty');save();};
     root.querySelector('#pd-sound').onclick=e=>{settings.sound=!settings.sound;save();const b=e.currentTarget;b.setAttribute('aria-pressed',settings.sound);b.querySelector('span').textContent=`Sound ${settings.sound?'on':'off'}`;};
     root.querySelector('#pd-help').onclick=()=>root.querySelector('dialog').showModal();
@@ -29,7 +30,7 @@ export async function mountPenalty(){
   }
   function showGame(){
     screen='game';root.dataset.screen='game';
-    root.innerHTML=`${header(true)}<section class="pd-scoreboard" aria-label="Score"><div><b class="pd-you">YOU</b><div id="pd-you-dots" class="pd-dots"></div></div><strong id="pd-score">0 — 0</strong><div><b class="pd-cpu">CPU</b><div id="pd-cpu-dots" class="pd-dots"></div></div></section><div class="pd-round"><span id="pd-round">ROUND 1 OF ${settings.total}</span><span id="pd-role" class="pd-role">TOSS</span></div><div class="pd-arena"><canvas id="pd-canvas" aria-label="Penalty arena. Drag inside the goal to aim or move your goalkeeper."></canvas><div id="pd-overlay" class="pd-overlay" hidden></div><p id="pd-result-flash" hidden></p></div><p id="pd-instruction" class="pd-instruction" role="status" aria-live="polite"></p><section id="pd-striker" class="pd-controls"><button data-boot="left" aria-label="Left boot"><img src="${ART}left.webp" alt=""><span>LEFT BOOT</span></button><div><strong id="pd-contact-label">HOLD TO CHARGE</strong><div class="pd-meter pd-timing" aria-label="Shot timing"><span id="pd-window"></span><i id="pd-timing"></i></div><div class="pd-meter pd-power" aria-label="Shot power"><span id="pd-power"></span></div><small id="pd-power-label">POWER · 0%</small></div><button data-boot="right" aria-label="Right boot"><img src="${ART}right.webp" alt=""><span>RIGHT BOOT</span></button></section><section id="pd-defender" class="pd-defender" hidden><div class="pd-move"><button data-move="-1" aria-label="Move keeper left">← MOVE</button><small>DRAG KEEPER · HOLD TO MOVE</small><button data-move="1" aria-label="Move keeper right">MOVE →</button></div><div class="pd-save-buttons"><button data-dive=".08,.22" aria-label="Dive top left">↖</button><button data-dive=".08,.8" aria-label="Dive low left">↙</button><button data-dive=".5,.65" aria-label="Hold centre">HOLD</button><button data-dive=".92,.8" aria-label="Dive low right">↘</button><button data-dive=".92,.22" aria-label="Dive top right">↗</button></div></section><dialog class="pd-dialog" id="pd-pause-dialog"><h2>Match paused</h2><button class="pd-primary" id="pd-resume">Resume match</button><button class="pd-secondary" id="pd-restart">Back to settings</button></dialog>`;
+    root.innerHTML=`${header(true)}<section class="pd-scoreboard" aria-label="Score"><div><b class="pd-you">YOU</b><div id="pd-you-dots" class="pd-dots"></div></div><strong id="pd-score">0 — 0</strong><div><b class="pd-cpu">CPU</b><div id="pd-cpu-dots" class="pd-dots"></div></div></section><div class="pd-round"><span id="pd-round">ROUND 1 OF ${settings.total}</span><span id="pd-role" class="pd-role">TOSS</span></div><div class="pd-arena"><canvas id="pd-canvas" aria-label="Penalty arena. Watch the ball and release a boot to strike. Drag to move your goalkeeper when defending."></canvas><div id="pd-overlay" class="pd-overlay" hidden></div><p id="pd-pressure" hidden></p><p id="pd-cue" hidden></p><p id="pd-result-flash" hidden></p></div><p id="pd-instruction" class="pd-instruction" role="status" aria-live="polite"></p><section id="pd-striker" class="pd-controls"><button data-boot="left" aria-label="Left boot"><img src="${ART}left.webp" alt=""><span>LEFT BOOT</span></button><div><strong id="pd-contact-label">HOLD TO CHARGE</strong><div class="pd-height" aria-label="Shot height"><button data-height=".72" aria-pressed="true">LOW</button><button data-height=".22" aria-pressed="false">HIGH</button></div><div class="pd-meter pd-power" aria-label="Shot power"><span id="pd-power"></span></div><small id="pd-power-label">POWER · 0%</small></div><button data-boot="right" aria-label="Right boot"><img src="${ART}right.webp" alt=""><span>RIGHT BOOT</span></button></section><section id="pd-defender" class="pd-defender" hidden><div class="pd-move"><button data-move="-1" aria-label="Move keeper left">← MOVE</button><small>DRAG KEEPER · HOLD TO MOVE</small><button data-move="1" aria-label="Move keeper right">MOVE →</button></div><div class="pd-save-buttons"><button data-dive=".08,.22" aria-label="Dive top left">↖</button><button data-dive=".08,.8" aria-label="Dive low left">↙</button><button data-dive=".5,.65" aria-label="Hold centre">HOLD</button><button data-dive=".92,.8" aria-label="Dive low right">↘</button><button data-dive=".92,.22" aria-label="Dive top right">↗</button></div></section><dialog class="pd-dialog" id="pd-pause-dialog"><h2>Match paused</h2><button class="pd-primary" id="pd-resume">Resume match</button><button class="pd-secondary" id="pd-restart">Back to settings</button></dialog>`;
     root.querySelector('#pd-pause').onclick=pause;
     root.querySelector('#pd-resume').onclick=resume;
     root.querySelector('#pd-pause-dialog').addEventListener('cancel',e=>{e.preventDefault();resume();});
@@ -39,13 +40,13 @@ export async function mountPenalty(){
       const cancel=()=>{b.classList.remove('pressed');engine.cancelCharge();};b.onpointerup=()=>{b.classList.remove('pressed');engine.releaseCharge(b.dataset.boot);};b.onpointercancel=cancel;b.onlostpointercapture=cancel;b.onkeyup=e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();engine.releaseCharge(b.dataset.boot);}};
       b.onkeydown=e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();if(!e.repeat)engine.startCharge(b.dataset.boot);}};
     });
+    root.querySelectorAll('[data-height]').forEach(b=>b.onclick=()=>{engine.aim(.5,Number(b.dataset.height));root.querySelectorAll('[data-height]').forEach(v=>v.setAttribute('aria-pressed',v===b));});
     root.querySelectorAll('[data-dive]').forEach(b=>b.onclick=()=>engine.dive(...b.dataset.dive.split(',').map(Number)));
     root.querySelectorAll('[data-move]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);engine.moveKeeper(Number(b.dataset.move));};b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>engine.stopKeeper();});
     const canvas=root.querySelector('canvas');let pointer;
     const point=e=>{const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};};
-    const aim=p=>engine.aim((p.x-.215)/.57,(p.y-.165)/.135);
-    canvas.onpointerdown=e=>{const p=point(e);canvas.setPointerCapture(e.pointerId);pointer=p;if(engine.state.turn==='you'&&p.y<.38)aim(p);else if(engine.state.turn==='cpu')engine.position((p.x-.215)/.57);};
-    canvas.onpointermove=e=>{if(pointer){if(engine.state.turn==='you'&&pointer.y<.38)aim(point(e));else if(engine.state.turn==='cpu')engine.position((point(e).x-.215)/.57);}};
+    canvas.onpointerdown=e=>{const p=point(e);canvas.setPointerCapture(e.pointerId);pointer=p;if(engine.state.turn==='cpu')engine.position((p.x-.215)/.57);};
+    canvas.onpointermove=e=>{if(pointer&&engine.state.turn==='cpu')engine.position((point(e).x-.215)/.57);};
     canvas.onpointerup=()=>{pointer=null;};canvas.onpointercancel=()=>{pointer=null;engine.stopKeeper();};
   }
   function overlay(html){const el=root.querySelector('#pd-overlay');el.hidden=false;el.innerHTML=html;return el;}
@@ -68,6 +69,7 @@ export async function mountPenalty(){
   document.addEventListener('keydown',onKey);document.addEventListener('keyup',onKeyUp);window.addEventListener('blur',cancelInputs);document.addEventListener('visibilitychange',onVisibility);
   function draw(){
     const s=engine.state,canvas=root.querySelector('canvas'),r=canvas.getBoundingClientRect();
+    engine.resizeArena(r.width,r.height);
     const scale=Math.min(devicePixelRatio,2),w=Math.round(r.width*scale),h=Math.round(r.height*scale);
     if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
     const c=canvas.getContext('2d');c.clearRect(0,0,w,h);c.drawImage(assets.board,0,0,w,h);
@@ -80,23 +82,28 @@ export async function mountPenalty(){
     }
     for(const [x,color] of [[.08,'#258dff'],[.92,'#ff4058']]){c.strokeStyle=color;c.shadowColor=color;c.shadowBlur=9*scale;c.beginPath();c.moveTo(x*w,.42*h);c.lineTo((x<.5?.035:.965)*w,.75*h);c.stroke();}
     c.restore();drawKeeper(c,assets.keeper,s.keeper,w,h);
-    if(s.turn==='you'&&s.phase==='aim'){
-      const x=(.215+.57*s.aim.x)*w,y=(.165+.135*s.aim.y)*h;
-      c.save();c.strokeStyle='#83d5ff';c.lineWidth=1.5*scale;c.setLineDash([2*scale,10*scale]);c.beginPath();c.moveTo(s.ball.x*w,s.ball.y*h);c.lineTo(x,y);c.stroke();c.setLineDash([]);c.lineWidth=2*scale;c.beginPath();c.arc(x,y,11*scale,0,Math.PI*2);c.moveTo(x-17*scale,y);c.lineTo(x+17*scale,y);c.moveTo(x,y-17*scale);c.lineTo(x,y+17*scale);c.stroke();c.restore();
+    // A receiving pocket provides a visible boundary in front of the flippers.
+    if(s.phase==='aim'){
+      c.save();c.strokeStyle='#c6e5dd70';c.lineWidth=1.5*scale;c.setLineDash([3*scale,5*scale]);c.beginPath();c.ellipse(.5*w,.785*h,.063*w,.020*h,0,0,Math.PI);c.stroke();c.restore();
     }
-    // Pivot each sprite at the outer heel; a swing visibly changes its angle.
     for(const side of ['left','right']){
-      const left=side==='left';c.save();c.translate((left?.18:.82)*w,.83*h);c.rotate(s.boots[side]*(left?-.42:.42));c.drawImage(assets[side],(left?0:-.28)*w,-.06*h,.28*w,.15*h);c.restore();
+      const left=side==='left',seg=bootSegment(side,s.boots[side]);
+      c.save();c.translate(seg.a.x*w,seg.a.y/TABLE_HEIGHT*h);c.scale(w,h/TABLE_HEIGHT);c.rotate(left?-s.boots[side]:s.boots[side]);
+      c.drawImage(assets[side],left?0:-BOOT.length,-.06*TABLE_HEIGHT,BOOT.length,.15*TABLE_HEIGHT);c.restore();
+      if(s.cue?.side===side&&s.phase==='aim'){
+        c.save();c.strokeStyle=s.cue.stage==='strike'?'#fff0ad':'#ffb95c';c.shadowColor=c.strokeStyle;c.shadowBlur=10*scale;c.lineWidth=3*scale;c.beginPath();c.arc(seg.a.x*w,(seg.a.y/TABLE_HEIGHT)*h,16*scale,0,Math.PI*2);c.stroke();c.restore();
+      }
     }
     const p=s.flight?clamp(s.flight.elapsed/s.flight.duration,0,1):0;
-    const ballSize=.11-.065*p;
+    if(s.flight&&s.flight.elapsed<.12){const hit=s.flight.contact.point;c.save();c.strokeStyle='#fff4c4';c.lineWidth=2*scale;c.globalAlpha=1-s.flight.elapsed/.12;c.beginPath();c.arc(hit.x*w,hit.y*h,(5+s.flight.elapsed*90)*scale,0,Math.PI*2);c.stroke();c.restore();}
+    const ballSize=BALL_RADIUS*2-(BALL_RADIUS*2-.035)*p;
     c.save();c.globalAlpha=.30;c.fillStyle='#000';c.beginPath();c.ellipse(s.ball.x*w,(s.ball.y+.045)*h,ballSize*w*.48,ballSize*w*.13,0,0,Math.PI*2);c.fill();c.restore();
     sprite('ball',s.ball.x,s.ball.y,ballSize,ballSize*w/h,(s.elapsed*3));
   }
   let renderedPhase='',hudKey='';
   function hud(){
     const s=engine.state;const score=duelScore(s),goals=t=>score[t];
-    const key=JSON.stringify([s.phase,s.turn,s.history,s.message,s.paused,!!s.dive]);
+    const key=JSON.stringify([s.phase,s.turn,s.history,s.message,s.paused,!!s.dive,!!s.swing,s.pressure]);
     if(key===hudKey)return;hudKey=key;
     root.querySelector('#pd-score').textContent=`${goals('you')} — ${goals('cpu')}`;
     for(const team of ['you','cpu']){
@@ -109,7 +116,9 @@ export async function mountPenalty(){
     root.querySelector('#pd-role').classList.toggle('saving',s.turn==='cpu');
     root.querySelector('#pd-striker').hidden=s.turn!=='you';root.querySelector('#pd-defender').hidden=s.turn!=='cpu';
     root.querySelector('#pd-instruction').textContent=s.message;
-    root.querySelectorAll('[data-boot]').forEach(b=>b.disabled=s.phase!=='aim'||s.paused);
+    const pressure=root.querySelector('#pd-pressure');pressure.hidden=!s.pressure||!['aim','flight'].includes(s.phase);pressure.textContent=s.pressure;
+    root.querySelectorAll('[data-height]').forEach(b=>{b.disabled=s.phase!=='aim'||s.paused||!!s.swing;b.setAttribute('aria-pressed',Math.abs(Number(b.dataset.height)-s.aim.y)<.1);});
+    root.querySelectorAll('[data-boot]').forEach(b=>b.disabled=s.phase!=='aim'||!!s.swing||s.paused);
     root.querySelectorAll('[data-dive]').forEach(b=>b.disabled=!['aim','flight'].includes(s.phase)||!!s.dive||s.paused);
     root.querySelectorAll('[data-move]').forEach(b=>b.disabled=!['aim','flight'].includes(s.phase)||!!s.dive||s.paused);
     const flash=root.querySelector('#pd-result-flash');flash.hidden=s.phase!=='result';flash.textContent=s.outcome==='goal'?'GOAL':s.outcome==='save'?'SAVED':'MISSED';flash.dataset.outcome=s.outcome;
@@ -128,12 +137,11 @@ export async function mountPenalty(){
   }
   function loop(now){const dt=last?(now-last)/1000:0;last=now;if(engine&&screen==='game'){
     engine.advance(dt);hud();draw();const s=engine.state;
-    const q=s.charge;
-    root.querySelector('#pd-contact-label').textContent=q?'RELEASE TO KICK':'HOLD TO CHARGE';
-    root.querySelector('#pd-timing').style.left=`${(q?.timing??0)*100}%`;
-    root.querySelector('#pd-window').style.width=`${(q?.window??.3)*100}%`;
-    root.querySelector('#pd-power').style.width=`${(q?.power??0)*100}%`;
-    root.querySelector('#pd-power-label').textContent=`POWER · ${Math.round((q?.power??0)*100)}%`;
+    const q=s.charge,power=q?.power??s.swing?.power??s.flight?.contact?.power??0;
+    root.querySelector('#pd-contact-label').textContent=s.swing?'SWINGING':q?'WATCH THE BALL':'HOLD TO CHARGE';
+    const cue=root.querySelector('#pd-cue');cue.hidden=s.turn!=='cpu'||s.phase!=='aim'||!s.cue;cue.textContent=s.cue?.stage==='strike'?'KICK COMING':'WATCH THE BOOT';
+    root.querySelector('#pd-power').style.width=`${power*100}%`;
+    root.querySelector('#pd-power-label').textContent=`POWER · ${Math.round(power*100)}%`;
 
     for(const event of s.events)if(event.id>seen){seen=event.id;if(event.type==='KICK')audio(kickSound);if(event.type==='RESULT'&&((event.turn==='you'&&event.outcome==='goal')||(event.turn==='cpu'&&event.outcome==='save')))audio(cheer);}
   }frame=requestAnimationFrame(loop);}

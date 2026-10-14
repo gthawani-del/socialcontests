@@ -18,13 +18,13 @@ try{
   if(await page.locator('[data-first=you]').isVisible())await page.locator('[data-first=you]').click();
   await page.waitForFunction(()=>window.__penalty.snapshot().phase==='aim');
   // Seeded browser fixture sets shooter only, then real touch drives actual aim/contact.
-  await page.evaluate(()=>{const s=window.__penalty.engine.state;s.turn='you';s.message='Drag inside the goal to aim';s.elapsed=.1;s.ball={x:.5,y:.68};});
+  await page.evaluate(()=>{const s=window.__penalty.engine.state;s.turn='you';s.message='Drag inside the goal to aim';s.elapsed=.1;s.ball={x:.5,y:.69,vx:.012,vy:.13};});
   const box=await page.locator('canvas').boundingBox();const session=await page.context().newCDPSession(page);
   const touch=async(type,x,y)=>session.send('Input.dispatchTouchEvent',{type,touchPoints:type==='touchEnd'?[]:[{x,y}]});
   await touch('touchStart',box.x+box.width*.73,box.y+box.height*.20);await touch('touchEnd');
-  assert((await page.evaluate(()=>window.__penalty.snapshot().aim.x))>.8);
+  await page.click('[data-height=".22"]');assert.equal(await page.evaluate(()=>window.__penalty.snapshot().aim.y),.22);
   await page.screenshot({path:`${dir}/striker-${name}.png`});
-  await page.evaluate(()=>{const e=window.__penalty.engine;e.state.elapsed=2.45;e.state.ball={x:.5,y:.878};});
+  await page.evaluate(()=>{const e=window.__penalty.engine;e.state.elapsed=0;e.state.ball={x:.5,y:.69,vx:.012,vy:.13};});
   const boot=await page.locator('[data-boot=left]').boundingBox();await touch('touchStart',boot.x+boot.width/2,boot.y+boot.height/2);
   await page.waitForTimeout(600);await touch('touchEnd');await page.waitForFunction(()=>window.__penalty.snapshot().events.some(e=>e.type==='BOOT_CONTACT'));
   const kicked=await page.evaluate(()=>window.__penalty.snapshot());assert(kicked.boots.left>0);assert.equal(kicked.phase,'flight');
@@ -36,7 +36,7 @@ try{
   assert(await page.evaluate(()=>!!window.__penalty.snapshot().dive));
   await page.locator('#pd-pause').click();const before=await page.evaluate(()=>window.__penalty.snapshot().elapsed);await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.__penalty.snapshot().elapsed),before);await page.locator('#pd-resume').click();
   const controls=await page.locator('#pd-defender').boundingBox();assert(controls.y+controls.height<=height+1,'controls inside viewport');
-  assert.deepEqual(errors,[]);results.push({name,width,height,realTouchAim:true,realTouchBootContact:true,keeperPositionAndDive:true,pause:true,errors});await page.close();
+  assert.deepEqual(errors,[]);results.push({name,width,height,shotHeightControl:true,realTouchBootContact:true,keeperPositionAndDive:true,pause:true,errors});await page.close();
  }
  await writeFile(`${dir}/browser-results.json`,JSON.stringify(results,null,2));console.log(JSON.stringify(results,null,2));
 }finally{await browser.close();await server.close();}

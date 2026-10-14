@@ -1,0 +1,156 @@
+[
+  {
+    "name": "mobile",
+    "format": "standard",
+    "normalSpeed": true,
+    "stateMutation": false,
+    "winner": "cpu",
+    "history": {
+      "you": [
+        "goal",
+        "goal",
+        "goal",
+        "goal",
+        "save"
+      ],
+      "cpu": [
+        "goal",
+        "goal",
+        "goal",
+        "goal",
+        "goal"
+      ]
+    },
+    "contacts": [
+      {
+        "side": "left",
+        "power": 0.7197821161942557,
+        "stroke": 0.3731638826786562,
+        "distance": 0.06344905770997707
+      },
+      {
+        "side": "right",
+        "power": 0.6851851851851855,
+        "stroke": 0.27620365604340436,
+        "distance": 0.06056391505043838
+      },
+      {
+        "side": "left",
+        "power": 0.6751961500034668,
+        "stroke": 0.5091411415826769,
+        "distance": 0.05786543577230335
+      },
+      {
+        "side": "left",
+        "power": 0.6481481481481486,
+        "stroke": 0.2716974601006193,
+        "distance": 0.06113738118015214
+      },
+      {
+        "side": "right",
+        "power": 0.522633999842219,
+        "stroke": 0.4663375199626895,
+        "distance": 0.0585372259018799
+      },
+      {
+        "side": "right",
+        "power": 0.6296296296296301,
+        "stroke": 0.2694443465017756,
+        "distance": 0.05709744184807472
+      },
+      {
+        "side": "right",
+        "power": 0.7031907511642204,
+        "stroke": 0.4679590365439387,
+        "distance": 0.06167293538676112
+      },
+      {
+        "side": "left",
+        "power": 0.6481481481481486,
+        "stroke": 0.2716974601006193,
+        "distance": 0.0637152155791037
+      },
+      {
+        "side": "left",
+        "power": 0.7372913608094678,
+        "stroke": 0.22635623700859014,
+        "distance": 0.06451085775766285
+      },
+      {
+        "side": "right",
+        "power": 0.6481481481481486,
+        "stroke": 0.2716974601006193,
+        "distance": 0.05652904306335668
+      }
+    ],
+    "cpuCue": true,
+    "errors": []
+  },
+  {
+    "name": "small",
+    "format": "fixed",
+    "normalSpeed": true,
+    "stateMutation": false,
+    "winner": "cpu",
+    "history": {
+      "you": [
+        "save",
+        "save"
+      ],
+      "cpu": []
+    },
+    "contacts": [
+      {
+        "side": "right",
+        "power": 0.6111111111111116,
+        "stroke": 0.22117270394538555,
+        "distance": 0.05862497766766059
+      },
+      {
+        "side": "left",
+        "power": 0.6111111111111116,
+        "stroke": 0.22117270394538555,
+        "distance": 0.06398840263102096
+      }
+    ],
+    "cpuCue": false,
+    "errors": []
+  },
+  {
+    "name": "landscape",
+    "format": "fixed",
+    "normalSpeed": true,
+    "stateMutation": false,
+    "winner": "you",
+    "history": {
+      "you": [
+        "save",
+        "goal",
+        "goal"
+      ],
+      "cpu": []
+    },
+    "contacts": [
+      {
+        "side": "right",
+        "power": 0.6296296296296301,
+        "stroke": 0.2694443465017756,
+        "distance": 0.054146904634423926
+      },
+      {
+        "side": "left",
+        "power": 0.6481481481481486,
+        "stroke": 0.2716974601006193,
+        "distance": 0.0563147622905847
+      },
+      {
+        "side": "right",
+        "power": 0.7222222222222223,
+        "stroke": 0.1816357831867312,
+        "distance": 0.06215044583154946
+      }
+    ],
+    "cpuCue": false,
+    "errors": []
+  }
+]
