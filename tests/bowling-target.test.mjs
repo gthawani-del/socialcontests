@@ -36,13 +36,13 @@ test('red-zone spread affects the actual first bounce and reset removes the cust
   assert(Math.hypot(impact.x-target.x,impact.z-target.z)<.035);
   assert(Math.abs(impact.x-.031)>.16);assert.equal(accuracy.risk,1);
   engine.resetBall();engine.releaseLaunch({bowler:'MEDIUM',deliveryType:'PACE',line:'CENTRE',charge:.6});
-  assert.equal(engine.deliveryVariation.target,null,'CPU/preset path remains separate after reset');
+  assert.deepEqual(engine.deliveryVariation.target,pitchTargetFor({line:'CENTRE'}),'reset uses the same pitch-constrained preset as player aiming');
  }
 });
 
 test('invalid target coordinates cannot escape the playable bowling area',()=>{
  assert.deepEqual(normalizeBowling({target:{x:500,z:-300}}).target,{x:PITCH_TARGET_BOUNDS.maxX,z:1.12});
- assert.equal(normalizeBowling({target:{x:NaN,z:1.5}}).target,null);
+ assert.deepEqual(normalizeBowling({target:{x:NaN,z:1.5}}).target,pitchTargetFor({}));
 });
 
  test('all drag, keyboard and preset centres leave the whole white ring inside the measured pitch',()=>{

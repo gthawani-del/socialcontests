@@ -1,6 +1,6 @@
 const STORAGE_KEY='cricket-pinball-coaching-v1';
 const copy={
-  bat:[['Try a bat','Tap either bat button to see it move.'],['Watch the ball','Follow the ball from the side lane to the pitch.'],['Read the bounce','Wait for the bounce, then time your swing.'],['Make contact','Tap the left or right bat as the ball reaches it.'],['Check your timing','Use Early / Perfect / Late feedback on your next shot.']],
+  bat:[['Try a bat','Press and hold either bat to defend. Release to reset it.'],['Watch the ball','Follow the ball from the side lane to the pitch.'],['Read the approach','Prepare before the bounce. Hold both bats to defend the centre.'],['Make contact','Hold for defence, or time a fresh swing as the ball approaches for a stronger shot.'],['Check your timing','Use Early / Perfect / Late feedback on your next shot.']],
   bowl:[['Aim your delivery','Drag the white pitch ring to aim. Use Delivery to choose a ball, or Field to move your fielders.'],['Pull the lever','Drag the right-side handle down. Red means extra pace with reduced control.'],['Release to bowl','Lift your finger to bowl. Ease the handle forward before releasing for less power.'],['Watch the bounce','The ring marks the first bounce. Red power adds uncertainty.'],['Read the result','Watch the CPU response before choosing your next ball.']]
 };
 // Advance only from observed game/input events, never from elapsed time.

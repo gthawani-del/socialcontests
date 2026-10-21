@@ -32,7 +32,7 @@ export function describePitchTarget(target) {
 export function normalizeBowling(selection={},bowler=selection.bowler||'MEDIUM') {
  bowler=BOWLERS[bowler]?bowler:'MEDIUM';
  const profile=BOWLERS[bowler];
- const target=normalizePitchTarget(selection.target);
+ const target=pitchTargetFor(selection);
  return {...selection,target,bowler,type:profile.types.includes(selection.type)?selection.type:profile.types[0],
   line:['LEFT','CENTRE','RIGHT'].includes(selection.line)?selection.line:'CENTRE',
   length:LENGTHS[selection.length]?selection.length:'GOOD',

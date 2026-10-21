@@ -1,0 +1,170 @@
+{
+  "fixture": "Chromium touch, four emulated viewports, seeded centre delivery, manual physics stepping; not physical iPhone testing",
+  "rows": [
+    {
+      "name": "mobile",
+      "guard": [
+        {
+          "id": "left",
+          "pressed": true,
+          "angle": 0.10471975511965978
+        },
+        {
+          "id": "right",
+          "pressed": true,
+          "angle": 3.036872898470133
+        }
+      ],
+      "alignment": [
+        1.0591761858187546e-16,
+        2.0206364052201328e-16
+      ],
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 1,
+        "complete": false
+      },
+      "contacts": 2,
+      "cancelled": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": false,
+          "angle": 3.391523802475381
+        }
+      ]
+    },
+    {
+      "name": "small",
+      "guard": [
+        {
+          "id": "left",
+          "pressed": true,
+          "angle": 0.10471975511965978
+        },
+        {
+          "id": "right",
+          "pressed": true,
+          "angle": 3.036872898470133
+        }
+      ],
+      "alignment": [
+        1.0591761858187546e-16,
+        2.0206364052201328e-16
+      ],
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 1,
+        "complete": false
+      },
+      "contacts": 2,
+      "cancelled": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": false,
+          "angle": 3.391523802475381
+        }
+      ]
+    },
+    {
+      "name": "landscape",
+      "guard": [
+        {
+          "id": "left",
+          "pressed": true,
+          "angle": 0.10471975511965978
+        },
+        {
+          "id": "right",
+          "pressed": true,
+          "angle": 3.036872898470133
+        }
+      ],
+      "alignment": [
+        1.0591761858187546e-16,
+        2.0206364052201328e-16
+      ],
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 1,
+        "complete": false
+      },
+      "contacts": 2,
+      "cancelled": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": false,
+          "angle": 3.391523802475381
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "guard": [
+        {
+          "id": "left",
+          "pressed": true,
+          "angle": 0.10471975511965978
+        },
+        {
+          "id": "right",
+          "pressed": true,
+          "angle": 3.036872898470133
+        }
+      ],
+      "alignment": [
+        1.0591761858187546e-16,
+        2.0206364052201328e-16
+      ],
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 1,
+        "complete": false
+      },
+      "contacts": 2,
+      "cancelled": [
+        {
+          "id": "left",
+          "pressed": false,
+          "angle": -0.24993114888558798
+        },
+        {
+          "id": "right",
+          "pressed": false,
+          "angle": 3.391523802475381
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

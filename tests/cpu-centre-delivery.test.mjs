@@ -8,12 +8,12 @@ for(const difficulty of ['EASY','MEDIUM','HARD']) {
  test(`${difficulty}: centre is defendable across speeds and movement`,()=>{
   for(const type of ['PACE','SWING_LEFT','SWING_RIGHT','CUTTER_LEFT','CUTTER_RIGHT','SPIN_LEFT','SPIN_RIGHT'])for(const power of [.24,.6,1]){
    let wickets=0,contacts=0;
-   for(let seed=1;seed<=20;seed++){
+   for(let seed=1;seed<=100;seed++){
     const r=simulate({difficulty,type,power,seed});
     assert.notEqual(r.outcome,'UNRESOLVED');
     wickets+=r.outcome==='WICKET';contacts+=r.hits>0;
    }
-   assert(wickets<17,`${type}/${power}: centre must not be an automatic wicket (${wickets}/20)`);
+   assert(wickets<85,`${type}/${power}: centre must not be an automatic wicket (${wickets}/100)`);
    assert(contacts>0,`${type}/${power}: CPU must make physical bat contact`);
   }
  });

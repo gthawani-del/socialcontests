@@ -62,7 +62,7 @@ test('seeded centre deliveries allow actual CPU contact across every bowler and 
 });
 
 
-test('CPU learns a repeated delivery without changing ball or bat physics',()=>{
+test('repeated deliveries do not secretly improve CPU reaction or change physics',()=>{
  const schedule=(difficulty,repeats)=>{
   const engine={ball:{active:true,position:{x:.5,z:1.9},velocity:{x:0,z:3}},launcher:{},isAwaitingLaunch:()=>false,setFlipper:()=>{}};
   const before=structuredClone(engine.ball);
@@ -70,6 +70,6 @@ test('CPU learns a repeated delivery without changing ball or bat physics',()=>{
   for(let i=0;i<repeats;i++)ai.observeDelivery({bowler:'FAST',line:'RIGHT',type:'PACE',length:'GOOD'});
   ai.update(1000,true);assert.deepEqual(engine.ball,before);return ai.getState().scheduledSwingAt;
  };
- assert.ok(schedule('MEDIUM',5)<schedule('MEDIUM',1));
+ assert.equal(schedule('MEDIUM',5),schedule('MEDIUM',1));
  assert.equal(schedule('EASY',5),schedule('EASY',1));
 });

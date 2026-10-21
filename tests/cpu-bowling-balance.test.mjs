@@ -8,10 +8,10 @@ for(const difficulty of ['EASY','MEDIUM','HARD']) {
  test(`${difficulty}: centre fast/flipper cannot dominate across power and length`,()=>{
   for(const [type,bowler] of [['PACE','FAST'],['FLIPPER','SPINNER']])
    for(const length of ['FULL','GOOD','SHORT'])for(const power of [.24,.4,.6,.8,1]) {
-    const results=Array.from({length:30},(_,i)=>simulate({difficulty,type,bowler,length,power,seed:i+1}));
+    const results=Array.from({length:100},(_,i)=>simulate({difficulty,type,bowler,length,power,seed:i+1}));
     const label=`${difficulty}/${type}/${length}/${power}`;
     assert(results.every(r=>r.outcome!=='UNRESOLVED'),`${label}: every ball resolves`);
-    assert(results.filter(r=>r.outcome==='WICKET').length<27,`${label}: not a repeatable 90% wicket exploit`);
+    assert(results.filter(r=>r.outcome==='WICKET').length<90,`${label}: not a repeatable 90% wicket exploit`);
     assert(results.some(r=>r.hits>0),`${label}: real bat contact remains possible`);
    }
  });

@@ -73,7 +73,7 @@ export function createMatchPresentation({app,getFlow,audio}) {
     if(event.type==='CONTROL_STATE' && event.ready && state?.innings>0 && logs.length===0)line.textContent=event.humanBatting?'Your innings. Use both bats to score.':'CPU batting. Pull back and release the lever to bowl.';
     if(event.type==='CPU_PLUNGER_PREP')line.textContent='CPU preparing to bowl. Watch the release.';
     if(event.type==='DELIVERY_LAUNCH')line.textContent='Ball released. Watch the bounce.';
-    if(event.type==='DELIVERY_BOUNCE')line.textContent=state?.battingPlayerId==='player'?'Ball pitched. Time your shot.':'Ball pitched. Watch the CPU response.';
+    if(event.type==='DELIVERY_BOUNCE')line.textContent=state?.battingPlayerId==='player'?'Ball pitched. Hold your defence or time a swing.':'Ball pitched. Watch the CPU response.';
     if(event.type==='BAT_CONTACT')line.textContent='Bat contact. Watch the scoring targets.';
     if(event.type==='OUTCOME'){
       const last=state?.deliveryHistory?.at(-1),dead=event.outcome==='DEAD_BALL';

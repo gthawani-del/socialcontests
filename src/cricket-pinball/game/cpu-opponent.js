@@ -1,4 +1,4 @@
-import {BOWLERS,normalizeBowling,selectionKey} from './bowling-rules.js';
+import {BOWLERS,normalizeBowling} from './bowling-rules.js';
 export function chooseDeliveryType(mix = { PACE: 1 }, roll = Math.random()) {
   const entries = Object.entries(mix).filter(([, weight]) => Number(weight) > 0);
   if (!entries.length) return 'PACE';
@@ -46,14 +46,18 @@ export function createCpuBattingAI({
   cpuConfig = {},
   random = Math.random
 }) {
-  let repeated=0, previousDelivery=null, chasePressure=false;
-  const observeDelivery=(selection,state={})=>{const key=selectionKey(selection);repeated=key===previousDelivery?Math.min(4,repeated+1):0;previousDelivery=key;chasePressure=state.target!=null&&state.requiredRuns>state.ballsRemaining*1.5;};
+  let chasePressure=false, defensiveIntent=false;
+  const observeDelivery=(_selection,state={})=>{
+    chasePressure=state.target!=null&&state.requiredRuns>state.ballsRemaining*1.5;
+    const aggression=(cpuConfig[difficulty] || cpuConfig.MEDIUM || {}).battingAggression ?? .4;
+    defensiveIntent=random() >= Math.min(.9,aggression+(chasePressure?.15:0));
+  };
   let swingUntil = 0;
   let cooldownUntil = 0;
   let activeSide = null;
   let scheduledSwingAt = null;
   let scheduledSide = null;
-  let centralTiming = null;
+  let scheduledHoldMs = null;
 
   function reset() {
     swingUntil = 0;
@@ -61,7 +65,7 @@ export function createCpuBattingAI({
     activeSide = null;
     scheduledSwingAt = null;
     scheduledSide = null;
-    centralTiming = null;
+    scheduledHoldMs = null;
     engine?.setFlipper('left', false);
     engine?.setFlipper('right', false);
   }
@@ -83,7 +87,8 @@ export function createCpuBattingAI({
     activeSide = side;
     scheduledSwingAt = null;
     scheduledSide = null;
-    swingUntil = nowMs + Number(preset.battingHoldMs ?? 105);
+    swingUntil = nowMs + (scheduledHoldMs ?? Number(preset.battingHoldMs ?? 105));
+    scheduledHoldMs = null;
     cooldownUntil = swingUntil + Number(preset.battingCooldownMs ?? 210);
   }
 
@@ -117,15 +122,10 @@ export function createCpuBattingAI({
     releaseActiveBats();
 
     const source=cpuConfig[difficulty] || cpuConfig.MEDIUM || {};
-    const adaptation=difficulty==='EASY'?1:1-Math.min(.16,repeated*.04);
-    const preset={...source,battingReactionMs:(source.battingReactionMs??65)*adaptation,battingTimingJitterMs:(source.battingTimingJitterMs??35)*adaptation,battingMissChance:(source.battingMissChance??.12)*adaptation,battingAggression:Math.min(.9,(source.battingAggression??.4)+(chasePressure?.15:0))};
+    const preset={...source,battingAggression:Math.min(.9,(source.battingAggression??.4)+(chasePressure?.15:0))};
     const ball = engine.ball;
 
     if (scheduledSwingAt !== null) {
-      if (centralTiming && ball.velocity.z > 0) {
-        const arrival = (centralTiming.z - ball.position.z) / ball.velocity.z * 1000;
-        scheduledSwingAt = Math.max(centralTiming.reactAt, nowMs + arrival - centralTiming.sweep + centralTiming.jitter);
-      }
       if (nowMs < scheduledSwingAt) return;
       startSwing(nowMs, scheduledSide, preset);
       return;
@@ -138,6 +138,7 @@ export function createCpuBattingAI({
     const arrivalMs = (contactZ - ball.position.z) / ball.velocity.z * 1000;
     const projectedX = ball.position.x + ball.velocity.x * Math.max(0, arrivalMs / 1000);
     const centralApproach = Boolean(tableConfig?.flippers && Math.abs(projectedX) <= centreBand);
+    const defending = centralApproach && defensiveIntent;
     const reactionMs = Math.max(0, Number(preset.battingReactionMs ?? 65));
     const triggerZ = Number(Math.abs(ball.position.x) <= centreBand
       ? preset.battingCentreTriggerZ ?? preset.battingTriggerZ ?? 1.45
@@ -145,7 +146,7 @@ export function createCpuBattingAI({
     const maxTriggerZ = Number(preset.battingMaxZ ?? 2.48);
     if (ball.position.z > maxTriggerZ) return;
     if (centralApproach) {
-      if (engine.launcher.inLane || ball.position.z < .5 || arrivalMs > reactionMs + 140) return;
+      if (engine.launcher.inLane || ball.position.z < (defending ? -.9 : .5) || arrivalMs > reactionMs + (defending ? 400 : 140)) return;
     } else if (ball.position.z < triggerZ) return;
 
     const missChance = clamp(Number(preset.battingMissChance ?? .12), 0, .75);
@@ -154,16 +155,17 @@ export function createCpuBattingAI({
       return;
     }
 
-    scheduledSide = centralApproach ? 'both' : predictSide(ball, preset);
+    scheduledSide = defending ? 'both' : predictSide(ball, preset);
+    scheduledHoldMs = defending ? 450 : null;
     const jitterMs = Math.max(0, Number(preset.battingTimingJitterMs ?? 35));
-    const jitter = (random() * 2 - 1) * jitterMs * (centralApproach ? .18 : 1);
-    // Centre balls pass the blade tips: aim the crossing of the horizontal
-    // bat position at their arrival, rather than reacting at a fixed pitch Z.
+    const jitter = (random() * 2 - 1) * jitterMs;
+    // Commit one estimated swing with the full difficulty timing error.
+    // Do not continuously correct it from live ball coordinates.
     const blade = tableConfig?.flippers?.[0];
     const sweepMs = blade ? Math.abs(blade.restAngleDeg) / blade.speedDegPerSec * 1000 : 20;
-    centralTiming = centralApproach ? {z:Number(preset.battingCentreContactZ ?? 2.02),reactAt:nowMs+reactionMs,sweep:sweepMs,jitter} : null;
+    const centreArrivalMs = (2.02 - ball.position.z) / ball.velocity.z * 1000;
     scheduledSwingAt = nowMs + Math.max(0, centralApproach
-      ? Math.max(reactionMs, arrivalMs - sweepMs) + jitter
+      ? Math.max(reactionMs, centreArrivalMs - (defending ? 240 : sweepMs)) + jitter
       : reactionMs + jitter);
 
     if (scheduledSwingAt <= nowMs) startSwing(nowMs, scheduledSide, preset);

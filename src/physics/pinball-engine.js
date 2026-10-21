@@ -72,6 +72,7 @@ export class PinballEngine {
   setFlipper(id, pressed) {
     const flipper = this.flippers.get(id);
     if (!flipper) return;
+    if (!pressed || !flipper.pressed) flipper.heldSeconds = 0;
     flipper.pressed = this.tilted ? false : Boolean(pressed);
   }
 
@@ -541,14 +542,17 @@ export class PinballEngine {
   updateFlippers(dt) {
     for (const flipper of this.flippers.values()) {
       const cfg = flipper.config;
+      flipper.heldSeconds = flipper.pressed ? (flipper.heldSeconds || 0) + dt : 0;
+      const guarding = flipper.pressed && Number.isFinite(cfg.holdAngleDeg) &&
+        flipper.heldSeconds * 1000 > cfg.strokeHoldMs;
       const target = (
         this.tilted
           ? cfg.restAngleDeg
           : flipper.pressed
-            ? cfg.activeAngleDeg
+            ? guarding ? cfg.holdAngleDeg : cfg.activeAngleDeg
             : cfg.restAngleDeg
       ) * DEG;
-      const speed = (flipper.pressed ? cfg.speedDegPerSec : cfg.returnSpeedDegPerSec) * DEG;
+      const speed = (flipper.pressed && !guarding ? cfg.speedDegPerSec : cfg.returnSpeedDegPerSec) * DEG;
       const previous = flipper.angle;
 
       flipper.angle = moveTowards(previous, target, speed * dt);

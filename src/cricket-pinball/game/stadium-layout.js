@@ -25,7 +25,11 @@ export function createStadiumTable(base) {
     pivot: stadiumPoint(bat.id === 'left' ? -2.05 : 2.05, -4.8),
     length: 1.85 * STADIUM_SCALE,
     radius: .13 * STADIUM_SCALE,
-    restAngleDeg: bat.id === 'left' ? -14.32 : 194.32
+    restAngleDeg: bat.id === 'left' ? -14.32 : 194.32,
+    // Held bats cover the centre physically. Resting bats still expose the wicket.
+    // The same pose drives the visible mesh and collision capsule for both sides.
+    holdAngleDeg: bat.id === 'left' ? 6 : 174,
+    strokeHoldMs: 110
   }));
   const positions = {
     'one-gate': [-1.35, .25], 'two-gate': [1.35, .25],
