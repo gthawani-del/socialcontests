@@ -37,8 +37,8 @@ for (const id of ['blue-left','blue-right','red-left','red-right']) {
       }
       assert(strike, 'real Rapier contact must produce a powered shot');
       const v = ball.body.linvel();
-      assert(Math.hypot(v.x,v.z) >= 10, JSON.stringify(v));
-      assert(v.z * Math.sign(boot.y) > 8, 'shot travels toward opposing goal');
+      assert(Math.hypot(v.x,v.z) >= 8, JSON.stringify(v));
+      assert(v.z * Math.sign(boot.y) > 6.4, 'shot travels toward opposing goal');
       assert(strike.payload.power >= 62, 'power feedback reflects horizontal shot');
       step(e, 12);
       assert.equal(e.events.filter(v=>v.type==='BOOT_STRIKE'&&v.targetId===id).length, 1);
@@ -67,8 +67,8 @@ test('limiting vertical lift preserves legal forward speed', async () => {
     e.step();
     const v=ball.body.linvel();
     assert(v.y <= 2.20001);
-    assert(v.x > 13.5, `forward speed was incorrectly reduced: ${v.x}`);
-    assert(Math.hypot(v.x,v.y,v.z) <= 16.00001);
+    assert(v.x > 10.8, `forward speed was incorrectly reduced: ${v.x}`);
+    assert(Math.hypot(v.x,v.y,v.z) <= 12.80001);
   } finally {e.dispose();}
 });
 
@@ -169,13 +169,13 @@ for(const role of ['defender','midfielder','striker']) for(const team of ['blue'
     const receiver=e.targets.find(r=>r.type==='player'&&r.team===team&&r.role===(role==='defender'?'midfielder':'striker'));
     const dest=role==='striker'?{x:t.x>0?-.62:.62,y:-t.homeSign*5}:receiver;
     const dx=dest.x-t.x,dy=dest.y-t.y,n=Math.hypot(dx,dy),gap=t.radius+e.ballRadius+.1;
-    const ball=place(e,t.x+dx/n*gap,t.y+dy/n*gap,-dx/n*14,-dy/n*14);
+    const ball=place(e,t.x+dx/n*gap,t.y+dy/n*gap,-dx/n*11.2,-dy/n*11.2);
     let kick;
     for(let i=0;i<12;i++){
       e.step();kick=e.events.find(v=>v.type==='PLAYER_KICK'&&v.targetId===t.id);if(kick)break;
     }
     assert(kick,'physical front contact must trigger the pass');
-    const v=ball.body.linvel();assert(Math.hypot(v.x,v.z)>13.8,JSON.stringify(v));
+    const v=ball.body.linvel();assert(Math.hypot(v.x,v.z)>11.0,JSON.stringify(v));
     assert(v.x*dx-v.z*dy>0,'fast pass must still aim toward the receiver');
     assert.equal(e.events.filter(v=>v.type==='PLAYER_KICK'&&v.targetId===t.id).length,1);
   }finally{e.dispose();}
@@ -185,12 +185,12 @@ test('pass target preserves incoming shot momentum',async()=>{
   const e=await setup();
   try{
     const t=e.targets.find(t=>t.type==='pass');
-    const ball=place(e,t.x-t.radius-e.ballRadius-.1,t.y,14,0);
+    const ball=place(e,t.x-t.radius-e.ballRadius-.1,t.y,11.2,0);
     let hit;
     for(let i=0;i<12;i++){
       e.step();hit=e.events.find(v=>v.type==='TARGET_HIT'&&v.targetId===t.id);if(hit)break;
     }
-    assert(hit);assert(Math.hypot(ball.body.linvel().x,ball.body.linvel().z)>13.8);
+    assert(hit);assert(Math.hypot(ball.body.linvel().x,ball.body.linvel().z)>11.0);
   }finally{e.dispose();}
 });
 

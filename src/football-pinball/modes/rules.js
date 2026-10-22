@@ -1,5 +1,5 @@
 import { BOOTS, RAILS } from "./foundation.js";
-export const RULE_VERSION = "football-3d-14";
+export const RULE_VERSION = "football-3d-15";
 export const PHYSICS = Object.freeze({
   hz: 120,
   step: 1 / 120,
@@ -20,15 +20,16 @@ export const PHYSICS = Object.freeze({
 export const MODE_IDS = ["pvp", "crash", "penalty", "arcade-rush"];
 export const MODE_RULES = {
   pvp: {
+    maxSpeed: 12.8,
     ballRadius: 0.15,
     maxBallLift: 2.2,
-    bootShot: { minSpeed: 10, maxSpeed: 14, lift: 2.2, strokeTicks: 8 },
-    rally: { slowSpeed: 4, recoveryTicks: 42, airRecoveryTicks: 84, recoverySpeed: 8 },
-    tableSlope: .9,
-    kickoff: { minOffset: .7, maxOffset: 1.5, speed: 8, lateralSpeed: .2 },
+    bootShot: { minSpeed: 8, maxSpeed: 11.2, lift: 2.2, strokeTicks: 8 },
+    rally: { slowSpeed: 3.2, recoveryTicks: 42, airRecoveryTicks: 84, recoverySpeed: 6.4 },
+    tableSlope: .72,
+    kickoff: { minOffset: .7, maxOffset: 1.5, speed: 6.4, lateralSpeed: .16 },
     restartTicks: 60,
     playerKickCooldown: 90,
-    playerKickSpeed: { defender: 10, midfielder: 11, striker: 13 },
+    playerKickSpeed: { defender: 8, midfielder: 8.8, striker: 10.4 },
     playerMotion: {
       defender: { range: .3, speed: 1.2, tracking: .4 },
       midfielder: { range: .65, speed: 1.5, tracking: .6 },

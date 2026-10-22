@@ -50,6 +50,7 @@ export class MatchEngine {
     if (!["quick", "classic", "golden"].includes(this.options.format))
       throw Error("Invalid format");
     this.mode = this.options.mode;
+    this.maxSpeed = MODE_RULES[this.mode].maxSpeed ?? P.maxSpeed;
     this.ballRadius = MODE_RULES[this.mode].ballRadius || P.ballRadius;
     this.geometry = geometryFor(this.mode);
     this.world = new RAPIER.World({
@@ -586,7 +587,7 @@ export class MatchEngine {
       forward = planar > .1 && v.z * Math.sign(boot.y) / planar > .55,
       x = forward ? v.x / planar : -Math.sin(boot.angle) * spin,
       z = forward ? v.z / planar : -Math.cos(boot.angle) * spin,
-      speed = Math.min(P.maxSpeed, (tuning.minSpeed +
+      speed = Math.min(this.maxSpeed, (tuning.minSpeed +
         (tuning.maxSpeed - tuning.minSpeed) * clamp(local.along / boot.length, 0, 1)) *
         (this.skill[boot.team] ? 1.25 : 1));
     ball.body.setLinvel({ x: x * speed, y: tuning.lift, z: z * speed }, true);
@@ -791,7 +792,7 @@ export class MatchEngine {
         this.targetHits.set(data.id,this.tick);
         // Role speeds are floors, not brakes. Use pre-contact speed so the
         // collision solver cannot turn a strong boot shot into a weak pass.
-        const speed=Math.min(P.maxSpeed, Math.max(MODE_RULES.pvp.playerKickSpeed[data.role],
+        const speed=Math.min(this.maxSpeed, Math.max(MODE_RULES.pvp.playerKickSpeed[data.role],
           ball.incomingSpeed, Math.hypot(v.x,v.z)));
         // A rear reception clears around the player's outside shoulder. Never
         // teleport through the body or aim a pass back through its cylinder.
@@ -831,7 +832,7 @@ export class MatchEngine {
             dz = -target.y - p.z,
             n = Math.hypot(dx, dz) || 1,
             s = this.mode === "pvp"
-              ? Math.min(P.maxSpeed, Math.max(MODE_RULES.pvp.playerKickSpeed.midfielder,
+              ? Math.min(this.maxSpeed, Math.max(MODE_RULES.pvp.playerKickSpeed.midfielder,
                   ball.incomingSpeed, Math.hypot(v.x, v.z)))
               : Math.min(10, Math.max(4, Math.hypot(v.x, v.z)));
           ball.body.setLinvel(
@@ -1126,18 +1127,18 @@ export class MatchEngine {
           this.emit("BALL_UNSTUCK", {ballId:b.id});
         }
       }
-      if (speed > P.maxSpeed)
+      if (speed > this.maxSpeed)
         b.body.setLinvel(
           {
-            x: (v.x * P.maxSpeed) / speed,
-            y: (v.y * P.maxSpeed) / speed,
-            z: (v.z * P.maxSpeed) / speed,
+            x: (v.x * this.maxSpeed) / speed,
+            y: (v.y * this.maxSpeed) / speed,
+            z: (v.z * this.maxSpeed) / speed,
           },
           true,
         );
       if (b.pendingBootStrike) {
         const velocity=b.body.linvel(), speed=Math.hypot(velocity.x,velocity.z);
-        this.emit('BOOT_STRIKE',{actorId:b.pendingBootStrike.team,targetId:b.pendingBootStrike.id,ballId:b.id,payload:{power:Math.round(Math.min(1,speed/P.maxSpeed)*100)}});
+        this.emit('BOOT_STRIKE',{actorId:b.pendingBootStrike.team,targetId:b.pendingBootStrike.id,ballId:b.id,payload:{power:Math.round(Math.min(1,speed/this.maxSpeed)*100)}});
         b.pendingBootStrike=null;
       }
       for (const sign of [-1, 1]) {
