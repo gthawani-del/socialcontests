@@ -1,0 +1,101 @@
+{
+  "method": "Complete first-to-3 engine matches, SHA256-spread seeds, alternating toss calls. Scripted player inputs, not humans. Symmetry fixtures explicitly swap team ends before start. No ball, score or clock overrides.",
+  "results": [
+    {
+      "difficulty": "easy",
+      "strategy": "periodic",
+      "matches": 60,
+      "cpuWins": 52,
+      "playerWins": 7,
+      "draws": 1,
+      "unfinished": 0,
+      "cpuTossWins": 32,
+      "timeLimits": [
+        {
+          "seed": 1744634872,
+          "score": {
+            "blue": 1,
+            "red": 1
+          }
+        }
+      ]
+    },
+    {
+      "difficulty": "easy",
+      "strategy": "reactive",
+      "matches": 60,
+      "cpuWins": 5,
+      "playerWins": 54,
+      "draws": 1,
+      "unfinished": 0,
+      "cpuTossWins": 32,
+      "timeLimits": [
+        {
+          "seed": 2547665756,
+          "score": {
+            "blue": 0,
+            "red": 0
+          }
+        }
+      ]
+    },
+    {
+      "difficulty": "medium",
+      "strategy": "periodic",
+      "matches": 60,
+      "cpuWins": 55,
+      "playerWins": 5,
+      "draws": 0,
+      "unfinished": 0,
+      "cpuTossWins": 32,
+      "timeLimits": []
+    },
+    {
+      "difficulty": "medium",
+      "strategy": "reactive",
+      "matches": 60,
+      "cpuWins": 12,
+      "playerWins": 48,
+      "draws": 0,
+      "unfinished": 0,
+      "cpuTossWins": 32,
+      "timeLimits": [
+        {
+          "seed": 2734170184,
+          "score": {
+            "blue": 2,
+            "red": 0
+          }
+        }
+      ]
+    },
+    {
+      "difficulty": "hard",
+      "strategy": "periodic",
+      "matches": 60,
+      "cpuWins": 55,
+      "playerWins": 5,
+      "draws": 0,
+      "unfinished": 0,
+      "cpuTossWins": 32,
+      "timeLimits": []
+    },
+    {
+      "difficulty": "hard",
+      "strategy": "reactive",
+      "matches": 60,
+      "cpuWins": 28,
+      "playerWins": 32,
+      "draws": 0,
+      "unfinished": 0,
+      "cpuTossWins": 32,
+      "timeLimits": []
+    }
+  ],
+  "symmetry": {
+    "pairs": 60,
+    "nearWins": 61,
+    "farWins": 59,
+    "draws": 0
+  }
+}

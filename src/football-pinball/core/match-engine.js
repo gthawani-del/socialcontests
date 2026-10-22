@@ -538,24 +538,29 @@ export class MatchEngine {
     }
     if (this.tick < this.cpuNext) return;
     const level = tuning.reactionTicks[this.options.difficulty] || 20;
+    const aim = tuning.aim[this.options.difficulty] || tuning.aim.medium;
     this.cpuNext = this.tick + level;
     const ball = this.balls[0];
     if (!ball) return;
     const p = ball.body.translation(), v = ball.body.linvel();
     for (const b of boots) {
-      if (b.pressed || this.tick - b.strokeTick < tuning.holdTicks + tuning.returnTicks)
+      if (b.pressed || b.cpuStrikeTick !== null || this.tick - b.strokeTick < tuning.holdTicks + tuning.returnTicks)
         continue;
       const local = this.bootApproach(b, p),
         closing = v.x * local.nx - v.z * local.ny,
         distance = local.front - b.radius - this.ballRadius,
         contactTime = distance <= .08 ? 0 : closing < -.1 ? distance / -closing : Infinity,
         along = local.along + (v.x * Math.cos(b.rest) - v.z * Math.sin(b.rest)) * contactTime;
-      // Schedule the swing near predicted contact, not merely when the ball
-      // enters a broad proximity zone. Reaction sampling still sets difficulty.
+      // Commit to an imperfect estimate instead of continuously correcting a
+      // scheduled swing with exact physics data. Seeded errors preserve replay.
       if (contactTime <= .5 && local.front >= -this.ballRadius &&
           along >= .1 && along <= b.length &&
-          this.rng() > (this.options.difficulty === "easy" ? .3 : .05))
-        b.cpuStrikeTick = this.tick + Math.max(1, Math.round((contactTime - .035) / P.step));
+          this.rng() > aim.missChance) {
+        const predictionError = (this.rng() * 2 - 1) * aim.predictionError;
+        const timingError = (this.rng() * 2 - 1) * aim.timingError;
+        const estimate = contactTime * (1 + predictionError) - .035 + timingError;
+        b.cpuStrikeTick = this.tick + Math.max(1, Math.round(estimate / P.step));
+      }
     }
   }
 
@@ -979,7 +984,11 @@ export class MatchEngine {
       this.rush = final;
       if (this.activeTicks >= this.durationTicks) return this.end("time");
     }
-    if (this.tick >= P.maxTicks) return this.end("time-limit");
+    if (this.tick >= P.maxTicks) {
+      const winner = this.mode === "pvp" && this.score.blue !== this.score.red
+        ? (this.score.blue > this.score.red ? "blue" : "red") : null;
+      return this.end("time-limit", winner);
+    }
     if (this.state === "toss" && this.tick >= this.transitionTick) {
       this.state = "choice";
       if (this.toss.winner === "red" && this.options.opponent === "cpu")

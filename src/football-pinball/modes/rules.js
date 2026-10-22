@@ -1,5 +1,5 @@
 import { BOOTS, RAILS } from "./foundation.js";
-export const RULE_VERSION = "football-3d-12";
+export const RULE_VERSION = "football-3d-14";
 export const PHYSICS = Object.freeze({
   hz: 120,
   step: 1 / 120,
@@ -34,7 +34,15 @@ export const MODE_RULES = {
       midfielder: { range: .65, speed: 1.5, tracking: .6 },
       striker: { range: .5, speed: 1.3, tracking: .5 },
     },
-    cpu: { holdTicks: 12, returnTicks: 12, reactionTicks: { easy: 36, medium: 20, hard: 10 } },
+    cpu: {
+      holdTicks: 12, returnTicks: 12,
+      reactionTicks: { easy: 36, medium: 20, hard: 10 },
+      aim: {
+        easy: { missChance: .30, predictionError: .30, timingError: .09 },
+        medium: { missChance: .15, predictionError: .20, timingError: .06 },
+        hard: { missChance: .05, predictionError: .10, timingError: .03 },
+      },
+    },
     quickGoals: 3,
     halfTicks: 14400,
     comboTicks: 600,

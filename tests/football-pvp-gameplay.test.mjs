@@ -207,10 +207,27 @@ for(const difficulty of ['easy','medium','hard']) test(`CPU ${difficulty} times 
       e.step();strike=e.events.find(v=>v.type==='BOOT_STRIKE'&&v.actorId==='red');if(strike)break;
     }
     if(strike){hits++;assert(strike.payload.power>=62);}
+    const stroke = boot.strokeTick;
     step(e,24);
-    assert(!boot.pressed,'CPU releases after the shot');
+    assert(!boot.pressed || boot.strokeTick > stroke, 'CPU releases the original stroke; a new stroke may follow');
     }finally{e.dispose();}
   }
   // Easy has an intentional 30% decision miss; success need not be universal.
   assert(hits >= (difficulty==='easy'?1:2),`${difficulty}: only ${hits}/3 physical returns`);
 });
+
+for (const [blue, red, winner] of [[2,0,'blue'],[0,2,'red'],[1,1,null]]) {
+  test(`PvP safety limit respects ${blue}:${red} score`, async () => {
+    const e = await setup();
+    try {
+      // Boundary fixture: exercise the real terminal step without 30 minutes of play.
+      e.score = {blue, red}; e.tick = 215999;
+      e.step();
+      assert.equal(e.state, 'ended');
+      assert.equal(e.result.reason, 'time-limit');
+      assert.equal(e.result.winner, winner);
+      assert.deepEqual(e.result.score, {blue, red});
+      assert(e.boots.every(b => !b.pressed));
+    } finally { e.dispose(); }
+  });
+}
