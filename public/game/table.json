@@ -74,30 +74,6 @@
         -2.62
       ],
       "restitution": 0.76
-    },
-    {
-      "id": "bottom-left",
-      "a": [
-        -1.49,
-        2.5
-      ],
-      "b": [
-        -0.43,
-        2.62
-      ],
-      "restitution": 0.7
-    },
-    {
-      "id": "bottom-right",
-      "a": [
-        0.43,
-        2.62
-      ],
-      "b": [
-        1.49,
-        2.5
-      ],
-      "restitution": 0.7
     }
   ],
   "flippers": [
