@@ -688,15 +688,12 @@ export function createGameplayController({
         }
 
         if (soundButton) {
-          soundButton.classList.remove('muted');
+          soundButton.classList.toggle('muted', !running);
           soundButton.textContent = running ? 'SOUND ON' : 'ENABLE SOUND';
         }
 
-        if (running) {
-          hideSoundGate();
-        } else {
-          showSoundGate();
-        }
+        // Browser audio permission failures must not block gameplay.
+        hideSoundGate();
 
         return running;
       });
