@@ -52,6 +52,8 @@ export class PinballEngine {
 
     this.nudgeTimes = [];
     this.tilted = false;
+    this.stuckSeconds = 0;
+    this.stuckRecoveries = 0;
 
     this.resetBall();
   }
@@ -209,6 +211,8 @@ export class PinballEngine {
     this.nudgeTimes = [];
     this.tilted = false;
     this.accumulator = 0;
+    this.stuckSeconds = 0;
+    this.stuckRecoveries = 0;
 
     for (const zone of this.scoringZoneStates.values()) zone.inside = false;
     for (const flipper of this.flippers.values()) flipper.pressed = false;
@@ -394,7 +398,10 @@ export class PinballEngine {
     this.emit('physics:step');
     if (!this.ball.active) return;
     this.checkDrain();
+    if (!this.ball.active) return;
     this.checkSafetyBounds();
+    if (!this.ball.active) return;
+    this.checkStuckBall(dt);
   }
 
   updateTargetBank() {
@@ -732,6 +739,18 @@ export class PinballEngine {
   checkDrain() {
     if (this.launcher.awaitingLaunch) return;
 
+    // Balls that pass the outer edge of either flipper enter a true outlane.
+    // Unlike a return inlane, an outlane must not rebound indefinitely.
+    const x = this.ball.position.x;
+    const z = this.ball.position.z;
+    const outlaneX = 1.10;
+    const outlaneZ = 2.28;
+    if (z >= outlaneZ && Math.abs(x) >= outlaneX) {
+      this.ball.active = false;
+      this.emit('drain', { outlane: x < 0 ? 'left' : 'right' });
+      return;
+    }
+
     const drain = this.config.playfield.drain;
     if (
       this.ball.position.z > drain.z &&
@@ -741,6 +760,29 @@ export class PinballEngine {
       this.ball.active = false;
       this.emit('drain');
     }
+  }
+
+  checkStuckBall(dt) {
+    if (!this.ball.active || this.launcher.awaitingLaunch) return;
+    const speed = Math.hypot(this.ball.velocity.x, this.ball.velocity.z);
+    // Detect only a truly stationary ball, never penalize skillful long play.
+    if (speed >= 0.16) {
+      this.stuckSeconds = 0;
+      return;
+    }
+    this.stuckSeconds += dt;
+    if (this.stuckSeconds < 7) return;
+    this.stuckSeconds = 0;
+    this.stuckRecoveries += 1;
+    if (this.stuckRecoveries >= 3) {
+      this.ball.active = false;
+      this.emit('drain', { stuckRecovery: true });
+      return;
+    }
+    // Small upward impulse returns a motionless ball to active play.
+    this.ball.velocity.x = this.ball.position.x <= 0 ? 0.75 : -0.75;
+    this.ball.velocity.z = -2.4;
+    this.emit('ball-unstuck', { attempt: this.stuckRecoveries });
   }
 
   checkSafetyBounds() {
