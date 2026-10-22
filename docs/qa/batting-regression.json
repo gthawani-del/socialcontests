@@ -3,7 +3,18 @@
     "before": {
       "lastBounce": null,
       "aimVisible": false,
-      "accuracyRingVisible": false,
+      "aim": {
+        "x": -0.09275757575757575,
+        "z": 1.88,
+        "radius": 0.105,
+        "color": "ffffff",
+        "pitch": {
+          "minX": -0.20075757801532745,
+          "maxX": 0.20075757801532745,
+          "minZ": -0.2200000405311584,
+          "maxZ": 2.4299999356269835
+        }
+      },
       "fielders": [
         {
           "id": "cover",
@@ -31,10 +42,10 @@
         "line": "LEFT",
         "type": "PACE",
         "target": {
-          "x": -0.5,
+          "x": -0.09275757575757575,
           "z": 1.88
         },
-        "power": 0.29600000000000004,
+        "power": 0,
         "movementScale": 1
       },
       "quality": "low",
@@ -83,12 +94,18 @@
           "risk": 0,
           "zone": "amber"
         },
-        "pull": 0.12,
+        "pull": 0,
+        "charge": 0,
+        "power": 0,
+        "recoiling": false,
         "dragging": false,
+        "busy": false,
         "enabled": false,
         "cpuMode": true,
         "visible": true,
-        "glow": 0
+        "glow": 0,
+        "springLength": 0.21000000000000002,
+        "knobZ": 0.32
       },
       "match": {
         "format": "ONE_OVER",
@@ -177,7 +194,18 @@
     "leftdown": {
       "lastBounce": null,
       "aimVisible": false,
-      "accuracyRingVisible": false,
+      "aim": {
+        "x": -0.09275757575757575,
+        "z": 1.88,
+        "radius": 0.105,
+        "color": "ffffff",
+        "pitch": {
+          "minX": -0.20075757801532745,
+          "maxX": 0.20075757801532745,
+          "minZ": -0.2200000405311584,
+          "maxZ": 2.4299999356269835
+        }
+      },
       "fielders": [
         {
           "id": "cover",
@@ -205,10 +233,10 @@
         "line": "LEFT",
         "type": "PACE",
         "target": {
-          "x": -0.5,
+          "x": -0.09275757575757575,
           "z": 1.88
         },
-        "power": 0.28,
+        "power": 0,
         "movementScale": 1
       },
       "quality": "low",
@@ -257,12 +285,18 @@
           "risk": 0,
           "zone": "amber"
         },
-        "pull": 0.1,
+        "pull": 0,
+        "charge": 0,
+        "power": 0,
+        "recoiling": false,
         "dragging": false,
+        "busy": false,
         "enabled": false,
         "cpuMode": true,
         "visible": true,
-        "glow": 0
+        "glow": 0,
+        "springLength": 0.21000000000000002,
+        "knobZ": 0.32
       },
       "match": {
         "format": "ONE_OVER",
@@ -351,7 +385,18 @@
     "leftup": {
       "lastBounce": null,
       "aimVisible": false,
-      "accuracyRingVisible": false,
+      "aim": {
+        "x": -0.09275757575757575,
+        "z": 1.88,
+        "radius": 0.105,
+        "color": "ffffff",
+        "pitch": {
+          "minX": -0.20075757801532745,
+          "maxX": 0.20075757801532745,
+          "minZ": -0.2200000405311584,
+          "maxZ": 2.4299999356269835
+        }
+      },
       "fielders": [
         {
           "id": "cover",
@@ -379,10 +424,10 @@
         "line": "LEFT",
         "type": "PACE",
         "target": {
-          "x": -0.5,
+          "x": -0.09275757575757575,
           "z": 1.88
         },
-        "power": 0.28,
+        "power": 0,
         "movementScale": 1
       },
       "quality": "low",
@@ -431,12 +476,18 @@
           "risk": 0,
           "zone": "amber"
         },
-        "pull": 0.1,
+        "pull": 0,
+        "charge": 0,
+        "power": 0,
+        "recoiling": false,
         "dragging": false,
+        "busy": false,
         "enabled": false,
         "cpuMode": true,
         "visible": true,
-        "glow": 0
+        "glow": 0,
+        "springLength": 0.21000000000000002,
+        "knobZ": 0.32
       },
       "match": {
         "format": "ONE_OVER",
@@ -525,7 +576,18 @@
     "rightdown": {
       "lastBounce": null,
       "aimVisible": false,
-      "accuracyRingVisible": false,
+      "aim": {
+        "x": -0.09275757575757575,
+        "z": 1.88,
+        "radius": 0.105,
+        "color": "ffffff",
+        "pitch": {
+          "minX": -0.20075757801532745,
+          "maxX": 0.20075757801532745,
+          "minZ": -0.2200000405311584,
+          "maxZ": 2.4299999356269835
+        }
+      },
       "fielders": [
         {
           "id": "cover",
@@ -553,10 +615,10 @@
         "line": "LEFT",
         "type": "PACE",
         "target": {
-          "x": -0.5,
+          "x": -0.09275757575757575,
           "z": 1.88
         },
-        "power": 0.28,
+        "power": 0,
         "movementScale": 1
       },
       "quality": "low",
@@ -605,12 +667,18 @@
           "risk": 0,
           "zone": "amber"
         },
-        "pull": 0.1,
+        "pull": 0,
+        "charge": 0,
+        "power": 0,
+        "recoiling": false,
         "dragging": false,
+        "busy": false,
         "enabled": false,
         "cpuMode": true,
         "visible": true,
-        "glow": 0
+        "glow": 0,
+        "springLength": 0.21000000000000002,
+        "knobZ": 0.32
       },
       "match": {
         "format": "ONE_OVER",
@@ -699,7 +767,18 @@
     "rightup": {
       "lastBounce": null,
       "aimVisible": false,
-      "accuracyRingVisible": false,
+      "aim": {
+        "x": -0.09275757575757575,
+        "z": 1.88,
+        "radius": 0.105,
+        "color": "ffffff",
+        "pitch": {
+          "minX": -0.20075757801532745,
+          "maxX": 0.20075757801532745,
+          "minZ": -0.2200000405311584,
+          "maxZ": 2.4299999356269835
+        }
+      },
       "fielders": [
         {
           "id": "cover",
@@ -727,10 +806,10 @@
         "line": "LEFT",
         "type": "PACE",
         "target": {
-          "x": -0.5,
+          "x": -0.09275757575757575,
           "z": 1.88
         },
-        "power": 0.28,
+        "power": 0,
         "movementScale": 1
       },
       "quality": "low",
@@ -779,12 +858,18 @@
           "risk": 0,
           "zone": "amber"
         },
-        "pull": 0.1,
+        "pull": 0,
+        "charge": 0,
+        "power": 0,
+        "recoiling": false,
         "dragging": false,
+        "busy": false,
         "enabled": false,
         "cpuMode": true,
         "visible": true,
-        "glow": 0
+        "glow": 0,
+        "springLength": 0.21000000000000002,
+        "knobZ": 0.32
       },
       "match": {
         "format": "ONE_OVER",
@@ -874,20 +959,31 @@
       {
         "lastBounce": {
           "type": "PACE",
-          "x": -0.543011045086623,
-          "z": 1.810314972863171,
+          "x": -0.09264795864400838,
+          "z": 1.8764663842232472,
           "height": 0,
           "beforeVelocity": {
-            "x": -1.358681873945487,
-            "z": 6.6556863321296404
+            "x": -0.21221218994701263,
+            "z": 6.830270857156659
           },
           "velocity": {
-            "x": -1.358681873945487,
-            "z": 6.6556863321296404
+            "x": -0.21221218994701263,
+            "z": 6.830270857156659
           }
         },
         "aimVisible": true,
-        "accuracyRingVisible": false,
+        "aim": {
+          "x": -0.09275757575757575,
+          "z": 1.88,
+          "radius": 0.105,
+          "color": "ffffff",
+          "pitch": {
+            "minX": -0.20075757801532745,
+            "maxX": 0.20075757801532745,
+            "minZ": -0.2200000405311584,
+            "maxZ": 2.4299999356269835
+          }
+        },
         "fielders": [
           {
             "id": "cover",
@@ -915,10 +1011,10 @@
           "line": "LEFT",
           "type": "PACE",
           "target": {
-            "x": -0.5,
+            "x": -0.09275757575757575,
             "z": 1.88
           },
-          "power": 0.28,
+          "power": 0,
           "movementScale": 1
         },
         "quality": "low",
@@ -967,12 +1063,18 @@
             "risk": 0,
             "zone": "amber"
           },
-          "pull": 0.1,
+          "pull": 0,
+          "charge": 0,
+          "power": 0,
+          "recoiling": false,
           "dragging": false,
+          "busy": false,
           "enabled": false,
           "cpuMode": true,
           "visible": true,
-          "glow": 0
+          "glow": 0,
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",
@@ -1021,8 +1123,8 @@
           "risk": 0
         },
         "ball": {
-          "x": 0.2830889565891421,
-          "z": -2.712870584747212,
+          "x": 0.5433159772332631,
+          "z": -2.5814036504112035,
           "height": 0,
           "verticalVelocity": 0,
           "velocity": {
@@ -1061,20 +1163,31 @@
       {
         "lastBounce": {
           "type": "PACE",
-          "x": -0.543011045086623,
-          "z": 1.810314972863171,
+          "x": -0.09264795864400838,
+          "z": 1.8764663842232472,
           "height": 0,
           "beforeVelocity": {
-            "x": -1.358681873945487,
-            "z": 6.6556863321296404
+            "x": -0.21221218994701263,
+            "z": 6.830270857156659
           },
           "velocity": {
-            "x": -1.358681873945487,
-            "z": 6.6556863321296404
+            "x": -0.21221218994701263,
+            "z": 6.830270857156659
           }
         },
         "aimVisible": true,
-        "accuracyRingVisible": false,
+        "aim": {
+          "x": -0.09275757575757575,
+          "z": 1.88,
+          "radius": 0.105,
+          "color": "ffffff",
+          "pitch": {
+            "minX": -0.20075757801532745,
+            "maxX": 0.20075757801532745,
+            "minZ": -0.2200000405311584,
+            "maxZ": 2.4299999356269835
+          }
+        },
         "fielders": [
           {
             "id": "cover",
@@ -1102,10 +1215,10 @@
           "line": "LEFT",
           "type": "PACE",
           "target": {
-            "x": -0.5,
+            "x": -0.09275757575757575,
             "z": 1.88
           },
-          "power": 0.28,
+          "power": 0,
           "movementScale": 1
         },
         "quality": "low",
@@ -1140,9 +1253,9 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": false,
-          "shadowScale": 1,
-          "shadowOpacity": 0.48,
+          "shadow": true,
+          "shadowScale": 1.08125,
+          "shadowOpacity": 0.42477876106194695,
           "reducedMotion": false,
           "quality": "low"
         },
@@ -1154,12 +1267,18 @@
             "risk": 0,
             "zone": "amber"
           },
-          "pull": 0.1,
+          "pull": 0,
+          "charge": 0,
+          "power": 0,
+          "recoiling": false,
           "dragging": false,
+          "busy": false,
           "enabled": false,
           "cpuMode": true,
           "visible": true,
-          "glow": 0
+          "glow": 0,
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",
@@ -1208,8 +1327,8 @@
           "risk": 0
         },
         "ball": {
-          "x": 0.2830889565891421,
-          "z": -2.712870584747212,
+          "x": 0.5433159772332631,
+          "z": -2.5814036504112035,
           "height": 0,
           "verticalVelocity": 0,
           "velocity": {
@@ -1248,20 +1367,31 @@
       {
         "lastBounce": {
           "type": "SWING_LEFT",
-          "x": -0.5407908123980841,
-          "z": 1.7963005476128024,
+          "x": -0.09210555969515834,
+          "z": 1.8622252580289647,
           "height": 0,
           "beforeVelocity": {
-            "x": -1.3691508536524386,
-            "z": 6.547208837480008
+            "x": -0.24428290268818625,
+            "z": 6.719766201793369
           },
           "velocity": {
-            "x": -1.4321508536524385,
-            "z": 6.481736749105208
+            "x": -0.30728290268818625,
+            "z": 6.652568539775435
           }
         },
         "aimVisible": true,
-        "accuracyRingVisible": false,
+        "aim": {
+          "x": -0.09275757575757575,
+          "z": 1.88,
+          "radius": 0.105,
+          "color": "ffffff",
+          "pitch": {
+            "minX": -0.20075757801532745,
+            "maxX": 0.20075757801532745,
+            "minZ": -0.2200000405311584,
+            "maxZ": 2.4299999356269835
+          }
+        },
         "fielders": [
           {
             "id": "cover",
@@ -1289,10 +1419,10 @@
           "line": "LEFT",
           "type": "SWING_LEFT",
           "target": {
-            "x": -0.5,
+            "x": -0.09275757575757575,
             "z": 1.88
           },
-          "power": 0.28,
+          "power": 0,
           "movementScale": 1
         },
         "quality": "low",
@@ -1327,9 +1457,9 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": false,
-          "shadowScale": 1,
-          "shadowOpacity": 0.48,
+          "shadow": true,
+          "shadowScale": 1.08125,
+          "shadowOpacity": 0.42477876106194695,
           "reducedMotion": false,
           "quality": "low"
         },
@@ -1341,12 +1471,18 @@
             "risk": 0,
             "zone": "amber"
           },
-          "pull": 0.1,
+          "pull": 0,
+          "charge": 0,
+          "power": 0,
+          "recoiling": false,
           "dragging": false,
+          "busy": false,
           "enabled": false,
           "cpuMode": true,
           "visible": true,
-          "glow": 0
+          "glow": 0,
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",
@@ -1367,7 +1503,7 @@
           "roundInnings": 1,
           "superOverRound": 0,
           "score": {
-            "runs": 4,
+            "runs": 6,
             "wickets": 0,
             "balls": 3
           },
@@ -1395,8 +1531,8 @@
           "risk": 0
         },
         "ball": {
-          "x": -0.9602797722007362,
-          "z": -0.49823810729065654,
+          "x": 0.49874363442982267,
+          "z": -2.6109385833862593,
           "height": 0,
           "verticalVelocity": 0,
           "velocity": {
@@ -1410,7 +1546,7 @@
           "number": 1,
           "battingPlayerId": "player",
           "bowlingPlayerId": "cpu",
-          "runs": 4,
+          "runs": 6,
           "wickets": 0,
           "balls": 3,
           "complete": false
@@ -1435,20 +1571,31 @@
       {
         "lastBounce": {
           "type": "PACE",
-          "x": -0.543011045086623,
-          "z": 1.810314972863171,
+          "x": -0.09264795864400838,
+          "z": 1.8764663842232472,
           "height": 0,
           "beforeVelocity": {
-            "x": -1.358681873945487,
-            "z": 6.6556863321296404
+            "x": -0.21221218994701263,
+            "z": 6.830270857156659
           },
           "velocity": {
-            "x": -1.358681873945487,
-            "z": 6.6556863321296404
+            "x": -0.21221218994701263,
+            "z": 6.830270857156659
           }
         },
         "aimVisible": true,
-        "accuracyRingVisible": false,
+        "aim": {
+          "x": -0.09275757575757575,
+          "z": 1.88,
+          "radius": 0.105,
+          "color": "ffffff",
+          "pitch": {
+            "minX": -0.20075757801532745,
+            "maxX": 0.20075757801532745,
+            "minZ": -0.2200000405311584,
+            "maxZ": 2.4299999356269835
+          }
+        },
         "fielders": [
           {
             "id": "cover",
@@ -1476,10 +1623,10 @@
           "line": "LEFT",
           "type": "PACE",
           "target": {
-            "x": -0.5,
+            "x": -0.09275757575757575,
             "z": 1.88
           },
-          "power": 0.28,
+          "power": 0,
           "movementScale": 1
         },
         "quality": "low",
@@ -1528,12 +1675,18 @@
             "risk": 0,
             "zone": "amber"
           },
-          "pull": 0.1,
+          "pull": 0,
+          "charge": 0,
+          "power": 0,
+          "recoiling": false,
           "dragging": false,
+          "busy": false,
           "enabled": false,
           "cpuMode": true,
           "visible": true,
-          "glow": 0
+          "glow": 0,
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",
@@ -1554,7 +1707,7 @@
           "roundInnings": 1,
           "superOverRound": 0,
           "score": {
-            "runs": 6,
+            "runs": 8,
             "wickets": 0,
             "balls": 4
           },
@@ -1582,8 +1735,8 @@
           "risk": 0
         },
         "ball": {
-          "x": 0.2830889565891421,
-          "z": -2.712870584747212,
+          "x": 0.5433159772332631,
+          "z": -2.5814036504112035,
           "height": 0,
           "verticalVelocity": 0,
           "velocity": {
@@ -1597,7 +1750,7 @@
           "number": 1,
           "battingPlayerId": "player",
           "bowlingPlayerId": "cpu",
-          "runs": 6,
+          "runs": 8,
           "wickets": 0,
           "balls": 4,
           "complete": false
@@ -1622,20 +1775,31 @@
       {
         "lastBounce": {
           "type": "PACE",
-          "x": -0.543011045086623,
-          "z": 1.810314972863171,
+          "x": -0.09264795864400838,
+          "z": 1.8764663842232472,
           "height": 0,
           "beforeVelocity": {
-            "x": -1.358681873945487,
-            "z": 6.6556863321296404
+            "x": -0.21221218994701263,
+            "z": 6.830270857156659
           },
           "velocity": {
-            "x": -1.358681873945487,
-            "z": 6.6556863321296404
+            "x": -0.21221218994701263,
+            "z": 6.830270857156659
           }
         },
         "aimVisible": true,
-        "accuracyRingVisible": false,
+        "aim": {
+          "x": -0.09275757575757575,
+          "z": 1.88,
+          "radius": 0.105,
+          "color": "ffffff",
+          "pitch": {
+            "minX": -0.20075757801532745,
+            "maxX": 0.20075757801532745,
+            "minZ": -0.2200000405311584,
+            "maxZ": 2.4299999356269835
+          }
+        },
         "fielders": [
           {
             "id": "cover",
@@ -1663,10 +1827,10 @@
           "line": "LEFT",
           "type": "PACE",
           "target": {
-            "x": -0.5,
+            "x": -0.09275757575757575,
             "z": 1.88
           },
-          "power": 0.28,
+          "power": 0,
           "movementScale": 1
         },
         "quality": "low",
@@ -1715,12 +1879,18 @@
             "risk": 0,
             "zone": "amber"
           },
-          "pull": 0.1,
+          "pull": 0,
+          "charge": 0,
+          "power": 0,
+          "recoiling": false,
           "dragging": false,
+          "busy": false,
           "enabled": false,
           "cpuMode": true,
           "visible": true,
-          "glow": 0
+          "glow": 0,
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",
@@ -1741,7 +1911,7 @@
           "roundInnings": 1,
           "superOverRound": 0,
           "score": {
-            "runs": 8,
+            "runs": 10,
             "wickets": 0,
             "balls": 5
           },
@@ -1769,8 +1939,8 @@
           "risk": 0
         },
         "ball": {
-          "x": 0.2830889565891421,
-          "z": -2.712870584747212,
+          "x": 0.5433159772332631,
+          "z": -2.5814036504112035,
           "height": 0,
           "verticalVelocity": 0,
           "velocity": {
@@ -1784,7 +1954,7 @@
           "number": 1,
           "battingPlayerId": "player",
           "bowlingPlayerId": "cpu",
-          "runs": 8,
+          "runs": 10,
           "wickets": 0,
           "balls": 5,
           "complete": false
@@ -1809,20 +1979,31 @@
       {
         "lastBounce": {
           "type": "SWING_LEFT",
-          "x": -0.5407908123980841,
-          "z": 1.7963005476128024,
+          "x": -0.09210555969515834,
+          "z": 1.8622252580289647,
           "height": 0,
           "beforeVelocity": {
-            "x": -1.3691508536524386,
-            "z": 6.547208837480008
+            "x": -0.24428290268818625,
+            "z": 6.719766201793369
           },
           "velocity": {
-            "x": -1.4321508536524385,
-            "z": 6.481736749105208
+            "x": -0.30728290268818625,
+            "z": 6.652568539775435
           }
         },
         "aimVisible": true,
-        "accuracyRingVisible": false,
+        "aim": {
+          "x": -0.09275757575757575,
+          "z": 1.88,
+          "radius": 0.105,
+          "color": "ffffff",
+          "pitch": {
+            "minX": -0.20075757801532745,
+            "maxX": 0.20075757801532745,
+            "minZ": -0.2200000405311584,
+            "maxZ": 2.4299999356269835
+          }
+        },
         "fielders": [
           {
             "id": "cover",
@@ -1850,10 +2031,10 @@
           "line": "LEFT",
           "type": "SWING_LEFT",
           "target": {
-            "x": -0.5,
+            "x": -0.09275757575757575,
             "z": 1.88
           },
-          "power": 0.29600000000000004,
+          "power": 0,
           "movementScale": 1
         },
         "quality": "low",
@@ -1888,7 +2069,7 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": false,
+          "shadow": true,
           "shadowScale": 1,
           "shadowOpacity": 0.48,
           "reducedMotion": false,
@@ -1902,12 +2083,18 @@
             "risk": 0,
             "zone": "amber"
           },
-          "pull": 0.05,
+          "pull": 0,
+          "charge": 0,
+          "power": 0,
+          "recoiling": false,
           "dragging": false,
+          "busy": false,
           "enabled": false,
           "cpuMode": false,
           "visible": true,
-          "glow": 0
+          "glow": 0,
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",
@@ -1928,11 +2115,11 @@
           "roundInnings": 1,
           "superOverRound": 0,
           "score": {
-            "runs": 8,
+            "runs": 12,
             "wickets": 0,
             "balls": 6
           },
-          "target": 9,
+          "target": 13,
           "requiredRuns": 1,
           "ballsRemaining": 0,
           "battingPlayerId": "cpu",
@@ -1956,8 +2143,8 @@
           "risk": 0
         },
         "ball": {
-          "x": -0.9602797722007362,
-          "z": -0.49823810729065654,
+          "x": 0.49874363442982267,
+          "z": -2.6109385833862593,
           "height": 0,
           "verticalVelocity": 0,
           "velocity": {
@@ -1971,7 +2158,7 @@
           "number": 1,
           "battingPlayerId": "player",
           "bowlingPlayerId": "cpu",
-          "runs": 8,
+          "runs": 12,
           "wickets": 0,
           "balls": 6,
           "complete": true
@@ -1998,20 +2185,31 @@
       {
         "lastBounce": {
           "type": "PACE",
-          "x": 0.00008316687889731762,
-          "z": 1.6409761988332712,
+          "x": -1.8152253482319348e-7,
+          "z": 1.6434867330490097,
           "height": 0,
           "beforeVelocity": {
-            "x": 0.01296545151221106,
-            "z": 6.290195783943348
+            "x": -4.157273021568576e-7,
+            "z": 6.295849340584158
           },
           "velocity": {
-            "x": 0.01296545151221106,
-            "z": 6.290195783943348
+            "x": -4.157273021568576e-7,
+            "z": 6.295849340584158
           }
         },
         "aimVisible": true,
-        "accuracyRingVisible": false,
+        "aim": {
+          "x": 0,
+          "z": 1.66,
+          "radius": 0.105,
+          "color": "ffffff",
+          "pitch": {
+            "minX": -0.20075757801532745,
+            "maxX": 0.20075757801532745,
+            "minZ": -0.2200000405311584,
+            "maxZ": 2.4299999356269835
+          }
+        },
         "fielders": [
           {
             "id": "cover",
@@ -2042,7 +2240,7 @@
             "x": 0,
             "z": 1.66
           },
-          "power": 0.29600000000000004,
+          "power": 0,
           "movementScale": 1
         },
         "quality": "low",
@@ -2091,12 +2289,18 @@
             "risk": 0,
             "zone": "amber"
           },
-          "pull": 0.12,
+          "pull": 0,
+          "charge": 0,
+          "power": 0,
+          "recoiling": false,
           "dragging": false,
+          "busy": false,
           "enabled": false,
           "cpuMode": true,
           "visible": true,
-          "glow": 0
+          "glow": 0,
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",
@@ -2145,10 +2349,10 @@
           "risk": 0
         },
         "ball": {
-          "x": 0.001442363242495394,
-          "z": 2.3131952950150154,
-          "height": 0.056013888888889134,
-          "verticalVelocity": 0.04087500000000243,
+          "x": -2.2510414310219605e-7,
+          "z": 2.316298730584833,
+          "height": 0.0560533547847573,
+          "verticalVelocity": 0.041258992500341256,
           "velocity": {
             "x": 0,
             "z": 0
@@ -2185,20 +2389,31 @@
       {
         "lastBounce": {
           "type": "PACE",
-          "x": 0.00008316687889731762,
-          "z": 1.6409761988332712,
+          "x": -1.8152253482319348e-7,
+          "z": 1.6434867330490097,
           "height": 0,
           "beforeVelocity": {
-            "x": 0.01296545151221106,
-            "z": 6.290195783943348
+            "x": -4.157273021568576e-7,
+            "z": 6.295849340584158
           },
           "velocity": {
-            "x": 0.01296545151221106,
-            "z": 6.290195783943348
+            "x": -4.157273021568576e-7,
+            "z": 6.295849340584158
           }
         },
         "aimVisible": true,
-        "accuracyRingVisible": false,
+        "aim": {
+          "x": 0,
+          "z": 1.66,
+          "radius": 0.105,
+          "color": "ffffff",
+          "pitch": {
+            "minX": -0.20075757801532745,
+            "maxX": 0.20075757801532745,
+            "minZ": -0.2200000405311584,
+            "maxZ": 2.4299999356269835
+          }
+        },
         "fielders": [
           {
             "id": "cover",
@@ -2229,7 +2444,7 @@
             "x": 0,
             "z": 1.66
           },
-          "power": 0.29600000000000004,
+          "power": 0,
           "movementScale": 1
         },
         "quality": "low",
@@ -2264,9 +2479,9 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": false,
-          "shadowScale": 1.0700173611111115,
-          "shadowOpacity": 0.431643893787625,
+          "shadow": true,
+          "shadowScale": 1.0700666934809466,
+          "shadowOpacity": 0.43161325785526755,
           "reducedMotion": false,
           "quality": "low"
         },
@@ -2278,12 +2493,18 @@
             "risk": 0,
             "zone": "amber"
           },
-          "pull": 0.05,
+          "pull": 0,
+          "charge": 0,
+          "power": 0,
+          "recoiling": false,
           "dragging": false,
+          "busy": false,
           "enabled": false,
           "cpuMode": false,
           "visible": true,
-          "glow": 0
+          "glow": 0,
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",
@@ -2332,10 +2553,10 @@
           "risk": 0
         },
         "ball": {
-          "x": 0.001442363242495394,
-          "z": 2.3131952950150154,
-          "height": 0.056013888888889134,
-          "verticalVelocity": 0.04087500000000243,
+          "x": -2.2510414310219605e-7,
+          "z": 2.316298730584833,
+          "height": 0.0560533547847573,
+          "verticalVelocity": 0.041258992500341256,
           "velocity": {
             "x": 0,
             "z": 0
@@ -2374,7 +2595,18 @@
   "idleStart": {
     "lastBounce": null,
     "aimVisible": true,
-    "accuracyRingVisible": false,
+    "aim": {
+      "x": 0,
+      "z": 1.66,
+      "radius": 0.105,
+      "color": "ffffff",
+      "pitch": {
+        "minX": -0.20075757801532745,
+        "maxX": 0.20075757801532745,
+        "minZ": -0.2200000405311584,
+        "maxZ": 2.4299999356269835
+      }
+    },
     "fielders": [
       {
         "id": "cover",
@@ -2405,7 +2637,7 @@
         "x": 0,
         "z": 1.66
       },
-      "power": 0.6000000000000001,
+      "power": 0,
       "movementScale": 1
     },
     "quality": "low",
@@ -2452,14 +2684,20 @@
         "low": 0.6000000000000001,
         "red": 0.95,
         "risk": 0,
-        "zone": "green"
+        "zone": "amber"
       },
-      "pull": 0.5,
+      "pull": 0,
+      "charge": 0,
+      "power": 0,
+      "recoiling": false,
       "dragging": false,
+      "busy": false,
       "enabled": false,
       "cpuMode": true,
       "visible": true,
-      "glow": 0
+      "glow": 0,
+      "springLength": 0.21000000000000002,
+      "knobZ": 0.32
     },
     "match": {
       "format": "ONE_OVER",
@@ -2541,7 +2779,18 @@
   "idleHeld": {
     "lastBounce": null,
     "aimVisible": true,
-    "accuracyRingVisible": false,
+    "aim": {
+      "x": 0,
+      "z": 1.66,
+      "radius": 0.105,
+      "color": "ffffff",
+      "pitch": {
+        "minX": -0.20075757801532745,
+        "maxX": 0.20075757801532745,
+        "minZ": -0.2200000405311584,
+        "maxZ": 2.4299999356269835
+      }
+    },
     "fielders": [
       {
         "id": "cover",
@@ -2572,7 +2821,7 @@
         "x": 0,
         "z": 1.66
       },
-      "power": 0.6000000000000001,
+      "power": 0,
       "movementScale": 1
     },
     "quality": "low",
@@ -2619,14 +2868,20 @@
         "low": 0.6000000000000001,
         "red": 0.95,
         "risk": 0,
-        "zone": "green"
+        "zone": "amber"
       },
-      "pull": 0.5,
+      "pull": 0,
+      "charge": 0,
+      "power": 0,
+      "recoiling": false,
       "dragging": false,
+      "busy": false,
       "enabled": false,
       "cpuMode": true,
       "visible": true,
-      "glow": 0
+      "glow": 0,
+      "springLength": 0.21000000000000002,
+      "knobZ": 0.32
     },
     "match": {
       "format": "ONE_OVER",
@@ -2708,7 +2963,18 @@
   "cancelled": {
     "lastBounce": null,
     "aimVisible": true,
-    "accuracyRingVisible": false,
+    "aim": {
+      "x": 0,
+      "z": 1.66,
+      "radius": 0.105,
+      "color": "ffffff",
+      "pitch": {
+        "minX": -0.20075757801532745,
+        "maxX": 0.20075757801532745,
+        "minZ": -0.2200000405311584,
+        "maxZ": 2.4299999356269835
+      }
+    },
     "fielders": [
       {
         "id": "cover",
@@ -2739,7 +3005,7 @@
         "x": 0,
         "z": 1.66
       },
-      "power": 0.6000000000000001,
+      "power": 0,
       "movementScale": 1
     },
     "quality": "low",
@@ -2786,14 +3052,20 @@
         "low": 0.6000000000000001,
         "red": 0.95,
         "risk": 0,
-        "zone": "green"
+        "zone": "amber"
       },
-      "pull": 0.5,
+      "pull": 0,
+      "charge": 0,
+      "power": 0,
+      "recoiling": false,
       "dragging": false,
+      "busy": false,
       "enabled": false,
       "cpuMode": true,
       "visible": true,
-      "glow": 0
+      "glow": 0,
+      "springLength": 0.21000000000000002,
+      "knobZ": 0.32
     },
     "match": {
       "format": "ONE_OVER",

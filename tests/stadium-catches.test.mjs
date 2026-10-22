@@ -53,10 +53,10 @@ test('an actual landing before reaching a fielder produces a dot, never a catch'
  adapter.dispose();
 });
 
-for(const fixture of [{delay:165,runs:6,reason:'AERIAL_SIX'},{delay:186,runs:4,reason:'GROUND_BOUNDARY'}])test(`real delivery, bat and loft score ${fixture.runs} at the boundary`,()=>{
+for(const fixture of [{delay:165,line:'LEFT',power:.24,runs:6,reason:'AERIAL_SIX'},{delay:153,line:'CENTRE',power:.5,runs:4,reason:'GROUND_BOUNDARY'}])test(`real delivery, bat and loft score ${fixture.runs} at the boundary`,()=>{
  const engine=new StadiumEngine(structuredClone(table)),match=new CricketMatchEngine({players:[{id:'a'},{id:'b'}]});
  match.assignRoles({battingPlayerId:'a',bowlingPlayerId:'b'});match.startInnings();match.beginDelivery();
- const adapter=createCricketGameplayAdapter({engine,matchEngine:match,tableConfig:engine.config,cricketRules:rules});adapter.armDelivery();engine.shotMode='LOFT';engine.releaseLaunch({line:'LEFT',charge:.24});
+ const adapter=createCricketGameplayAdapter({engine,matchEngine:match,tableConfig:engine.config,cricketRules:rules});adapter.armDelivery();engine.shotMode='LOFT';engine.releaseLaunch({line:fixture.line,charge:fixture.power});
  let contacts=0;engine.on('flipper-hit',()=>contacts++);
  for(let i=0;i<1400&&!match.deliveryHistory.length;i++){if(i===fixture.delay)engine.setFlipper('left',true);if(i===fixture.delay+18)engine.setFlipper('left',false);adapter.step(1/120);}
  assert(contacts>0);assert.equal(match.currentInnings.runs,fixture.runs);assert.equal(match.currentInnings.balls,1);assert.equal(match.deliveryHistory[0].reason,fixture.reason);
@@ -80,7 +80,7 @@ test('a real lofted shot is caught by a fielder moved to deep cover before launc
  const adapter=createCricketGameplayAdapter({engine,matchEngine:match,tableConfig:engine.config,cricketRules:rules});adapter.armDelivery();
  assert.equal(engine.setFieldPosition('cover','deep-cover'),true);engine.shotMode='LOFT';engine.releaseLaunch({line:'CENTRE',charge:.5});
  let contacts=0,landings=0;engine.on('flipper-hit',()=>contacts++);engine.on('shot-ground-contact',()=>landings++);
- for(let i=0;i<1400&&!match.deliveryHistory.length;i++){if(i===153)engine.setFlipper('left',true);if(i===171)engine.setFlipper('left',false);adapter.step(1/120);}
+ for(let i=0;i<1400&&!match.deliveryHistory.length;i++){if(i===151)engine.setFlipper('left',true);if(i===169)engine.setFlipper('left',false);adapter.step(1/120);}
  assert(contacts>0);assert.equal(landings,0);assert.equal(match.deliveryHistory[0].reason,'CAUGHT_OUT');assert.equal(match.deliveryHistory[0].fielderId,'cover');
  assert.equal(match.currentInnings.wickets,1);assert.equal(match.currentInnings.balls,1);assert.equal(match.currentInnings.complete,false);adapter.dispose();
 });

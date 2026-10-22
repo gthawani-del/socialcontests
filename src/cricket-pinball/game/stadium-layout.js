@@ -29,7 +29,9 @@ export function createStadiumTable(base) {
     // Held bats cover the centre physically. Resting bats still expose the wicket.
     // The same pose drives the visible mesh and collision capsule for both sides.
     holdAngleDeg: bat.id === 'left' ? 6 : 174,
-    strokeHoldMs: 110
+    strokeHoldMs: 170,
+    // Travel slowly through the central hitting face, then complete the full stroke.
+    driveWindow: { startDeg: 6.32, endDeg: 24.32, speedDegPerSec: 240 }
   }));
   const positions = {
     'one-gate': [-1.35, .25], 'two-gate': [1.35, .25],

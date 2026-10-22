@@ -1,0 +1,2539 @@
+{
+  "fixture": "Fixed centre delivery, Easy physics, deterministic RNG .5, input offsets relative to bounce, 180ms press, 10ms sampling. Drive = first bat contact moving in attacking direction >100 deg/s and ball reaches z<1. Durations are sampled spans, not human success rates.",
+  "rows": [
+    {
+      "bowler": "MEDIUM",
+      "power": 0.5,
+      "side": "left",
+      "driveSamples": 12,
+      "longestContiguousMs": 100,
+      "offsets": [
+        -50,
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        60,
+        70
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1308.3333333333312,
+            "z": 1.9503239728851123,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.005045328532309,
+            "angle": 7.9999999999999964,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.4610016032093546,
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.0057074904118464,
+            "angle": 5.999999999999997,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.026934350591673,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.4226555103465315,
+          "drive": true
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.049562468331322,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.326820860945062,
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1324.9999999999977,
+            "z": 2.0631156611548986,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1324.9999999999977,
+            "z": 2.1087575044919995,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.05709076742810859,
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.122742723309726,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.145711778764539,
+            "angle": -4.000000000000001,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.4941420554310358,
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.1700337284361404,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.573804463975718,
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1341.6666666666642,
+            "z": 2.2082116773279914,
+            "angle": -8,
+            "speed": 38.40000000000009
+          },
+          "furthestZ": -1.404024231455503,
+          "drive": false
+        },
+        {
+          "offset": 60,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1341.6666666666642,
+            "z": 2.2098702594268635,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -0.06567757141248651,
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1349.9999999999977,
+            "z": 2.245796206880748,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -1.575249452905788,
+          "drive": true
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.5,
+      "side": "right",
+      "driveSamples": 10,
+      "longestContiguousMs": 70,
+      "offsets": [
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        40,
+        60,
+        70
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1308.3333333333312,
+            "z": 1.9503241612991786,
+            "angle": 170,
+            "speed": -239.99999999999727
+          },
+          "furthestZ": 1.2543006445401468,
+          "drive": false
+        },
+        {
+          "offset": -40,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1316.6666666666645,
+            "z": 2.005045479183866,
+            "angle": 171.99999999999997,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -0.46098614209220923,
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1316.6666666666645,
+            "z": 2.005707700222995,
+            "angle": 174,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "hit": {
+            "id": "right",
+            "ms": 1316.6666666666645,
+            "z": 2.0269345674729893,
+            "angle": 176,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -2.4226567182252166,
+          "drive": true
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "right",
+            "ms": 1316.6666666666645,
+            "z": 2.049562683928628,
+            "angle": 178,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -2.3265402649082696,
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1324.9999999999977,
+            "z": 2.0631158848282616,
+            "angle": 178,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1324.9999999999977,
+            "z": 2.108757725703851,
+            "angle": 182,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -0.11680234612769795,
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1333.333333333331,
+            "z": 2.122742950389444,
+            "angle": 182,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1333.333333333331,
+            "z": 2.145712004851037,
+            "angle": 184,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": 1.2819655052757524,
+          "drive": false
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1333.333333333331,
+            "z": 2.170033947566298,
+            "angle": 186,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.4243980393230233,
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1341.6666666666642,
+            "z": 2.208211892666619,
+            "angle": 188,
+            "speed": -38.39999999999761
+          },
+          "furthestZ": -1.0453760969075019,
+          "drive": false
+        },
+        {
+          "offset": 60,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1341.6666666666642,
+            "z": 2.2098704740504034,
+            "angle": 188.32,
+            "speed": -720.000000000001
+          },
+          "furthestZ": -0.06567150535559062,
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "TWO",
+          "hit": {
+            "id": "right",
+            "ms": 1349.9999999999977,
+            "z": 2.245796353186172,
+            "angle": 188.32,
+            "speed": -720.000000000001
+          },
+          "furthestZ": -2.7584006562260655,
+          "drive": true
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.5,
+      "side": "both",
+      "driveSamples": 12,
+      "longestContiguousMs": 100,
+      "offsets": [
+        -50,
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        60,
+        70
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1308.3333333333312,
+            "z": 1.9503239728851123,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.023922871725628,
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.005045328532309,
+            "angle": 7.9999999999999964,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.6849362796086007,
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.0057074904118464,
+            "angle": 5.999999999999997,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.687614127787152,
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.026934350591673,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.06231779783684009,
+          "drive": true
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.049562468331322,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.435402716238677,
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1324.9999999999977,
+            "z": 2.0631156611548986,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.7126204127938496,
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1324.9999999999977,
+            "z": 2.1087575044919995,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.4524432893781523,
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.122742723309726,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.6534505747054136,
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.145711778764539,
+            "angle": -4.000000000000001,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": 0.004784750347659747,
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.1700337284361404,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.07552123531687331,
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1341.6666666666642,
+            "z": 2.2082116773279914,
+            "angle": -8,
+            "speed": 38.40000000000009
+          },
+          "furthestZ": -0.05992999611766445,
+          "drive": false
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1341.6666666666642,
+            "z": 2.2098702594268635,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -0.4673617792591145,
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1349.9999999999977,
+            "z": 2.245796206880748,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -0.002354972359532092,
+          "drive": true
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.8,
+      "side": "left",
+      "driveSamples": 11,
+      "longestContiguousMs": 80,
+      "offsets": [
+        -50,
+        -40,
+        -30,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1024.9999999999989,
+            "z": 1.9547438536973918,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": 1.2750553122822625,
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 1.9771237956741126,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.49415624876456177,
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 2.0020858401443022,
+            "angle": 5.999999999999997,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 2.0267338809930924,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.0464920394127235,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": 1.2888716524511477,
+          "drive": false
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.052125223765386,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.4522600103923775,
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.078263002014521,
+            "angle": -1.5902773407317584e-15,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.0001631623556297042,
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.1212160277744077,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.147653873395524,
+            "angle": -4.000000000000001,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.1747939702596977,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1058.3333333333321,
+            "z": 2.195205431173778,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1058.3333333333321,
+            "z": 2.222521016446092,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": 0.17803292530333054,
+          "drive": true
+        },
+        {
+          "offset": 60,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1066.6666666666654,
+            "z": 2.2762528891991316,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -0.06558768553222097,
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.8,
+      "side": "right",
+      "driveSamples": 11,
+      "longestContiguousMs": 80,
+      "offsets": [
+        -50,
+        -40,
+        -30,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1024.9999999999989,
+            "z": 1.9547440434121794,
+            "angle": 170,
+            "speed": -239.99999999999727
+          },
+          "furthestZ": 1.2750531527294204,
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1033.3333333333321,
+            "z": 1.9771239397363258,
+            "angle": 170,
+            "speed": -239.99999999999727
+          },
+          "furthestZ": -0.49417419795958567,
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1033.3333333333321,
+            "z": 2.0020860560519194,
+            "angle": 174,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1033.3333333333321,
+            "z": 2.026734103496355,
+            "angle": 176,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1041.6666666666654,
+            "z": 2.046492249669234,
+            "angle": 176,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": 1.2888709498477247,
+          "drive": false
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "right",
+            "ms": 1041.6666666666654,
+            "z": 2.0521254487724843,
+            "angle": 178,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -2.4522578098123513,
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1041.6666666666654,
+            "z": 2.0782632261493,
+            "angle": 180,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -0.0001541224842927999,
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1049.9999999999986,
+            "z": 2.1212162617499484,
+            "angle": 182,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1049.9999999999986,
+            "z": 2.1476541059767054,
+            "angle": 184,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.3902672413793102,
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1049.9999999999986,
+            "z": 2.1747941982956394,
+            "angle": 186,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1058.3333333333321,
+            "z": 2.195205637993898,
+            "angle": 186,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1058.3333333333321,
+            "z": 2.2225212275362574,
+            "angle": 188.32,
+            "speed": -720.000000000001
+          },
+          "furthestZ": -0.5145127006189122,
+          "drive": true
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1066.6666666666654,
+            "z": 2.276252909178277,
+            "angle": 188.32,
+            "speed": -720.000000000001
+          },
+          "furthestZ": -0.5771966663730721,
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.8,
+      "side": "both",
+      "driveSamples": 12,
+      "longestContiguousMs": 120,
+      "offsets": [
+        -60,
+        -50,
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1024.9999999999989,
+            "z": 1.9547438536973918,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.4669999999999999,
+          "drive": true
+        },
+        {
+          "offset": -50,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 1.9771237956741126,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.6722857536374094,
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 2.0020858401443022,
+            "angle": 5.999999999999997,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.07459508184271463,
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 2.0267338809930924,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.06437328551127774,
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.0464920394127235,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.49739033927546294,
+          "drive": true
+        },
+        {
+          "offset": -10,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.052125223765386,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.0054686946086248914,
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.078263002014521,
+            "angle": -1.5902773407317584e-15,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.4669999999999999,
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.1212160277744077,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.7595421617028917,
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.147653873395524,
+            "angle": -4.000000000000001,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.6939401170814595,
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.1747939702596977,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.6164909898329973,
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1058.3333333333321,
+            "z": 2.195205431173778,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.677765028398526,
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1058.3333333333321,
+            "z": 2.222521016446092,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -1.4766993838396538,
+          "drive": true
+        },
+        {
+          "offset": 60,
+          "outcome": "WICKET",
+          "hit": {
+            "id": "left",
+            "ms": 1066.6666666666654,
+            "z": 2.2762528891991316,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": 2.313917554173097,
+          "drive": false
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "drive": false
+        }
+      ]
+    }
+  ]
+}

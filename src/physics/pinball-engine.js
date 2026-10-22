@@ -545,14 +545,25 @@ export class PinballEngine {
       flipper.heldSeconds = flipper.pressed ? (flipper.heldSeconds || 0) + dt : 0;
       const guarding = flipper.pressed && Number.isFinite(cfg.holdAngleDeg) &&
         flipper.heldSeconds * 1000 > cfg.strokeHoldMs;
-      const target = (
+      let target = (
         this.tilted
           ? cfg.restAngleDeg
           : flipper.pressed
             ? guarding ? cfg.holdAngleDeg : cfg.activeAngleDeg
             : cfg.restAngleDeg
       ) * DEG;
-      const speed = (flipper.pressed && !guarding ? cfg.speedDegPerSec : cfg.returnSpeedDegPerSec) * DEG;
+      let speed = (flipper.pressed && !guarding ? cfg.speedDegPerSec : cfg.returnSpeedDegPerSec) * DEG;
+      const drive = cfg.driveWindow;
+      if (drive && flipper.pressed && !guarding && !this.tilted) {
+        const direction = Math.sign(cfg.activeAngleDeg - cfg.restAngleDeg);
+        const progress = (flipper.angle / DEG - cfg.restAngleDeg) * direction;
+        if (progress < drive.startDeg - 1e-6) {
+          target = (cfg.restAngleDeg + direction * drive.startDeg) * DEG;
+        } else if (progress < drive.endDeg - 1e-6) {
+          target = (cfg.restAngleDeg + direction * drive.endDeg) * DEG;
+          speed = drive.speedDegPerSec * DEG;
+        }
+      }
       const previous = flipper.angle;
 
       flipper.angle = moveTowards(previous, target, speed * dt);

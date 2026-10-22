@@ -9,8 +9,8 @@ import { createCricketGameplayAdapter } from '../src/cricket-pinball/game/gamepl
 const table = createStadiumTable(JSON.parse(fs.readFileSync(new URL('../public/game/cricket-table.json', import.meta.url))));
 const rules = JSON.parse(fs.readFileSync(new URL('../public/game/cricket-rules.json', import.meta.url)));
 for (const shot of [
-  { line: 'LEFT', side: 'left', delay: 169, runs: 1 },
-  { line: 'LEFT', side: 'left', delay: 173, runs: 4 },
+  { line: 'LEFT', side: 'left', delay: 173, runs: 1 },
+  { line: 'LEFT', side: 'left', delay: 169, runs: 4 },
   { line: 'CENTRE', side: 'left', delay: 190, runs: 6 }
 ]) test(`a real delivery and timed ${shot.side} bat can score ${shot.runs}`, () => {
   const { engine, match, adapter } = setup();

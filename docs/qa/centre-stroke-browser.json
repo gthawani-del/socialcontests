@@ -1,0 +1,55 @@
+{
+  "fixture": "Seeded .5 centre delivery, actual Chromium touch, manual 120Hz physics, three input choices; not a win-rate test",
+  "rows": [
+    {
+      "sides": [
+        "left"
+      ],
+      "contacts": 2,
+      "furthestZ": -1.9125,
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 1,
+        "complete": false
+      }
+    },
+    {
+      "sides": [
+        "right"
+      ],
+      "contacts": 2,
+      "furthestZ": -1.9125,
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 4,
+        "wickets": 0,
+        "balls": 1,
+        "complete": false
+      }
+    },
+    {
+      "sides": [
+        "left",
+        "right"
+      ],
+      "contacts": 2,
+      "furthestZ": -0.5016118011215381,
+      "score": {
+        "number": 1,
+        "battingPlayerId": "player",
+        "bowlingPlayerId": "cpu",
+        "runs": 0,
+        "wickets": 0,
+        "balls": 1,
+        "complete": false
+      }
+    }
+  ],
+  "errors": []
+}

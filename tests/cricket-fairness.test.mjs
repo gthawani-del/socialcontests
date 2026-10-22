@@ -27,12 +27,12 @@ test('early holding offers a broad input window, while no input still loses the 
 });
 test('a held bat completes its attacking stroke, settles into guard, releases and can swing again',()=>{
  const engine=new StadiumEngine(createStadiumTable(base)),bat=engine.flippers.get('left');
- engine.setFlipper('left',true);for(let i=0;i<12;i++)engine.updateFlippers(1/120);
+ engine.setFlipper('left',true);for(let i=0;i<19;i++)engine.updateFlippers(1/120);
  assert(bat.angle> .9,'full attacking swing remains available');
  for(let i=0;i<30;i++)engine.updateFlippers(1/120);assert(Math.abs(bat.angle-6*Math.PI/180)<.001);
  engine.setFlipper('left',false);for(let i=0;i<30;i++)engine.updateFlippers(1/120);
  assert(Math.abs(bat.angle-bat.config.restAngleDeg*Math.PI/180)<.001);
- engine.setFlipper('left',true);for(let i=0;i<12;i++)engine.updateFlippers(1/120);assert(bat.angle>.9);
+ engine.setFlipper('left',true);for(let i=0;i<19;i++)engine.updateFlippers(1/120);assert(bat.angle>.9);
 });
 test('CPU uses the same pitch coordinates as player line and length presets',()=>{
  for(const difficulty of ['EASY','MEDIUM','HARD'])for(const bowler of ['FAST','MEDIUM','SPINNER'])for(const roll of [.01,.4,.8]){

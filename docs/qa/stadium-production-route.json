@@ -35,18 +35,18 @@
       "x": 0,
       "y": 0,
       "width": 390,
-      "height": 622.328125,
+      "height": 622.25,
       "top": 0,
       "right": 390,
-      "bottom": 622.328125,
+      "bottom": 622.25,
       "left": 0
     },
     "controls": {
       "x": 0,
-      "y": 622.328125,
+      "y": 622.25,
       "width": 390,
-      "height": 221.671875,
-      "top": 622.328125,
+      "height": 221.75,
+      "top": 622.25,
       "right": 390,
       "bottom": 844,
       "left": 0
@@ -54,12 +54,13 @@
     "contactFeedback": true
   },
   "resourceTiming": {
-    "durationMs": 77,
+    "durationMs": 105,
     "transferSize": 6736188,
     "decodedBodySize": 6735888
   },
   "build": "production",
   "humanBowlingPlunger": true,
+  "plungerInteraction": "Pull to charge, ease forwards to reduce, lift to bowl",
   "tossStates": {
     "cpuCallerAndWinner": true,
     "controlsRestored": true,

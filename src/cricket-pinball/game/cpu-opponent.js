@@ -162,7 +162,11 @@ export function createCpuBattingAI({
     // Commit one estimated swing with the full difficulty timing error.
     // Do not continuously correct it from live ball coordinates.
     const blade = tableConfig?.flippers?.[0];
-    const sweepMs = blade ? Math.abs(blade.restAngleDeg) / blade.speedDegPerSec * 1000 : 20;
+    const restSweep = blade ? Math.abs(blade.restAngleDeg) : 0;
+    const slowSweep = blade?.driveWindow
+      ? clamp(restSweep - blade.driveWindow.startDeg, 0, blade.driveWindow.endDeg - blade.driveWindow.startDeg) : 0;
+    const sweepMs = blade ? ((restSweep - slowSweep) / blade.speedDegPerSec +
+      (slowSweep ? slowSweep / blade.driveWindow.speedDegPerSec : 0)) * 1000 : 20;
     const centreArrivalMs = (2.02 - ball.position.z) / ball.velocity.z * 1000;
     scheduledSwingAt = nowMs + Math.max(0, centralApproach
       ? Math.max(reactionMs, centreArrivalMs - (defending ? 240 : sweepMs)) + jitter
