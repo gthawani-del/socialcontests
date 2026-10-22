@@ -1,3 +1,4 @@
+import {createRampReturns} from './stadium-ramp-return.js';
 import {createStadiumFielders} from './game/stadium-fielders.js';
 import {DELIVERY_LABELS} from './game/bowling-icons.js';
 import {createStadiumAtmosphere} from './game/stadium-atmosphere.js';
@@ -50,6 +51,7 @@ try {
   ]);
   const table = createStadiumTable(base), engine = new StadiumEngine(table);
   const scene = new THREE.Scene(); scene.background = new THREE.Color('#07111e');
+  scene.add(createRampReturns(table));
   const model = gltf.scene; model.scale.setScalar(STADIUM_SCALE); scene.add(model);
   const materialStatus = await applyStadiumMaterials(model);
   const shooterArt = createStadiumLauncher(scene, table, model);

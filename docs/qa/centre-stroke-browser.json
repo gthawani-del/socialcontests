@@ -6,12 +6,12 @@
         "left"
       ],
       "contacts": 2,
-      "furthestZ": -2.221245318050767,
+      "furthestZ": -2.185129899328039,
       "score": {
         "number": 1,
         "battingPlayerId": "player",
         "bowlingPlayerId": "cpu",
-        "runs": 0,
+        "runs": 2,
         "wickets": 0,
         "balls": 1,
         "complete": false
@@ -24,6 +24,16 @@
             "z": -1.9125
           },
           "frozen": false,
+          "balls": 0
+        }
+      ],
+      "rampReturns": [
+        {
+          "position": {
+            "x": 0.6,
+            "z": -0.65
+          },
+          "height": 0,
           "balls": 0
         }
       ]
@@ -43,7 +53,8 @@
         "balls": 1,
         "complete": false
       },
-      "rampReleases": []
+      "rampReleases": [],
+      "rampReturns": []
     },
     {
       "sides": [
@@ -61,7 +72,8 @@
         "balls": 1,
         "complete": false
       },
-      "rampReleases": []
+      "rampReleases": [],
+      "rampReturns": []
     }
   ],
   "errors": []

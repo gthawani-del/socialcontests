@@ -5,9 +5,10 @@ import {createStadiumTable} from '../../src/cricket-pinball/game/stadium-layout.
 import {CricketMatchEngine} from '../../src/cricket-pinball/match/match-engine.js';
 import {createCricketGameplayAdapter} from '../../src/cricket-pinball/game/gameplay-adapter.js';
 const rules=JSON.parse(fs.readFileSync(new URL('../../public/game/cricket-rules.json',import.meta.url))),base=JSON.parse(fs.readFileSync(new URL('../../public/game/cricket-table.json',import.meta.url)));
-export function run({difficulty='EASY',power=.5,bowler='MEDIUM',length='GOOD',target=null,type='PACE',start=Infinity,hold=Infinity,side='both',role='player',batConfig=null,details=false,repeatEvery=Infinity}={}){
+export function run({difficulty='EASY',power=.5,bowler='MEDIUM',length='GOOD',target=null,type='PACE',start=Infinity,hold=Infinity,side='both',role='player',batConfig=null,details=false,repeatEvery=Infinity,returnGuide=true}={}){
  const table=createStadiumTable(base);
  if(batConfig)for(const bat of table.flippers)Object.assign(bat,batConfig);
+ if(!returnGuide)for(const route of table.ramps)delete route.returnPoints;
  const engine=new StadiumEngine(table,{random:()=>.5});engine.setDifficulty(difficulty,rules.difficultyGameplay[difficulty]);
  const match=new CricketMatchEngine({format:'ONE_OVER',difficulty,players:[{id:'player'},{id:'cpu'}],maxWickets:2});match.assignRoles({battingPlayerId:role,bowlingPlayerId:role==='player'?'cpu':'player'});match.startInnings();
  let result=null,bounce=null,hit=null,used=false,released=false,furthestZ=Infinity,initialVelocity=null;

@@ -3,18 +3,23 @@ import { PinballEngine } from '../../physics/pinball-engine.js';
 
 // Opt-in prototype: planar free play with a constrained, height-aware ramp.
 // The existing game continues to use PinballEngine directly.
+function measureRoute(route) {
+  let length=0;
+  const points=route.points.map((p,i,all)=>{
+    if(i)length+=Math.hypot(p.x-all[i-1].x,p.z-all[i-1].z);
+    return {...p,distance:length};
+  });
+  return {...route,points,length};
+}
+
 export class StadiumEngine extends PinballEngine {
   constructor(config, {random=Math.random} = {}) {
     super(config);
     this.random=random;
-    this.routes = (config.ramps || []).map(route => {
-      let length = 0;
-      const points = route.points.map((p, i, all) => {
-        if (i) length += Math.hypot(p.x - all[i - 1].x, p.z - all[i - 1].z);
-        return { ...p, distance: length };
-      });
-      return { ...route, points, length };
-    });
+    this.routes = (config.ramps || []).map(route => ({
+      ...measureRoute(route),
+      returnRoute: route.returnPoints ? measureRoute({id:`${route.id}-return`,points:route.returnPoints}) : null
+    }));
     this.deliveryVariation = null;
     this.baseFlipperRadii = new Map(
       [...this.flippers.entries()].map(([id, state]) => [id, state.config.radius])
@@ -375,6 +380,14 @@ export class StadiumEngine extends PinballEngine {
   releaseCompletedRamp(routeId) {
     if (this.frozen || !this.ramp || this.completedRoute !== routeId || this.ramp.route.id !== routeId) return false;
     const { route, speed } = this.ramp;
+    if (route.returnRoute) {
+      this.ramp = {route:route.returnRoute, distance:0, speed, returning:true};
+      this.completedRoute = null;
+      this.verticalVelocity = 0;
+      this.placeOnRamp(this.sampleRoute(route.returnRoute,0));
+      this.emit('ramp-return', {id:routeId});
+      return true;
+    }
     // Leave the raised deck with its existing momentum; ramp contact already
     // marks the shot as bounced, so this flight cannot become a catch or aerial six.
     this.verticalVelocity = speed * this.sampleRoute(route, route.length).slope;
@@ -400,8 +413,15 @@ export class StadiumEngine extends PinballEngine {
       this.ramp = null;
       this.emit('ramp-exit', { id: route.id, reason: 'ROLLBACK' });
     } else if (state.distance >= route.length) {
-      this.completedRoute = route.id;
-      this.emit('ramp-complete', { id: route.id });
+      if (state.returning) {
+        this.ramp = null;
+        this.verticalVelocity = 0;
+        this.ball.height = 0;
+        this.emit('ramp-exit', {id:route.id, reason:'RETURN_TO_FIELD'});
+      } else {
+        this.completedRoute = route.id;
+        this.emit('ramp-complete', { id: route.id });
+      }
     }
     this.emit('physics:step');
   }

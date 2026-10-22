@@ -1049,9 +1049,9 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": true,
-          "shadowScale": 1.054663250076777,
-          "shadowOpacity": 0.4413950584588927,
+          "shadow": false,
+          "shadowScale": 1,
+          "shadowOpacity": 0.48,
           "reducedMotion": false,
           "quality": "low"
         },
@@ -1253,9 +1253,9 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": false,
-          "shadowScale": 1,
-          "shadowOpacity": 0.48,
+          "shadow": true,
+          "shadowScale": 1.08125,
+          "shadowOpacity": 0.42477876106194695,
           "reducedMotion": false,
           "quality": "low"
         },
@@ -1458,8 +1458,8 @@
           "sparks": false,
           "target": true,
           "shadow": true,
-          "shadowScale": 1,
-          "shadowOpacity": 0.48,
+          "shadowScale": 1.0053663194444444,
+          "shadowOpacity": 0.4759137516490356,
           "reducedMotion": false,
           "quality": "low"
         },
@@ -1865,7 +1865,7 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": true,
+          "shadow": false,
           "shadowScale": 1,
           "shadowOpacity": 0.48,
           "reducedMotion": false,
@@ -2275,7 +2275,7 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": false,
+          "shadow": true,
           "shadowScale": 1.08125,
           "shadowOpacity": 0.42477876106194695,
           "reducedMotion": false,
@@ -2299,8 +2299,8 @@
           "cpuMode": true,
           "visible": true,
           "glow": 0,
-          "springLength": 0.20900266666660708,
-          "knobZ": 0.3209973333333929
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",
@@ -2479,7 +2479,7 @@
           "trail": false,
           "sparks": false,
           "target": true,
-          "shadow": false,
+          "shadow": true,
           "shadowScale": 1.0700666934809466,
           "shadowOpacity": 0.43161325785526755,
           "reducedMotion": false,
@@ -2503,8 +2503,8 @@
           "cpuMode": false,
           "visible": true,
           "glow": 0,
-          "springLength": 0.20884800000001988,
-          "knobZ": 0.3211519999999801
+          "springLength": 0.21000000000000002,
+          "knobZ": 0.32
         },
         "match": {
           "format": "ONE_OVER",

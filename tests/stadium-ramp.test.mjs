@@ -189,11 +189,10 @@ test('unqualified six continues physical play and counts only its later result',
   engine.setDifficulty('EASY', rules.difficultyGameplay.EASY);
   let bounce = false, pressed = false, released = false;
   engine.on('delivery-bounce', () => bounce = true);
-  engine.on('ramp-exit', e => {
-    if (e.reason !== 'UNQUALIFIED_SCORE') return;
+  engine.on('ramp-return', e => {
     released = true;
     assert.equal(match.currentInnings.balls, 0);
-    assert.equal(engine.ramp, null);
+    assert.equal(engine.ramp.returning, true);
     assert.equal(engine.completedRoute, null);
     assert.equal(engine.shotFlight.bounced, true);
     assert.equal(engine.frozen, false);
@@ -207,26 +206,37 @@ test('unqualified six continues physical play and counts only its later result',
   }
   assert(released);
   assert.equal(match.currentInnings.balls,1);
-  assert.notEqual(match.currentInnings.runs,6);
+  assert.equal(match.currentInnings.runs,2);
   for(let i=0;i<120;i++)adapter.step(1/120);
   assert.equal(match.currentInnings.balls,1);
   engine.resetBall();assert.equal(engine.rampExitFlight,false);
   adapter.dispose();
 });
 
-test('released ramp preserves momentum, falls under gravity and cannot be released twice', () => {
+test('return guide stays continuous, descends inside the field and cannot be started twice', () => {
   const engine=new StadiumEngine(structuredClone(table));
   const route=engine.routes.find(r=>r.id==='six-ramp');
   engine.ramp={route,speed:2,distance:route.length};
   engine.completedRoute=route.id;
   engine.shotFlight={lofted:false,bounced:true,groundContacts:1};
   engine.placeOnRamp(engine.sampleRoute(route,route.length));
-  const position={...engine.ball.position},velocity={...engine.ball.velocity};
+  const position={...engine.ball.position};
   assert.equal(engine.releaseCompletedRamp('wrong'),false);
   assert.equal(engine.releaseCompletedRamp(route.id),true);
-  assert.deepEqual(engine.ball.position,position);assert.deepEqual(engine.ball.velocity,velocity);
+  assert.deepEqual(engine.ball.position,position);
+  assert.equal(engine.ramp.speed,2);
   assert.equal(engine.releaseCompletedRamp(route.id),false);
-  for(let i=0;i<240;i++)engine.advanceShotHeight(1/120);
-  assert.equal(engine.ball.height,0);assert.equal(engine.rampExitFlight,false);
+  let exited=false;
+  engine.on('ramp-exit', e=>exited=e.reason==='RETURN_TO_FIELD');
+  for(let i=0;i<480&&engine.ramp;i++){
+    const before={...engine.ball.position};
+    engine.advanceRamp(1/120);
+    assert(Math.hypot(engine.ball.position.x-before.x,engine.ball.position.z-before.z)<.1,'no teleport');
+    assert(engine.ball.position.z>-2.6&&Math.abs(engine.ball.position.x)<1.4,'guide remains inside field');
+  }
+  assert(exited);assert.equal(engine.ramp,null);
+  assert.equal(engine.ball.height,0);assert(engine.ball.velocity.z>0);
   assert.equal(engine.shotFlight.bounced,true);
+  engine.resetBall();assert.equal(engine.ramp,null);
+
 });

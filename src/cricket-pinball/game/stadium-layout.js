@@ -59,6 +59,18 @@ export function createStadiumTable(base) {
     points: table.ramps[0].points.map(p => ({ x: -p.x, z: p.z, height: .035 * STADIUM_SCALE }))
   });
   const six = table.ramps[0];
+  // A visible descending guide returns missed six attempts inside the boundary.
+  // Its first tangent continues the ramp; its exit points back into open field.
+  const end = six.points.at(-1), previous = six.points.at(-2);
+  const controls = [end, { x:end.x + (end.x-previous.x)*4, z:end.z-.42 },
+    { x:.60, z:-2.50 }, { x:.60, z:-.65 }];
+  six.returnPoints = Array.from({length:33}, (_,i) => {
+    const t=i/32, u=1-t;
+    return { x:u*u*u*controls[0].x+3*u*u*t*controls[1].x+3*u*t*t*controls[2].x+t*t*t*controls[3].x,
+      z:u*u*u*controls[0].z+3*u*u*t*controls[1].z+3*u*t*t*controls[2].z+t*t*t*controls[3].z,
+      height:end.height*(1-t) };
+  });
+
   const rectangle = (id, x, z, halfX, halfZ) => {
     const corners = [[x - halfX, z - halfZ], [x + halfX, z - halfZ], [x + halfX, z + halfZ], [x - halfX, z + halfZ]];
     for (let i = 0; i < 4; i++) table.walls.push({ id: `${id}-${i}`, a: corners[i], b: corners[(i + 1) % 4], restitution: .7 });

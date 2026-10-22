@@ -1,0 +1,5331 @@
+{
+  "fixture": "Easy, RNG .5, straight centre delivery; 2 bowler speeds x 6 powers x 21 timing offsets per side. Exact replay for player and CPU. Scripted coverage, not player win rates.",
+  "summary": [
+    {
+      "side": "left",
+      "samples": 252,
+      "contacts": 159,
+      "runs": 337,
+      "wickets": 95,
+      "escapes": 0,
+      "beforeEscapes": 20,
+      "beforeRuns": 297
+    },
+    {
+      "side": "right",
+      "samples": 252,
+      "contacts": 159,
+      "runs": 292,
+      "wickets": 95,
+      "escapes": 0,
+      "beforeEscapes": 0,
+      "beforeRuns": 292
+    }
+  ],
+  "rows": [
+    {
+      "bowler": "MEDIUM",
+      "power": 0.2,
+      "side": "left",
+      "contacts": 14,
+      "runs": 22,
+      "wickets": 7,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.2,
+      "side": "right",
+      "contacts": 14,
+      "runs": 19,
+      "wickets": 7,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.35,
+      "side": "left",
+      "contacts": 14,
+      "runs": 21,
+      "wickets": 7,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.35,
+      "side": "right",
+      "contacts": 14,
+      "runs": 34,
+      "wickets": 7,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "reason": "SKILL_REJECTED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SKILL_REJECTED"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.5,
+      "side": "left",
+      "contacts": 13,
+      "runs": 19,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.5,
+      "side": "right",
+      "contacts": 13,
+      "runs": 22,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "ONE",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.65,
+      "side": "left",
+      "contacts": 14,
+      "runs": 35,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": true,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.65,
+      "side": "right",
+      "contacts": 14,
+      "runs": 25,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": true,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.8,
+      "side": "left",
+      "contacts": 13,
+      "runs": 32,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.8,
+      "side": "right",
+      "contacts": 13,
+      "runs": 18,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "ONE",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 1,
+      "side": "left",
+      "contacts": 12,
+      "runs": 44,
+      "wickets": 9,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 1,
+      "side": "right",
+      "contacts": 12,
+      "runs": 39,
+      "wickets": 9,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.2,
+      "side": "left",
+      "contacts": 14,
+      "runs": 25,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": true,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.2,
+      "side": "right",
+      "contacts": 14,
+      "runs": 27,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": true,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.35,
+      "side": "left",
+      "contacts": 14,
+      "runs": 14,
+      "wickets": 7,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.35,
+      "side": "right",
+      "contacts": 14,
+      "runs": 19,
+      "wickets": 7,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "ONE",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "ONE",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.5,
+      "side": "left",
+      "contacts": 13,
+      "runs": 31,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.5,
+      "side": "right",
+      "contacts": 13,
+      "runs": 26,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.65,
+      "side": "left",
+      "contacts": 13,
+      "runs": 24,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.65,
+      "side": "right",
+      "contacts": 13,
+      "runs": 16,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.8,
+      "side": "left",
+      "contacts": 13,
+      "runs": 37,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.8,
+      "side": "right",
+      "contacts": 13,
+      "runs": 25,
+      "wickets": 8,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 1,
+      "side": "left",
+      "contacts": 12,
+      "runs": 33,
+      "wickets": 9,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "SAFETY_DRAIN"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "SIX",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "SIX",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 1,
+      "side": "right",
+      "contacts": 12,
+      "runs": 22,
+      "wickets": 9,
+      "escapes": 0,
+      "samples": [
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": -70,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -50,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "TWO",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -30,
+          "outcome": "DOT",
+          "reason": "FIELDED",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELDED"
+          }
+        },
+        {
+          "offset": -20,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": -10,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 0,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 10,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 20,
+          "outcome": "FOUR",
+          "reason": "DELIVERY_ZONE",
+          "hit": true,
+          "before": {
+            "outcome": "FOUR",
+            "reason": "DELIVERY_ZONE"
+          }
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "DOT",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "reason": "FIELD_RETURN",
+          "hit": true,
+          "before": {
+            "outcome": "ONE",
+            "reason": "FIELD_RETURN"
+          }
+        },
+        {
+          "offset": 50,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 60,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "reason": "WICKET_DRAIN",
+          "hit": false,
+          "before": {
+            "outcome": "WICKET",
+            "reason": "WICKET_DRAIN"
+          }
+        }
+      ]
+    }
+  ]
+}
