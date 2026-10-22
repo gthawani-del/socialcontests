@@ -4,14 +4,14 @@ const PRESETS = Object.freeze({
     flippers: Object.freeze({
       left: Object.freeze({
         restAngleDeg: 46,
-        activeAngleDeg: 64,
+        activeAngleDeg: 68,
         speedDegPerSec: 760,
         returnSpeedDegPerSec: 560,
         kick: 1.20
       }),
       right: Object.freeze({
         restAngleDeg: 134,
-        activeAngleDeg: 116,
+        activeAngleDeg: 112,
         speedDegPerSec: 760,
         returnSpeedDegPerSec: 560,
         kick: 1.20
@@ -34,14 +34,14 @@ const PRESETS = Object.freeze({
     flippers: Object.freeze({
       left: Object.freeze({
         restAngleDeg: 49,
-        activeAngleDeg: 66,
+        activeAngleDeg: 73,
         speedDegPerSec: 700,
         returnSpeedDegPerSec: 520,
         kick: 1.15
       }),
       right: Object.freeze({
         restAngleDeg: 131,
-        activeAngleDeg: 114,
+        activeAngleDeg: 107,
         speedDegPerSec: 700,
         returnSpeedDegPerSec: 520,
         kick: 1.15
@@ -64,14 +64,14 @@ const PRESETS = Object.freeze({
     flippers: Object.freeze({
       left: Object.freeze({
         restAngleDeg: 53,
-        activeAngleDeg: 69,
+        activeAngleDeg: 73,
         speedDegPerSec: 660,
         returnSpeedDegPerSec: 500,
         kick: 1.10
       }),
       right: Object.freeze({
         restAngleDeg: 127,
-        activeAngleDeg: 111,
+        activeAngleDeg: 107,
         speedDegPerSec: 660,
         returnSpeedDegPerSec: 500,
         kick: 1.10
