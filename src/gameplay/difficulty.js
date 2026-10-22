@@ -6,14 +6,14 @@ const PRESETS = Object.freeze({
         restAngleDeg: 46,
         activeAngleDeg: 68,
         speedDegPerSec: 760,
-        returnSpeedDegPerSec: 560,
+        returnSpeedDegPerSec: 330,
         kick: 1.20
       }),
       right: Object.freeze({
         restAngleDeg: 134,
         activeAngleDeg: 112,
         speedDegPerSec: 760,
-        returnSpeedDegPerSec: 560,
+        returnSpeedDegPerSec: 330,
         kick: 1.20
       })
     }),
@@ -36,14 +36,14 @@ const PRESETS = Object.freeze({
         restAngleDeg: 49,
         activeAngleDeg: 73,
         speedDegPerSec: 700,
-        returnSpeedDegPerSec: 520,
+        returnSpeedDegPerSec: 300,
         kick: 1.15
       }),
       right: Object.freeze({
         restAngleDeg: 131,
         activeAngleDeg: 107,
         speedDegPerSec: 700,
-        returnSpeedDegPerSec: 520,
+        returnSpeedDegPerSec: 300,
         kick: 1.15
       })
     }),
@@ -66,14 +66,14 @@ const PRESETS = Object.freeze({
         restAngleDeg: 53,
         activeAngleDeg: 73,
         speedDegPerSec: 660,
-        returnSpeedDegPerSec: 500,
+        returnSpeedDegPerSec: 280,
         kick: 1.10
       }),
       right: Object.freeze({
         restAngleDeg: 127,
         activeAngleDeg: 107,
         speedDegPerSec: 660,
-        returnSpeedDegPerSec: 500,
+        returnSpeedDegPerSec: 280,
         kick: 1.10
       })
     }),
