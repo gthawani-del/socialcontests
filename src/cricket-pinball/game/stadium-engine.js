@@ -37,6 +37,7 @@ export class StadiumEngine extends PinballEngine {
     this.ramp = null;
     this.ball.height = this.config.launcher.launchPath?.[0]?.height || 0;
     this.completedRoute = null;
+    this.rampExitFlight = false;
     this.frozen = false;
     this.deliveryVariation = null;
     this.launchRoute = null;
@@ -249,11 +250,11 @@ export class StadiumEngine extends PinballEngine {
   }
 
   advanceShotHeight(dt) {
-    if (!this.shotFlight?.lofted || this.shotFlight.bounced) return;
+    if (!this.rampExitFlight && (!this.shotFlight?.lofted || this.shotFlight.bounced)) return;
     this.ball.height += this.verticalVelocity*dt - 4.905*dt*dt;
     this.verticalVelocity -= 9.81*dt;
     if (this.ball.height <= 0 && this.verticalVelocity < 0) {
-      this.ball.height = 0; this.verticalVelocity = 0; this.markShotGroundContact('PITCH');
+      this.ball.height = 0; this.verticalVelocity = 0; this.rampExitFlight = false; this.markShotGroundContact('PITCH');
     }
   }
 
@@ -369,6 +370,19 @@ export class StadiumEngine extends PinballEngine {
     this.ball.height = sample.height;
     this.ball.velocity.x = sample.tx * this.ramp.speed;
     this.ball.velocity.z = sample.tz * this.ramp.speed;
+  }
+
+  releaseCompletedRamp(routeId) {
+    if (this.frozen || !this.ramp || this.completedRoute !== routeId || this.ramp.route.id !== routeId) return false;
+    const { route, speed } = this.ramp;
+    // Leave the raised deck with its existing momentum; ramp contact already
+    // marks the shot as bounced, so this flight cannot become a catch or aerial six.
+    this.verticalVelocity = speed * this.sampleRoute(route, route.length).slope;
+    this.rampExitFlight = true;
+    this.ramp = null;
+    this.completedRoute = null;
+    this.emit('ramp-exit', { id: routeId, reason: 'UNQUALIFIED_SCORE' });
+    return true;
   }
 
   advanceRamp(dt) {

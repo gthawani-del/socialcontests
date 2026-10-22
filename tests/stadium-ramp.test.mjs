@@ -182,3 +182,51 @@ test('approaching a scoring alcove from behind rebounds without awarding runs', 
   assert.equal(match.currentInnings.runs, 0);
   adapter.dispose();
 });
+
+test('unqualified six continues physical play and counts only its later result', () => {
+  const { engine, match, adapter } = setup();
+  engine.random = () => .5;
+  engine.setDifficulty('EASY', rules.difficultyGameplay.EASY);
+  let bounce = false, pressed = false, released = false;
+  engine.on('delivery-bounce', () => bounce = true);
+  engine.on('ramp-exit', e => {
+    if (e.reason !== 'UNQUALIFIED_SCORE') return;
+    released = true;
+    assert.equal(match.currentInnings.balls, 0);
+    assert.equal(engine.ramp, null);
+    assert.equal(engine.completedRoute, null);
+    assert.equal(engine.shotFlight.bounced, true);
+    assert.equal(engine.frozen, false);
+  });
+  engine.releaseLaunch({ line:'CENTRE', charge:.5, power:.5, bowler:'MEDIUM', length:'GOOD', deliveryType:'PACE' });
+  let pressTime;
+  for(let i=0;i<1800&&!match.deliveryHistory.length;i++) {
+    if(bounce&&!pressed){engine.setFlipper('left',true);pressed=true;pressTime=engine.simTime;}
+    if(pressed&&engine.simTime-pressTime>=.18)engine.setFlipper('left',false);
+    adapter.step(1/120);
+  }
+  assert(released);
+  assert.equal(match.currentInnings.balls,1);
+  assert.notEqual(match.currentInnings.runs,6);
+  for(let i=0;i<120;i++)adapter.step(1/120);
+  assert.equal(match.currentInnings.balls,1);
+  engine.resetBall();assert.equal(engine.rampExitFlight,false);
+  adapter.dispose();
+});
+
+test('released ramp preserves momentum, falls under gravity and cannot be released twice', () => {
+  const engine=new StadiumEngine(structuredClone(table));
+  const route=engine.routes.find(r=>r.id==='six-ramp');
+  engine.ramp={route,speed:2,distance:route.length};
+  engine.completedRoute=route.id;
+  engine.shotFlight={lofted:false,bounced:true,groundContacts:1};
+  engine.placeOnRamp(engine.sampleRoute(route,route.length));
+  const position={...engine.ball.position},velocity={...engine.ball.velocity};
+  assert.equal(engine.releaseCompletedRamp('wrong'),false);
+  assert.equal(engine.releaseCompletedRamp(route.id),true);
+  assert.deepEqual(engine.ball.position,position);assert.deepEqual(engine.ball.velocity,velocity);
+  assert.equal(engine.releaseCompletedRamp(route.id),false);
+  for(let i=0;i<240;i++)engine.advanceShotHeight(1/120);
+  assert.equal(engine.ball.height,0);assert.equal(engine.rampExitFlight,false);
+  assert.equal(engine.shotFlight.bounced,true);
+});

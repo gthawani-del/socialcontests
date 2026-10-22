@@ -6,7 +6,7 @@
         "left"
       ],
       "contacts": 2,
-      "furthestZ": -1.9125,
+      "furthestZ": -2.221245318050767,
       "score": {
         "number": 1,
         "battingPlayerId": "player",
@@ -15,7 +15,18 @@
         "wickets": 0,
         "balls": 1,
         "complete": false
-      }
+      },
+      "rampReleases": [
+        {
+          "id": "six-ramp",
+          "position": {
+            "x": 1.179,
+            "z": -1.9125
+          },
+          "frozen": false,
+          "balls": 0
+        }
+      ]
     },
     {
       "sides": [
@@ -31,7 +42,8 @@
         "wickets": 0,
         "balls": 1,
         "complete": false
-      }
+      },
+      "rampReleases": []
     },
     {
       "sides": [
@@ -48,7 +60,8 @@
         "wickets": 0,
         "balls": 1,
         "complete": false
-      }
+      },
+      "rampReleases": []
     }
   ],
   "errors": []

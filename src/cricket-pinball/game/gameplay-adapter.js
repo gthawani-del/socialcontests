@@ -132,6 +132,9 @@ export function createCricketGameplayAdapter({
             matchEngine.getState().difficulty
           );
           if (!scoring.qualified) {
+            // Missing the six qualification is a missed opportunity, not a dot.
+            // Resume physical play; only a later field/scoring outcome ends it.
+            if (zone.outcome === 'SIX' && zone.requiresRoute && engine.releaseCompletedRamp?.(zone.requiresRoute)) continue;
             const attackRisk = Number(lastBatFeedback?.attackRisk ?? 0);
             const riskWicket = !tableConfig.fielders?.length && lastBatFeedback?.shotIntent === 'ATTACK' && attackRisk > 0 && random() < attackRisk;
             resolve(riskWicket ? 'WICKET' : 'DOT', {

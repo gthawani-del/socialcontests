@@ -27,3 +27,17 @@ for(const [bowler,power] of [['MEDIUM',.5],['FAST',.8]])for(const side of ['left
   assert.equal(run({bowler,power,start:bounce+180,hold:180}).outcome,'WICKET','late input still misses');
  });
 }
+
+test('centre-shot diagnostics distinguish first-hit direction from rebound-assisted progress',()=>{
+ const bounce=run().bounce;
+ const left=run({side:'left',start:bounce,hold:180,details:true});
+ const right=run({side:'right',start:bounce,hold:180,details:true});
+ assert(left.initialVelocity.z>0&&right.initialVelocity.z>0,'first contact is not an upfield drive');
+ assert(Math.abs(left.initialVelocity.x+right.initialVelocity.x)<.001);
+ assert(Math.abs(left.initialVelocity.z-right.initialVelocity.z)<.001);
+ for(const [result,opposite] of [[left,'right'],[right,'left']]){
+  assert(result.furthestZ<1);
+  assert(result.subsequentContacts.some(c=>c.event==='flipper-hit'&&c.id===opposite));
+ }
+ assert.notEqual(left.reason,'SKILL_REJECTED');
+});

@@ -1,0 +1,5193 @@
+{
+  "fixture": "Fixed centre delivery, Easy physics, deterministic RNG .5, input offsets relative to bounce, 180ms press, 10ms sampling. Drive is a legacy eventual-upfield metric, NOT a direct straight drive; directStraight means the initial velocity is within 30 degrees of the upfield axis (a reporting convention, not a gameplay rule). initialVelocity is measured after bat skill response, and subsequentContacts lists later rebounds. Drive = first bat contact moving in attacking direction >100 deg/s and ball reaches z<1. Durations are sampled spans, not human success rates.",
+  "rows": [
+    {
+      "bowler": "MEDIUM",
+      "power": 0.5,
+      "side": "left",
+      "initiallyUpfieldSamples": 4,
+      "directStraightSamples": 0,
+      "reboundAssistedUpfieldSamples": 8,
+      "driveSamples": 12,
+      "longestContiguousMs": 100,
+      "offsets": [
+        -50,
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        60,
+        70
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1308.3333333333312,
+            "z": 1.9503239728851123,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.197097159242016,
+          "initialVelocity": {
+            "x": 8.823420517473668,
+            "z": 2.140628766074331
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1374.9999999999975
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 1466.6666666666638
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-29-0",
+              "ms": 2024.9999999999955
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.005045328532309,
+            "angle": 7.9999999999999964,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.4610016032093546,
+          "initialVelocity": {
+            "x": 6.208743821073998,
+            "z": 5.471177952145863
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1349.9999999999977
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-low-side--1-3",
+              "ms": 1599.9999999999968
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.0057074904118464,
+            "angle": 5.999999999999997,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.3490343568406957,
+          "initialVelocity": {
+            "x": 9.323369699298874,
+            "z": 1.558300326821051
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1383.3333333333308
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 1458.3333333333305
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-29-0",
+              "ms": 1999.9999999999952
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.026934350591673,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.4226555103465315,
+          "initialVelocity": {
+            "x": 9.499998683505149,
+            "z": 0.005001339864161049
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1416.666666666664
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-83",
+              "ms": 1424.9999999999973
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-31",
+              "ms": 2158.3333333333285
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.049562468331322,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.326820860945062,
+          "initialVelocity": {
+            "x": 9.410514652561831,
+            "z": -1.300851249728055
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-84",
+              "ms": 1441.666666666664
+            },
+            {
+              "event": "wall-hit",
+              "id": "two-gate-post--1-2",
+              "ms": 1724.9999999999964
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-32",
+              "ms": 2133.3333333333285
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1324.9999999999977,
+            "z": 2.0631156611548986,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.350412461843917,
+          "initialVelocity": {
+            "x": 9.421134599292555,
+            "z": 1.2215657419937158
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1374.9999999999975
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 1466.6666666666638
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-29-0",
+              "ms": 1999.9999999999952
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1324.9999999999977,
+            "z": 2.1087575044919995,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.05709076742810859,
+          "initialVelocity": {
+            "x": 9.416847290418364,
+            "z": -1.2541878284134098
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-83",
+              "ms": 1441.666666666664
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.122742723309726,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.3350450950132853,
+          "initialVelocity": {
+            "x": 9.414656812483589,
+            "z": 1.270526309509702
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1366.6666666666642
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 1474.9999999999973
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-29-0",
+              "ms": 2016.6666666666622
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.145711778764539,
+            "angle": -4.000000000000001,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.4941420554310358,
+          "initialVelocity": {
+            "x": 9.499433504805511,
+            "z": 0.10374530244058512
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1383.3333333333308
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-84",
+              "ms": 1466.6666666666638
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 1466.6666666666638
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-89",
+              "ms": 1541.6666666666636
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-93",
+              "ms": 1641.6666666666633
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-0",
+              "ms": 1699.9999999999964
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-4",
+              "ms": 1783.3333333333294
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-25-1",
+              "ms": 1883.3333333333292
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-8",
+              "ms": 1883.3333333333292
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-25-0",
+              "ms": 1883.3333333333292
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.1700337284361404,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.573804463975718,
+          "initialVelocity": {
+            "x": 9.466079386151822,
+            "z": -0.8020854412539761
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1399.9999999999975
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-84",
+              "ms": 1458.3333333333305
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-low-side--1-1",
+              "ms": 1541.6666666666636
+            },
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1708.3333333333296
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-57",
+              "ms": 2074.9999999999955
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1341.6666666666642,
+            "z": 2.2082116773279914,
+            "angle": -8,
+            "speed": 38.40000000000009
+          },
+          "furthestZ": -1.404024231455503,
+          "initialVelocity": {
+            "x": 7.444721617594884,
+            "z": 2.6868232637075216
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1358.333333333331
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-88",
+              "ms": 1583.33333333333
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-low-side-1-1",
+              "ms": 1599.9999999999968
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-91",
+              "ms": 1658.3333333333298
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-3",
+              "ms": 1933.333333333329
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-25-1",
+              "ms": 2116.666666666662
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": 60,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1341.6666666666642,
+            "z": 2.2098702594268635,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -0.06567757141248651,
+          "initialVelocity": {
+            "x": 9.185681230402356,
+            "z": -2.423481036326439
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-84",
+              "ms": 1466.6666666666638
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1349.9999999999977,
+            "z": 2.245796206880748,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -1.575249452905788,
+          "initialVelocity": {
+            "x": 9.00398205131691,
+            "z": 3.029572118231041
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1349.9999999999977
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-low-side--1-4",
+              "ms": 1574.9999999999968
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-20-2",
+              "ms": 1816.6666666666626
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-26",
+              "ms": 2241.6666666666615
+            },
+            {
+              "event": "wall-hit",
+              "id": "straight-drive-four-post--1-3",
+              "ms": 2458.333333333327
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.5,
+      "side": "right",
+      "initiallyUpfieldSamples": 4,
+      "directStraightSamples": 0,
+      "reboundAssistedUpfieldSamples": 6,
+      "driveSamples": 10,
+      "longestContiguousMs": 70,
+      "offsets": [
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        40,
+        60,
+        70
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1308.3333333333312,
+            "z": 1.9503241612991786,
+            "angle": 170,
+            "speed": -239.99999999999727
+          },
+          "furthestZ": 1.2543006445401468,
+          "initialVelocity": {
+            "x": -8.823404394228794,
+            "z": 2.1406612923235953
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1374.9999999999975
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-57",
+              "ms": 1466.6666666666638
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-1",
+              "ms": 1524.999999999997
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail--1-1",
+              "ms": 1549.999999999997
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": -40,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1316.6666666666645,
+            "z": 2.005045479183866,
+            "angle": 171.99999999999997,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -0.46098614209220923,
+          "initialVelocity": {
+            "x": -6.208723431980596,
+            "z": 5.471194295448744
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1349.9999999999977
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-3",
+              "ms": 1599.9999999999968
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1316.6666666666645,
+            "z": 2.005707700222995,
+            "angle": 174,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": -9.323353776937,
+            "z": 1.5583381537683565
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1383.3333333333308
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-58",
+              "ms": 1458.3333333333305
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "TWO",
+          "hit": {
+            "id": "right",
+            "ms": 1316.6666666666645,
+            "z": 2.0269345674729893,
+            "angle": 176,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -2.4226567182252166,
+          "initialVelocity": {
+            "x": -9.499998661417843,
+            "z": 0.005043119988129755
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1416.666666666664
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-60",
+              "ms": 1424.9999999999973
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-16",
+              "ms": 2158.3333333333285
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "right",
+            "ms": 1316.6666666666645,
+            "z": 2.049562683928628,
+            "angle": 178,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -2.3265402649082696,
+          "initialVelocity": {
+            "x": -9.410520432233522,
+            "z": -1.3008094382020183
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-59",
+              "ms": 1441.666666666664
+            },
+            {
+              "event": "wall-hit",
+              "id": "one-gate-post-1-1",
+              "ms": 1724.9999999999964
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-15",
+              "ms": 2133.3333333333285
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1324.9999999999977,
+            "z": 2.0631158848282616,
+            "angle": 178,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": -9.421129251264276,
+            "z": 1.2216069871168211
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1374.9999999999975
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-58",
+              "ms": 1466.6666666666638
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1324.9999999999977,
+            "z": 2.108757725703851,
+            "angle": 182,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -0.11680234612769795,
+          "initialVelocity": {
+            "x": -9.416852837252783,
+            "z": -1.2541461802853113
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-59",
+              "ms": 1441.666666666664
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-10-0",
+              "ms": 1883.3333333333292
+            },
+            {
+              "event": "wall-hit",
+              "id": "two-gate-post-1-1",
+              "ms": 1966.6666666666622
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-0",
+              "ms": 2191.6666666666615
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1333.333333333331,
+            "z": 2.122742950389444,
+            "angle": 182,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": -9.414651338348422,
+            "z": 1.2705668724369596
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1366.6666666666642
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-57",
+              "ms": 1474.9999999999973
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1333.333333333331,
+            "z": 2.145712004851037,
+            "angle": 184,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": 1.2819655052757524,
+          "initialVelocity": {
+            "x": -9.499433057681,
+            "z": 0.10378623529840805
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1383.3333333333308
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-58",
+              "ms": 1466.6666666666638
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-1",
+              "ms": 1533.3333333333303
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-55",
+              "ms": 1583.33333333333
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-59",
+              "ms": 1674.9999999999966
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1724.9999999999964
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-60",
+              "ms": 1724.9999999999964
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-1",
+              "ms": 1974.9999999999955
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1333.333333333331,
+            "z": 2.170033947566298,
+            "angle": 186,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.4243980393230233,
+          "initialVelocity": {
+            "x": -9.466082762431586,
+            "z": -0.8020455939630845
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1399.9999999999975
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-59",
+              "ms": 1458.3333333333305
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-1",
+              "ms": 1541.6666666666636
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1708.3333333333296
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 2074.9999999999955
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-25-1",
+              "ms": 3141.6666666666583
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-8",
+              "ms": 3158.333333333325
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1341.6666666666642,
+            "z": 2.208211892666619,
+            "angle": 188,
+            "speed": -38.39999999999761
+          },
+          "furthestZ": -1.0453760969075019,
+          "initialVelocity": {
+            "x": -7.444711443961862,
+            "z": 2.686852601522507
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1358.333333333331
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-55",
+              "ms": 1583.33333333333
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail--1-1",
+              "ms": 1599.9999999999968
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-52",
+              "ms": 1658.3333333333298
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-44",
+              "ms": 1933.333333333329
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail--1-19",
+              "ms": 1983.3333333333287
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-42",
+              "ms": 2008.333333333329
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail--1-21",
+              "ms": 2016.6666666666622
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-41",
+              "ms": 2041.666666666662
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": 60,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1341.6666666666642,
+            "z": 2.2098704740504034,
+            "angle": 188.32,
+            "speed": -720.000000000001
+          },
+          "furthestZ": -0.06567150535559062,
+          "initialVelocity": {
+            "x": -9.18568940498268,
+            "z": -2.423450052134134
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-59",
+              "ms": 1466.6666666666638
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "TWO",
+          "hit": {
+            "id": "right",
+            "ms": 1349.9999999999977,
+            "z": 2.245796353186172,
+            "angle": 188.32,
+            "speed": -720.000000000001
+          },
+          "furthestZ": -2.7584006562260655,
+          "initialVelocity": {
+            "x": -9.003973962926896,
+            "z": 3.0295961570702046
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1349.9999999999977
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-4",
+              "ms": 1574.9999999999968
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-34",
+              "ms": 2008.333333333329
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-23",
+              "ms": 2224.9999999999945
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "MEDIUM",
+      "power": 0.5,
+      "side": "both",
+      "initiallyUpfieldSamples": 4,
+      "directStraightSamples": 0,
+      "reboundAssistedUpfieldSamples": 8,
+      "driveSamples": 12,
+      "longestContiguousMs": 100,
+      "offsets": [
+        -50,
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        60,
+        70
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1308.3333333333312,
+            "z": 1.9503239728851123,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.023922871725628,
+          "initialVelocity": {
+            "x": 8.823420517473668,
+            "z": 2.140628766074331
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1308.3333333333312
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1308.3333333333312
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1316.6666666666645
+            },
+            {
+              "event": "wall-hit",
+              "id": "straight-drive-four-post--1-2",
+              "ms": 1691.666666666663
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-35",
+              "ms": 1824.999999999996
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.005045328532309,
+            "angle": 7.9999999999999964,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.6849362796086007,
+          "initialVelocity": {
+            "x": 6.208743821073998,
+            "z": 5.471177952145863
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1316.6666666666645
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1316.6666666666645
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-20",
+              "ms": 1858.3333333333292
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.0057074904118464,
+            "angle": 5.999999999999997,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.687614127787152,
+          "initialVelocity": {
+            "x": 9.323369699298874,
+            "z": 1.558300326821051
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1316.6666666666645
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1358.333333333331
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-18",
+              "ms": 1633.33333333333
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-27",
+              "ms": 1908.333333333329
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.026934350591673,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.06231779783684009,
+          "initialVelocity": {
+            "x": 9.499998683505149,
+            "z": 0.005001339864161049
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1316.6666666666645
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1316.6666666666645,
+            "z": 2.049562468331322,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.435402716238677,
+          "initialVelocity": {
+            "x": 9.410514652561831,
+            "z": -1.300851249728055
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1316.6666666666645
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-31",
+              "ms": 1849.999999999996
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1324.9999999999977,
+            "z": 2.0631156611548986,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.7126204127938496,
+          "initialVelocity": {
+            "x": 9.421134599292555,
+            "z": 1.2215657419937158
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1324.9999999999977
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-18",
+              "ms": 1649.9999999999966
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-26",
+              "ms": 1941.6666666666622
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1324.9999999999977,
+            "z": 2.1087575044919995,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.4524432893781523,
+          "initialVelocity": {
+            "x": 9.416847290418364,
+            "z": -1.2541878284134098
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1324.9999999999977
+            },
+            {
+              "event": "wall-hit",
+              "id": "one-gate-post-1-1",
+              "ms": 1574.9999999999968
+            },
+            {
+              "event": "wall-hit",
+              "id": "straight-drive-four-post--1-2",
+              "ms": 1741.6666666666629
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.122742723309726,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.6534505747054136,
+          "initialVelocity": {
+            "x": 9.414656812483589,
+            "z": 1.270526309509702
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1333.333333333331
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-16",
+              "ms": 1633.33333333333
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.145711778764539,
+            "angle": -4.000000000000001,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": 0.004784750347659747,
+          "initialVelocity": {
+            "x": 9.499433504805511,
+            "z": 0.10374530244058512
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1333.333333333331
+            },
+            {
+              "event": "wall-hit",
+              "id": "one-gate-post--1-1",
+              "ms": 1583.33333333333
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-10",
+              "ms": 1641.6666666666633
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1333.333333333331,
+            "z": 2.1700337284361404,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.07552123531687331,
+          "initialVelocity": {
+            "x": 9.466079386151822,
+            "z": -0.8020854412539761
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1333.333333333331
+            },
+            {
+              "event": "wall-hit",
+              "id": "one-gate-post--1-1",
+              "ms": 1591.6666666666636
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1341.6666666666642,
+            "z": 2.2082116773279914,
+            "angle": -8,
+            "speed": 38.40000000000009
+          },
+          "furthestZ": -0.05992999611766445,
+          "initialVelocity": {
+            "x": 7.444721617594884,
+            "z": 2.6868232637075216
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1341.6666666666642
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1349.9999999999977
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1341.6666666666642,
+            "z": 2.2098702594268635,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -0.4673617792591145,
+          "initialVelocity": {
+            "x": 9.185681230402356,
+            "z": -2.423481036326439
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1341.6666666666642
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-8",
+              "ms": 1566.6666666666636
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1349.9999999999977,
+            "z": 2.245796206880748,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -0.002354972359532092,
+          "initialVelocity": {
+            "x": 9.00398205131691,
+            "z": 3.029572118231041
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1349.9999999999977
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1349.9999999999977
+            },
+            {
+              "event": "wall-hit",
+              "id": "two-gate-post-1-2",
+              "ms": 1608.33333333333
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.8,
+      "side": "left",
+      "initiallyUpfieldSamples": 2,
+      "directStraightSamples": 0,
+      "reboundAssistedUpfieldSamples": 9,
+      "driveSamples": 11,
+      "longestContiguousMs": 80,
+      "offsets": [
+        -50,
+        -40,
+        -30,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1024.9999999999989,
+            "z": 1.9547438536973918,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": 1.2750553122822625,
+          "initialVelocity": {
+            "x": 8.812343246408775,
+            "z": 3.54860627676186
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1083.333333333332
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-87",
+              "ms": 1216.6666666666647
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-low-side-1-1",
+              "ms": 1233.3333333333314
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-88",
+              "ms": 1241.6666666666647
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-87",
+              "ms": 1291.6666666666645
+            },
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1508.3333333333305
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 1.9771237956741126,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.49415624876456177,
+          "initialVelocity": {
+            "x": 6.562773647427186,
+            "z": 6.868770053847724
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1066.6666666666654
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-low-side--1-8",
+              "ms": 1349.9999999999977
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 2.0020858401443022,
+            "angle": 5.999999999999997,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": 9.3900847835773,
+            "z": 1.4409398867510146
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1099.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 1174.9999999999982
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 2.0267338809930924,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": 9.485765000027804,
+            "z": 0.5198676410852073
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1116.6666666666652
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-84",
+              "ms": 1158.3333333333317
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.0464920394127235,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": 1.2888716524511477,
+          "initialVelocity": {
+            "x": 8.594193707058773,
+            "z": 4.048436059214891
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1074.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-low-side-1-1",
+              "ms": 1233.3333333333314
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-88",
+              "ms": 1249.999999999998
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.052125223765386,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.4522600103923775,
+          "initialVelocity": {
+            "x": 9.49617359176391,
+            "z": -0.26960548044457705
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1133.3333333333317
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-83",
+              "ms": 1149.9999999999984
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-31",
+              "ms": 1883.3333333333292
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.078263002014521,
+            "angle": -1.5902773407317584e-15,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.0001631623556297042,
+          "initialVelocity": {
+            "x": 9.455908373655515,
+            "z": -0.9142192456033317
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-83",
+              "ms": 1158.3333333333317
+            },
+            {
+              "event": "wall-hit",
+              "id": "two-gate-post--1-1",
+              "ms": 1441.666666666664
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.1212160277744077,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": 9.36686311301982,
+            "z": 1.5848897191756426
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1083.333333333332
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-86",
+              "ms": 1199.9999999999982
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.147653873395524,
+            "angle": -4.000000000000001,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": 9.44374943635276,
+            "z": 1.0322773771554588
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1083.333333333332
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 1199.9999999999982
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "SIX",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.1747939702596977,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": 9.479457611199166,
+            "z": 0.6244064361281135
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1083.333333333332
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 1191.666666666665
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1058.3333333333321,
+            "z": 2.195205431173778,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": 8.600971387109771,
+            "z": 4.034016757292786
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1066.6666666666654
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-29-0",
+              "ms": 1991.666666666662
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1058.3333333333321,
+            "z": 2.222521016446092,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": 0.17803292530333054,
+          "initialVelocity": {
+            "x": 9.499837240636372,
+            "z": 0.055609364483910885
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1074.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-85",
+              "ms": 1199.9999999999982
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-low-side--1-1",
+              "ms": 1258.3333333333312
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 60,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1066.6666666666654,
+            "z": 2.2762528891991316,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -0.06558768553222097,
+          "initialVelocity": {
+            "x": 5.1398250800491425,
+            "z": 7.989505500748955
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1066.6666666666654
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1066.6666666666654
+            },
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1074.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-low-side--1-2",
+              "ms": 1266.6666666666647
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.8,
+      "side": "right",
+      "initiallyUpfieldSamples": 2,
+      "directStraightSamples": 0,
+      "reboundAssistedUpfieldSamples": 9,
+      "driveSamples": 11,
+      "longestContiguousMs": 80,
+      "offsets": [
+        -50,
+        -40,
+        -30,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "DOT",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1024.9999999999989,
+            "z": 1.9547440434121794,
+            "angle": 170,
+            "speed": -239.99999999999727
+          },
+          "furthestZ": 1.2750531527294204,
+          "initialVelocity": {
+            "x": -8.812329499012069,
+            "z": 3.5486404158271223
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1083.333333333332
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-56",
+              "ms": 1216.6666666666647
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail--1-1",
+              "ms": 1233.3333333333314
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-55",
+              "ms": 1241.6666666666647
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-56",
+              "ms": 1291.6666666666645
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1508.3333333333305
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": -50,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1033.3333333333321,
+            "z": 1.9771239397363258,
+            "angle": 170,
+            "speed": -239.99999999999727
+          },
+          "furthestZ": -0.49417419795958567,
+          "initialVelocity": {
+            "x": -6.562753712315845,
+            "z": 6.868789100815703
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1066.6666666666654
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-8",
+              "ms": 1349.9999999999977
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1033.3333333333321,
+            "z": 2.0020860560519194,
+            "angle": 174,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": -9.390078405479352,
+            "z": 1.4409814498980824
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1099.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-58",
+              "ms": 1174.9999999999982
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1033.3333333333321,
+            "z": 2.026734103496355,
+            "angle": 176,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": -9.485762614546879,
+            "z": 0.5199111659358502
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1116.6666666666652
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-59",
+              "ms": 1158.3333333333317
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1041.6666666666654,
+            "z": 2.046492249669234,
+            "angle": 176,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": 1.2888709498477247,
+          "initialVelocity": {
+            "x": -8.594177131967193,
+            "z": 4.048471245343379
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1074.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail--1-1",
+              "ms": 1233.3333333333314
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-55",
+              "ms": 1249.999999999998
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": -10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "right",
+            "ms": 1041.6666666666654,
+            "z": 2.0521254487724843,
+            "angle": 178,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -2.4522578098123513,
+          "initialVelocity": {
+            "x": -9.496174851719905,
+            "z": -0.2695610980138617
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1133.3333333333317
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-60",
+              "ms": 1149.9999999999984
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-16",
+              "ms": 1883.3333333333292
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1041.6666666666654,
+            "z": 2.0782632261493,
+            "angle": 180,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -0.0001541224842927999,
+          "initialVelocity": {
+            "x": -9.455912660060308,
+            "z": -0.9141749095830383
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-60",
+              "ms": 1158.3333333333317
+            },
+            {
+              "event": "wall-hit",
+              "id": "one-gate-post-1-2",
+              "ms": 1441.666666666664
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1049.9999999999986,
+            "z": 2.1212162617499484,
+            "angle": 182,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": -9.366855941227042,
+            "z": 1.5849321046340303
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1083.333333333332
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-57",
+              "ms": 1199.9999999999982
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1049.9999999999986,
+            "z": 2.1476541059767054,
+            "angle": 184,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.3902672413793102,
+          "initialVelocity": {
+            "x": -9.443744799933906,
+            "z": 1.0323197923711924
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1083.333333333332
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-57",
+              "ms": 1199.9999999999982
+            },
+            {
+              "event": "wall-hit",
+              "id": "six-support-25-2",
+              "ms": 1783.3333333333294
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1049.9999999999986,
+            "z": 2.1747941982956394,
+            "angle": 186,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": -9.479454869189636,
+            "z": 0.6244480626896848
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1083.333333333332
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-58",
+              "ms": 1191.666666666665
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "FOUR",
+          "hit": {
+            "id": "right",
+            "ms": 1058.3333333333321,
+            "z": 2.195205637993898,
+            "angle": 186,
+            "speed": -240.00000000000034
+          },
+          "furthestZ": -1.9125,
+          "initialVelocity": {
+            "x": -8.600956129158568,
+            "z": 4.034049288777923
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1066.6666666666654
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "right",
+            "ms": 1058.3333333333321,
+            "z": 2.2225212275362574,
+            "angle": 188.32,
+            "speed": -720.000000000001
+          },
+          "furthestZ": -0.5145127006189122,
+          "initialVelocity": {
+            "x": -9.499837044586588,
+            "z": 0.05564284590469858
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1074.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-58",
+              "ms": 1199.9999999999982
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-1",
+              "ms": 1258.3333333333312
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 60,
+          "outcome": "DOT",
+          "hit": {
+            "id": "right",
+            "ms": 1066.6666666666654,
+            "z": 2.276252909178277,
+            "angle": 188.32,
+            "speed": -720.000000000001
+          },
+          "furthestZ": -0.5771966663730721,
+          "initialVelocity": {
+            "x": -5.139820258650639,
+            "z": 7.989508602458882
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1066.6666666666654
+            },
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1066.6666666666654
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1066.6666666666654
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-6",
+              "ms": 1358.333333333331
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        }
+      ]
+    },
+    {
+      "bowler": "FAST",
+      "power": 0.8,
+      "side": "both",
+      "initiallyUpfieldSamples": 2,
+      "directStraightSamples": 0,
+      "reboundAssistedUpfieldSamples": 10,
+      "driveSamples": 12,
+      "longestContiguousMs": 120,
+      "offsets": [
+        -60,
+        -50,
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "samples": [
+        {
+          "offset": -300,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -290,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -280,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -270,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -260,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -250,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -240,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -230,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -220,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -210,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -200,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -190,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -180,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -170,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -160,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": -60,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1024.9999999999989,
+            "z": 1.9547438536973918,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.4669999999999999,
+          "initialVelocity": {
+            "x": 8.812343246408775,
+            "z": 3.54860627676186
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1024.9999999999989
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1033.3333333333321
+            },
+            {
+              "event": "wall-hit",
+              "id": "two-gate-post--1-3",
+              "ms": 1424.9999999999973
+            },
+            {
+              "event": "wall-hit",
+              "id": "straight-drive-four-post-1-1",
+              "ms": 1708.3333333333296
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -50,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 1.9771237956741126,
+            "angle": 9.999999999999996,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.6722857536374094,
+          "initialVelocity": {
+            "x": 6.562773647427186,
+            "z": 6.868770053847724
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1033.3333333333321
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1033.3333333333321
+            },
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1041.6666666666654
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-19",
+              "ms": 1574.9999999999968
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -40,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 2.0020858401443022,
+            "angle": 5.999999999999997,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.07459508184271463,
+          "initialVelocity": {
+            "x": 9.3900847835773,
+            "z": 1.4409398867510146
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1033.3333333333321
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1066.6666666666654
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -30,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1033.3333333333321,
+            "z": 2.0267338809930924,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.06437328551127774,
+          "initialVelocity": {
+            "x": 9.485765000027804,
+            "z": 0.5198676410852073
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1033.3333333333321
+            },
+            {
+              "event": "wall-hit",
+              "id": "one-gate-post--1-1",
+              "ms": 1274.999999999998
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.0464920394127235,
+            "angle": 3.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.49739033927546294,
+          "initialVelocity": {
+            "x": 8.594193707058773,
+            "z": 4.048436059214891
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1041.6666666666654
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1041.6666666666654
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-12",
+              "ms": 1291.6666666666645
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": -10,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.052125223765386,
+            "angle": 1.999999999999998,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.0054686946086248914,
+          "initialVelocity": {
+            "x": 9.49617359176391,
+            "z": -0.26960548044457705
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1041.6666666666654
+            },
+            {
+              "event": "wall-hit",
+              "id": "one-gate-post-1-2",
+              "ms": 1274.999999999998
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-11",
+              "ms": 1358.333333333331
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 0,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1041.6666666666654,
+            "z": 2.078263002014521,
+            "angle": -1.5902773407317584e-15,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -1.4669999999999999,
+          "initialVelocity": {
+            "x": 9.455908373655515,
+            "z": -0.9142192456033317
+          },
+          "initiallyUpfield": true,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1041.6666666666654
+            },
+            {
+              "event": "wall-hit",
+              "id": "one-gate-post-1-1",
+              "ms": 1283.3333333333312
+            },
+            {
+              "event": "wall-hit",
+              "id": "straight-drive-four-post--1-1",
+              "ms": 1449.9999999999973
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 10,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.1212160277744077,
+            "angle": -2.0000000000000013,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.7595421617028917,
+          "initialVelocity": {
+            "x": 9.36686311301982,
+            "z": 1.5848897191756426
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1049.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-14",
+              "ms": 1341.6666666666642
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-15",
+              "ms": 1341.6666666666642
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-34",
+              "ms": 1574.9999999999968
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-23",
+              "ms": 1733.3333333333296
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 20,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.147653873395524,
+            "angle": -4.000000000000001,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.6939401170814595,
+          "initialVelocity": {
+            "x": 9.44374943635276,
+            "z": 1.0322773771554588
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1049.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-16",
+              "ms": 1358.333333333331
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 30,
+          "outcome": "DOT",
+          "hit": {
+            "id": "left",
+            "ms": 1049.9999999999986,
+            "z": 2.1747939702596977,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -0.6164909898329973,
+          "initialVelocity": {
+            "x": 9.479457611199166,
+            "z": 0.6244064361281135
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1049.9999999999986
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-15",
+              "ms": 1358.333333333331
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 40,
+          "outcome": "TWO",
+          "hit": {
+            "id": "left",
+            "ms": 1058.3333333333321,
+            "z": 2.195205431173778,
+            "angle": -6,
+            "speed": 239.99999999999997
+          },
+          "furthestZ": -2.677765028398526,
+          "initialVelocity": {
+            "x": 8.600971387109771,
+            "z": 4.034016757292786
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1058.3333333333321
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1058.3333333333321
+            },
+            {
+              "event": "wall-hit",
+              "id": "four-rail-1-18",
+              "ms": 1399.9999999999975
+            },
+            {
+              "event": "wall-hit",
+              "id": "stadium-boundary-27",
+              "ms": 1683.3333333333298
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 50,
+          "outcome": "ONE",
+          "hit": {
+            "id": "left",
+            "ms": 1058.3333333333321,
+            "z": 2.222521016446092,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": -1.4766993838396538,
+          "initialVelocity": {
+            "x": 9.499837240636372,
+            "z": 0.055609364483910885
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1058.3333333333321
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1058.3333333333321
+            },
+            {
+              "event": "wall-hit",
+              "id": "two-gate-post--1-3",
+              "ms": 1324.9999999999977
+            },
+            {
+              "event": "wall-hit",
+              "id": "straight-drive-four-post-1-1",
+              "ms": 1483.3333333333305
+            }
+          ],
+          "drive": true
+        },
+        {
+          "offset": 60,
+          "outcome": "WICKET",
+          "hit": {
+            "id": "left",
+            "ms": 1066.6666666666654,
+            "z": 2.2762528891991316,
+            "angle": -8.32,
+            "speed": 719.9999999999999
+          },
+          "furthestZ": 2.313917554173097,
+          "initialVelocity": {
+            "x": 5.1398250800491425,
+            "z": 7.989505500748955
+          },
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [
+            {
+              "event": "flipper-hit",
+              "id": "right",
+              "ms": 1066.6666666666654
+            },
+            {
+              "event": "flipper-hit",
+              "id": "left",
+              "ms": 1066.6666666666654
+            }
+          ],
+          "drive": false
+        },
+        {
+          "offset": 70,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 80,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 90,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 100,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 110,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 120,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 130,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 140,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        },
+        {
+          "offset": 150,
+          "outcome": "WICKET",
+          "hit": null,
+          "furthestZ": null,
+          "initialVelocity": null,
+          "initiallyUpfield": false,
+          "directStraight": false,
+          "subsequentContacts": [],
+          "drive": false
+        }
+      ]
+    }
+  ]
+}
