@@ -55,9 +55,10 @@ const isIPhone =
   /iPhone/i.test(navigator.userAgent || '') ||
   navigator.platform === 'iPhone';
 
-if (soundGateElement && isIPhone) {
-  soundGateElement.hidden = false;
-  soundGateElement.setAttribute('aria-hidden', 'false');
+// Audio is optional: never block entry to the game for sound permission.
+if (soundGateElement) {
+  soundGateElement.hidden = true;
+  soundGateElement.setAttribute('aria-hidden', 'true');
 }
 
 const renderer = new THREE.WebGLRenderer({
