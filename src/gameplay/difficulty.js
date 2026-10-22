@@ -3,14 +3,14 @@ const PRESETS = Object.freeze({
     label: 'EASY',
     flippers: Object.freeze({
       left: Object.freeze({
-        restAngleDeg: 46,
+        restAngleDeg: 24,
         activeAngleDeg: 68,
         speedDegPerSec: 760,
         returnSpeedDegPerSec: 330,
         kick: 1.20
       }),
       right: Object.freeze({
-        restAngleDeg: 134,
+        restAngleDeg: 156,
         activeAngleDeg: 112,
         speedDegPerSec: 760,
         returnSpeedDegPerSec: 330,
@@ -33,14 +33,14 @@ const PRESETS = Object.freeze({
     label: 'STANDARD',
     flippers: Object.freeze({
       left: Object.freeze({
-        restAngleDeg: 49,
+        restAngleDeg: 24,
         activeAngleDeg: 73,
         speedDegPerSec: 700,
         returnSpeedDegPerSec: 300,
         kick: 1.15
       }),
       right: Object.freeze({
-        restAngleDeg: 131,
+        restAngleDeg: 156,
         activeAngleDeg: 107,
         speedDegPerSec: 700,
         returnSpeedDegPerSec: 300,
@@ -63,14 +63,14 @@ const PRESETS = Object.freeze({
     label: 'HARD',
     flippers: Object.freeze({
       left: Object.freeze({
-        restAngleDeg: 53,
+        restAngleDeg: 24,
         activeAngleDeg: 73,
         speedDegPerSec: 660,
         returnSpeedDegPerSec: 280,
         kick: 1.10
       }),
       right: Object.freeze({
-        restAngleDeg: 127,
+        restAngleDeg: 156,
         activeAngleDeg: 107,
         speedDegPerSec: 660,
         returnSpeedDegPerSec: 280,
